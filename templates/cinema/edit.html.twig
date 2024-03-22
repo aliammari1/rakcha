@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Cinema{% endblock %}
+
+{% block body %}
+    <h1>Edit Cinema</h1>
+
+    {{ include('cinema/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_cinema_index') }}">back to list</a>
+
+    {{ include('cinema/_delete_form.html.twig') }}
+{% endblock %}

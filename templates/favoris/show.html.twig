@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Favoris{% endblock %}
+
+{% block body %}
+    <h1>Favoris</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ favori.id }}</td>
+            </tr>
+            <tr>
+                <th>IdUser</th>
+                <td>{{ favori.idUser }}</td>
+            </tr>
+            <tr>
+                <th>IdSerie</th>
+                <td>{{ favori.idSerie }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_favoris_index') }}">back to list</a>
+
+    <a href="{{ path('app_favoris_edit', {'id': favori.id}) }}">edit</a>
+
+    {{ include('favoris/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ratingfilm index{% endblock %}
+
+{% block body %}
+    <h1>Ratingfilm index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IdFilm</th>
+                <th>IdUser</th>
+                <th>Rate</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ratingfilm in ratingfilms %}
+            <tr>
+                <td>{{ ratingfilm.idFilm }}</td>
+                <td>{{ ratingfilm.idUser }}</td>
+                <td>{{ ratingfilm.rate }}</td>
+                <td>
+                    <a href="{{ path('app_ratingfilm_show', {'idFilm': ratingfilm.idFilm}) }}">show</a>
+                    <a href="{{ path('app_ratingfilm_edit', {'idFilm': ratingfilm.idFilm}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_ratingfilm_new') }}">Create new</a>
+{% endblock %}

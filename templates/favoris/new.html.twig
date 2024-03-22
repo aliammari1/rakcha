@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Favoris{% endblock %}
+
+{% block body %}
+    <h1>Create new Favoris</h1>
+
+    {{ include('favoris/_form.html.twig') }}
+
+    <a href="{{ path('app_favoris_index') }}">back to list</a>
+{% endblock %}

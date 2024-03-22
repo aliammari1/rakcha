@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Filmcategory{% endblock %}
+
+{% block body %}
+    <h1>Filmcategory</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>FilmId</th>
+                <td>{{ filmcategory.filmId }}</td>
+            </tr>
+            <tr>
+                <th>CategoryId</th>
+                <td>{{ filmcategory.categoryId }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_filmcategory_index') }}">back to list</a>
+
+    <a href="{{ path('app_filmcategory_edit', {'filmId': filmcategory.filmId}) }}">edit</a>
+
+    {{ include('filmcategory/_delete_form.html.twig') }}
+{% endblock %}

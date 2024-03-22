@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FeedbackEvenement index{% endblock %}
+
+{% block body %}
+    <h1>FeedbackEvenement index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Commentaire</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for feedback_evenement in feedback_evenements %}
+            <tr>
+                <td>{{ feedback_evenement.id }}</td>
+                <td>{{ feedback_evenement.commentaire }}</td>
+                <td>
+                    <a href="{{ path('app_feedback_evenement_show', {'id': feedback_evenement.id}) }}">show</a>
+                    <a href="{{ path('app_feedback_evenement_edit', {'id': feedback_evenement.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_feedback_evenement_new') }}">Create new</a>
+{% endblock %}
