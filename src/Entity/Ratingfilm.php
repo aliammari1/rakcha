@@ -37,5 +37,27 @@ class Ratingfilm
      */
     private $rate;
 
+    public function getIdFilm(): ?int
+    {
+        return $this->idFilm;
+    }
+
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
+
+    public function getRate(): ?int
+    {
+        return $this->rate;
+    }
+
+    public function setRate(?int $rate): static
+    {
+        $this->rate = $rate;
+
+        return $this;
+    }
+
 
 }

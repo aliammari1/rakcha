@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -48,6 +49,59 @@ class Feedback
      * @ORM\Column(name="id_episode", type="integer", nullable=false)
      */
     private $idEpisode;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
+
+    public function setIdUser(int $idUser): static
+    {
+        $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getIdEpisode(): ?int
+    {
+        return $this->idEpisode;
+    }
+
+    public function setIdEpisode(int $idEpisode): static
+    {
+        $this->idEpisode = $idEpisode;
+
+        return $this;
+    }
 
 
 }

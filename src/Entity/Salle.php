@@ -45,5 +45,46 @@ class Salle
      */
     private $idCinema;
 
+    public function getIdSalle(): ?int
+    {
+        return $this->idSalle;
+    }
+
+    public function getNbPlaces(): ?int
+    {
+        return $this->nbPlaces;
+    }
+
+    public function setNbPlaces(int $nbPlaces): static
+    {
+        $this->nbPlaces = $nbPlaces;
+
+        return $this;
+    }
+
+    public function getNomSalle(): ?string
+    {
+        return $this->nomSalle;
+    }
+
+    public function setNomSalle(string $nomSalle): static
+    {
+        $this->nomSalle = $nomSalle;
+
+        return $this;
+    }
+
+    public function getIdCinema(): ?Cinema
+    {
+        return $this->idCinema;
+    }
+
+    public function setIdCinema(?Cinema $idCinema): static
+    {
+        $this->idCinema = $idCinema;
+
+        return $this;
+    }
+
 
 }

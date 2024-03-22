@@ -49,5 +49,58 @@ class Commentairecinema
      */
     private $sentiment;
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getIdclient(): ?int
+    {
+        return $this->idclient;
+    }
+
+    public function setIdclient(int $idclient): static
+    {
+        $this->idclient = $idclient;
+
+        return $this;
+    }
+
+    public function getIdcinema(): ?int
+    {
+        return $this->idcinema;
+    }
+
+    public function setIdcinema(int $idcinema): static
+    {
+        $this->idcinema = $idcinema;
+
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(string $commentaire): static
+    {
+        $this->commentaire = $commentaire;
+
+        return $this;
+    }
+
+    public function getSentiment(): ?string
+    {
+        return $this->sentiment;
+    }
+
+    public function setSentiment(string $sentiment): static
+    {
+        $this->sentiment = $sentiment;
+
+        return $this;
+    }
+
 
 }

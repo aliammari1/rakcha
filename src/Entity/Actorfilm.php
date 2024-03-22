@@ -30,5 +30,15 @@ class Actorfilm
      */
     private $idfilm;
 
+    public function getIdactor(): ?int
+    {
+        return $this->idactor;
+    }
+
+    public function getIdfilm(): ?int
+    {
+        return $this->idfilm;
+    }
+
 
 }

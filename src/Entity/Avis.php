@@ -55,5 +55,58 @@ class Avis
      */
     private $idProduit;
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNote(): ?int
+    {
+        return $this->note;
+    }
+
+    public function setNote(int $note): static
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    public function getAvis(): ?string
+    {
+        return $this->avis;
+    }
+
+    public function setAvis(?string $avis): static
+    {
+        $this->avis = $avis;
+
+        return $this;
+    }
+
+    public function getIdusers(): ?Users
+    {
+        return $this->idusers;
+    }
+
+    public function setIdusers(?Users $idusers): static
+    {
+        $this->idusers = $idusers;
+
+        return $this;
+    }
+
+    public function getIdProduit(): ?Produit
+    {
+        return $this->idProduit;
+    }
+
+    public function setIdProduit(?Produit $idProduit): static
+    {
+        $this->idProduit = $idProduit;
+
+        return $this;
+    }
+
 
 }

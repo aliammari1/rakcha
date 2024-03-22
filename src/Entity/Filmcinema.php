@@ -30,5 +30,15 @@ class Filmcinema
      */
     private $idCinema;
 
+    public function getIdFilm(): ?int
+    {
+        return $this->idFilm;
+    }
+
+    public function getIdCinema(): ?int
+    {
+        return $this->idCinema;
+    }
+
 
 }

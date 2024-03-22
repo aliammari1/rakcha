@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -34,6 +35,35 @@ class Sponsor
      * @ORM\Column(name="Logo", type="blob", length=65535, nullable=false)
      */
     private $logo;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNomsociete(): ?string
+    {
+        return $this->nomsociete;
+    }
+
+    public function setNomsociete(string $nomsociete): static
+    {
+        $this->nomsociete = $nomsociete;
+
+        return $this;
+    }
+
+    public function getLogo()
+    {
+        return $this->logo;
+    }
+
+    public function setLogo($logo): static
+    {
+        $this->logo = $logo;
+
+        return $this;
+    }
 
 
 }
