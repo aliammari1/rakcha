@@ -2,53 +2,47 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Feedback
- *
- * @ORM\Table(name="feedback", indexes={@ORM\Index(name="fk_feedback_episode", columns={"id_episode"}), @ORM\Index(name="fk_feedback_user", columns={"id_user"})})
- * @ORM\Entity
- */
+use App\Repository\FeedbackRepository;
+
+#[ORM\Entity(repositoryClass: FeedbackRepository::class)]
 class Feedback
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $id;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id_user", type="integer", nullable=false)
      */
-    private $idUser;
+    #[ORM\Column(name: 'id_user', type: 'integer', nullable: false)]
+    private int $idUser;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255, nullable=false)
      */
-    private $description;
+    #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: false)]
+    private string $description;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date", type="date", nullable=false)
+     * @var DateTime
      */
-    private $date;
+    #[ORM\Column(name: 'date', type: 'date', nullable: false)]
+    private DateTimeInterface $date;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id_episode", type="integer", nullable=false)
      */
-    private $idEpisode;
+    #[ORM\Column(name: 'id_episode', type: 'integer', nullable: false)]
+    private int $idEpisode;
 
     public function getId(): ?int
     {
@@ -79,12 +73,12 @@ class Feedback
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(DateTimeInterface $date): static
     {
         $this->date = $date;
 
@@ -102,6 +96,4 @@ class Feedback
 
         return $this;
     }
-
-
 }

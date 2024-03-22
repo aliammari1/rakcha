@@ -5,43 +5,36 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Actor
- *
- * @ORM\Table(name="actor")
- * @ORM\Entity
- */
+use App\Repository\ActorRepository;
+
+#[ORM\Entity(repositoryClass: ActorRepository::class)]
 class Actor
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=false)
      */
-    private $nom;
+    #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
+    private string $nom;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="image", type="text", length=0, nullable=false)
      */
-    private $image;
+    #[ORM\Column(name: 'image', type: 'text', length: 0, nullable: false)]
+    private string $image;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="biographie", type="text", length=0, nullable=false)
      */
-    private $biographie;
+    #[ORM\Column(name: 'biographie', type: 'text', length: 0, nullable: false)]
+    private string $biographie;
 
     public function getId(): ?int
     {
@@ -83,6 +76,4 @@ class Actor
 
         return $this;
     }
-
-
 }

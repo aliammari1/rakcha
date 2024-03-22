@@ -4,67 +4,55 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Episodes
- *
- * @ORM\Table(name="episodes", indexes={@ORM\Index(name="idserie", columns={"idserie"})})
- * @ORM\Entity
- */
+use App\Repository\EpisodesRepository;
+
+#[ORM\Entity(repositoryClass: EpisodesRepository::class)]
 class Episodes
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="idepisode", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idepisode;
+    #[ORM\Column(name: 'idepisode', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $idepisode;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="titre", type="string", length=30, nullable=false)
      */
-    private $titre;
+    #[ORM\Column(name: 'titre', type: 'string', length: 30, nullable: false)]
+    private string $titre;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="numeroepisode", type="integer", nullable=false)
      */
-    private $numeroepisode;
+    #[ORM\Column(name: 'numeroepisode', type: 'integer', nullable: false)]
+    private int $numeroepisode;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="saison", type="integer", nullable=false)
      */
-    private $saison;
+    #[ORM\Column(name: 'saison', type: 'integer', nullable: false)]
+    private int $saison;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="image", type="string", length=255, nullable=false)
      */
-    private $image;
+    #[ORM\Column(name: 'image', type: 'string', length: 255, nullable: false)]
+    private string $image;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="video", type="string", length=255, nullable=false)
      */
-    private $video;
+    #[ORM\Column(name: 'video', type: 'string', length: 255, nullable: false)]
+    private string $video;
 
     /**
-     * @var \Series
-     *
-     * @ORM\ManyToOne(targetEntity="Series")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="idserie", referencedColumnName="idserie")
-     * })
+     * @var Series
      */
-    private $idserie;
+    #[ORM\ManyToOne(targetEntity: Series::class)]
+    #[ORM\JoinColumn(name: 'idserie', referencedColumnName: 'idserie')]
+    private ?Series $idserie = null;
 
     public function getIdepisode(): ?int
     {
@@ -142,6 +130,4 @@ class Episodes
 
         return $this;
     }
-
-
 }

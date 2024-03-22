@@ -4,92 +4,78 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Series
- *
- * @ORM\Table(name="series", indexes={@ORM\Index(name="idcategorie", columns={"idcategorie"})})
- * @ORM\Entity
- */
+use App\Repository\SeriesRepository;
+
+#[ORM\Entity(repositoryClass: SeriesRepository::class)]
 class Series
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="idserie", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idserie;
+    #[ORM\Column(name: 'idserie', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $idserie;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=30, nullable=false)
      */
-    private $nom;
+    #[ORM\Column(name: 'nom', type: 'string', length: 30, nullable: false)]
+    private string $nom;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="resume", type="string", length=50, nullable=false)
      */
-    private $resume;
+    #[ORM\Column(name: 'resume', type: 'string', length: 50, nullable: false)]
+    private string $resume;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="directeur", type="string", length=50, nullable=false)
      */
-    private $directeur;
+    #[ORM\Column(name: 'directeur', type: 'string', length: 50, nullable: false)]
+    private string $directeur;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="pays", type="string", length=50, nullable=false)
      */
-    private $pays;
+    #[ORM\Column(name: 'pays', type: 'string', length: 50, nullable: false)]
+    private string $pays;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="image", type="string", length=255, nullable=false)
      */
-    private $image;
+    #[ORM\Column(name: 'image', type: 'string', length: 255, nullable: false)]
+    private string $image;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="liked", type="integer", nullable=false)
      */
-    private $liked;
+    #[ORM\Column(name: 'liked', type: 'integer', nullable: false)]
+    private int $liked;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="nbLikes", type="integer", nullable=false)
      */
-    private $nblikes;
+    #[ORM\Column(name: 'nbLikes', type: 'integer', nullable: false)]
+    private int $nblikes;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="disliked", type="integer", nullable=false)
      */
-    private $disliked;
+    #[ORM\Column(name: 'disliked', type: 'integer', nullable: false)]
+    private int $disliked;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="nbDislikes", type="integer", nullable=false)
      */
-    private $nbdislikes;
+    #[ORM\Column(name: 'nbDislikes', type: 'integer', nullable: false)]
+    private int $nbdislikes;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="idcategorie", type="integer", nullable=false)
      */
-    private $idcategorie;
+    #[ORM\Column(name: 'idcategorie', type: 'integer', nullable: false)]
+    private int $idcategorie;
 
     public function getIdserie(): ?int
     {
@@ -215,6 +201,4 @@ class Series
 
         return $this;
     }
-
-
 }

@@ -4,36 +4,30 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * CategorieEvenement
- *
- * @ORM\Table(name="categorie_evenement")
- * @ORM\Entity
- */
+use App\Repository\CategorieEvenementRepository;
+
+#[ORM\Entity(repositoryClass: CategorieEvenementRepository::class)]
 class CategorieEvenement
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    #[ORM\Column(name: 'ID', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Nom_categorie", type="string", length=500, nullable=false)
      */
-    private $nomCategorie;
+    #[ORM\Column(name: 'Nom_categorie', type: 'string', length: 500, nullable: false)]
+    private string $nomCategorie;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Description", type="string", length=500, nullable=false)
      */
-    private $description;
+    #[ORM\Column(name: 'Description', type: 'string', length: 500, nullable: false)]
+    private string $description;
 
     public function getId(): ?int
     {
@@ -63,6 +57,4 @@ class CategorieEvenement
 
         return $this;
     }
-
-
 }

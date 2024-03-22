@@ -4,50 +4,42 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Commentairecinema
- *
- * @ORM\Table(name="commentairecinema", indexes={@ORM\Index(name="fk_user", columns={"idclient"}), @ORM\Index(name="fk_cinema", columns={"idcinema"})})
- * @ORM\Entity
- */
+use App\Repository\CommentairecinemaRepository;
+
+#[ORM\Entity(repositoryClass: CommentairecinemaRepository::class)]
 class Commentairecinema
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $id;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="idclient", type="integer", nullable=false)
      */
-    private $idclient;
+    #[ORM\Column(name: 'idclient', type: 'integer', nullable: false)]
+    private int $idclient;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="idcinema", type="integer", nullable=false)
      */
-    private $idcinema;
+    #[ORM\Column(name: 'idcinema', type: 'integer', nullable: false)]
+    private int $idcinema;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="commentaire", type="string", length=5000, nullable=false)
      */
-    private $commentaire;
+    #[ORM\Column(name: 'commentaire', type: 'string', length: 5000, nullable: false)]
+    private string $commentaire;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="sentiment", type="string", length=50, nullable=false)
      */
-    private $sentiment;
+    #[ORM\Column(name: 'sentiment', type: 'string', length: 50, nullable: false)]
+    private string $sentiment;
 
     public function getId(): ?int
     {
@@ -101,6 +93,4 @@ class Commentairecinema
 
         return $this;
     }
-
-
 }

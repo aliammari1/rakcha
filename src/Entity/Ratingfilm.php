@@ -4,38 +4,32 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Ratingfilm
- *
- * @ORM\Table(name="ratingfilm", indexes={@ORM\Index(name="fk_user_ratin", columns={"id_user"}), @ORM\Index(name="fk_film_rating", columns={"id_film"})})
- * @ORM\Entity
- */
+use App\Repository\RatingfilmRepository;
+
+#[ORM\Entity(repositoryClass: RatingfilmRepository::class)]
 class Ratingfilm
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id_film", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $idFilm;
+    #[ORM\Column(name: 'id_film', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    private int $idFilm;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id_user", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $idUser;
+    #[ORM\Column(name: 'id_user', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    private int $idUser;
 
     /**
      * @var int|null
-     *
-     * @ORM\Column(name="rate", type="integer", nullable=true)
      */
-    private $rate;
+    #[ORM\Column(name: 'rate', type: 'integer', nullable: true)]
+    private ?int $rate = null;
 
     public function getIdFilm(): ?int
     {
@@ -58,6 +52,4 @@ class Ratingfilm
 
         return $this;
     }
-
-
 }

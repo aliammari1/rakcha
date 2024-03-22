@@ -5,36 +5,30 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Sponsor
- *
- * @ORM\Table(name="sponsor")
- * @ORM\Entity
- */
+use App\Repository\SponsorRepository;
+
+#[ORM\Entity(repositoryClass: SponsorRepository::class)]
 class Sponsor
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    #[ORM\Column(name: 'ID', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nomSociete", type="string", length=500, nullable=false)
      */
-    private $nomsociete;
+    #[ORM\Column(name: 'nomSociete', type: 'string', length: 500, nullable: false)]
+    private string $nomsociete;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Logo", type="blob", length=65535, nullable=false)
      */
-    private $logo;
+    #[ORM\Column(name: 'Logo', type: 'blob', length: 65535, nullable: false)]
+    private string $logo;
 
     public function getId(): ?int
     {
@@ -53,17 +47,15 @@ class Sponsor
         return $this;
     }
 
-    public function getLogo()
+    public function getLogo(): string
     {
         return $this->logo;
     }
 
-    public function setLogo($logo): static
+    public function setLogo(string $logo): static
     {
         $this->logo = $logo;
 
         return $this;
     }
-
-
 }

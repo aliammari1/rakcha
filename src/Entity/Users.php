@@ -2,128 +2,107 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Users
- *
- * @ORM\Table(name="users")
- * @ORM\Entity
- */
+use App\Repository\UsersRepository;
+
+#[ORM\Entity(repositoryClass: UsersRepository::class)]
 class Users
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=50, nullable=false)
      */
-    private $nom;
+    #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
+    private string $nom;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="prenom", type="string", length=50, nullable=false)
      */
-    private $prenom;
+    #[ORM\Column(name: 'prenom', type: 'string', length: 50, nullable: false)]
+    private string $prenom;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="num_telephone", type="integer", nullable=false)
      */
-    private $numTelephone;
+    #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: false)]
+    private int $numTelephone;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=50, nullable=false)
      */
-    private $password;
+    #[ORM\Column(name: 'password', type: 'string', length: 50, nullable: false)]
+    private string $password;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="role", type="string", length=50, nullable=false)
      */
-    private $role;
+    #[ORM\Column(name: 'role', type: 'string', length: 50, nullable: false)]
+    private string $role;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="adresse", type="string", length=50, nullable=true)
      */
-    private $adresse;
+    #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: true)]
+    private ?string $adresse = null;
 
     /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(name="date_de_naissance", type="date", nullable=true)
+     * @var DateTime|null
      */
-    private $dateDeNaissance;
+    #[ORM\Column(name: 'date_de_naissance', type: 'date', nullable: true)]
+    private ?DateTimeInterface $dateDeNaissance = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=50, nullable=false)
      */
-    private $email;
+    #[ORM\Column(name: 'email', type: 'string', length: 50, nullable: false)]
+    private string $email;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="photo_de_profil", type="blob", length=65535, nullable=true)
      */
-    private $photoDeProfil;
+    #[ORM\Column(name: 'photo_de_profil', type: 'blob', length: 65535, nullable: true)]
+    private ?string $photoDeProfil = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Cinema", mappedBy="idUser")
+     * @var Collection<int, Cinema>
      */
-    private $idCinema = array();
+    #[ORM\ManyToMany(targetEntity: Cinema::class, mappedBy: 'idUser')]
+    private Collection $idCinema;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Seance", inversedBy="idUser")
-     * @ORM\JoinTable(name="ticket",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_user", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_seance", referencedColumnName="id_seance")
-     *   }
-     * )
+     * @var Collection<int, Seance>
      */
-    private $idSeance = array();
+
+     #[ORM\ManyToMany(targetEntity: Seance::class, inversedBy: 'idUser')]
+    private Collection $idSeance;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Produit", mappedBy="idClient")
+     * @var Collection<int, Produit>
      */
-    private $idProduit = array();
+    #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'idClient')]
+    private Collection $idProduit;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idCinema = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idSeance = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->idProduit = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idCinema = new ArrayCollection();
+        $this->idSeance = new ArrayCollection();
+        $this->idProduit = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -203,12 +182,12 @@ class Users
         return $this;
     }
 
-    public function getDateDeNaissance(): ?\DateTimeInterface
+    public function getDateDeNaissance(): ?DateTimeInterface
     {
         return $this->dateDeNaissance;
     }
 
-    public function setDateDeNaissance(?\DateTimeInterface $dateDeNaissance): static
+    public function setDateDeNaissance(?DateTimeInterface $dateDeNaissance): static
     {
         $this->dateDeNaissance = $dateDeNaissance;
 
@@ -227,12 +206,12 @@ class Users
         return $this;
     }
 
-    public function getPhotoDeProfil()
+    public function getPhotoDeProfil(): ?string
     {
         return $this->photoDeProfil;
     }
 
-    public function setPhotoDeProfil($photoDeProfil): static
+    public function setPhotoDeProfil(?string $photoDeProfil): static
     {
         $this->photoDeProfil = $photoDeProfil;
 
@@ -316,5 +295,4 @@ class Users
 
         return $this;
     }
-
 }

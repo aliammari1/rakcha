@@ -2,60 +2,53 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Film
- *
- * @ORM\Table(name="film")
- * @ORM\Entity
- */
+use App\Repository\FilmRepository;
+
+#[ORM\Entity(repositoryClass: FilmRepository::class)]
 class Film
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=255, nullable=false)
      */
-    private $nom;
+    #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
+    private string $nom;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="image", type="text", length=0, nullable=true)
      */
-    private $image;
+    #[ORM\Column(name: 'image', type: 'text', length: 0, nullable: true)]
+    private ?string $image = null;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="duree", type="time", nullable=false)
+     * @var DateTime
      */
-    private $duree;
+    #[ORM\Column(name: 'duree', type: 'time', nullable: false)]
+    private DateTimeInterface $duree;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=0, nullable=false)
      */
-    private $description;
+    #[ORM\Column(name: 'description', type: 'text', length: 0, nullable: false)]
+    private string $description;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="annederalisation", type="integer", nullable=false)
      */
-    private $annederalisation;
+    #[ORM\Column(name: 'annederalisation', type: 'integer', nullable: false)]
+    private int $annederalisation;
 
     public function getId(): ?int
     {
@@ -86,12 +79,12 @@ class Film
         return $this;
     }
 
-    public function getDuree(): ?\DateTimeInterface
+    public function getDuree(): ?DateTimeInterface
     {
         return $this->duree;
     }
 
-    public function setDuree(\DateTimeInterface $duree): static
+    public function setDuree(DateTimeInterface $duree): static
     {
         $this->duree = $duree;
 
@@ -121,6 +114,4 @@ class Film
 
         return $this;
     }
-
-
 }
