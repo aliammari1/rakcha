@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -92,6 +95,122 @@ class Seance
     public function __construct()
     {
         $this->idUser = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function getIdSeance(): ?int
+    {
+        return $this->idSeance;
+    }
+
+    public function getHd(): ?\DateTimeInterface
+    {
+        return $this->hd;
+    }
+
+    public function setHd(\DateTimeInterface $hd): static
+    {
+        $this->hd = $hd;
+
+        return $this;
+    }
+
+    public function getHf(): ?\DateTimeInterface
+    {
+        return $this->hf;
+    }
+
+    public function setHf(\DateTimeInterface $hf): static
+    {
+        $this->hf = $hf;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): static
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    public function getPrix(): ?float
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(float $prix): static
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getIdCinema(): ?Cinema
+    {
+        return $this->idCinema;
+    }
+
+    public function setIdCinema(?Cinema $idCinema): static
+    {
+        $this->idCinema = $idCinema;
+
+        return $this;
+    }
+
+    public function getIdFilm(): ?Film
+    {
+        return $this->idFilm;
+    }
+
+    public function setIdFilm(?Film $idFilm): static
+    {
+        $this->idFilm = $idFilm;
+
+        return $this;
+    }
+
+    public function getIdSalle(): ?Salle
+    {
+        return $this->idSalle;
+    }
+
+    public function setIdSalle(?Salle $idSalle): static
+    {
+        $this->idSalle = $idSalle;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Users>
+     */
+    public function getIdUser(): Collection
+    {
+        return $this->idUser;
+    }
+
+    public function addIdUser(Users $idUser): static
+    {
+        if (!$this->idUser->contains($idUser)) {
+            $this->idUser->add($idUser);
+            $idUser->addIdSeance($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdUser(Users $idUser): static
+    {
+        if ($this->idUser->removeElement($idUser)) {
+            $idUser->removeIdSeance($this);
+        }
+
+        return $this;
     }
 
 }
