@@ -4,49 +4,38 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Commandeitem
- *
- * @ORM\Table(name="commandeitem", indexes={@ORM\Index(name="fk_produit", columns={"id_produit"}), @ORM\Index(name="fk_commande", columns={"idCommande"})})
- * @ORM\Entity
- */
+use App\Repository\CommandeitemRepository;
+
+#[ORM\Entity(repositoryClass: CommandeitemRepository::class)]
 class Commandeitem
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="idCommandeItem", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idcommandeitem;
+    #[ORM\Column(name: 'idCommandeItem', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $idcommandeitem;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="quantity", type="integer", nullable=false)
      */
-    private $quantity;
+    #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
+    private int $quantity;
 
     /**
-     * @var \Commande
-     *
-     * @ORM\ManyToOne(targetEntity="Commande")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="idCommande", referencedColumnName="idCommande")
-     * })
+     * @var Commande
      */
-    private $idcommande;
+    #[ORM\ManyToOne(targetEntity: Commande::class)]
+    #[ORM\JoinColumn(name: 'idCommande', referencedColumnName: 'idCommande')]
+    private ?Commande $idcommande = null;
 
     /**
-     * @var \Produit
-     *
-     * @ORM\ManyToOne(targetEntity="Produit")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_produit", referencedColumnName="id_produit")
-     * })
+     * @var Produit
      */
-    private $idProduit;
+    #[ORM\ManyToOne(targetEntity: Produit::class)]
+    #[ORM\JoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
+    private ?Produit $idProduit = null;
 
     public function getIdcommandeitem(): ?int
     {
@@ -88,6 +77,4 @@ class Commandeitem
 
         return $this;
     }
-
-
 }

@@ -7,89 +7,71 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Produit
- *
- * @ORM\Table(name="produit", indexes={@ORM\Index(name="fk_categories", columns={"id_categorieProduit"})})
- * @ORM\Entity
- */
+use App\Repository\ProduitRepository;
+
+#[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id_produit", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idProduit;
+    #[ORM\Column(name: 'id_produit', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $idProduit;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=50, nullable=false)
      */
-    private $nom;
+    #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
+    private string $nom;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="prix", type="integer", nullable=false)
      */
-    private $prix;
+    #[ORM\Column(name: 'prix', type: 'integer', nullable: false)]
+    private int $prix;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="image", type="blob", length=65535, nullable=false)
      */
-    private $image;
+    #[ORM\Column(name: 'image', type: 'blob', length: 65535, nullable: false)]
+    private string $image;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=100, nullable=false)
      */
-    private $description;
+    #[ORM\Column(name: 'description', type: 'string', length: 100, nullable: false)]
+    private string $description;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="quantiteP", type="integer", nullable=false)
      */
-    private $quantitep;
+    #[ORM\Column(name: 'quantiteP', type: 'integer', nullable: false)]
+    private int $quantitep;
 
     /**
-     * @var \CategorieProduit
-     *
-     * @ORM\ManyToOne(targetEntity="CategorieProduit")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_categorieProduit", referencedColumnName="id_categorie")
-     * })
+     * @var CategorieProduit
      */
-    private $idCategorieproduit;
+    #[ORM\ManyToOne(targetEntity: CategorieProduit::class)]
+    #[ORM\JoinColumn(name: 'id_categorieProduit', referencedColumnName: 'id_categorie')]
+    private ?CategorieProduit $idCategorieproduit = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Users", inversedBy="idProduit")
-     * @ORM\JoinTable(name="panier",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_produit", referencedColumnName="id_produit")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_client", referencedColumnName="id")
-     *   }
-     * )
+     * @var Collection<int, Users>
      */
-    private $idClient = array();
+    #[ORM\JoinTable(name: 'panier')]
+    #[ORM\JoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
+    #[ORM\InverseJoinColumn(name: 'id_client', referencedColumnName: 'id')]
+    #[ORM\ManyToMany(targetEntity: Users::class, inversedBy: 'idProduit')]
+    private Collection $idClient;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idClient = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idClient = new ArrayCollection();
     }
 
     public function getIdProduit(): ?int
@@ -121,12 +103,12 @@ class Produit
         return $this;
     }
 
-    public function getImage()
+    public function getImage(): string
     {
         return $this->image;
     }
 
-    public function setImage($image): static
+    public function setImage(string $image): static
     {
         $this->image = $image;
 
@@ -192,5 +174,4 @@ class Produit
 
         return $this;
     }
-
 }

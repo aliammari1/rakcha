@@ -2,99 +2,83 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Seance
- *
- * @ORM\Table(name="seance", indexes={@ORM\Index(name="fk_salle_seance", columns={"id_salle"}), @ORM\Index(name="fk_cinema_seance", columns={"id_cinema"}), @ORM\Index(name="fk_film_seance", columns={"id_film"})})
- * @ORM\Entity
- */
+use App\Repository\SeanceRepository;
+
+#[ORM\Entity(repositoryClass: SeanceRepository::class)]
 class Seance
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id_seance", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idSeance;
+    #[ORM\Column(name: 'id_seance', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $idSeance;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="HD", type="time", nullable=false)
+     * @var DateTime
      */
-    private $hd;
+    #[ORM\Column(name: 'HD', type: 'time', nullable: false)]
+    private DateTimeInterface $hd;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="HF", type="time", nullable=false)
+     * @var DateTime
      */
-    private $hf;
+    #[ORM\Column(name: 'HF', type: 'time', nullable: false)]
+    private DateTimeInterface $hf;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="date", type="date", nullable=false)
+     * @var DateTime
      */
-    private $date;
+    #[ORM\Column(name: 'date', type: 'date', nullable: false)]
+    private DateTimeInterface $date;
 
     /**
      * @var float
-     *
-     * @ORM\Column(name="prix", type="float", precision=10, scale=0, nullable=false)
      */
-    private $prix;
+    #[ORM\Column(name: 'prix', type: 'float', precision: 10, scale: 0, nullable: false)]
+    private float $prix;
 
     /**
-     * @var \Cinema
-     *
-     * @ORM\ManyToOne(targetEntity="Cinema")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_cinema", referencedColumnName="id_cinema")
-     * })
+     * @var Cinema
      */
-    private $idCinema;
+    #[ORM\ManyToOne(targetEntity: Cinema::class)]
+    #[ORM\JoinColumn(name: 'id_cinema', referencedColumnName: 'id_cinema')]
+    private ?Cinema $idCinema = null;
 
     /**
-     * @var \Film
-     *
-     * @ORM\ManyToOne(targetEntity="Film")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_film", referencedColumnName="id")
-     * })
+     * @var Film
      */
-    private $idFilm;
+    #[ORM\ManyToOne(targetEntity: Film::class)]
+    #[ORM\JoinColumn(name: 'id_film', referencedColumnName: 'id')]
+    private ?Film $idFilm = null;
 
     /**
-     * @var \Salle
-     *
-     * @ORM\ManyToOne(targetEntity="Salle")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_salle", referencedColumnName="id_salle")
-     * })
+     * @var Salle
      */
-    private $idSalle;
+    #[ORM\ManyToOne(targetEntity: Salle::class)]
+    #[ORM\JoinColumn(name: 'id_salle', referencedColumnName: 'id_salle')]
+    private ?Salle $idSalle = null;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Users", mappedBy="idSeance")
+     * @var Collection<int, Users>
      */
-    private $idUser = array();
+    #[ORM\ManyToMany(targetEntity: Users::class, mappedBy: 'idSeance')]
+    private Collection $idUser;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idUser = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idUser = new ArrayCollection();
     }
 
     public function getIdSeance(): ?int
@@ -102,36 +86,36 @@ class Seance
         return $this->idSeance;
     }
 
-    public function getHd(): ?\DateTimeInterface
+    public function getHd(): ?DateTimeInterface
     {
         return $this->hd;
     }
 
-    public function setHd(\DateTimeInterface $hd): static
+    public function setHd(DateTimeInterface $hd): static
     {
         $this->hd = $hd;
 
         return $this;
     }
 
-    public function getHf(): ?\DateTimeInterface
+    public function getHf(): ?DateTimeInterface
     {
         return $this->hf;
     }
 
-    public function setHf(\DateTimeInterface $hf): static
+    public function setHf(DateTimeInterface $hf): static
     {
         $this->hf = $hf;
 
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(DateTimeInterface $date): static
     {
         $this->date = $date;
 
@@ -212,5 +196,4 @@ class Seance
 
         return $this;
     }
-
 }

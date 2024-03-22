@@ -2,84 +2,72 @@
 
 namespace App\Entity;
 
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Evenement
- *
- * @ORM\Table(name="evenement", indexes={@ORM\Index(name="clé secondaire", columns={"id_categorie"})})
- * @ORM\Entity
- */
+use App\Repository\EvenementRepository;
+
+#[ORM\Entity(repositoryClass: EvenementRepository::class)]
 class Evenement
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="ID", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    #[ORM\Column(name: 'ID', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=500, nullable=false)
      */
-    private $nom;
+    #[ORM\Column(name: 'nom', type: 'string', length: 500, nullable: false)]
+    private string $nom;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateDebut", type="date", nullable=false)
+     * @var DateTime
      */
-    private $datedebut;
+    #[ORM\Column(name: 'dateDebut', type: 'date', nullable: false)]
+    private DateTimeInterface $datedebut;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateFin", type="date", nullable=false)
+     * @var DateTime
      */
-    private $datefin;
+    #[ORM\Column(name: 'dateFin', type: 'date', nullable: false)]
+    private DateTimeInterface $datefin;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="lieu", type="string", length=500, nullable=false)
      */
-    private $lieu;
+    #[ORM\Column(name: 'lieu', type: 'string', length: 500, nullable: false)]
+    private string $lieu;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="etat", type="string", length=500, nullable=false)
      */
-    private $etat;
+    #[ORM\Column(name: 'etat', type: 'string', length: 500, nullable: false)]
+    private string $etat;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=500, nullable=false)
      */
-    private $description;
+    #[ORM\Column(name: 'description', type: 'string', length: 500, nullable: false)]
+    private string $description;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="affiche_event", type="blob", length=65535, nullable=false)
      */
-    private $afficheEvent;
+    #[ORM\Column(name: 'affiche_event', type: 'blob', length: 65535, nullable: false)]
+    private string $afficheEvent;
 
     /**
-     * @var \CategorieEvenement
-     *
-     * @ORM\ManyToOne(targetEntity="CategorieEvenement")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_categorie", referencedColumnName="ID")
-     * })
+     * @var CategorieEvenement
      */
-    private $idCategorie;
+    #[ORM\ManyToOne(targetEntity: CategorieEvenement::class)]
+    #[ORM\JoinColumn(name: 'id_categorie', referencedColumnName: 'ID')]
+    private ?CategorieEvenement $idCategorie = null;
 
     public function getId(): ?int
     {
@@ -98,24 +86,24 @@ class Evenement
         return $this;
     }
 
-    public function getDatedebut(): ?\DateTimeInterface
+    public function getDatedebut(): ?DateTimeInterface
     {
         return $this->datedebut;
     }
 
-    public function setDatedebut(\DateTimeInterface $datedebut): static
+    public function setDatedebut(DateTimeInterface $datedebut): static
     {
         $this->datedebut = $datedebut;
 
         return $this;
     }
 
-    public function getDatefin(): ?\DateTimeInterface
+    public function getDatefin(): ?DateTimeInterface
     {
         return $this->datefin;
     }
 
-    public function setDatefin(\DateTimeInterface $datefin): static
+    public function setDatefin(DateTimeInterface $datefin): static
     {
         $this->datefin = $datefin;
 
@@ -158,12 +146,12 @@ class Evenement
         return $this;
     }
 
-    public function getAfficheEvent()
+    public function getAfficheEvent(): string
     {
         return $this->afficheEvent;
     }
 
-    public function setAfficheEvent($afficheEvent): static
+    public function setAfficheEvent(string $afficheEvent): static
     {
         $this->afficheEvent = $afficheEvent;
 
@@ -181,6 +169,4 @@ class Evenement
 
         return $this;
     }
-
-
 }

@@ -4,39 +4,31 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Commentaire
- *
- * @ORM\Table(name="commentaire", indexes={@ORM\Index(name="fk_clients_comment_1", columns={"idClient"})})
- * @ORM\Entity
- */
+use App\Repository\CommentaireRepository;
+
+#[ORM\Entity(repositoryClass: CommentaireRepository::class)]
 class Commentaire
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="idcommentaire", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idcommentaire;
+    #[ORM\Column(name: 'idcommentaire', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $idcommentaire;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="commentaire", type="string", length=1000, nullable=false)
      */
-    private $commentaire;
+    #[ORM\Column(name: 'commentaire', type: 'string', length: 1000, nullable: false)]
+    private string $commentaire;
 
     /**
-     * @var \Users
-     *
-     * @ORM\ManyToOne(targetEntity="Users")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="idClient", referencedColumnName="id")
-     * })
+     * @var Users
      */
-    private $idclient;
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(name: 'idClient', referencedColumnName: 'id')]
+    private ?Users $idclient = null;
 
     public function getIdcommentaire(): ?int
     {
@@ -66,6 +58,4 @@ class Commentaire
 
         return $this;
     }
-
-
 }

@@ -7,79 +7,64 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Cinema
- *
- * @ORM\Table(name="cinema")
- * @ORM\Entity
- */
+use App\Repository\CinemaRepository;
+
+#[ORM\Entity(repositoryClass: CinemaRepository::class)]
 class Cinema
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id_cinema", type="integer", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idCinema;
+    #[ORM\Column(name: 'id_cinema', type: 'integer', nullable: false)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private int $idCinema;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nom", type="string", length=50, nullable=false)
      */
-    private $nom;
+    #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
+    private string $nom;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="adresse", type="string", length=100, nullable=false)
      */
-    private $adresse;
+    #[ORM\Column(name: 'adresse', type: 'string', length: 100, nullable: false)]
+    private string $adresse;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="responsable", type="integer", nullable=false)
      */
-    private $responsable;
+    #[ORM\Column(name: 'responsable', type: 'integer', nullable: false)]
+    private int $responsable;
 
     /**
      * @var string|null
-     *
-     * @ORM\Column(name="logo", type="text", length=0, nullable=true)
      */
-    private $logo;
+    #[ORM\Column(name: 'logo', type: 'text', length: 0, nullable: true)]
+    private ?string $logo = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Statut", type="string", length=50, nullable=false)
      */
-    private $statut;
+    #[ORM\Column(name: 'Statut', type: 'string', length: 50, nullable: false)]
+    private string $statut;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Users", inversedBy="idCinema")
-     * @ORM\JoinTable(name="ratingcinema",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="id_cinema", referencedColumnName="id_cinema")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="id_user", referencedColumnName="id")
-     *   }
-     * )
+     * @var Collection<int, Users>
      */
-    private $idUser = array();
+    #[ORM\JoinTable(name: 'ratingcinema')]
+    #[ORM\JoinColumn(name: 'id_cinema', referencedColumnName: 'id_cinema')]
+    #[ORM\InverseJoinColumn(name: 'id_user', referencedColumnName: 'id')]
+    #[ORM\ManyToMany(targetEntity: Users::class, inversedBy: 'idCinema')]
+    private Collection $idUser;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->idUser = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->idUser = new ArrayCollection();
     }
 
     public function getIdCinema(): ?int
@@ -170,5 +155,4 @@ class Cinema
 
         return $this;
     }
-
 }
