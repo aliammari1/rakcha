@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Feedback{% endblock %}
+
+{% block body %}
+    <h1>Create new Feedback</h1>
+
+    {{ include('feedback/_form.html.twig') }}
+
+    <a href="{{ path('app_feedback_index') }}">back to list</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Feedback{% endblock %}
+
+{% block body %}
+    <h1>Edit Feedback</h1>
+
+    {{ include('feedback/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_feedback_index') }}">back to list</a>
+
+    {{ include('feedback/_delete_form.html.twig') }}
+{% endblock %}

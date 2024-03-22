@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New FeedbackEvenement{% endblock %}
+
+{% block body %}
+    <h1>Create new FeedbackEvenement</h1>
+
+    {{ include('feedback_evenement/_form.html.twig') }}
+
+    <a href="{{ path('app_feedback_evenement_index') }}">back to list</a>
+{% endblock %}

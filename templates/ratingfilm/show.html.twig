@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ratingfilm{% endblock %}
+
+{% block body %}
+    <h1>Ratingfilm</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>IdFilm</th>
+                <td>{{ ratingfilm.idFilm }}</td>
+            </tr>
+            <tr>
+                <th>IdUser</th>
+                <td>{{ ratingfilm.idUser }}</td>
+            </tr>
+            <tr>
+                <th>Rate</th>
+                <td>{{ ratingfilm.rate }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_ratingfilm_index') }}">back to list</a>
+
+    <a href="{{ path('app_ratingfilm_edit', {'idFilm': ratingfilm.idFilm}) }}">edit</a>
+
+    {{ include('ratingfilm/_delete_form.html.twig') }}
+{% endblock %}

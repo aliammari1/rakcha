@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FeedbackEvenement{% endblock %}
+
+{% block body %}
+    <h1>FeedbackEvenement</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ feedback_evenement.id }}</td>
+            </tr>
+            <tr>
+                <th>Commentaire</th>
+                <td>{{ feedback_evenement.commentaire }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_feedback_evenement_index') }}">back to list</a>
+
+    <a href="{{ path('app_feedback_evenement_edit', {'id': feedback_evenement.id}) }}">edit</a>
+
+    {{ include('feedback_evenement/_delete_form.html.twig') }}
+{% endblock %}

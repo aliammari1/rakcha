@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Commandeitem{% endblock %}
+
+{% block body %}
+    <h1>Create new Commandeitem</h1>
+
+    {{ include('commandeitem/_form.html.twig') }}
+
+    <a href="{{ path('app_commandeitem_index') }}">back to list</a>
+{% endblock %}
