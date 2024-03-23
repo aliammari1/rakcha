@@ -27,7 +27,7 @@ class Sponsor
     /**
      * @var string
      */
-    #[ORM\Column(name: 'Logo', type: 'blob', length: 65535, nullable: false)]
+    #[ORM\Column(name: 'Logo', type: 'string', length: 65535, nullable: false)]
     private string $logo;
 
     public function getId(): ?int

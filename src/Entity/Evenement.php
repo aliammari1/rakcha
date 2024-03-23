@@ -59,7 +59,7 @@ class Evenement
     /**
      * @var string
      */
-    #[ORM\Column(name: 'affiche_event', type: 'blob', length: 65535, nullable: false)]
+    #[ORM\Column(name: 'affiche_event', type: 'string', length: 500, nullable: false)]
     private string $afficheEvent;
 
     /**

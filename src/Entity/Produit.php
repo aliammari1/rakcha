@@ -35,7 +35,7 @@ class Produit
     /**
      * @var string
      */
-    #[ORM\Column(name: 'image', type: 'blob', length: 65535, nullable: false)]
+    #[ORM\Column(name: 'image', type: 'string', length: 65535, nullable: false)]
     private string $image;
 
     /**

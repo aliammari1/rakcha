@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Users;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,13 +19,12 @@ class UsersType extends AbstractType
             ->add('password')
             ->add('role')
             ->add('adresse')
-            ->add('dateDeNaissance')
+            ->add('dateDeNaissance', DateType::class, [
+                'widget' => 'single_text',
+                'format' => 'yyyy-MM-dd',
+            ])
             ->add('email')
-            ->add('photoDeProfil')
-            ->add('idCinema')
-            ->add('idSeance')
-            ->add('idProduit')
-        ;
+            ->add('photoDeProfil');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

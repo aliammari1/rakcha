@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 use App\Repository\ActorfilmRepository;
+
 #[ORM\Entity(repositoryClass: ActorfilmRepository::class)]
 class Actorfilm
 {

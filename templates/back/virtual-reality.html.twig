@@ -4,7 +4,7 @@
 	<body class="g-sidenav-show  bg-gray-100 virtual-reality">
 		<div>
 			<!-- Navbar -->
-			<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl  mt-3 mx-3 bg-primary" id="navbarBlur" data-scroll="false">
+			<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl  mt-3 mx-3 bg-danger" id="navbarBlur" data-scroll="false">
 				<div class="container-fluid py-1 px-3">
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
@@ -141,7 +141,7 @@
 						<li class="nav-item">
 							<a class="nav-link " href="../pages/dashboard.html.twig">
 								<div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-									<i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+									<i class="ni ni-tv-2 text-danger text-sm opacity-10"></i>
 								</div>
 								<span class="nav-link-text ms-1">Dashboard</span>
 							</a>
@@ -218,7 +218,7 @@
 						</div>
 					</div>
 					<a href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard" target="_blank" class="btn btn-dark btn-sm w-100 mb-3">Documentation</a>
-					<a class="btn btn-primary btn-sm mb-0 w-100" href="https://www.creative-tim.com/product/argon-dashboard-pro?ref=sidebarfree" type="button">Upgrade to pro</a>
+					<a class="btn btn-danger btn-sm mb-0 w-100" href="https://www.creative-tim.com/product/argon-dashboard-pro?ref=sidebarfree" type="button">Upgrade to pro</a>
 				</div>
 			</aside>
 			<main class="main-content mt-1 border-radius-lg">
@@ -276,7 +276,7 @@
 												</div>
 											</div>
 											<a href="javascript:;" class="bg-gray-100 w-100 text-center py-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Show More">
-												<i class="fas fa-chevron-down text-primary"></i>
+												<i class="fas fa-chevron-down text-danger"></i>
 											</a>
 										</div>
 									</div>
@@ -309,7 +309,7 @@
 										</div>
 									</div>
 									<div class="col-lg-4 col-md-4 mt-4 mt-sm-0">
-										<div class="card card-background card-background-mask-primary move-on-hover align-items-start">
+										<div class="card card-background card-background-mask-danger move-on-hover align-items-start">
 											<div class="cursor-pointer">
 												<div class="full-background" style="background-image: url('https://images.unsplash.com/photo-1518609878373-06d740f60d8b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2370&q=80')"></div>
 												<div class="card-body">
@@ -360,41 +360,7 @@
 				</div>
 			</main>
 		</div>
-		<footer class="footer pt-3  ">
-			<div class="container-fluid">
-				<div class="row align-items-center justify-content-lg-between">
-					<div class="col-lg-6 mb-lg-0 mb-4">
-						<div class="copyright text-center text-sm text-muted text-lg-start">
-							©
-							<script>
-								document.write(new Date().getFullYear())
-							</script>,
-																																																																								            made with
-							<i class="fa fa-heart"></i>
-							by
-							<a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
-							for a better web.
-						</div>
-					</div>
-					<div class="col-lg-6">
-						<ul class="nav nav-footer justify-content-center justify-content-lg-end">
-							<li class="nav-item">
-								<a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-							</li>
-							<li class="nav-item">
-								<a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
-							</li>
-							<li class="nav-item">
-								<a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-							</li>
-							<li class="nav-item">
-								<a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</footer>
+		{{ block('footer') }}
 		<div class="fixed-plugin">
 			<a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
 				<i class="fa fa-cog py-2"></i>
@@ -421,7 +387,7 @@
 					</div>
 					<a href="javascript:void(0)" class="switch-trigger background-color">
 						<div class="badge-colors my-2 text-start">
-							<span class="badge filter bg-gradient-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
+							<span class="badge filter bg-gradient-danger active" data-color="danger" onclick="sidebarColor(this)"></span>
 							<span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
 							<span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
 							<span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
@@ -435,8 +401,8 @@
 						<p class="text-sm">Choose between 2 different sidenav types.</p>
 					</div>
 					<div class="d-flex">
-						<button class="btn bg-gradient-primary w-100 px-3 mb-2 active me-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
-						<button class="btn bg-gradient-primary w-100 px-3 mb-2" data-class="bg-default" onclick="sidebarType(this)">Dark</button>
+						<button class="btn bg-gradient-danger w-100 px-3 mb-2 active me-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
+						<button class="btn bg-gradient-danger w-100 px-3 mb-2" data-class="bg-default" onclick="sidebarType(this)">Dark</button>
 					</div>
 					<p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
 					<!-- Navbar Fixed -->

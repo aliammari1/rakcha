@@ -15,10 +15,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class UsersController extends AbstractController
 {
     #[Route('/', name: 'app_users_index', methods: ['GET'])]
-    public function index(UsersRepository $usersRepository): Response
+    public function index(UsersRepository $usersRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('users/index.html.twig', [
+        // $user = new Users();
+        // $form = $this->createForm(UsersType::class, $user);
+        // $form->handleRequest($request);
+
+        // if ($form->isSubmitted() && $form->isValid()) {
+        //     $entityManager->persist($user);
+        //     $entityManager->flush();
+
+        //     return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
+        // }
+        return $this->render('front/team.html.twig', [
             'users' => $usersRepository->findAll(),
+            // 'form' => $form->createView(),
         ]);
     }
 
@@ -71,7 +82,7 @@ class UsersController extends AbstractController
     #[Route('/{id}', name: 'app_users_delete', methods: ['POST'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
         }

@@ -17,7 +17,7 @@ class CinemaController extends AbstractController
     #[Route('/', name: 'app_cinema_index', methods: ['GET'])]
     public function index(CinemaRepository $cinemaRepository): Response
     {
-        return $this->render('cinema/index.html.twig', [
+        return $this->render('back/tables.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
         ]);
     }
