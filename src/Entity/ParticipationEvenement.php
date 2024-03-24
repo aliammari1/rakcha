@@ -27,5 +27,46 @@ class ParticipationEvenement
     #[ORM\JoinColumn(name: 'id_evenement', referencedColumnName: 'ID')]
     private ?Evenement $idEvenement = null;
 
+    public function getIdParticipation(): ?int
+    {
+        return $this->idParticipation;
+    }
+
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
+
+    public function setIdUser(int $idUser): static
+    {
+        $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): static
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getIdEvenement(): ?Evenement
+    {
+        return $this->idEvenement;
+    }
+
+    public function setIdEvenement(?Evenement $idEvenement): static
+    {
+        $this->idEvenement = $idEvenement;
+
+        return $this;
+    }
+
 
 }

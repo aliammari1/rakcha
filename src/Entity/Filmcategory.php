@@ -23,5 +23,15 @@ class Filmcategory
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $categoryId;
 
+    public function getFilmId(): ?int
+    {
+        return $this->filmId;
+    }
+
+    public function getCategoryId(): ?int
+    {
+        return $this->categoryId;
+    }
+
 
 }

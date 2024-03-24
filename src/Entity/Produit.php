@@ -58,4 +58,105 @@ class Produit
         $this->idClient = new ArrayCollection();
     }
 
+    public function getIdProduit(): ?int
+    {
+        return $this->idProduit;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrix(): ?int
+    {
+        return $this->prix;
+    }
+
+    public function setPrix(int $prix): static
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getQuantitep(): ?int
+    {
+        return $this->quantitep;
+    }
+
+    public function setQuantitep(int $quantitep): static
+    {
+        $this->quantitep = $quantitep;
+
+        return $this;
+    }
+
+    public function getIdCategorieproduit(): ?CategorieProduit
+    {
+        return $this->idCategorieproduit;
+    }
+
+    public function setIdCategorieproduit(?CategorieProduit $idCategorieproduit): static
+    {
+        $this->idCategorieproduit = $idCategorieproduit;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Users>
+     */
+    public function getIdClient(): Collection
+    {
+        return $this->idClient;
+    }
+
+    public function addIdClient(Users $idClient): static
+    {
+        if (!$this->idClient->contains($idClient)) {
+            $this->idClient->add($idClient);
+        }
+
+        return $this;
+    }
+
+    public function removeIdClient(Users $idClient): static
+    {
+        $this->idClient->removeElement($idClient);
+
+        return $this;
+    }
+
 }

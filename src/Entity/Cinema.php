@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CinemaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -47,6 +48,95 @@ class Cinema
     public function __construct()
     {
         $this->idUser = new ArrayCollection();
+    }
+
+    public function getIdCinema(): ?int
+    {
+        return $this->idCinema;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(string $adresse): static
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getResponsable(): ?int
+    {
+        return $this->responsable;
+    }
+
+    public function setResponsable(int $responsable): static
+    {
+        $this->responsable = $responsable;
+
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?string $logo): static
+    {
+        $this->logo = $logo;
+
+        return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Users>
+     */
+    public function getIdUser(): Collection
+    {
+        return $this->idUser;
+    }
+
+    public function addIdUser(Users $idUser): static
+    {
+        if (!$this->idUser->contains($idUser)) {
+            $this->idUser->add($idUser);
+        }
+
+        return $this;
+    }
+
+    public function removeIdUser(Users $idUser): static
+    {
+        $this->idUser->removeElement($idUser);
+
+        return $this;
     }
 
 }

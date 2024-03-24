@@ -28,5 +28,46 @@ class FeedbackEvenement
     #[ORM\JoinColumn(name: 'id_evenement', referencedColumnName: 'ID')]
     private ?Evenement $idEvenement = null;
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(string $commentaire): static
+    {
+        $this->commentaire = $commentaire;
+
+        return $this;
+    }
+
+    public function getIdUser(): ?Users
+    {
+        return $this->idUser;
+    }
+
+    public function setIdUser(?Users $idUser): static
+    {
+        $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    public function getIdEvenement(): ?Evenement
+    {
+        return $this->idEvenement;
+    }
+
+    public function setIdEvenement(?Evenement $idEvenement): static
+    {
+        $this->idEvenement = $idEvenement;
+
+        return $this;
+    }
+
 
 }

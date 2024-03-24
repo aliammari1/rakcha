@@ -26,5 +26,27 @@ class Ratingfilm
     #[ORM\Column(name: 'rate', type: 'integer', nullable: true)]
     private ?int $rate = null;
 
+    public function getIdFilm(): ?int
+    {
+        return $this->idFilm;
+    }
+
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
+
+    public function getRate(): ?int
+    {
+        return $this->rate;
+    }
+
+    public function setRate(?int $rate): static
+    {
+        $this->rate = $rate;
+
+        return $this;
+    }
+
 
 }

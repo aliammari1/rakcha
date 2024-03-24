@@ -21,5 +21,34 @@ class Sponsor
     #[ORM\Column(name: 'Logo', type: 'string', length: 255, nullable: false)]
     private string $logo;
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNomsociete(): ?string
+    {
+        return $this->nomsociete;
+    }
+
+    public function setNomsociete(string $nomsociete): static
+    {
+        $this->nomsociete = $nomsociete;
+
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(string $logo): static
+    {
+        $this->logo = $logo;
+
+        return $this;
+    }
+
 
 }
