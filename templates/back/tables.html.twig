@@ -136,7 +136,7 @@
 						<div class="card-header pb-0 d-flex justify-content-between">
 							<h6>Authors table</h6>
 							<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-								Launch demo modal
+								Create
 							</button>
 						</div>
 						<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -147,7 +147,7 @@
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
-										{{ form_start(form) }}
+										{{ form_start(form, {'action': path('app_users_new')}) }}
 
 										{% for field in form %}
 											<div class="mb-3">
@@ -182,7 +182,8 @@
 										</tr>
 									</thead>
 									<tbody>
-										{% for user in users %}
+										{% for i in range(0, users|length - 1) %}
+											{% set user = users[i] %}
 											<tr>
 												<td>
 													<div class="d-flex px-2 py-1">
@@ -206,9 +207,44 @@
 													<span class="text-secondary text-xs font-weight-bold">{{ user.dateDeNaissance|date('d/m/Y') }}</span>
 												</td>
 												<td class="align-middle">
-													<a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Delete user">
-														Delete
-													</a>
+													<form method="post" action="{{ path('app_users_delete', {'id': user.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+														<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+														<button class="btn">Delete</button>
+													</form>
+												</td>
+												<td class="align-middle">
+													<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i}}">
+														Edit
+													</button>
+													<div class="modal fade" id="staticBackdrop{{i}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+														<div class="modal-dialog">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+																	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+																</div>
+																<div class="modal-body">
+																	{{ form_start(updateForms[i], {'action': path('app_users_edit', {'id': user.id})}) }}
+
+																	{% for field in updateForms[i] %}
+																		<div class="mb-3">
+																			{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
+																			{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+																			{{ form_errors(field) }}
+																		</div>
+																	{% endfor %}
+
+																	<button class="btn">{{ button_label|default('Save') }}</button>
+
+																	{{ form_end(updateForms[i]) }}
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+																	<button type="button" class="btn btn-primary">Understood</button>
+																</div>
+															</div>
+														</div>
+													</div>
 												</td>
 											</tr>
 										{% endfor %}
