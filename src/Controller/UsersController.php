@@ -14,22 +14,18 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/users')]
 class UsersController extends AbstractController
 {
-    #[Route('/', name: 'app_users_index', methods: ['GET'])]
+    #[Route('/', name: 'app_users_index', methods: ['GET', 'POST'])]
     public function index(UsersRepository $usersRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        // $user = new Users();
-        // $form = $this->createForm(UsersType::class, $user);
-        // $form->handleRequest($request);
-
-        // if ($form->isSubmitted() && $form->isValid()) {
-        //     $entityManager->persist($user);
-        //     $entityManager->flush();
-
-        //     return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
-        // }
-        return $this->render('front/team.html.twig', [
+        $form = $this->createForm(UsersType::class, new Users());
+        $updateForms = array();
+        for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(UsersType::class, $usersRepository->findAll()[$i])->createView();
+        }
+        return $this->render('back/tables.html.twig', [
             'users' => $usersRepository->findAll(),
-            // 'form' => $form->createView(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
         ]);
     }
 
@@ -43,7 +39,6 @@ class UsersController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($user);
             $entityManager->flush();
-
             return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -69,7 +64,6 @@ class UsersController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
             return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
         }
 

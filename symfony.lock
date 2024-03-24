@@ -35,6 +35,9 @@
             "./migrations/.gitignore"
         ]
     },
+    "php-flasher/flasher-symfony": {
+        "version": "v1.15.14"
+    },
     "phpstan/phpstan": {
         "version": "1.10",
         "recipe": {
