@@ -5,15 +5,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b29a8b6d-65d0-4488-b220-c4e205dabeac" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/rakcha-web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/rakcha-web.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UsersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UsersController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/tables.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/tables.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rector.php" beforeDir="false" afterPath="$PROJECT_DIR$/rector.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Actor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Actor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Actorfilm.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Actorfilm.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Avis.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Avis.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/CategorieEvenement.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/CategorieEvenement.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/CategorieProduit.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/CategorieProduit.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Categories.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Categories.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Category.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Category.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Cinema.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Cinema.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Commande.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Commande.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Commandeitem.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Commandeitem.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Commentaire.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Commentaire.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Commentairecinema.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Commentairecinema.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Episodes.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Episodes.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Evenement.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Evenement.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Favoris.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Favoris.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Feedback.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Feedback.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/FeedbackEvenement.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/FeedbackEvenement.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Film.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Film.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Filmcategory.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Filmcategory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Filmcinema.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Filmcinema.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Filmcoment.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Filmcoment.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/ParticipationEvenement.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/ParticipationEvenement.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Produit.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Produit.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Ratingfilm.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Ratingfilm.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Salle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Salle.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Seance.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Seance.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Series.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Series.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Sponsor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Sponsor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Users.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Users.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,6 +256,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "rearrange.code.on.save": "true",
+    "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   },
@@ -277,7 +300,7 @@
       <updated>1711182814845</updated>
       <workItem from="1711182815919" duration="733000" />
       <workItem from="1711183565723" duration="1523000" />
-      <workItem from="1711210998523" duration="1461000" />
+      <workItem from="1711210998523" duration="2153000" />
     </task>
     <servers />
   </component>
