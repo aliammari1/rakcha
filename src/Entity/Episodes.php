@@ -35,5 +35,82 @@ class Episodes
     #[ORM\JoinColumn(name: 'idserie', referencedColumnName: 'idserie')]
     private ?Series $idserie = null;
 
+    public function getIdepisode(): ?int
+    {
+        return $this->idepisode;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(string $titre): static
+    {
+        $this->titre = $titre;
+
+        return $this;
+    }
+
+    public function getNumeroepisode(): ?int
+    {
+        return $this->numeroepisode;
+    }
+
+    public function setNumeroepisode(int $numeroepisode): static
+    {
+        $this->numeroepisode = $numeroepisode;
+
+        return $this;
+    }
+
+    public function getSaison(): ?int
+    {
+        return $this->saison;
+    }
+
+    public function setSaison(int $saison): static
+    {
+        $this->saison = $saison;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getVideo(): ?string
+    {
+        return $this->video;
+    }
+
+    public function setVideo(string $video): static
+    {
+        $this->video = $video;
+
+        return $this;
+    }
+
+    public function getIdserie(): ?Series
+    {
+        return $this->idserie;
+    }
+
+    public function setIdserie(?Series $idserie): static
+    {
+        $this->idserie = $idserie;
+
+        return $this;
+    }
+
 
 }

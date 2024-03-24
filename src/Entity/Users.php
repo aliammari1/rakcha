@@ -7,6 +7,7 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
@@ -77,6 +78,197 @@ class Users
         $this->idCinema = new ArrayCollection();
         $this->idSeance = new ArrayCollection();
         $this->idProduit = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getPrenom(): ?string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): static
+    {
+        $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getNumTelephone(): ?int
+    {
+        return $this->numTelephone;
+    }
+
+    public function setNumTelephone(int $numTelephone): static
+    {
+        $this->numTelephone = $numTelephone;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): static
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): static
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getDateDeNaissance(): ?\DateTimeInterface
+    {
+        return $this->dateDeNaissance;
+    }
+
+    public function setDateDeNaissance(?\DateTimeInterface $dateDeNaissance): static
+    {
+        $this->dateDeNaissance = $dateDeNaissance;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPhotoDeProfil(): ?string
+    {
+        return $this->photoDeProfil;
+    }
+
+    public function setPhotoDeProfil(?string $photoDeProfil): static
+    {
+        $this->photoDeProfil = $photoDeProfil;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cinema>
+     */
+    public function getIdCinema(): Collection
+    {
+        return $this->idCinema;
+    }
+
+    public function addIdCinema(Cinema $idCinema): static
+    {
+        if (!$this->idCinema->contains($idCinema)) {
+            $this->idCinema->add($idCinema);
+            $idCinema->addIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdCinema(Cinema $idCinema): static
+    {
+        if ($this->idCinema->removeElement($idCinema)) {
+            $idCinema->removeIdUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getIdSeance(): Collection
+    {
+        return $this->idSeance;
+    }
+
+    public function addIdSeance(Seance $idSeance): static
+    {
+        if (!$this->idSeance->contains($idSeance)) {
+            $this->idSeance->add($idSeance);
+        }
+
+        return $this;
+    }
+
+    public function removeIdSeance(Seance $idSeance): static
+    {
+        $this->idSeance->removeElement($idSeance);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Produit>
+     */
+    public function getIdProduit(): Collection
+    {
+        return $this->idProduit;
+    }
+
+    public function addIdProduit(Produit $idProduit): static
+    {
+        if (!$this->idProduit->contains($idProduit)) {
+            $this->idProduit->add($idProduit);
+            $idProduit->addIdClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdProduit(Produit $idProduit): static
+    {
+        if ($this->idProduit->removeElement($idProduit)) {
+            $idProduit->removeIdClient($this);
+        }
+
+        return $this;
     }
 
 }

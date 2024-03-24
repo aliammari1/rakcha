@@ -22,5 +22,15 @@ class Actorfilm
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $idfilm;
 
+    public function getIdactor(): ?int
+    {
+        return $this->idactor;
+    }
+
+    public function getIdfilm(): ?int
+    {
+        return $this->idfilm;
+    }
+
 
 }

@@ -23,5 +23,34 @@ class Commentaire
     #[ORM\JoinColumn(name: 'idClient', referencedColumnName: 'id')]
     private ?Users $idclient = null;
 
+    public function getIdcommentaire(): ?int
+    {
+        return $this->idcommentaire;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(string $commentaire): static
+    {
+        $this->commentaire = $commentaire;
+
+        return $this;
+    }
+
+    public function getIdclient(): ?Users
+    {
+        return $this->idclient;
+    }
+
+    public function setIdclient(?Users $idclient): static
+    {
+        $this->idclient = $idclient;
+
+        return $this;
+    }
+
 
 }

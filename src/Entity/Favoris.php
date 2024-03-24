@@ -24,5 +24,34 @@ class Favoris
     #[ORM\Column(name: 'id_serie', type: 'integer', nullable: false)]
     private int $idSerie;
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
+
+    public function setIdUser(int $idUser): static
+    {
+        $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    public function getIdSerie(): ?int
+    {
+        return $this->idSerie;
+    }
+
+    public function setIdSerie(int $idSerie): static
+    {
+        $this->idSerie = $idSerie;
+
+        return $this;
+    }
+
 
 }

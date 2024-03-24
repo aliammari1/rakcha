@@ -22,5 +22,34 @@ class Categories
     #[ORM\Column(name: 'description', type: 'string', length: 50, nullable: false)]
     private string $description;
 
+    public function getIdcategorie(): ?int
+    {
+        return $this->idcategorie;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
 
 }
