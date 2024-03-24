@@ -2,51 +2,33 @@
 
 namespace App\Entity;
 
+use App\Repository\CinemaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-use App\Repository\CinemaRepository;
 
 #[ORM\Entity(repositoryClass: CinemaRepository::class)]
+#[ORM\Table(name: 'cinema')]
 class Cinema
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id_cinema', type: 'integer', nullable: false)]
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idCinema;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
     private string $nom;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'adresse', type: 'string', length: 100, nullable: false)]
     private string $adresse;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'responsable', type: 'integer', nullable: false)]
     private int $responsable;
 
-    /**
-     * @var string|null
-     */
     #[ORM\Column(name: 'logo', type: 'text', length: 0, nullable: true)]
     private ?string $logo = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'Statut', type: 'string', length: 50, nullable: false)]
     private string $statut;
 
@@ -67,92 +49,4 @@ class Cinema
         $this->idUser = new ArrayCollection();
     }
 
-    public function getIdCinema(): ?int
-    {
-        return $this->idCinema;
-    }
-
-    public function getNom(): ?string
-    {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): static
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getAdresse(): ?string
-    {
-        return $this->adresse;
-    }
-
-    public function setAdresse(string $adresse): static
-    {
-        $this->adresse = $adresse;
-
-        return $this;
-    }
-
-    public function getResponsable(): ?int
-    {
-        return $this->responsable;
-    }
-
-    public function setResponsable(int $responsable): static
-    {
-        $this->responsable = $responsable;
-
-        return $this;
-    }
-
-    public function getLogo(): ?string
-    {
-        return $this->logo;
-    }
-
-    public function setLogo(?string $logo): static
-    {
-        $this->logo = $logo;
-
-        return $this;
-    }
-
-    public function getStatut(): ?string
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(string $statut): static
-    {
-        $this->statut = $statut;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Users>
-     */
-    public function getIdUser(): Collection
-    {
-        return $this->idUser;
-    }
-
-    public function addIdUser(Users $idUser): static
-    {
-        if (!$this->idUser->contains($idUser)) {
-            $this->idUser->add($idUser);
-        }
-
-        return $this;
-    }
-
-    public function removeIdUser(Users $idUser): static
-    {
-        $this->idUser->removeElement($idUser);
-
-        return $this;
-    }
 }
