@@ -17,12 +17,20 @@ class FilmController extends AbstractController
     #[Route('/', name: 'app_film_index', methods: ['GET'])]
     public function index(FilmRepository $filmRepository): Response
     {
-        return $this->render('film/index.html.twig', [
+        flash()->addSuccess("successfully added film");
+        $form = $this->createForm(FilmType::class, new Film());
+        $updateForms = array();
+        for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
+        }
+        return $this->render('back/filmTables.html.twig', [
             'films' => $filmRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
         ]);
     }
 
-    #[Route('/new', name: 'app_film_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_film_new', methods: [ 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $film = new Film();
@@ -30,6 +38,16 @@ class FilmController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form['image']->getData();
+
+            $extension = $file->guessExtension();
+            if (!$extension) {
+                // extension cannot be guessed
+                $extension = 'bin';
+            }
+            $filename = rand(1, 99999) . '.' . $extension;
+            $file->move($this->getParameter('kernel.project_dir')."/public/img/films", $filename);
+            $film->setImage("/img/films/" . $filename);
             $entityManager->persist($film);
             $entityManager->flush();
 
@@ -50,7 +68,7 @@ class FilmController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_film_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_film_edit', methods: [ 'POST'])]
     public function edit(Request $request, Film $film, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(FilmType::class, $film);
@@ -71,7 +89,7 @@ class FilmController extends AbstractController
     #[Route('/{id}', name: 'app_film_delete', methods: ['POST'])]
     public function delete(Request $request, Film $film, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$film->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $film->getId(), $request->request->get('_token'))) {
             $entityManager->remove($film);
             $entityManager->flush();
         }
