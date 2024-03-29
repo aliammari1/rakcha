@@ -2,7 +2,12 @@
 
 namespace App\Form;
 
+use App\Entity\Actor;
+use App\Entity\Category;
 use App\Entity\Film;
+use App\Form\Type\CheckboxDropdownType;
+use Doctrine\ORM\Mapping\Entity;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -27,11 +32,23 @@ class FilmType extends AbstractType
                 'widget' => 'single_text',
                 "with_seconds" => true,
             ])
-            ->add('description',TextareaType::class)            
+            ->add('description', TextareaType::class)
             ->add('annederalisation', ChoiceType::class, [
-                'choices' => array_combine(range(date('Y'), date('Y')-74), range(date('Y'), date('Y')-74)),
+                'choices' => array_combine(range(date('Y'), date('Y') - 74), range(date('Y'), date('Y') - 74)),
                 'label' => 'Year',
             ])
+            ->add('actors', CheckboxDropdownType::class, [
+                'class' => Actor::class,
+                'choice_label' => 'nom',
+                
+                
+
+            ])
+            ->add('categorys', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'nom',
+                'multiple' => true,
+                'expanded' => true,])
         ;
     }
 

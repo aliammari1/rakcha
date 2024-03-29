@@ -61,10 +61,13 @@ class ActorController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_actor_show', methods: ['GET'])]
-    public function show(Actor $actor): Response
+    public function show(Actor $actor,Request $request): Response
     {
+        $referer = $request->headers->get('referer');
+
         return $this->render('actor/show.html.twig', [
             'actor' => $actor,
+            'referer' => $referer,
         ]);
     }
 

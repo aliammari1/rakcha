@@ -34,9 +34,9 @@
 			<hr class="horizontal dark mt-0">
 			<div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
 				<ul class="navbar-nav">
-					{% for item in ['dashboard', 'tables','cinema', 'billing', 'virtual-reality', 'rtl', 'profile', 'sign-in', 'sign-up'] %}
+					{% for item in ['cinema','film','actor','category'] %}
 						<li class="nav-item">
-							<a class="nav-link {% if item == 'billing' %}active{% endif %}" href="../pages/{{ item }}.html.twig">
+							<a class="nav-link {% if item == 'billing' %}active{% endif %}" href="{{path('app_' ~ item ~ '_index')}}">
 								<div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
 									{% set iconClass %}
 									{% if item == 'dashboard' %}
@@ -44,6 +44,12 @@
 									{% elseif item == 'tables' %}
 										ni-calendar-grid-58 text-warning
 									{% elseif item == 'billing' %}
+										ni-credit-card text-success
+									{% elseif item == 'film' %}
+										ni-credit-card text-success
+									{% elseif item == 'actor' %}
+										ni-credit-card text-success
+									{% elseif item == 'category' %}
 										ni-credit-card text-success
 									{% elseif item == 'cinema' %}
 										ni-credit-card text-success
