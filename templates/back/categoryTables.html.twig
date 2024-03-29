@@ -147,27 +147,19 @@
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
-										{{ form_start(form, {'action': path('app_film_new')}) }}
+										{{ form_start(form, {'action': path('app_category_new')}) }}
 
 										{% for field in form %}
 											<div class="mb-3">
-												{% if field.vars.name == 'actors' %}
-																	{{ form_widget(actor, {'attr': {'class': 'form 	'}}) }}
-																	{{ form_label(actor, null, {'label_attr': {'class': 'form-check-label'}}) }}
-													
-												{% else %}
-													{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
-													{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
-												{% endif %}
+												{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
+												{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
 												{{ form_errors(field) }}
 											</div>
 										{% endfor %}
-										
 
 										<button class="btn">{{ button_label|default('Save') }}</button>
 
 										{{ form_end(form) }}
-
 									</div>
 									<div class="modal-footer">
 										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -176,114 +168,88 @@
 								</div>
 							</div>
 						</div>
-						{% if films is not empty %}
-							<div class="card-body px-0 pt-0 pb-2">
-								<div class="table-responsive p-0">
+						{% if categorys is not empty %}
+						<div class="card-body px-0 pt-0 pb-2">
+							<div class="table-responsive p-0">
 
-									<table class="table align-items-center mb-0">
-										<thead>
+								<table class="table align-items-center mb-0">
+									<thead>
+										<tr>
+											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
+											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Function</th>
+											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Employed</th>
+											<th class="text-secondary opacity-7"></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for i in range(0, categorys|length - 1) %}
+											{% set category = categorys[i] %}
 											<tr>
-												<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Film</th>
-												<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Function</th>
-												<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-												<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Employed</th>
-												<th class="text-secondary opacity-7"></th>
-											</tr>
-										</thead>
-										<tbody>
-											{% for i in range(0, films|length - 1) %}
-												{% set film = films[i] %}
-												<tr>
-													<td>
-														<div class="d-flex px-2 py-1">
-															<div>
-																<img src="{{ asset(film.image) }}" class="avatar avatar-sm me-3" alt="{{ film.nom }}">
-															</div>
-															<div class="d-flex flex-column justify-content-center">
-																<h6 class="mb-0 text-sm">{{ film.nom }}</h6>
-																{# <p class="text-xs text-secondary mb-0">{{ film.duree }}</p> #}
-															</div>
+												<td>
+													<div class="d-flex px-2 py-1">
+					
+														<div class="d-flex flex-column justify-content-center">
+															<h6 class="mb-0 text-sm">{{ category.nom }}</h6>
+															{# <p class="text-xs text-secondary mb-0">{{ category.duree }}</p> #}
 														</div>
-													</td>
-													<td>
-														<p class="text-xs font-weight-bold mb-0">{{ film.description }}</p>
-														{# <p class="text-xs text-secondary mb-0">{{ film.annederalisation }}</p> #}
-													</td>
-													<td class="align-middle text-center text-sm">
-														<p class="text-xs font-weight-bold mb-0">{{ film.annederalisation}}</p>
-													</td>
-													<td class="align-middle text-center text-sm">
-														<p class="text-xs font-weight-bold mb-0">
-															{% for actor in film.actors %}
-																<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
-																{% if not loop.last %},
-																{% endif %}
-															{% endfor %}
-														</p>
-													</td>
-													<td class="align-middle text-center text-sm">
-														<p class="text-xs font-weight-bold mb-0">
-															{% for category in film.categorys %}
-																<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
-																{% if not loop.last %},
-																{% endif %}
-															{% endfor %}
-														</p>
-													</td>
-													<td class="align-middle text-center">
-														<span class="text-secondary text-xs font-weight-bold">{{ film.duree|date('H:i:s') }}</span>
-													</td>
-													<td class="align-middle">
-														<form method="post" action="{{ path('app_film_delete', {'id': film.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-															<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ film.id) }}">
-															<button class="btn">Delete</button>
-														</form>
-													</td>
-													<td class="align-middle">
-														<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i}}">
-															Edit
-														</button>
-														<div class="modal fade" id="staticBackdrop{{i}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-															<div class="modal-dialog">
-																<div class="modal-content">
-																	<div class="modal-header">
-																		<h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-																		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-																	</div>
-																	<div class="modal-body">
-																		{{ form_start(updateForms[i], {'action': path('app_film_edit', {'id': film.id})}) }}
+													</div>
+												</td>
+												<td>
+													<p class="text-xs font-weight-bold mb-0">{{ category.description }}</p>
+													{# <p class="text-xs text-secondary mb-0">{{ category.annederalisation }}</p> #}
+												</td>
+												<td class="align-middle">
+													<form method="post" action="{{ path('app_category_delete', {'id': category.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+														<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ category.id) }}">
+														<button class="btn">Delete</button>
+													</form>
+												</td>
+												<td class="align-middle">
+													<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i}}">
+														Edit
+													</button>
+													<div class="modal fade" id="staticBackdrop{{i}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+														<div class="modal-dialog">
+															<div class="modal-content">
+																<div class="modal-header">
+																	<h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+																	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+																</div>
+																<div class="modal-body">
+																	{{ form_start(updateForms[i], {'action': path('app_category_edit', {'id': category.id})}) }}
 
-																		{% for field in updateForms[i] %}
-																			<div class="mb-3">
-																				{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
-																				{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
-																				{{ form_errors(field) }}
-																			</div>
-																		{% endfor %}
+																	{% for field in updateForms[i] %}
+																		<div class="mb-3">
+																			{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
+																			{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+																			{{ form_errors(field) }}
+																		</div>
+																	{% endfor %}
 
-																		<button class="btn">{{ button_label|default('Save') }}</button>
+																	<button class="btn">{{ button_label|default('Save') }}</button>
 
-																		{{ form_end(updateForms[i]) }}
-																	</div>
-																	<div class="modal-footer">
-																		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-																		<button type="button" class="btn btn-primary">Understood</button>
-																	</div>
+																	{{ form_end(updateForms[i]) }}
+																</div>
+																<div class="modal-footer">
+																	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+																	<button type="button" class="btn btn-primary">Understood</button>
 																</div>
 															</div>
 														</div>
-													</td>
-												</tr>
-											{% endfor %}
-										</tbody>
-									</table>
-								</div>
+													</div>
+												</td>
+											</tr>
+										{% endfor %}
+									</tbody>
+								</table>
 							</div>
+						</div>
 						{% else %}
 							<div>
 								<span colspan="7">no records found</span>
 							</div>
-						{% endif %}
+					{% endif %}
 					</div>
 				</div>
 			</div>
