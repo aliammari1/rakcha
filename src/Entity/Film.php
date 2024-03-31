@@ -22,8 +22,8 @@ class Film
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    #[Assert\NotBlank(message: 'Le nom du film est requis.')]
-    #[Assert\Length(max: 255, maxMessage: 'Le nom du film ne peut pas dépasser {{ limit }} caractères.')]
+    #[Assert\NotBlank(message: 'The film name is required.')]
+    #[Assert\Length(max: 255, maxMessage: 'The film name cannot exceed {{ limit }} characters.')]
     #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
     private string $nom;
 
@@ -34,15 +34,31 @@ class Film
      * @var DateTime
      */
 
-    #[Assert\NotBlank(message: 'La durée du film est requise.')]
+    #[Assert\NotBlank(message: 'The film duration is required.')]
+    // #[Assert\Expression(
+    //     "value instanceof DateTimeInterface && value->format('H:i:s') !== '00:00:00'",
+    //     message: 'The film duration must be a valid time.'
+    // )]
+    #[Assert\Range(
+        min: '00:30:00',
+        max: '03:00:00',
+        minMessage: 'The film duration must be at least 30 minutes.',
+        maxMessage: 'The film duration cannot exceed 3 hours.'
+    )]
     #[ORM\Column(name: 'duree', type: 'time', nullable: false)]  
-      private DateTimeInterface $duree;
+    private DateTimeInterface $duree;
 
-    #[Assert\NotBlank(message: 'La description du film est requise.')]
+    #[Assert\NotBlank(message: 'The film description is required.')]
+    #[Assert\Length(max: 1000, maxMessage: 'The film description cannot exceed {{ limit }} characters.')]
     #[ORM\Column(name: 'description', type: 'text', length: 0, nullable: false)]
     private string $description;
-    #[Assert\NotBlank(message: 'L\'année de réalisation du film est requise.')]
-    #[Assert\Range(min: 1800, max: 2024, notInRangeMessage: 'L\'année de réalisation doit être entre {{ min }} et {{ max }}.')]
+
+    #[Assert\NotBlank(message: 'The film release year is required.')]
+    #[Assert\Range(
+        min: 1800,
+        max: 2024,
+        notInRangeMessage: 'The film release year must be between {{ min }} and {{ max }}.'
+    )]
     #[ORM\Column(name: 'annederalisation', type: 'integer', nullable: false)]
     private int $annederalisation;
 

@@ -47,7 +47,16 @@
 									</div>
 									<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0">
 										<h4 class="col_red">{{film.nom}}</h4>
-										<h6>categorys:</h6>
+										<h6>categorys: {% for category in film.categorys %}
+											<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
+											{% if not loop.last %},
+											{% endif %}
+										{% endfor %} </h6>
+										<h6>Actors: {% for actor in film.actors %}
+											<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
+											{% if not loop.last %},
+											{% endif %}
+										{% endfor %} </h6>
 										<p>{{film.description}}</p>
 									</div>
 								</div>

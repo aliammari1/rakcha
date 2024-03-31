@@ -37,18 +37,18 @@ class FilmType extends AbstractType
                 'choices' => array_combine(range(date('Y'), date('Y') - 74), range(date('Y'), date('Y') - 74)),
                 'label' => 'Year',
             ])
-            ->add('actors', CheckboxDropdownType::class, [
+            ->add('actors', EntityType::class, [
                 'class' => Actor::class,
                 'choice_label' => 'nom',
-                
-                
-
+                'multiple' => true,
+                'expanded' => true,
             ])
             ->add('categorys', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'nom',
                 'multiple' => true,
-                'expanded' => true,])
+                'expanded' => true,
+            ])
         ;
     }
 
