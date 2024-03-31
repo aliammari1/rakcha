@@ -31,8 +31,12 @@ class FilmController extends AbstractController
     }
 
     #[Route('/new', name: 'app_film_new', methods: [ 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager ,FilmRepository $filmRepository): Response
     {
+        $updateForms = array();
+        for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
+        }
         $film = new Film();
         $form = $this->createForm(FilmType::class, $film);
         $form->handleRequest($request);
@@ -53,10 +57,12 @@ class FilmController extends AbstractController
 
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('film/new.html.twig', [
-            'film' => $film,
-            'form' => $form,
+     
+        return $this->render('back/filmTables.html.twig', [
+            '
+            ' => $filmRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
         ]);
     }
 

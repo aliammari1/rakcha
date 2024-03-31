@@ -14,7 +14,7 @@
 				<div class="row center_o1">
 					<div class="col-md-5">
 						<div class="center_o1l">
-							<h2 class="mb-0">Films</h2>
+							<h2 class="mb-0">Actors</h2>
 						</div>
 					</div>
 					<div class="col-md-7">
@@ -24,7 +24,7 @@
 								<span class="me-2 ms-2 text-light">
 									<i class="fa fa-caret-right align-middle"></i>
 								</span>
-								Films</h6>
+								Actors</h6>
 						</div>
 					</div>
 				</div>
@@ -33,31 +33,22 @@
 
 		<section id="team" class="pt-4 pb-4 bg_grey">
 			<div class="container-xl">
-				{% for i in range(0,films|length // 3) %}
+				{% for i in range(0,actors|length // 3) %}
 					<div class="team_1i row {% if not loop.first %} mt-4{% endif %} ">
-						{% for film in films|slice(loop.index0 * 3, 3) %}
+						{% for actor in actors|slice(loop.index0 * 3, 3) %}
 							<div class="col-md-4">
 								<div class="team_1i1 clearfix position-relative">
 									<div class="team_1i1i clearfix">
 										<div class="grid clearfix">
 											<figure class="effect-jazz mb-0">
-												<a href="#"><img src="{{ asset(film.image) }}" class="w-100" alt="abc"></a>
+												<a href="#"><img src="{{ asset(actor.image) }}" class="w-100" alt="abc"></a>
 											</figure>
 										</div>
 									</div>
 									<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0">
-										<h4 class="col_red">{{film.nom}}</h4>
-										<h6>categorys: {% for category in film.categorys %}
-											<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
-											{% if not loop.last %},
-											{% endif %}
-										{% endfor %} </h6>
-										<h6>Actors: {% for actor in film.actors %}
-											<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
-											{% if not loop.last %},
-											{% endif %}
-										{% endfor %} </h6>
-										<p>{{film.description}}</p>
+										<h4 class="col_red">{{actor.nom}}</h4>
+										<h6>biographie:</h6>
+										<p>{{actor.biographie}}</p>
 									</div>
 								</div>
 							</div>

@@ -151,18 +151,12 @@
 
 										{% for field in form %}
 											<div class="mb-3">
-												{% if field.vars.name == 'actors' %}
-																	{{ form_widget(actor, {'attr': {'class': 'form 	'}}) }}
-																	{{ form_label(actor, null, {'label_attr': {'class': 'form-check-label'}}) }}
-													
-												{% else %}
 													{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
 													{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
-												{% endif %}
 												{{ form_errors(field) }}
 											</div>
 										{% endfor %}
-										
+
 
 										<button class="btn">{{ button_label|default('Save') }}</button>
 
