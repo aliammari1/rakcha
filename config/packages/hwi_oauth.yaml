@@ -4,7 +4,7 @@ hwi_oauth:
         account_connector: App\Security\OAuthConnector
         registration_form: App\Form\RegistrationFormType
     resource_owners:
-        facebook:
+        windows_live:
             type: windows_live
             client_id: "%env(MICROSOFT_LIVE_ID)%"
             client_secret: "%env(MICROSOFT_LIVE_SECRET)%"
