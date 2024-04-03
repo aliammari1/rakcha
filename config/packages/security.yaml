@@ -1,29 +1,62 @@
 security:
+    # https://symfony.com/doc/current/security/authenticator_manager.html
     enable_authenticator_manager: true
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    hide_user_not_found: false
+    role_hierarchy:
+        ROLE_ADMIN: ['ROLE_USER', 'ROLE_ALLOWED_TO_SWITCH']
+        ROLE_CLIENT: ['ROLE_USER']
+        ROLE_RESPONSABLE_DE_CINEMA: ['ROLE_USER']
+    # https://symfony.com/doc/current/security.html#c-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users_in_memory: { memory: null }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\Users
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            oauth:
+                resource_owners:
+                    windows_live: "/login/check-windows-live"
+                login_path: /login
+                use_forward: false
+                failure_path: /login
+                oauth_user_provider:
+                    service: hwi_oauth.user.provider.entity
 
+            provider: app_user_provider
+            entry_point: form_login
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                username_parameter: email
+                password_parameter: password
+                enable_csrf: true
+            custom_authenticator:
+                - App\Security\LoginFormAuthenticator
+            logout: true
+            remember_me:
+                secret: '%kernel.secret%'
+                signature_properties: [password]
+                always_remember_me: true
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            switch_user: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/users/profile, roles: ROLE_USER }
+        - { path: ^/users, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

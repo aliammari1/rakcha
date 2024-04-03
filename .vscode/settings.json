@@ -19,7 +19,7 @@
   "php.validate.executablePath": "C:\\xampp\\php\\php.exe",
   "vscode-edge-devtools.port": 8001,
   "[php]": {
-    "editor.defaultFormatter": "DEVSENSE.phptools-vscode"
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
   },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

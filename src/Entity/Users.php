@@ -9,45 +9,65 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ORM\Table(name: 'users')]
-class Users
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
-    #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
+    #[ORM\Column(name: 'nom', type: 'string', length: 50)]
+    #[Assert\NotNull(message: 'The name cannot be null')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'The name must have at least {{ limit }} characters', maxMessage: 'The name cannot exceed {{ limit }} characters')]
     private string $nom;
 
-    #[ORM\Column(name: 'prenom', type: 'string', length: 50, nullable: false)]
+    #[ORM\Column(name: 'prenom', type: 'string', length: 50)]
+    #[Assert\NotNull(message: 'The surname cannot be null')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'The surname must have at least {{ limit }} characters', maxMessage: 'The surname cannot exceed {{ limit }} characters')]
     private string $prenom;
 
-    #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'num_telephone', type: 'integer')]
+    #[Assert\NotNull(message: 'The telephone number cannot be null')]
+    #[Assert\Positive(message: 'The telephone number must be a positive integer')]
     private int $numTelephone;
 
-    #[ORM\Column(name: 'password', type: 'string', length: 50, nullable: false)]
+    #[ORM\Column(name: 'password', type: 'string', length: 180)]
+    #[Assert\NotNull(message: 'The password cannot be null')]
+    #[Assert\Length(min: 8, max: 180, minMessage: 'The password must have at least {{ limit }} characters', maxMessage: 'The password cannot exceed {{ limit }} characters')]
     private string $password;
 
-    #[ORM\Column(name: 'role', type: 'string', length: 50, nullable: false)]
+    #[ORM\Column(name: 'role', type: 'string', length: 50)]
+    #[Assert\NotNull(message: 'The role cannot be null')]
+    #[Assert\Choice(choices: ['admin', 'client'], message: 'Invalid role. Choose either "admin" or "client".')]
     private string $role;
 
-    #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: true)]
+    #[ORM\Column(name: 'adresse', type: 'string', length: 50)]
+    #[Assert\NotNull(message: 'The address cannot be null')]
+    #[Assert\Length(min: 5, max: 50, minMessage: 'The address must have at least {{ limit }} characters', maxMessage: 'The address cannot exceed {{ limit }} characters')]
     private ?string $adresse = null;
 
-    /**
-     * @var DateTime|null
-     */
-    #[ORM\Column(name: 'date_de_naissance', type: 'date', nullable: true)]
+    #[ORM\Column(name: 'date_de_naissance', type: 'date')]
+    #[Assert\NotNull(message: 'The date of birth cannot be null')]
+    #[Assert\NotBlank(message: 'The date of birth cannot be blank')]
+    #[Assert\LessThanOrEqual(value: 'today', message: 'The date of birth cannot be in the future')]
     private ?DateTimeInterface $dateDeNaissance = null;
 
-    #[ORM\Column(name: 'email', type: 'string', length: 50, nullable: false)]
+    #[ORM\Column(name: 'email', type: 'string', length: 180, unique: true)]
+    #[Assert\NotBlank(message: 'The email cannot be blank')]
+    #[Assert\NotNull(message: 'The email cannot be null')]
+    #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
     private string $email;
 
-    #[ORM\Column(name: 'photo_de_profil', type: 'string', length: 255, nullable: true)]
-    private ?string $photoDeProfil = null;
+    #[ORM\Column(name: 'photo_de_profil', type: 'string', length: 255)]
+    private string $photoDeProfil;
 
     /**
      * @var Collection<int, Cinema>
@@ -70,6 +90,34 @@ class Users
     #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'idClient')]
     private Collection $idProduit;
 
+    #[ORM\Column(name: 'is_verified', type: 'boolean')]
+    private bool $isVerified;
+
+    public function getIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+
+    private string $plainPassword;
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
     /**
      * Constructor
      */
@@ -121,17 +169,6 @@ class Users
         return $this;
     }
 
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
-    }
 
     public function getRole(): ?string
     {
@@ -157,12 +194,12 @@ class Users
         return $this;
     }
 
-    public function getDateDeNaissance(): ?\DateTimeInterface
+    public function getDateDeNaissance(): ?DateTimeInterface
     {
         return $this->dateDeNaissance;
     }
 
-    public function setDateDeNaissance(?\DateTimeInterface $dateDeNaissance): static
+    public function setDateDeNaissance(?DateTimeInterface $dateDeNaissance): static
     {
         $this->dateDeNaissance = $dateDeNaissance;
 
@@ -271,4 +308,86 @@ class Users
         return $this;
     }
 
+
+    #[ORM\Column]
+    private array $roles = [];
+
+
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Returning a salt is only needed, if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
 }
