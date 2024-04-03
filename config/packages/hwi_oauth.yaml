@@ -1,0 +1,11 @@
+hwi_oauth:
+    # https://github.com/hwi/HWIOAuthBundle/blob/master/docs/2-configuring_resource_owners.md
+    connect:
+        account_connector: App\Security\OAuthConnector
+        registration_form: App\Form\RegistrationFormType
+    resource_owners:
+        facebook:
+            type: windows_live
+            client_id: "%env(MICROSOFT_LIVE_ID)%"
+            client_secret: "%env(MICROSOFT_LIVE_SECRET)%"
+            scope: wl.signin
