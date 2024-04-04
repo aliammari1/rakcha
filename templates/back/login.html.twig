@@ -98,6 +98,9 @@
 											</div>
 										</form>
 									</div>
+									<a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}">
+										<span>Login with Google</span>
+									</a>
 									<div class="card-footer text-center pt-0 px-lg-2 px-1">
 										<p class="mb-4 text-sm mx-auto">
 											{{ 'Don\'t have an account? Sign up'|auto_translate }} </p>
@@ -136,3 +139,4 @@ Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
 <script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
 </body>
 </html>   
+

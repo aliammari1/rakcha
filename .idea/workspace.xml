@@ -10,63 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b29a8b6d-65d0-4488-b220-c4e205dabeac" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/config/packages/hwi_oauth.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/routes/hwi_oauth_routing.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/users/5891.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/img/users/91819.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/LoginController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/RegistrationController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Form/RegistrationFormType.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Security/EmailVerifier.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Security/OAuthConnector.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/MyMemoryTranslator.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Twig/Extension/TranslateExtension.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Twig/Runtime/TranslateExtensionRuntime.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Twig/TranslationExtension.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/back/UserTables.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/back/login.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/back/register.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/login/login.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/registration/confirmation_email.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/registration/register.html.twig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/translations/messages.en.xlf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/translations/security.en.xlf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/translations/security.en.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/translations/validators.en.xlf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/migrations/Version20240404000904.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Security/FormHandler.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/phpspec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/phpspec.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/rakcha-web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/rakcha-web.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/symfony2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/symfony2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/cache.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/cache.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/messenger.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/messenger.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/packages/hwi_oauth.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/hwi_oauth.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/migrations/Version20240324071802.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rector.php" beforeDir="false" afterPath="$PROJECT_DIR$/rector.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/UsersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UsersController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Entity/Users.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Users.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Form/UsersType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/UsersType.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Repository/UsersRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/UsersRepository.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/billing.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/billing.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/dashboard.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/dashboard.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/profile.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/profile.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/sign-in.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/sign-up.html.twig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/tables.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/tables.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/back/virtual-reality.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/virtual-reality.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/baseBack.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/baseBack.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/baseFront.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/baseFront.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/back/login.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/login.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -292,33 +244,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;PHP Built-in Web Server.server.executor&quot;: &quot;Run&quot;,
-    &quot;PHP Script.Symfony Web-Server.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;code.cleanup.on.save&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;gestionUtilisateurs&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/AliAMMARI/OneDrive - ESPRIT (1)/Desktop/rakcha-web/config/routes.yaml&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "PHP Built-in Web Server.server.executor": "Run",
+    "PHP Script.Symfony Web-Server.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "code.cleanup.on.save": "true",
+    "git-widget-placeholder": "gestionUtilisateurs",
+    "last_opened_file_path": "C:/Users/AliAMMARI/OneDrive - ESPRIT (1)/Desktop/rakcha-web/config/routes.yaml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "php.override.implement.member.chooser.php.doc": "NONE",
+    "rearrange.code.on.save": "true",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql_aurora_aws&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql_aurora_aws"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\AliAMMARI\OneDrive - ESPRIT (1)\Desktop\rakcha-web\public\css" />
@@ -361,6 +314,7 @@
       <workItem from="1711210998523" duration="6856000" />
       <workItem from="1711389915526" duration="3604000" />
       <workItem from="1712158639846" duration="62000" />
+      <workItem from="1712189866200" duration="27000" />
     </task>
     <servers />
   </component>

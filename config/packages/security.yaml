@@ -22,14 +22,7 @@ security:
             security: false
         main:
             lazy: true
-            oauth:
-                resource_owners:
-                    windows_live: "/login/check-windows-live"
-                login_path: /login
-                use_forward: false
-                failure_path: /login
-                oauth_user_provider:
-                    service: hwi_oauth.user.provider.entity
+
 
             provider: app_user_provider
             entry_point: form_login
@@ -41,6 +34,7 @@ security:
                 enable_csrf: true
             custom_authenticator:
                 - App\Security\LoginFormAuthenticator
+                - App\Security\GoogleAuthenticator
             logout: true
             remember_me:
                 secret: '%kernel.secret%'
@@ -55,8 +49,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/connect, roles: PUBLIC_ACCESS }
         - { path: ^/users/profile, roles: ROLE_USER }
         - { path: ^/users, roles: ROLE_ADMIN }
+        - { path: ^/, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
