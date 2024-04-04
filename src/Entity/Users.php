@@ -19,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Users implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -34,10 +35,10 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 2, max: 50, minMessage: 'The surname must have at least {{ limit }} characters', maxMessage: 'The surname cannot exceed {{ limit }} characters')]
     private string $prenom;
 
-    #[ORM\Column(name: 'num_telephone', type: 'integer')]
+    #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: true)]
     #[Assert\NotNull(message: 'The telephone number cannot be null')]
     #[Assert\Positive(message: 'The telephone number must be a positive integer')]
-    private int $numTelephone;
+    private ?int $numTelephone;
 
     #[ORM\Column(name: 'password', type: 'string', length: 180)]
     #[Assert\NotNull(message: 'The password cannot be null')]
@@ -49,12 +50,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Choice(choices: ['admin', 'client'], message: 'Invalid role. Choose either "admin" or "client".')]
     private string $role;
 
-    #[ORM\Column(name: 'adresse', type: 'string', length: 50)]
+    #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: true)]
     #[Assert\NotNull(message: 'The address cannot be null')]
     #[Assert\Length(min: 5, max: 50, minMessage: 'The address must have at least {{ limit }} characters', maxMessage: 'The address cannot exceed {{ limit }} characters')]
     private ?string $adresse = null;
 
-    #[ORM\Column(name: 'date_de_naissance', type: 'date')]
+    #[ORM\Column(name: 'date_de_naissance', type: 'date', nullable: true)]
     #[Assert\NotNull(message: 'The date of birth cannot be null')]
     #[Assert\NotBlank(message: 'The date of birth cannot be blank')]
     #[Assert\LessThanOrEqual(value: 'today', message: 'The date of birth cannot be in the future')]
@@ -123,6 +124,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function __construct()
     {
+        $this->numTelephone = null;
+        $this->adresse = null;
+        $this->dateDeNaissance = null;
         $this->idCinema = new ArrayCollection();
         $this->idSeance = new ArrayCollection();
         $this->idProduit = new ArrayCollection();

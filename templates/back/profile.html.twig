@@ -116,7 +116,7 @@
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
-										<label class="form-control-label" for="example-text-input">Username</label>
+										<label class="form-control-label" for="example-text-input">Date of Birth</label>
 										<input class="form-control" type="date" value="{{app.user.dateDeNaissance|date('d/m/Y')}}"/>
 									</div>
 								</div>
@@ -133,17 +133,17 @@
 								<div class="col-md-12">
 									<div class="form-group">
 										<label class="form-control-label" for="example-text-input">Address</label>
-										<input class="form-control" type="text" value="{{app.user.adresse}}"/>
+										<input class="form-control" type="text" value="{{app.user.adresse is not null ? app.user.adresse : 'No address provided'}}"/>
 									</div>
 								</div>
 								<div class="col-md-12">
 									<div class="form-group">
 										<label class="form-control-label" for="example-text-input">numero de telephone</label>
-										<input class="form-control" type="text" value="{{app.user.numTelephone}}"/>
+										<input class="form-control" type="text" value="{{ app.user.numTelephone is not null ? app.user.numTelephone : 'No phone number provided' }}"/>
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
 					</div>
 				</div>

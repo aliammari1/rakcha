@@ -19,16 +19,6 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\Security\OAuthConnector:
-        arguments:
-            $properties:
-                'windows_live': 'windows_live'
-    hwi_oauth.user.provider.entity:
-        class: HWI\Bundle\OAuthBundle\Security\Core\User\EntityUserProvider
-        arguments:
-            $class: App\Entity\Users
-            $properties:
-                'windows_live': 'windows_live'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
