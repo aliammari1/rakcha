@@ -9,6 +9,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -17,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UsersRepository::class)]
 #[ORM\Table(name: 'users')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class Users implements UserInterface, PasswordAuthenticatedUserInterface
+class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
 
     #[ORM\Column(name: 'id', type: 'integer')]
@@ -393,5 +396,29 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function isVerified(): bool
     {
         return $this->isVerified;
+    }
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $totpSecret;
+    public function getTotpSecret(): ?string
+    {
+        return $this->totpSecret;
+    }
+    public function setTotpSecret(?string $totpSecret): self
+    {
+        $this->totpSecret = $totpSecret;
+        return $this;
+    }
+
+    public function isTotpAuthenticationEnabled(): bool
+    {
+        return $this->totpSecret ? true : false;
+    }
+    public function getTotpAuthenticationUsername(): string
+    {
+        return $this->getUserIdentifier();
+    }
+    public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
+    {
+        return new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA1, 30, 6);
     }
 }
