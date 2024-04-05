@@ -7,7 +7,7 @@
 		<link href="{{ asset('img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
 		<link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png"/>
 		<title>
-			Argon Dashboard 2 by Creative Tim
+			Rakcha
 		</title>
 		<!--     Fonts and icons     -->
 		<link
@@ -23,120 +23,122 @@
 		<!-- CSS Files -->
 		<link href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
 	</head>
-	<body>
-		<div class="container position-sticky z-index-sticky top-0">
-			<div class="row">
-				<div
-					class="col-12">
-					<!-- Navbar -->
-					<nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
-						<div class="container-fluid">
-							<a class="navbar-brand font-weight-bolder ms-lg-0 ms-3" href="../pages/dashboard.html.twig">{{ 'Argon Dashboard 2'|auto_translate }}</a>
-							<button aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler shadow-none ms-2" data-bs-target="#navigation" data-bs-toggle="collapse" type="button">
-								<span class="navbar-toggler-icon mt-2"></span>
-							</button>
-							<div class="collapse navbar-collapse" id="navigation">
-								<ul class="navbar-nav mx-auto">
+	<body></body>
+	<body class="container position-sticky z-index-sticky top-0">
+		<div class="row">
+			<div
+				class="col-12">
+				<!-- Navbar -->
+				<nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
+					<div class="container-fluid">
+						<a class="navbar-brand font-weight-bolder ms-lg-0 ms-3" href="../pages/dashboard.html.twig">{{ 'Rakcha'|auto_translate }}</a>
+						<button aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler shadow-none ms-2" data-bs-target="#navigation" data-bs-toggle="collapse" type="button">
+							<span class="navbar-toggler-icon mt-2"></span>
+						</button>
+						<div class="collapse navbar-collapse" id="navigation">
+							<ul class="navbar-nav mx-auto">
+
+								{% set items = ['Home', 'Profile', 'Register', 'Login'] %}
+								{% set pathItems = ['app_users_index','app_profile_index','app_register','app_login'] %}
+								{% for i in range(0, items|length - 1) %}
 									<li class="nav-item">
-										<a aria-current="page" class="nav-link d-flex align-items-center me-2 active" href="../pages/dashboard.html.twig">{{ 'Dashboard'|auto_translate }}</a>
+										<a class="nav-link me-2" href="{{ path(pathItems[i]) }}">{{ items[i]|auto_translate }}</a>
 									</li>
-									<li class="nav-item">
-										<a class="nav-link me-2" href="../pages/profile.html.twig">{{ 'Profile'|auto_translate }}</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link me-2" href="../pages/sign-up.html.twig">{{ 'Sign Up'|auto_translate }}</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link me-2" href="../pages/sign-in.html.twig">{{ 'Sign In'|auto_translate }}</a>
-									</li>
-								</ul>
-								<ul class="navbar-nav d-lg-block d-none">
-									<li class="nav-item">
-										<a class="btn btn-sm mb-0 me-1 btn-danger" href="https://www.creative-tim.com/product/argon-dashboard">{{ 'Free Download'|auto_translate }}</a>
-									</li>
-								</ul>
-							</div>
+								{% endfor %}
+							</ul>
 						</div>
-					</nav>
-					<!-- End Navbar -->
-				</div>
+					</div>
+				</nav>
+				<!-- End Navbar -->
 			</div>
 		</div>
-		<main class="main-content mt-0">
-			<section>
-				<div class="page-header min-vh-100">
-					<div class="container">
-						<div class="row">
-							<div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
-								<div class="card card-plain">
-									<div class="card-header pb-0 text-start">
-										<h4 class="font-weight-bolder">{{ 'Sign In'|auto_translate }}</h4>
-										<p class="mb-0">
-											{{ 'Enter your email and password to sign in'|auto_translate }}
+	</body>
+</html></div><main class="main-content mt-0">
+<section>
+	<div class="page-header min-vh-100">
+		<div class="container">
+			<div class="row">
+				<div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
+					<div class="card card-plain">
+						<div class="card-header pb-0 text-start">
+							<h4 class="font-weight-bolder">{{ 'Sign In'|auto_translate }}</h4>
+							<p class="mb-0">
+								{{ 'Enter your email and password to sign in'|auto_translate }}
+							</p>
+						</div>
+						<div class="card-body">
+							{% if error_message %}
+								<div class="alert alert-danger">
+									{{ error_message.messageKey|trans(error_message.messageData,'security')|auto_translate }}
+								</div>
+							{% endif %}
+							<form method="post" role="form">
+								<div class="mb-3">
+									<input aria-label="Email" autofocus="" class="form-control form-control-lg" name="email" placeholder="Email" required="" type="email" value="{{ last_username }}"/>
+								</div>
+								<div class="mb-3">
+									<input aria-label="Password" class="form-control form-control-lg" name="password" placeholder="Password" required="" type="password"/>
+								</div>
+								<div class="form-check form-switch">
+									<input class="form-check-input" id="rememberMe" name="_remember_me" type=" checkbox"/>
+									<label class=" form-check-label" for=" rememberme">Remember me</label>
+								</div>
+								<input name="_csrf_token" type="hidden" value="{{ csrf_token('authenticate') }}"/>
+								<div class="text-center">
+									<button class="btn btn-lg btn-danger btn-lg w-100 mt-4 mb-0" type="submit">Sign in</button>
+								</div>
+							</form>
+						</div>
+						<div class="card-footer text-center pt-0 px-lg-2 px-1">
+							<p class="mb-4 text-sm mx-auto">
+								{{ 'Don\'t have an account? Sign up'|auto_translate }} 
 										</p>
 									</div>
-									<div class="card-body">
-										{% if error_message %}
-											<div class="alert alert-danger">
-												{{ error_message.messageKey|trans(error_message.messageData,'security')|auto_translate }}
-											</div>
-										{% endif %}
-										<form method="post" role="form">
-											<div class="mb-3">
-												<input aria-label="Email" autofocus="" class="form-control form-control-lg" name="email" placeholder="Email" required="" type="email" value="{{ last_username }}"/>
-											</div>
-											<div class="mb-3">
-												<input aria-label="Password" class="form-control form-control-lg" name="password" placeholder="Password" required="" type="password"/>
-											</div>
-											<div class="form-check form-switch">
-												<input class="form-check-input" id="rememberMe" name="_remember_me" type=" checkbox"/>
-												<label class=" form-check-label" for=" rememberme">Remember me</label>
-											</div>
-											<input name="_csrf_token" type="hidden" value="{{ csrf_token('authenticate') }}"/>
-											<div class="text-center">
-												<button class="btn btn-lg btn-danger btn-lg w-100 mt-4 mb-0" type="submit">Sign in</button>
-											</div>
-										</form>
-									</div>
-									<a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}">
-										<span>Login with Google</span>
-									</a>
-									<div class="card-footer text-center pt-0 px-lg-2 px-1">
-										<p class="mb-4 text-sm mx-auto">
-											{{ 'Don\'t have an account? Sign up'|auto_translate }} </p>
-			</div>
-</div>
-</div>
-<div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
-<div class="position-relative bg-gradient-danger h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');background-size: cover;">
-<span class="mask bg-gradient-danger opacity-6"></span>
-<h4 class="mt-5 text-white font-weight-bolder position-relative">{{ '"Attention is the new currency"'|auto_translate }}</h4>
-<p class="text-white position-relative">{{ 'The more effortless the writing looks, the more effort the writer actually put into the process.'|auto_translate }}</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-</main>
-<!--   Core JS Files   -->
-<script src="{{ asset('js/core/popper.min.js') }}"></script>
-<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-<script>
-			var win = navigator.platform.indexOf('Win') > -1;
-if (win && document.querySelector('#sidenav-scrollbar')) {
-var options = {
-damping: '0.5'
-}
-Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-}
+								</div>
+							</div>
+							<div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
+								<div class="position-relative bg-gradient-danger h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');background-size: cover;">
+									<span class="mask bg-gradient-danger opacity-6"></span>
+									<h4 class="mt-5 text-white font-weight-bolder position-relative">{{ '"Attention is the new currency"'|auto_translate }}</h4>
+									<p class="text-white position-relative">{{ 'The more effortless the writing looks, the more effort the writer actually put into the process.'|auto_translate }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+		<!--   Core JS Files   -->
+		<script src="{{ asset('js/core/popper.min.js') }}"></script>
+		<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+		<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+		<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+		<script>
+					var win = navigator.platform.indexOf('Win') > -1;
+		if (win && document.querySelector('#sidenav-scrollbar')) {
+		var options = {
+		damping: '0.5'
+		}
+		Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+		}
 		</script>
-<!-- Github buttons -->
-<script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
-<!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
-</body>
-</html>   
-
+		<!-- Github buttons -->
+		<script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+		<!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+		<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
+	</body>
+</html>
+ 
+										</p>
+ 
+										</p>
+ 
+							</p>
+ 
+							</p>
+ 
+							</p>
+ 
+							</p>
+ 
+							</p>

@@ -6,9 +6,7 @@
 		<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
 		<link href="{{ asset('img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
 		<link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png"/>
-		<title>
-			Argon Dashboard 2 by Creative Tim
-		</title>
+		<title>Rakcha</title>
 		<!--     Fonts and icons     -->
 		<link
 		href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
@@ -28,24 +26,19 @@
 		<!-- Navbar -->
 		<nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
 			<div class="container">
-				<a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 text-white" href="../pages/dashboard.html.twig">{{ 'Argon Dashboard 2'|auto_translate }}</a>
+				<a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 text-white" href="../pages/dashboard.html.twig">{{ 'Rakcha'|auto_translate }}</a>
 				<button aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler shadow-none ms-2" data-bs-target="#navigation" data-bs-toggle="collapse" type="button">
 					<span class="navbar-toggler-icon mt-2"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="navigation">
 					<ul class="navbar-nav mx-auto">
-						<li class="nav-item">
-							<a aria-current="page" class="nav-link d-flex align-items-center me-2 active" href="../pages/dashboard.html.twig">{{ 'Dashboard'|auto_translate }}</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link me-2" href="../pages/profile.html.twig">{{ 'Profile'|auto_translate }}</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link me-2" href="../pages/sign-up.html.twig">{{ 'Sign Up'|auto_translate }}</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link me-2" href="../pages/sign-in.html.twig">{{ 'Sign In'|auto_translate }}</a>
-						</li>
+						{% set items = ['Home', 'Profile', 'Register', 'Login'] %}
+						{% set pathItems = ['app_users_index','app_profile_index','app_register','app_login'] %}
+						{% for i in range(0, items|length - 1) %}
+							<li class="nav-item">
+								<a class="nav-link me-2" href="{{ path(pathItems[i]) }}">{{ items[i]|auto_translate }}</a>
+							</li>
+						{% endfor %}
 					</ul>
 					<ul class="navbar-nav d-lg-block d-none">
 						<li class="nav-item">
@@ -133,7 +126,7 @@
 										{% if field.vars.name == 'agreeTerms' %}
 											{{ form_label(field, 'I agree to Terms and Services', {'label_attr': {'class': 'form-check-label'}}) }}
 										{% elseif field.vars.name != '_token' %}
-											{{ form_label(field, field.vars.name|auto_translate, {'label_attr': {'class': 'col-form-label'}}) }}
+											{{ form_label(field, field.vars.label|auto_translate, {'label_attr': {'class': 'col-form-label'}}) }}
 										{% endif %}
 										{% if field.vars.name == 'agreeTerms' %}
 											{{ form_widget(field, {'attr': {'class': 'form-check-input', 'id': 'flexCheckDefault'}}) }}
