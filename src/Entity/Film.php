@@ -21,9 +21,12 @@ class Film
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
-
     #[Assert\NotBlank(message: 'The film name is required.')]
     #[Assert\Length(max: 255, maxMessage: 'The film name cannot exceed {{ limit }} characters.')]
+    #[Assert\Regex(
+        pattern: "/^[A-Z][a-zA-Z0-9\s]*$/",
+        message: 'The film name must start with an uppercase letter .'
+    )]
     #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
     private string $nom;
 
@@ -40,13 +43,12 @@ class Film
     //     message: 'The film duration must be a valid time.'
     // )]
     #[Assert\Range(
-        min: '00:30:00',
-        max: '03:00:00',
-        minMessage: 'The film duration must be at least 30 minutes.',
-        maxMessage: 'The film duration cannot exceed 3 hours.'
+        min: 'first day of January -54 years + 30 minutes',
+        max: 'first day of January -54 years +4 hours',
+        notInRangeMessage: 'You must be between 30 minutes and 4 hours Time to add this film duration  ',
     )]
-    #[ORM\Column(name: 'duree', type: 'time', nullable: false)]  
-    private DateTimeInterface $duree;
+    #[ORM\Column(name: 'duree', type: 'time', nullable: false)]
+    private DateTimeInterface $duree ;
 
     #[Assert\NotBlank(message: 'The film description is required.')]
     #[Assert\Length(max: 1000, maxMessage: 'The film description cannot exceed {{ limit }} characters.')]
@@ -72,8 +74,9 @@ class Film
     {
         $this->actors = new ArrayCollection();
         $this->categorys = new ArrayCollection();
+        $this->duree =new DateTime();
     }
-    
+
 
     public function getId(): ?int
     {
