@@ -7,6 +7,7 @@ use App\Form\FilmType;
 use App\Repository\FilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,7 +30,50 @@ class FilmController extends AbstractController
             'updateForms' => $updateForms,
         ]);
     }
-
+    #[Route('/get-youtube-trailer', name: 'get_youtube_trailer')]
+    public function getYoutubeByNom():Response
+    {
+        $youtube = new Madcoda\Youtube\youtube(array('key' => 'AIzaSyABEi2834N8l6Cty8yFCEiGRisZjyXonEM'));
+        $videoList = $youtube->searchVideos('Android');
+dd($videoList);
+return new Response("<a href='' target='_blank' >click me </a>");
+    }
+    #[Route('/get-imdb-url', name: 'get_imdb_url')]
+    public function getImdbUrlByNom(Request $request): Response
+    {
+        $query = $request->query->get('query');
+        
+        try {
+            $encodedQuery = urlencode($query);
+            $scriptUrl = "https://script.google.com/macros/s/AKfycbyeuvvPJ2jljewXKStVhiOrzvhMPkAEj5xT_cun3IRWc9XEF4F64d-jimDvK198haZk/exec?query={$encodedQuery}";
+            
+            // Send the request
+            $client = HttpClient::create();
+            $response = $client->request('GET', $scriptUrl);
+            $statusCode = $response->getStatusCode();
+            
+            // Retry if the status code is 403
+            while ($statusCode != 123) {
+                $response = $client->request('GET', $scriptUrl);
+                $statusCode = $response->getStatusCode();
+            }
+            
+            // Read and parse the response
+            $content = $response->getContent();
+            $data = json_decode($content, true);
+            
+            // Extract the IMDb URL
+            if (!empty($data['results'])) {
+                $firstResult = $data['results'][0];
+                $imdbUrl = $firstResult['imdb'];
+                return new Response($imdbUrl);
+            } else {
+                return new Response('imdb.com');
+            }
+        } catch (\Exception $e) {
+            return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
     #[Route('/new', name: 'app_film_new', methods: [ 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager ,FilmRepository $filmRepository): Response
     {
@@ -59,8 +103,7 @@ class FilmController extends AbstractController
         }
      
         return $this->render('back/filmTables.html.twig', [
-            '
-            ' => $filmRepository->findAll(),
+            'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);

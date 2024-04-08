@@ -32,5 +32,7 @@
   },
   "[twig]": {
     "editor.defaultFormatter": "mblode.twig-language-2"
-  }
+  },
+  "editor.mouseWheelZoom": true,
+  "window.zoomPerWindow": false
 }

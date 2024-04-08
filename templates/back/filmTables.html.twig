@@ -139,6 +139,18 @@
 								Create
 							</button>
 						</div>
+
+						{% set hasErrors = false %}
+						{% for field in form %}
+							{% if field.vars.errors|length > 0 %}
+								{% set hasErrors = true %}
+								{% for error in field.vars.errors %}
+									<script>
+										new Noty({type: 'error', layout: 'topRight', text: '{{ error.message }}', theme: 'sunset'}).show();
+									</script>
+								{% endfor %}
+							{% endif %}
+						{% endfor %}
 						<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 							<div class="modal-dialog">
 								<div class="modal-content">
@@ -152,7 +164,9 @@
 										{% for field in form %}
 											<div class="mb-3">
 													{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
-													{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+													{% if field.vars.name != 'Nom' %}
+														{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+													{% endif %}
 												{{ form_errors(field) }}
 											</div>
 										{% endfor %}
@@ -601,4 +615,14 @@ Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
 	<script async defer src="https://buttons.github.io/buttons.js"></script>
 	<!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
 	<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
-</body>{% endblock %}
+	{% if hasErrors %}
+		<script>
+			const myModal = new bootstrap.Modal('#staticBackdrop', {keyboard: false});
+const modalToggle = document.getElementById('staticBackdrop');
+myModal.show(modalToggle);
+		</script>
+	{% endif %}
+</body>
+
+{% endblock %}
+
