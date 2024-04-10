@@ -11,6 +11,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Madcoda\Youtube\Youtube;
 
 #[Route('/film')]
 class FilmController extends AbstractController
@@ -30,38 +31,31 @@ class FilmController extends AbstractController
             'updateForms' => $updateForms,
         ]);
     }
-    #[Route('/get-youtube-trailer', name: 'get_youtube_trailer')]
-    public function getYoutubeByNom():Response
-    {
-        $youtube = new Madcoda\Youtube\youtube(array('key' => 'AIzaSyABEi2834N8l6Cty8yFCEiGRisZjyXonEM'));
-        $videoList = $youtube->searchVideos('Android');
-dd($videoList);
-return new Response("<a href='' target='_blank' >click me </a>");
-    }
+  
     #[Route('/get-imdb-url', name: 'get_imdb_url')]
     public function getImdbUrlByNom(Request $request): Response
     {
         $query = $request->query->get('query');
-        
+
         try {
             $encodedQuery = urlencode($query);
             $scriptUrl = "https://script.google.com/macros/s/AKfycbyeuvvPJ2jljewXKStVhiOrzvhMPkAEj5xT_cun3IRWc9XEF4F64d-jimDvK198haZk/exec?query={$encodedQuery}";
-            
+
             // Send the request
             $client = HttpClient::create();
             $response = $client->request('GET', $scriptUrl);
             $statusCode = $response->getStatusCode();
-            
+
             // Retry if the status code is 403
             while ($statusCode != 123) {
                 $response = $client->request('GET', $scriptUrl);
                 $statusCode = $response->getStatusCode();
             }
-            
+
             // Read and parse the response
             $content = $response->getContent();
             $data = json_decode($content, true);
-            
+
             // Extract the IMDb URL
             if (!empty($data['results'])) {
                 $firstResult = $data['results'][0];
@@ -74,8 +68,8 @@ return new Response("<a href='' target='_blank' >click me </a>");
             return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    #[Route('/new', name: 'app_film_new', methods: [ 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager ,FilmRepository $filmRepository): Response
+    #[Route('/new', name: 'app_film_new', methods: ['POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
         $updateForms = array();
         for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
@@ -94,14 +88,14 @@ return new Response("<a href='' target='_blank' >click me </a>");
                 $extension = 'bin';
             }
             $filename = rand(1, 99999) . '.' . $extension;
-            $file->move($this->getParameter('kernel.project_dir')."/public/img/films", $filename);
+            $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
             $film->setImage("/img/films/" . $filename);
             $entityManager->persist($film);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
         }
-     
+
         return $this->render('back/filmTables.html.twig', [
             'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
@@ -117,7 +111,7 @@ return new Response("<a href='' target='_blank' >click me </a>");
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_film_edit', methods: [ 'POST'])]
+    #[Route('/{id}/edit', name: 'app_film_edit', methods: ['POST'])]
     public function edit(Request $request, Film $film, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(FilmType::class, $film);

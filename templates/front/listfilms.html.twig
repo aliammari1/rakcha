@@ -33,6 +33,7 @@
 
 		<section id="team" class="pt-4 pb-4 bg_grey">
 			<div class="container-xl">
+				{% set j = 0 %}
 				{% for i in range(0,films|length // 3) %}
 					<div class="team_1i row {% if not loop.first %} mt-4{% endif %} ">
 						{% for film in films|slice(loop.index0 * 3, 3) %}
@@ -47,24 +48,55 @@
 									</div>
 									<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0">
 										<h4 class="col_red">{{film.nom}}</h4>
-										<h6>categorys: {% for category in film.categorys %}
-											<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
-											{% if not loop.last %},
-											{% endif %}
-											
-										{% endfor %} </h6>
+										<h6>categorys:
+											{% for category in film.categorys %}
+												<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
+												{% if not loop.last %},
+												{% endif %}
+
+											{% endfor %}
+										</h6>
 										<button class="btn text-white">show imdb</button>
-										<h6>Actors: {% for actor in film.actors %}
-											<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
-											{% if not loop.last %},
-											{% endif %}
-										{% endfor %} </h6>
+										<h6>Actors:
+											{% for actor in film.actors %}
+												<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
+												{% if not loop.last %},
+												{% endif %}
+											{% endfor %}
+										</h6>
 										<p>{{film.description}}</p>
+
+										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#Youtubewatch{{j}}">
+											<i class="fa fa-play-circle align-middle me-1"></i>
+											Watch Trailer</button>
+										<div
+											class="modal fade" id="Youtubewatch{{j}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden=" true">
+											{# modal-md ou modal-sm ou modal-lg ou modal-xl #}
+											<div class="modal-dialog modal-md">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+													</div>
+													<div class="modal-body">
+														<iframe width="560" height="315" src="{{videoUrl[j]}}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+														<button type="button" class="btn btn-primary">Understood</button>
+													</div>
+												</div>
+											</div>
+										</div>
 									</div>
+
 								</div>
 							</div>
+							{% set j = j + 1  %}
 						{% endfor %}
+
 					</div>
+
 				{% endfor %}
 			</div>
 		</section>
@@ -90,7 +122,7 @@ document.body.style.paddingTop = '0'
 }
 }
 		</script>
-		
+
 	</body>
-	
+
 {% endblock %}
