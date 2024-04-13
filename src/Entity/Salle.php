@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Repository\SalleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert ;
+
+
 
 
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
@@ -17,14 +20,28 @@ class Salle
     private int $idSalle;
 
     #[ORM\Column(name: 'nb_places', type: 'integer', nullable: false)]
+    #[Assert\NotBlank(message: 'The number of seats is required.')]
+    #[Assert\PositiveOrZero(message: 'The number of seats must be a positive integer or zero.')]
     private int $nbPlaces;
 
     #[ORM\Column(name: 'nom_salle', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: 'The room name is required.')]
+    #[Assert\Length(max: 50, maxMessage: 'The room name cannot exceed {{ limit }} characters.')]
     private string $nomSalle;
 
-    #[ORM\ManyToOne(targetEntity: Cinema::class)]
-    #[ORM\JoinColumn(name: 'id_cinema', referencedColumnName: 'id_cinema')]
-    private ?Cinema $idCinema = null;
+    #[ORM\Column(name: 'id_cinema', type: 'integer',  nullable: false)]
+    private int $idCinema;
+
+  
+
+    
+    #[ORM\ManyToOne(targetEntity: Cinema::class, inversedBy: "salles")]
+    #[ORM\JoinColumn(name: "id_cinema", referencedColumnName: "id_cinema" , nullable: false)]
+     
+    private $cinema;
+
+  
+  
 
     public function getIdSalle(): ?int
     {
@@ -36,9 +53,21 @@ class Salle
         return $this->nbPlaces;
     }
 
+    public function getIdCinema(): ?int
+    {
+        return $this->idCinema;
+    }
+
     public function setNbPlaces(int $nbPlaces): static
     {
         $this->nbPlaces = $nbPlaces;
+
+        return $this;
+    }
+
+    public function setIdCinema(int $idCinema): static
+    {
+        $this->idCinema = $idCinema;
 
         return $this;
     }
@@ -55,14 +84,15 @@ class Salle
         return $this;
     }
 
-    public function getIdCinema(): ?Cinema
+
+    public function getCinema(): ?Cinema
     {
-        return $this->idCinema;
+        return $this->cinema;
     }
 
-    public function setIdCinema(?Cinema $idCinema): static
+    public function setCinema(?Cinema $cinema): self
     {
-        $this->idCinema = $idCinema;
+        $this->cinema = $cinema;
 
         return $this;
     }

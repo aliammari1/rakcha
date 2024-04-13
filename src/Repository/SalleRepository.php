@@ -45,4 +45,19 @@ class SalleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+ /**
+     * Récupère la liste des salles d'un cinéma donné.
+     *
+     * @param int $idCinema L'ID du cinéma
+     * @return array La liste des salles du cinéma
+     */
+    public function getSallesByIdCinema(int $idCinema): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.idCinema = :idCinema')
+            ->setParameter('idCinema', $idCinema)
+            ->getQuery()
+            ->getResult();
+    }
 }
