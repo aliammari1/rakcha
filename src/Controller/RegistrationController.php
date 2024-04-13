@@ -36,15 +36,14 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('password')->getData()
                 )
             );
-            $file = $form['photoDeProfil']->getData();
 
+            $file = $form['photoDeProfil']->getData();
             $extension = $file->guessExtension();
             if (!$extension) {
                 // extension cannot be guessed

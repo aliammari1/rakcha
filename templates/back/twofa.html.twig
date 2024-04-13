@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+		<link href="{{ asset('img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
+		<link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png"/>
+		<title>Rakcha</title>
+		<!--     Fonts and icons     -->
+		<link
+		href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+		<!-- Nucleo Icons -->
+		<link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet">
+		<link
+		href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
+		<!-- Font Awesome Icons -->
+		<script crossorigin="anonymous" src="https://kit.fontawesome.com/42d5adcbca.js"></script>
+		<link
+		href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
+		<!-- CSS Files -->
+		<link href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
+		<link href="{{ asset('css/loading.css') }}" rel="stylesheet">
+	</head>
+	<body class="">
+		<div id="loading">
+			<div class="loader">
+				<div class="box box0">
+					<div></div>
+				</div>
+				<div class="box box1">
+					<div></div>
+				</div>
+				<div class="box box2">
+					<div></div>
+				</div>
+				<div class="box box3">
+					<div></div>
+				</div>
+				<div class="box box4">
+					<div></div>
+				</div>
+				<div class="box box5">
+					<div></div>
+				</div>
+				<div class="box box6">
+					<div></div>
+				</div>
+				<div class="box box7">
+					<div></div>
+				</div>
+				<div class="ground">
+					<div></div>
+				</div>
+			</div>
+		</div>
+		<script>
+			let pageLoaded = false;
+
+// Set pageLoaded to true when the page finishes loading
+window.onload = function () {
+pageLoaded = true;
+// If 5 seconds have already passed, hide the loading screen
+if (new Date().getTime() - startTime >= 5000) {
+document.getElementById('loading').style.display = 'none';
+}
+};
+
+let startTime = new Date().getTime();
+
+// Hide the loading screen 5 seconds after the page starts loading
+setTimeout(function () {
+if (pageLoaded) {
+document.getElementById('loading').style.display = 'none';
+}
+}, 5000);
+		</script>
+		<!-- Navbar -->
+		<nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
+			<div class="container">
+				<a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 text-white" href="../pages/dashboard.html.twig">{{ 'Rakcha'|auto_translate }}</a>
+				<button aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler shadow-none ms-2" data-bs-target="#navigation" data-bs-toggle="collapse" type="button">
+					<span class="navbar-toggler-icon mt-2"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navigation">
+					<ul class="navbar-nav mx-auto">
+						{% set items = ['Home', 'Profile', 'Register', 'Login'] %}
+						{% set pathItems = ['app_users_index','app_profile_index','app_register','app_login'] %}
+						{% for i in range(0, items|length - 1) %}
+							<li class="nav-item">
+								<a class="nav-link me-2" href="{{ path(pathItems[i]) }}">{{ items[i]|auto_translate }}</a>
+							</li>
+						{% endfor %}
+					</ul>
+					<ul class="navbar-nav d-lg-block d-none">
+						<li class="nav-item">
+							<a class="btn btn-sm mb-0 me-1 bg-gradient-light" href="https://www.creative-tim.com/product/argon-dashboard">{{ 'Free Download'|auto_translate }}</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<!-- End Navbar -->
+		<main class="main-content mt-0">
+			<div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signup-cover.jpg'); background-position: top;">
+				<span class="mask bg-gradient-dark opacity-6"></span>
+				<div class="container">
+					<div class="row justify-content-center">
+						<div class="col-lg-5 text-center mx-auto">
+							<h1 class="text-white mb-2 mt-5">{{ 'Welcome!'|auto_translate }}</h1>
+							<p class="text-lead text-white">{{ 'Use these awesome forms to login or create new account in your project for free.'|auto_translate }}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row mt-lg-n10 mt-md-n11 mt-n10 justify-content-center">
+					<div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+						<div class="card mb-5">
+							<div class="card-body px-lg-5 py-lg-5 text-center">
+
+								<div class="mt-4 p-4">
+									<h1 class="h3 mb-3 font-weight-normal">Use Authy or Google Authenticator to Scan the QR Code</h1>
+
+									<img src="{{ path('app_qr_code') }}" alt="2fa QR Code">
+								</div>
+
+								<div class="text-center text-muted mb-4">
+									<h2>2-Step Verification</h2>
+								</div>
+								<div class="row gx-2 gx-sm-3">
+									<div class="col">
+										<div class="form-group">
+											<input type="text" class="form-control form-control-lg" maxlength="1" autocomplete="off" autocapitalize="off">
+										</div>
+									</div>
+									<div class="col">
+										<div class="form-group">
+											<input type="text" class="form-control form-control-lg" maxlength="1" autocomplete="off" autocapitalize="off">
+										</div>
+									</div>
+									<div class="col">
+										<div class="form-group">
+											<input type="text" class="form-control form-control-lg" maxlength="1" autocomplete="off" autocapitalize="off">
+										</div>
+									</div>
+									<div class="col">
+										<div class="form-group">
+											<input type="text" class="form-control form-control-lg" maxlength="1" autocomplete="off" autocapitalize="off">
+										</div>
+									</div>
+								</div>
+								<div class="text-center">
+									<button type="button" class="btn bg-gradient-warning w-100">Send code</button>
+									<span class="text-muted text-sm">Haven't received it?<a href="javascript:;">
+											Resend a new code</a>.</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<!-- -------- START FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
+		<footer class="footer py-5">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-8 mb-4 mx-auto text-center">
+						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Company'|auto_translate }}</a>
+						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'About Us'|auto_translate }}</a>
+						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Team'|auto_translate }}</a>
+						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Products'|auto_translate }}</a>
+						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Blog'|auto_translate }}</a>
+						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Pricing'|auto_translate }}</a>
+					</div>
+					<div class="col-lg-8 mx-auto text-center mb-4 mt-2">
+						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-8 mx-auto text-center mt-1">
+						<p class="mb-0 text-secondary">{{ 'Copyright ©Soft by Creative Tim.'|auto_translate }}</p>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
+		<!--   Core JS Files   -->
+		<script src="{{ asset('js/core/popper.min.js') }}"></script>
+		<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+		<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+		<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+		<script>
+			var win = navigator.platform.indexOf('Win') > -1;
+if (win && document.querySelector('#sidenav-scrollbar')) {
+var options = {
+damping: '0.5'
+}
+Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+}
+		</script>
+		<!-- Github buttons -->
+		<script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+		<!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+		<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
+	</body>
+</html>

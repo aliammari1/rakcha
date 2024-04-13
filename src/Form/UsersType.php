@@ -9,8 +9,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,36 +22,33 @@ class UsersType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'required' => true,
                 'label' => 'Last Name',
                 'attr' => [
                     'placeholder' => 'Enter your last name',
                 ],
             ])
             ->add('prenom', TextType::class, [
-                'required' => true,
                 'label' => 'First Name',
                 'attr' => [
                     'placeholder' => 'Enter your first name',
                 ],
             ])
-            ->add('numTelephone', TelType::class, [
-                'required' => true,
+            ->add('numTelephone', IntegerType::class, [
                 'label' => 'Phone Number',
                 'attr' => [
                     'placeholder' => 'Enter your phone number',
                 ],
             ])
-            ->add('password', PasswordType::class, [
-                'required' => true,
+            ->add('plainPassword', PasswordType::class, [
                 'trim' => true,
                 'label' => 'Password',
+                'toggle' => true,
+                'mapped' => false,
                 'attr' => [
                     'placeholder' => 'Enter your password',
                 ],
             ])
             ->add('role', ChoiceType::class, [
-                'required' => true,
                 'label' => 'Role',
                 'choices' => [
                     'Client' => 'client',
@@ -63,14 +60,12 @@ class UsersType extends AbstractType
                 ],
             ])
             ->add('adresse', TextType::class, [
-                'required' => true,
                 'label' => 'Address',
                 'attr' => [
                     'placeholder' => 'Enter your address',
                 ],
             ])
             ->add('dateDeNaissance', DateType::class, [
-                'required' => true,
                 'label' => 'Date of Birth',
                 'widget' => 'single_text',
                 'format' => 'yyyy-MM-dd',
@@ -79,7 +74,6 @@ class UsersType extends AbstractType
                 ],
             ])
             ->add('email', EmailType::class, [
-                'required' => true,
                 'label' => 'Email Address',
                 'attr' => [
                     'placeholder' => 'Enter your email address',
@@ -87,7 +81,6 @@ class UsersType extends AbstractType
             ])
             ->add('photoDeProfil', FileType::class, [
                 'mapped' => false,
-                'required' => false,
                 'label' => 'Profile Photo',
                 'attr' => [
                     'placeholder' => 'Choose your profile photo',
@@ -95,7 +88,7 @@ class UsersType extends AbstractType
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
-                'label' => 'Agree to Terms',
+                'label' => 'I Agree to Terms and Conditions',
                 'constraints' => [
                     new IsTrue([
                         'message' => 'You should agree to our terms.',
