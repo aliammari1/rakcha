@@ -20,9 +20,61 @@
 		href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
 		<!-- CSS Files -->
 		<link href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
+		<link href="{{ asset('css/loading.css') }}" rel="stylesheet">
 	</head>
-	<body
-		class="">
+	<body class="">
+		<div id="loading">
+			<div class="loader">
+				<div class="box box0">
+					<div></div>
+				</div>
+				<div class="box box1">
+					<div></div>
+				</div>
+				<div class="box box2">
+					<div></div>
+				</div>
+				<div class="box box3">
+					<div></div>
+				</div>
+				<div class="box box4">
+					<div></div>
+				</div>
+				<div class="box box5">
+					<div></div>
+				</div>
+				<div class="box box6">
+					<div></div>
+				</div>
+				<div class="box box7">
+					<div></div>
+				</div>
+				<div class="ground">
+					<div></div>
+				</div>
+			</div>
+		</div>
+		<script>
+			let pageLoaded = false;
+
+// Set pageLoaded to true when the page finishes loading
+window.onload = function () {
+pageLoaded = true;
+// If 5 seconds have already passed, hide the loading screen
+if (new Date().getTime() - startTime >= 5000) {
+document.getElementById('loading').style.display = 'none';
+}
+};
+
+let startTime = new Date().getTime();
+
+// Hide the loading screen 5 seconds after the page starts loading
+setTimeout(function () {
+if (pageLoaded) {
+document.getElementById('loading').style.display = 'none';
+}
+}, 5000);
+		</script>
 		<!-- Navbar -->
 		<nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
 			<div class="container">
@@ -93,7 +145,7 @@
 									</a>
 								</div>
 								<div class="col-3 me-auto px-1">
-									<a class="btn btn-outline-light w-100" href="javascript:;">
+									<a class="btn btn-outline-light w-100" href="{{path('connect_google_start')}}">
 										<svg width="24px" height="32px" viewbox="0 0 64 64" version="1.1">
 											<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
 												<g transform="translate(3.000000, 2.000000)" fill-rule="nonzero">
@@ -106,6 +158,16 @@
 										</svg>
 									</a>
 								</div>
+								<div class="col-3 me-auto px-1">
+									<a class="btn btn-outline-light w-100" href="{{path('connect_microsoft_start')}}">
+										<svg xmlns="http://www.w3.org/2000/svg" height="32px" viewbox="0 0 128 128" version="1.1">
+											<path fill="#f1511b" d="M51.939 51.939H0V0h51.939z"/>
+											<path fill="#80cc28" d="M109.287 51.939H57.348V0h51.939z"/>
+											<path fill="#00adef" d="M51.938 109.307H0V57.368h51.938z"/>
+											<path fill="#fbbc09" d="M109.287 109.307H57.348V57.368h51.939z"/>
+										</svg>
+									</a>
+								</div>
 								<div class="mt-2 position-relative text-center">
 									<p class="text-sm font-weight-bold mb-2 text-secondary text-border d-inline z-index-2 bg-white px-3">{{ 'or'|auto_translate }}</p>
 								</div>
@@ -114,8 +176,6 @@
 								{% for flash_error in app.flashes('verify_email_error') %}
 									<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 								{% endfor %}
-
-								<h1>Register</h1>
 
 								{{ form_errors(registrationForm) }}
 
@@ -126,7 +186,8 @@
 										{% if field.vars.name == 'agreeTerms' %}
 											{{ form_label(field, 'I agree to Terms and Services', {'label_attr': {'class': 'form-check-label'}}) }}
 										{% elseif field.vars.name != '_token' %}
-											{{ form_label(field, field.vars.label|auto_translate, {'label_attr': {'class': 'col-form-label'}}) }}
+											{# field.vars.label|auto_translate #}
+											{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
 										{% endif %}
 										{% if field.vars.name == 'agreeTerms' %}
 											{{ form_widget(field, {'attr': {'class': 'form-check-input', 'id': 'flexCheckDefault'}}) }}

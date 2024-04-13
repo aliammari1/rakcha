@@ -29,45 +29,59 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     private int $id;
 
     #[ORM\Column(name: 'nom', type: 'string', length: 50)]
+    #[Assert\NotBlank(message: 'The name cannot be blank')]
     #[Assert\NotNull(message: 'The name cannot be null')]
     #[Assert\Length(min: 2, max: 50, minMessage: 'The name must have at least {{ limit }} characters', maxMessage: 'The name cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The name must be a string')]
     private string $nom;
 
     #[ORM\Column(name: 'prenom', type: 'string', length: 50)]
+    #[Assert\NotBlank(message: 'The surname cannot be blank')]
     #[Assert\NotNull(message: 'The surname cannot be null')]
     #[Assert\Length(min: 2, max: 50, minMessage: 'The surname must have at least {{ limit }} characters', maxMessage: 'The surname cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The surname must be a string')]
     private string $prenom;
 
     #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: true)]
+    #[Assert\NotBlank(message: 'The telephone number cannot be blank')]
     #[Assert\NotNull(message: 'The telephone number cannot be null')]
     #[Assert\Positive(message: 'The telephone number must be a positive integer')]
+    #[Assert\Type(type: 'integer', message: 'The telephone number must be an integer')]
     private ?int $numTelephone;
 
     #[ORM\Column(name: 'password', type: 'string', length: 180)]
+    #[Assert\NotBlank(message: 'The password cannot be blank')]
     #[Assert\NotNull(message: 'The password cannot be null')]
     #[Assert\Length(min: 8, max: 180, minMessage: 'The password must have at least {{ limit }} characters', maxMessage: 'The password cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The password must be a string')]
     private string $password;
 
     #[ORM\Column(name: 'role', type: 'string', length: 50)]
+    #[Assert\NotBlank(message: 'The role cannot be blank')]
     #[Assert\NotNull(message: 'The role cannot be null')]
     #[Assert\Choice(choices: ['admin', 'client'], message: 'Invalid role. Choose either "admin" or "client".')]
+    #[Assert\Type(type: 'string', message: 'The role must be a string')]
     private string $role;
 
     #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: true)]
+    #[Assert\NotBlank(message: 'The address cannot be blank')]
     #[Assert\NotNull(message: 'The address cannot be null')]
     #[Assert\Length(min: 5, max: 50, minMessage: 'The address must have at least {{ limit }} characters', maxMessage: 'The address cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The address must be a string')]
     private ?string $adresse = null;
 
     #[ORM\Column(name: 'date_de_naissance', type: 'date', nullable: true)]
-    #[Assert\NotNull(message: 'The date of birth cannot be null')]
     #[Assert\NotBlank(message: 'The date of birth cannot be blank')]
+    #[Assert\NotNull(message: 'The date of birth cannot be null')]
     #[Assert\LessThanOrEqual(value: 'today', message: 'The date of birth cannot be in the future')]
+    #[Assert\Type(type: '\DateTimeInterface', message: 'The date of birth must be a valid date')]
     private ?DateTimeInterface $dateDeNaissance = null;
 
     #[ORM\Column(name: 'email', type: 'string', length: 180, unique: true)]
     #[Assert\NotBlank(message: 'The email cannot be blank')]
     #[Assert\NotNull(message: 'The email cannot be null')]
     #[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
+    #[Assert\Type(type: 'string', message: 'The email must be a string')]
     private string $email;
 
     #[ORM\Column(name: 'photo_de_profil', type: 'string', length: 255)]
