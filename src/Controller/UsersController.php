@@ -92,22 +92,29 @@ class UsersController extends AbstractController
                 $user->setPhotoDeProfil("/img/users/" . $filename);
             }
             $user->setIsVerified(false);
-            if ($user->getRole() == 'client')
-                $user->setRoles(['ROLE_CLIENT']);
-            else if ($user->getRole() == 'admin')
-                $user->setRoles(['ROLE_ADMIN']);
-            else if ($user->getRole() == 'responsableDeCinema')
-                $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
+            $role = $user->getRole();
+            switch ($role) {
+                case 'client':
+                    $user->setRoles(['ROLE_CLIENT']);
+                    break;
+                case 'admin':
+                    $user->setRoles(['ROLE_ADMIN']);
+                    break;
+                case 'responsableDeCinema':
+                    $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
+                    break;
+            }
             $entityManager->persist($user);
             $entityManager->flush();
             return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        $hasErrorsCreate = true;
         return $this->render('back/UserTables.html.twig', [
             'pagination' => $pagination,
             'users' => $usersRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
+            'hasErrorsCreate' => $hasErrorsCreate,
         ]);
     }
 
