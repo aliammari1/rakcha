@@ -3,7 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Seance;
+use App\Entity\Salle;
 use App\Form\SeanceType;
+use App\Repository\CinemaRepository;
+use App\Repository\FilmRepository;
+use App\Repository\SalleRepository;
 use App\Repository\SeanceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,11 +18,21 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/seance')]
 class SeanceController extends AbstractController
 {
-    #[Route('/', name: 'app_seance_index', methods: ['GET'])]
-    public function index(SeanceRepository $seanceRepository): Response
+    #[Route('/', name: 'app_seance_index', methods: ['GET' , 'POST'])]
+    public function index(SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
-        return $this->render('seance/index.html.twig', [
+        $form = $this->createForm(SeanceType::class, new Seance());
+        $updateForms = array();
+        for ($i = 0; $i < count($seanceRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(SeanceType::class, $seanceRepository->findAll()[$i])->createView();
+        }
+        return $this->render('seance/SeancesTable.html.twig', [
             'seances' => $seanceRepository->findAll(),
+            'cinemas' =>  $cinemaRepository->findAll(),
+            'films' => $filmRepository->findAll(),
+            'salles' => $salleRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
         ]);
     }
 
@@ -35,6 +49,7 @@ class SeanceController extends AbstractController
 
             return $this->redirectToRoute('app_seance_index', [], Response::HTTP_SEE_OTHER);
         }
+
 
         return $this->renderForm('seance/new.html.twig', [
             'seance' => $seance,
