@@ -15,7 +15,7 @@ class ListfilmsController extends AbstractController
     #[Route('/listfilms', name: 'app_listfilms_index')]
     public function index(FilmRepository $filmRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyDtd3AAs9ukAs255nuuqOmGka4uakmfXH4'));
+        $youtube = new Youtube(array('key' => 'AIzaSyCbx2VR_eGLajOiHhRM_t3L7DxCpzeR8fQ'));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         foreach ($films as $film) {
@@ -38,7 +38,7 @@ class ListfilmsController extends AbstractController
     public function indexHome(FilmRepository $filmRepository): Response
     {
 
-        $youtube = new Youtube(array('key' => 'AIzaSyDtd3AAs9ukAs255nuuqOmGka4uakmfXH4'));
+        $youtube = new Youtube(array('key' => 'AIzaSyCbx2VR_eGLajOiHhRM_t3L7DxCpzeR8fQ'));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         

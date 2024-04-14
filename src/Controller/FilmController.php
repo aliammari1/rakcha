@@ -43,6 +43,7 @@ class FilmController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['image']->getData();
+            if ($file) {
 
             $extension = $file->guessExtension();
             if (!$extension) {
@@ -52,6 +53,7 @@ class FilmController extends AbstractController
             $filename = rand(1, 99999) . '.' . $extension;
             $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
             $film->setImage("/img/films/" . $filename);
+        }
             $entityManager->persist($film);
             $entityManager->flush();
             

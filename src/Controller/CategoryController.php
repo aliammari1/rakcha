@@ -49,8 +49,8 @@ class CategoryController extends AbstractController
         }
         $hasErrorsCreate = true;
         return $this->render('back/categoryTables.html.twig', [
-            'category' => $category,
-            'form' => $form,
+            'categorys' => $categoryRepository->findAll(),
+            'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate
         ]);

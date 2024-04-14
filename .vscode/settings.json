@@ -31,7 +31,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[twig]": {
-    "editor.defaultFormatter": "mblode.twig-language-2"
+    "editor.defaultFormatter": "serhatkaya.twig-formatter"
   },
   "editor.mouseWheelZoom": true,
   "window.zoomPerWindow": false
