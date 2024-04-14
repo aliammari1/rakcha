@@ -21,13 +21,17 @@ class Salle
 
     #[ORM\Column(name: 'nb_places', type: 'integer', nullable: false)]
     #[Assert\NotBlank(message: 'The number of seats is required.')]
-    #[Assert\PositiveOrZero(message: 'The number of seats must be a positive integer or zero.')]
+    #[Assert\Positive(message: 'The number of seats must be a positive integer.')]
     private int $nbPlaces;
 
     #[ORM\Column(name: 'nom_salle', type: 'string', length: 50, nullable: false)]
     #[Assert\NotBlank(message: 'The room name is required.')]
-    #[Assert\Length(max: 50, maxMessage: 'The room name cannot exceed {{ limit }} characters.')]
-    private string $nomSalle;
+    #[Assert\Length(
+        min: 5,
+        max: 10,
+        minMessage: 'The room name must be at least {{ limit }} characters long.',
+        maxMessage: 'The room name cannot exceed {{ limit }} characters.'
+    )]      private string $nomSalle;
 
     #[ORM\Column(name: 'id_cinema', type: 'integer',  nullable: false)]
     private int $idCinema;

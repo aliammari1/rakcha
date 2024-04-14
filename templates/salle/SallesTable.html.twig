@@ -1,4 +1,5 @@
 {% extends 'baseBack.html.twig' %}
+	{% import 'cinema/macros.html.twig' as macros %}
 
 
 {% block backContent %}
@@ -138,31 +139,14 @@
 							<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
 								Add New Room
 							</button>
+							{{macros.display_notifications_noty('success',app.flashes('salles'))}}
+								{{macros.display_form_notifications_noty(form)}}
+								{% if updateform is defined %}
+									{{macros.display_form_notifications_noty(updateform)}}
+								{% endif %}
 						</div>
 						<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h5 class="modal-title" id="staticBackdropLabel">ADD Room</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										{{ form_start(form, {'action': path('app_salle_new', {'idCinema': cinema.idCinema})}) }}
-
-										{% for field in form %}
-											<div class="mb-3">
-												{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
-												{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
-												{{ form_errors(field) }}
-											</div>
-										{% endfor %}	
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-										<button class="btn">{{ button_label|default('Save') }}</button>
-										{{ form_end(form) }}
-									</div>
-								</div>
+							<div class="modal-dialog">{{macros.render_modal_form(form,path('app_salle_new', {'idCinema': cinema.idCinema}),'Create Salle')}}
 							</div>
 						</div>
 						<div class="card-body px-0 pt-0 pb-2">
@@ -204,28 +188,11 @@
 													</button>
 													<div class="modal fade" id="staticBackdrop{{i}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 														<div class="modal-dialog">
-															<div class="modal-content">
-																<div class="modal-header">
-																	<h5 class="modal-title" id="staticBackdropLabel">EDIT {{salle.nomSalle}}</h5>
-																	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-																</div>
-																<div class="modal-body">
-																	{{ form_start(updateForms[i], {'action': path('app_salle_edit', {'idSalle': salle.idSalle, 'idCinema': cinema.idCinema})}) }}
-
-																	{% for field in updateForms[i] %}
-																		<div class="mb-3">
-																			{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
-																			{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
-																			{{ form_errors(field) }}
-																		</div>
-																	{% endfor %}																	
-																</div>
-																<div class="modal-footer">
-																	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-																	<button class="btn">{{ button_label|default('Save') }}</button>
-																	{{ form_end(updateForms[i]) }}
-																</div>
-															</div>
+															{% if formUpdateNumber is not defined or i != formUpdateNumber %}
+																{{ macros.render_modal_form(updateForms[i], path('app_salle_edit', {'idSalle': salle.idSalle, 'idCinema': cinema.idCinema, 'formUpdateNumber': i}), 'Edit Salle ' ~ i) }}
+															{% else %}
+																{{ macros.render_modal_form(updateform, path('app_salle_edit', {'idSalle': salle.idSalle, 'idCinema': cinema.idCinema, 'formUpdateNumber': i}), 'Edit Salle ' ~ i) }}
+															{% endif %}
 														</div>
 													</div>
 												</td>
@@ -559,4 +526,18 @@ Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
 	<script async defer src="https://buttons.github.io/buttons.js"></script>
 	<!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
 	<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
+	{% if hasErrorsCreate is defined  %}
+		<script>
+			const myModal = new bootstrap.Modal('#staticBackdrop', {keyboard: false});
+const modalToggle = document.getElementById('staticBackdrop');
+myModal.show(modalToggle);
+		</script>
+	{% endif %}
+	{% if formUpdateNumber is defined %}
+		<script>
+			const myModal = new bootstrap.Modal("{{ '#staticBackdrop' ~ formUpdateNumber }}", {keyboard: false});
+const modalToggle = document.getElementById("{{ 'staticBackdrop' ~ formUpdateNumber }}");
+myModal.show(modalToggle);
+		</script>
+	{% endif %}
 </body>{% endblock %}

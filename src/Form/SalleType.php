@@ -17,18 +17,10 @@ class SalleType extends AbstractType
     {
         $builder
             ->add('nomSalle', null, [
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter the name of the room',
-                    ]),
-                ],
                 'label' => 'Room Name',
             ])
             ->add('nbPlaces', null, [
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter the number of seats',
-                    ]),
                     new Type([
                         'type' => 'numeric',
                         'message' => 'The value must be numeric',

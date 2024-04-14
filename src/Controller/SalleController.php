@@ -34,26 +34,12 @@ class SalleController extends AbstractController
     for ($i = 0; $i < count($salles); $i++) {
         $updateForms[$i] = $this->createForm(SalleType::class, $salles[$i])->createView();
     }
-
-    // Passer les erreurs de validation au modèle
-    $errors = $this->getErrorsFromForm($form);
-
-    if (!empty($errors)) {
-        // Afficher une alerte avec l'erreur
-        $errorMessage = $errors[0]->getMessage();
-        $this->addFlash('error', $errorMessage);
-        return $this->redirectToRoute('app_salle_index', [], Response::HTTP_SEE_OTHER);
-
-    }
-
-
     if ($cinema) {
         return $this->render('salle/SallesTable.html.twig', [
             'salles' => $salles,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'cinema' => $cinema,
-            'errors' => $errors, // Passer les erreurs au modèle Twig
         ]);
     }
 
@@ -63,17 +49,23 @@ class SalleController extends AbstractController
         'form' => $form->createView(),
         'updateForms' => [],
         'cinema' => null,
-        'errors' => $errors, // Passer les erreurs au modèle Twig
     ]);
 }
 
 #[Route('/{idCinema}/new', name: 'app_salle_new', methods: ['GET', 'POST'])]
 
-public function new(int $idCinema, Request $request, EntityManagerInterface $entityManager): Response
+public function new(int $idCinema, Request $request, EntityManagerInterface $entityManager, SalleRepository  $salleRepository): Response
 {
     $cinema = $entityManager->find(Cinema::class, $idCinema);
     if (!$cinema) {
         throw $this->createNotFoundException('No cinema found for id ' . $idCinema);
+    }
+    $salles = $salleRepository->findBy(['idCinema' => $idCinema]);
+
+    $form = $this->createForm(SalleType::class, new Salle());
+    $updateForms = array();
+    for ($i = 0; $i < count($salles); $i++) {
+        $updateForms[$i] = $this->createForm(SalleType::class, $salles[$i])->createView();
     }
 
     $salle = new Salle();
@@ -89,47 +81,15 @@ public function new(int $idCinema, Request $request, EntityManagerInterface $ent
         return $this->redirectToRoute('app_salle_index', ['idCinema' => $idCinema], Response::HTTP_SEE_OTHER);
     }
 
-    // Passer les erreurs de validation au modèle
-    $errors = $this->getErrorsFromForm($form);
-
-    if (!empty($errors)) {
-        // Afficher une alerte avec l'erreur
-        $errorMessage = $errors[0]->getMessage();
-        $this->addFlash('error', $errorMessage);
-        return $this->redirectToRoute('app_salle_index', ['idCinema' => $idCinema], Response::HTTP_SEE_OTHER);
-    }
-
-    return $this->renderForm('salle/new.html.twig', [
-        'salle' => $salle,
-        'form' => $form,
+    $hasErrorsCreate = true;
+    return $this->render('salle/SallesTable.html.twig', [
+        'salles' => $salles, // Passer les salles existantes à la vue
+        'form' => $form->createView(),
+        'updateForms' => $updateForms,
+        'cinema' => $cinema,
+        'hasErrorsCreate' => $hasErrorsCreate,
     ]);
-}
-
-
-
-
-    /**
- * Récupère les erreurs de validation du formulaire.
- *
- * @param FormInterface $form Le formulaire
- * @return FormError[] Les erreurs de validation
- */
-private function getErrorsFromForm(FormInterface $form): array
-{
-    $errors = [];
-
-    // Récupérer les erreurs de chaque champ
-    foreach ($form as $child) {
-        /** @var FormErrorIterator $childErrors */
-        $childErrors = $child->getErrors(true, false);
-
-        // Ajouter chaque erreur à la liste des erreurs
-        foreach ($childErrors as $error) {
-            $errors[] = $error;
-        }
-    }
-
-    return $errors;
+    
 }
 
     #[Route('/{idSalle}', name: 'app_salle_show', methods: ['GET'])]
@@ -140,35 +100,41 @@ private function getErrorsFromForm(FormInterface $form): array
         ]);
     }
 
-    #[Route('/{idCinema}/{idSalle}/edit', name: 'app_salle_edit', methods: ['GET', 'POST'])]
-    public function edit(int $idCinema, Request $request, Salle $salle, EntityManagerInterface $entityManager): Response
+    #[Route('/{idCinema}/{idSalle}/edit/{formUpdateNumber}/', name: 'app_salle_edit', methods: ['GET', 'POST'])]
+    public function edit($formUpdateNumber, int $idCinema, Request $request, Salle $salle, EntityManagerInterface $entityManager, SalleRepository $salleRepository): Response
     {
         $cinema = $entityManager->find(Cinema::class, $idCinema);
         if (!$cinema) {
             throw  $this->createNotFoundException('No cinema found for id'.$idCinema);
         }
-        $form = $this->createForm(SalleType::class, $salle);
-        $form->handleRequest($request);
+        $salles = $salleRepository->findBy(['idCinema' => $idCinema]);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $form = $this->createForm(SalleType::class, new Salle());
+        $updateForms = array();
+        for ($i = 0; $i < count($salles); $i++) {
+            $updateForms[$i] = $this->createForm(SalleType::class, $salles[$i])->createView();
+        }
+        $form = $this->createForm(SalleType::class, new Salle());
+
+        $updateform = $this->createForm(SalleType::class, $salle);
+
+        $updateform->handleRequest($request);
+
+        if ($updateform->isSubmitted() && $updateform->isValid()) {
             $entityManager->flush();
 
             return $this->redirectToRoute('app_salle_index', ['idCinema' => $idCinema], Response::HTTP_SEE_OTHER);
         }
 
-        // Passer les erreurs de validation au modèle
-    $errors = $this->getErrorsFromForm($form);
-
-    if (!empty($errors)) {
-        // Afficher une alerte avec l'erreur
-        $errorMessage = $errors[0]->getMessage();
-        $this->addFlash('error', $errorMessage);
-        return $this->redirectToRoute('app_salle_index', ['idCinema' => $idCinema], Response::HTTP_SEE_OTHER);
-    }
-
-        return $this->renderForm('salle/edit.html.twig', [
-            'salle' => $salle,
-            'form' => $form,
+   
+        $entityManager->refresh($salle);
+        return $this->render('salle/SallesTable.html.twig', [
+            'salles' => $salles, // Passer les salles existantes à la vue
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
+            'cinema' => $cinema,
+            "formUpdateNumber" => $formUpdateNumber,
+            'updateform' => $updateform->createView(),
         ]);
     }
 
