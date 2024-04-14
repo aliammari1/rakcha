@@ -59,7 +59,7 @@ class ActorController extends AbstractController
         }
         $hasErrorsCreate = true;
         return $this->render('back/actorTables.html.twig', [
-            'actor' => $actor,
+            'actors' => $actorRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate
