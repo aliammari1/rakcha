@@ -138,6 +138,7 @@
 							<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
 								Add New Cinema
 							</button>
+<<<<<<< Updated upstream
 							{% for flash_error in app.flashes('cinemas') %}
 								<script>
 									new Noty({type: 'success', layout: 'topRight', text: '{{ flash_error }}'}).show();
@@ -153,6 +154,12 @@
 											new Noty({type: 'error', layout: 'topRight', text: '{{ error.message }}', theme: 'sunset'}).show();
 										</script>
 									{% endfor %}
+=======
+							{{macros.display_notifications_noty('success',app.flashes('cinemas'))}}
+								{{macros.display_form_notifications_noty(form)}}
+								{% if updateform is defined %}
+									{{macros.display_form_notifications_noty(updateform)}}
+>>>>>>> Stashed changes
 								{% endif %}
 							{% endfor %}
 						</div>
