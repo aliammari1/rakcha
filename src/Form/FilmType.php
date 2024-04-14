@@ -26,7 +26,7 @@ class FilmType extends AbstractType
             ->add('image', FileType::class, [
                 'label' => 'Image',
                 'mapped' => false,
-                'required' => false,
+                
             ])
             ->add('duree', TimeType::class, [
                 'widget' => 'single_text',

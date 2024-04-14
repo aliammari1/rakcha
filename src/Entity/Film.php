@@ -48,7 +48,7 @@ class Film
         notInRangeMessage: 'You must be between 30 minutes and 4 hours Time to add this film duration  ',
     )]
     #[ORM\Column(name: 'duree', type: 'time', nullable: false)]
-    private DateTimeInterface $duree ;
+    private DateTimeInterface $duree;
 
     #[Assert\NotBlank(message: 'The film description is required.')]
     #[Assert\Length(max: 1000, maxMessage: 'The film description cannot exceed {{ limit }} characters.')]
@@ -65,16 +65,20 @@ class Film
     private int $annederalisation;
 
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'films')]
+    #[Assert\NotBlank(message: 'The film actors is required.')]
+    #[Assert\Count(min: 1, minMessage: 'The film must have at least one actor.')]
     private Collection $actors;
 
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'films')]
+    #[Assert\NotBlank(message: 'The film category is required.')]
+    #[Assert\Count(min: 1, minMessage: 'The film must have at least one category.')]
     private Collection $categorys;
 
     public function __construct()
     {
         $this->actors = new ArrayCollection();
         $this->categorys = new ArrayCollection();
-        $this->duree =new DateTime();
+        $this->duree = new DateTime();
     }
 
 

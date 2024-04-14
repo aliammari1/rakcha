@@ -41,11 +41,16 @@ class ListfilmsController extends AbstractController
         $youtube = new Youtube(array('key' => '[REDACTED]'));
         $films = $filmRepository->findAll();
         $videoUrls = array();
+        
         foreach ($films as $film) {
+          
             $videoList = $youtube->searchVideos($film->getNom() . ' trailer');
+            $videoList= json_decode(json_encode($videoList), true);
             $firstVideo = $videoList[0]->getId()->getVideoId();
             $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
+            
         }
+        dd( $videoList);
 
         return $this->render('front/film.html.twig', [
             'films' => $filmRepository->findAll(),

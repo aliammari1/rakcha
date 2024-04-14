@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 
@@ -20,12 +21,32 @@ class Actor
     private int $id;
 
     #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank(message: 'Please provide a name.')]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: 'Name cannot exceed {{ limit }} characters.'
+    )]
+    #[Assert\Type(
+        type: 'string',
+        message: 'Name must be a string.'
+    )]
+    #[Assert\NotNull(message: 'Name cannot be null.')]
+    #[Assert\Regex(
+        pattern: "/^[A-Z][a-zA-Z0-9\s]*$/",
+        message: 'The actor name must start with an uppercase letter .'
+    )]
     private string $nom;
 
     #[ORM\Column(name: 'image', type: 'text', length: 0, nullable: false)]
     private string $image;
 
     #[ORM\Column(name: 'biographie', type: 'text', length: 0, nullable: false)]
+    #[Assert\NotBlank(message: 'Please provide a biography.')]
+    #[Assert\Type(
+        type: 'string',
+        message: 'Biography must be a string.'
+    )]
+    #[Assert\NotNull(message: 'Biography cannot be null.')]
     private string $biographie;
 
     #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'actors')]
