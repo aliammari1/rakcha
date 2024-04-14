@@ -19,7 +19,6 @@ class FilmController extends AbstractController
     #[Route('/', name: 'app_film_index', methods: ['GET'])]
     public function index(FilmRepository $filmRepository): Response
     {
-        flash()->addSuccess("successfully added film");
         $form = $this->createForm(FilmType::class, new Film());
         $updateForms = array();
         for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
@@ -30,43 +29,6 @@ class FilmController extends AbstractController
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
-    }
-  
-    #[Route('/get-imdb-url', name: 'get_imdb_url')]
-    public function getImdbUrlByNom(Request $request): Response
-    {
-        $query = $request->query->get('query');
-
-        try {
-            $encodedQuery = urlencode($query);
-            $scriptUrl = "https://script.google.com/macros/s/AKfycbyeuvvPJ2jljewXKStVhiOrzvhMPkAEj5xT_cun3IRWc9XEF4F64d-jimDvK198haZk/exec?query={$encodedQuery}";
-
-            // Send the request
-            $client = HttpClient::create();
-            $response = $client->request('GET', $scriptUrl);
-            $statusCode = $response->getStatusCode();
-
-            // Retry if the status code is 403
-            while ($statusCode != 123) {
-                $response = $client->request('GET', $scriptUrl);
-                $statusCode = $response->getStatusCode();
-            }
-
-            // Read and parse the response
-            $content = $response->getContent();
-            $data = json_decode($content, true);
-
-            // Extract the IMDb URL
-            if (!empty($data['results'])) {
-                $firstResult = $data['results'][0];
-                $imdbUrl = $firstResult['imdb'];
-                return new Response($imdbUrl);
-            } else {
-                return new Response('imdb.com');
-            }
-        } catch (\Exception $e) {
-            return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
     }
     #[Route('/new', name: 'app_film_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
@@ -92,15 +54,20 @@ class FilmController extends AbstractController
             $film->setImage("/img/films/" . $filename);
             $entityManager->persist($film);
             $entityManager->flush();
+            
+            
+            $this->addFlash('films','film added successfully');
 
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        $hasErrorsCreate = true;
         return $this->render('back/filmTables.html.twig', [
             'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
+            'hasErrorsCreate' => $hasErrorsCreate
         ]);
+
     }
 
     #[Route('/{id}', name: 'app_film_show', methods: ['GET'])]
@@ -111,22 +78,43 @@ class FilmController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_film_edit', methods: ['POST'])]
-    public function edit(Request $request, Film $film, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/edit/{formUpdateNumber}', name: 'app_film_edit', methods: ['POST'])]
+    public function edit(Request $request, Film $film, $formUpdateNumber, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
-        $form = $this->createForm(FilmType::class, $film);
-        $form->handleRequest($request);
+        $updateForms = array();
+        $users = $filmRepository->findAll();
+        for ($i = 0; $i < count($users); $i++) {
+            $updateForms[$i] = $this->createForm(FilmType::class, $users[$i])->createView();
+        }
+        $form = $this->createForm(FilmType::class, new Film());
+        $updateform = $this->createForm(FilmType::class, $film);
+        $updateform->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($updateform->isSubmitted() && $updateform->isValid()) {
+            $file = $form['image']->getData();
+            if ($file) {
+            $extension = $file->guessExtension();
+            if (!$extension) {
+                // extension cannot be guessed
+                $extension = 'bin';
+            }
+            $filename = rand(1, 99999) . '.' . $extension;
+            $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
+            $film->setImage("/img/films/" . $filename);  
+        }   
             $entityManager->flush();
-
+            $this->addFlash('films','film edited successfully');
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('film/edit.html.twig', [
-            'film' => $film,
-            'form' => $form,
+        $entityManager->refresh($film);
+        return $this->render('back/filmTables.html.twig', [
+            "formUpdateNumber" => $formUpdateNumber,
+            'films' => $filmRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
+            'updateform' => $updateform->createView(),
         ]);
+
     }
 
     #[Route('/{id}', name: 'app_film_delete', methods: ['POST'])]
@@ -135,8 +123,8 @@ class FilmController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $film->getId(), $request->request->get('_token'))) {
             $entityManager->remove($film);
             $entityManager->flush();
+            $this->addFlash('films','film deleted successfully');
         }
-
         return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
     }
 }

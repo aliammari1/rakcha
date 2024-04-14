@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 
 
 
@@ -21,9 +24,17 @@ class Category
     private int $id;
 
     #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank(message: 'The name cannot be blank')]
+    #[Assert\Length(max: 255, maxMessage: 'The name cannot exceed {{ limit }} characters')]
+    #[Assert\Regex(
+        pattern: "/^[A-Z][a-zA-Z0-9\s]*$/",
+        message: 'The category name must start with an uppercase letter .'
+    )]
+
     private string $nom;
 
     #[ORM\Column(name: 'description', type: 'text', length: 0, nullable: false)]
+    #[Assert\NotBlank(message: 'The description cannot be blank')]
     private string $description;
 
     #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'categorys')]

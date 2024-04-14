@@ -66,24 +66,25 @@
 										</h6>
 										<p>{{film.description}}</p>
 
-										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#Youtubewatch{{j}}">
+										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#Youtubewatch{{j}}"data-theVideo="{{videoUrl[j]}}">
 											<i class="fa fa-play-circle align-middle me-1"></i>
 											Watch Trailer</button>
+						
 										<div
+
 											class="modal fade" id="Youtubewatch{{j}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden=" true">
 											{# modal-md ou modal-sm ou modal-lg ou modal-xl #}
-											<div class="modal-dialog modal-md">
+											<div class="modal-dialog modal-lg">
 												<div class="modal-content">
 													<div class="modal-header">
 														<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+														<button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
 													</div>
 													<div class="modal-body">
 														<iframe width="560" height="315" src="{{videoUrl[j]}}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 													</div>
 													<div class="modal-footer">
-														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-														<button type="button" class="btn btn-primary">Understood</button>
+													
 													</div>
 												</div>
 											</div>
@@ -102,7 +103,27 @@
 		</section>
 
 		{{ block("footer") }}
-
+<script>
+	function autoPlayYouTubeModal() {
+		var triggers = document.querySelectorAll('[data-bs-toggle="modal"]');
+		triggers.forEach(function(trigger) {
+		  trigger.addEventListener('click', function() {
+			var theModal = this.getAttribute('data-bs-target');
+			var videoSRC = this.getAttribute('data-theVideo');
+			var videoSRCauto = videoSRC + "?autoplay=1";
+			document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
+			
+			var closeButton = document.querySelector(theModal + ' button.close');
+			closeButton.addEventListener('click', function() {
+			  document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
+			});
+		  });
+		});
+	  }
+	  document.addEventListener('DOMContentLoaded', function() {
+  autoPlayYouTubeModal();
+});
+</script>
 		<script>
 			window.onscroll = function () {
 myFunction()
