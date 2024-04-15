@@ -37,9 +37,13 @@ class SeanceController extends AbstractController
     }
 
     #[Route('/new', name: 'app_seance_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SeanceRepository  $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
         $seance = new Seance();
+        $updateForms = array();
+        for ($i = 0; $i < count($seanceRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(SeanceType::class, $seanceRepository->findAll()[$i])->createView();
+        }
         $form = $this->createForm(SeanceType::class, $seance);
         $form->handleRequest($request);
 
@@ -50,10 +54,15 @@ class SeanceController extends AbstractController
             return $this->redirectToRoute('app_seance_index', [], Response::HTTP_SEE_OTHER);
         }
 
-
-        return $this->renderForm('seance/new.html.twig', [
-            'seance' => $seance,
-            'form' => $form,
+        $hasErrorsCreate = true;
+        return $this->render('seance/SeancesTable.html.twig', [
+            'seances' => $seanceRepository->findAll(),
+            'cinemas' =>  $cinemaRepository->findAll(),
+            'films' => $filmRepository->findAll(),
+            'salles' => $salleRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
+            'hasErrorsCreate' => $hasErrorsCreate,
         ]);
     }
 
@@ -65,21 +74,35 @@ class SeanceController extends AbstractController
         ]);
     }
 
-    #[Route('/{idSeance}/edit', name: 'app_seance_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Seance $seance, EntityManagerInterface $entityManager): Response
+    #[Route('/{idSeance}/edit/{formUpdateNumber}/', name: 'app_seance_edit', methods: ['GET', 'POST'])]
+    public function edit($formUpdateNumber, Request $request, Seance $seance, EntityManagerInterface $entityManager, SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
-        $form = $this->createForm(SeanceType::class, $seance);
-        $form->handleRequest($request);
+        $updateForms = array();
+        $seances = $seanceRepository->findAll();
+     for ($i = 0; $i < count($seances); $i++) {
+         $updateForms[$i] = $this->createForm(SeanceType::class, $seances[$i])->createView();
+     }
+     $form = $this->createForm(SeanceType::class, new Seance());
 
-        if ($form->isSubmitted() && $form->isValid()) {
+     $updateform = $this->createForm(SeanceType::class, $seance);
+
+     $updateform->handleRequest($request);
+
+        if ($updateform->isSubmitted() && $updateform->isValid()) {
             $entityManager->flush();
 
             return $this->redirectToRoute('app_seance_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->renderForm('seance/edit.html.twig', [
-            'seance' => $seance,
-            'form' => $form,
+        $entityManager->refresh($seance);
+        return $this->render('seance/SeancesTable.html.twig', [
+            'seances' => $seanceRepository->findAll(),
+            'cinemas' =>  $cinemaRepository->findAll(),
+            'films' => $filmRepository->findAll(),
+            'salles' => $salleRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
+            "formUpdateNumber" => $formUpdateNumber,
+            'updateform' => $updateform->createView(),
         ]);
     }
 

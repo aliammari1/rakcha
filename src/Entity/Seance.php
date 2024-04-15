@@ -12,6 +12,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Film;
 use App\Entity\Salle;
+use Symfony\Component\Validator\Constraints as Assert ;
+
 
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
@@ -30,21 +32,26 @@ class Seance
      * @var DateTime
      */
     #[ORM\Column(name: 'HD', type: 'time', nullable: true)]
+    #[Assert\NotBlank(message: 'Begining time is required.')]
     private DateTimeInterface $hd;
 
     /**
      * @var DateTime
      */
     #[ORM\Column(name: 'HF', type: 'time', nullable: true)]
+    #[Assert\NotBlank(message: 'End time is required.')]
     private DateTimeInterface $hf;
 
     /**
      * @var DateTime
      */
     #[ORM\Column(name: 'date', type: 'date', nullable: true)]
+    #[Assert\NotBlank(message: 'date is required.')]
     private DateTimeInterface $date;
 
     #[ORM\Column(name: 'prix', type: 'float', precision: 10, scale: 0, nullable: true)]
+    #[Assert\NotBlank(message: 'The price is required.')]
+    #[Assert\Positive(message: 'The price must be a positive integer.')]
     private float $prix;
 
     /**
