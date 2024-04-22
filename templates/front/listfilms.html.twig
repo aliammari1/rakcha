@@ -121,7 +121,7 @@
 
 												{% endfor %}
 											</h6>
-											<button class="btn text-white">show imdb</button>
+
 											<h6>Actors:
 												{% for actor in film.actors %}
 													<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
@@ -129,8 +129,33 @@
 													{% endif %}
 												{% endfor %}
 											</h6>
+											<h6>Description:
+												{{film.description}}
+											</h6>
+											<form id="rateForm{{j}}">
+												<input id="input-{{j}}-sm" class="rating rating-loading" name="rate" value="{{averageRatings[j][0]['rate_avg']|default('0')}}" data-min="0" data-max="5" data-step="0.5" data-size="sm" data-show-clear="false" data-show-caption="false">
+											</form>
+											<script>
 
-											<p>{{film.description}}</p>
+											</script>
+											 <script>
+											$("#input-{{j}}-sm").rating().on("rating:change", function(event, value) {
+console.log("You rated {{film.nom}}: " + value);
+console.log($("#rateForm{{j}}").serialize());
+let xhr = new XMLHttpRequest();
+xhr.open('POST', '{{path("app_rate_film_index")}}', true);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+xhr.onload = function() {
+	console.log(xhr.responseText);
+};
+
+// Encode the data in URL-encoded format
+let data = 'rate=' + encodeURIComponent(value) + '&filmId=' + encodeURIComponent({{film.id}});
+
+xhr.send(data);										
+																																												});
+																																																							</script>
+
 											<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#Youtubewatch{{j}}" data-thevideo="{{videoUrl[j]}}">
 												<i class="fa fa-play-circle align-middle me-1"></i>
 												Watch Trailer</button>
@@ -167,44 +192,44 @@
 
 		{{ block("footer") }}
 	 <script>
-								function autoPlayYouTubeModal() {
-												var triggers = document.querySelectorAll('[data-bs-toggle="modal"]');
-												triggers.forEach(function (trigger) {
-												trigger.addEventListener('click', function () {
-												var theModal = this.getAttribute('data-bs-target');
-												var videoSRC = this.getAttribute('data-theVideo');
-												var videoSRCauto = videoSRC + "?autoplay=1";
-												document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
-												
-												var closeButton = document.querySelector(theModal + ' button.close');
-												closeButton.addEventListener('click', function () {
-												document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
-												});
-												});
-												});
-												}
-												document.addEventListener('DOMContentLoaded', function () {
-												autoPlayYouTubeModal();
-												});
-														</script>
+																										function autoPlayYouTubeModal() {
+																														var triggers = document.querySelectorAll('[data-bs-toggle="modal"]');
+																														triggers.forEach(function (trigger) {
+																														trigger.addEventListener('click', function () {
+																														var theModal = this.getAttribute('data-bs-target');
+																														var videoSRC = this.getAttribute('data-theVideo');
+																														var videoSRCauto = videoSRC + "?autoplay=1";
+																														document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
+																														
+																														var closeButton = document.querySelector(theModal + ' button.close');
+																														closeButton.addEventListener('click', function () {
+																														document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
+																														});
+																														});
+																														});
+																														}
+																														document.addEventListener('DOMContentLoaded', function () {
+																														autoPlayYouTubeModal();
+																														});
+																																</script>
 		 <script>
-												window.onscroll = function () {
-																		myFunction()
-																		};
-																		
-																		var navbar_sticky = document.getElementById("navbar_sticky");
-																		var sticky = navbar_sticky.offsetTop;
-																		var navbar_height = document.querySelector('.navbar').offsetHeight;
-																		
-																		function myFunction() {
-																		if (window.pageYOffset >= sticky + navbar_height) {
-																		navbar_sticky.classList.add("sticky")
-																		document.body.style.paddingTop = navbar_height + 'px';
-																		} else {
-																		navbar_sticky.classList.remove("sticky");
-																		document.body.style.paddingTop = '0'
-																		}
-																		}
-																				</script>
+																																																window.onscroll = function () {
+																																																						myFunction()
+																																																						};
+																																																						
+																																																						var navbar_sticky = document.getElementById("navbar_sticky");
+																																																						var sticky = navbar_sticky.offsetTop;
+																																																						var navbar_height = document.querySelector('.navbar').offsetHeight;
+																																																						
+																																																						function myFunction() {
+																																																						if (window.pageYOffset >= sticky + navbar_height) {
+																																																						navbar_sticky.classList.add("sticky")
+																																																						document.body.style.paddingTop = navbar_height + 'px';
+																																																						} else {
+																																																						navbar_sticky.classList.remove("sticky");
+																																																						document.body.style.paddingTop = '0'
+																																																						}
+																																																						}
+																																																								</script>
 	</body>
 {% endblock %}

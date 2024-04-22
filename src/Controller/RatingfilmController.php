@@ -7,6 +7,7 @@ use App\Form\RatingfilmType;
 use App\Repository\RatingfilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,6 +21,22 @@ class RatingfilmController extends AbstractController
         return $this->render('ratingfilm/index.html.twig', [
             'ratingfilms' => $ratingfilmRepository->findAll(),
         ]);
+    }
+
+    #[Route('/ratefilm', name: 'app_rate_film_index', methods: ['POST', 'GET'])]
+    public function rateFilm(Request $request, EntityManagerInterface $entityManager, RatingfilmRepository $ratingfilmRepository): Response
+    {
+        $ratingfilm = new Ratingfilm();
+        $form = $this->createForm(RatingfilmType::class, $ratingfilm);
+        $form->handleRequest($request);
+        $ratingfilm->setRate($request->get('rate'));
+        $ratingfilm->setIdFilm($request->get('filmId'));
+        $ratingfilm->setIdUser(1);
+        // Persist and flush the entity
+        $entityManager->persist($ratingfilm);
+        $entityManager->flush();
+
+        return new JsonResponse('Rating submitted successfully.', RESPONSE::HTTP_OK);
     }
 
     #[Route('/new', name: 'app_ratingfilm_new', methods: ['GET', 'POST'])]
@@ -71,7 +88,7 @@ class RatingfilmController extends AbstractController
     #[Route('/{idFilm}', name: 'app_ratingfilm_delete', methods: ['POST'])]
     public function delete(Request $request, Ratingfilm $ratingfilm, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$ratingfilm->getIdFilm(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $ratingfilm->getIdFilm(), $request->request->get('_token'))) {
             $entityManager->remove($ratingfilm);
             $entityManager->flush();
         }

@@ -14,6 +14,7 @@
     "doctrine/orm": "^2.16",
     "easycorp/easyadmin-bundle": "^4.9",
     "google/apiclient": "*",
+    "kartik-v/bootstrap-star-rating": "@dev",
     "madcoda/php-youtube-api": "^1.2",
     "php-flasher/flasher-symfony": "^1.15",
     "phpdocumentor/reflection-docblock": "^5.3",
