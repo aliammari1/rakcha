@@ -36,7 +36,7 @@ class FilmController extends AbstractController
         $updateForms = array();
         for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
             $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
-        }
+        } 
         $film = new Film();
         $form = $this->createForm(FilmType::class, $film);
         $form->handleRequest($request);
@@ -54,8 +54,8 @@ class FilmController extends AbstractController
             $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
             $film->setImage("/img/films/" . $filename);
         }
-            $entityManager->persist($film);
-            $entityManager->flush();
+            $entityManager->persist($film);//creation the query of create 
+            $entityManager->flush();//execute the query
             
             
             $this->addFlash('films','film added successfully');
