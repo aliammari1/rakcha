@@ -49,7 +49,7 @@ class RatingfilmRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Ratingfilm
+    //    public function findOneBySomeField($value): ?Ratingfilm
 //    {
 //        return $this->createQueryBuilder('r')
 //            ->andWhere('r.exampleField = :val')
