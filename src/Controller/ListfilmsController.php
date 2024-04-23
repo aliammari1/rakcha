@@ -30,7 +30,7 @@ class ListfilmsController extends AbstractController
             }
             $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
         }
-        //dd($averageRatings);
+        // dd($averageRatings);
         return $this->render('front/listfilms.html.twig', [
             'films' => $filmRepository->findAll(),
             'videoUrl' => $videoUrls,
