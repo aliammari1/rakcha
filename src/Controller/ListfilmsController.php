@@ -16,7 +16,7 @@ class ListfilmsController extends AbstractController
     #[Route('/listfilms', name: 'app_listfilms_index')]
     public function index(FilmRepository $filmRepository,RatingfilmRepository $ratingfilmRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyBAJy8e9ycYwBxajRZHgFzb6YjW08tv6BE'));
+        $youtube = new Youtube(array('key' => 'AIzaSyBlA-N7OUA0_0ve0eVojKh_mHg_Y-PYbpo'));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         $averageRatings = array();
@@ -30,7 +30,7 @@ class ListfilmsController extends AbstractController
             }
             $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
         }
-        //dd($averageRatings);
+        // dd($averageRatings);
         return $this->render('front/listfilms.html.twig', [
             'films' => $filmRepository->findAll(),
             'videoUrl' => $videoUrls,
@@ -41,7 +41,7 @@ class ListfilmsController extends AbstractController
     public function indexHome(FilmRepository $filmRepository,RatingfilmRepository $ratingfilmRepository): Response
     {
 
-        $youtube = new Youtube(array('key' => 'AIzaSyBAJy8e9ycYwBxajRZHgFzb6YjW08tv6BE'));
+        $youtube = new Youtube(array('key' => 'AIzaSyBlA-N7OUA0_0ve0eVojKh_mHg_Y-PYbpo'));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         $averageRatings = array();
