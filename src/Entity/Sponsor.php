@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 use App\Repository\SponsorRepository;
 
@@ -10,13 +12,16 @@ use App\Repository\SponsorRepository;
 #[ORM\Table(name: 'sponsor')]
 class Sponsor
 {
+
     #[ORM\Column(name: 'ID', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
+
     #[ORM\Column(name: 'nomSociete', type: 'string', length: 500, nullable: false)]
     private string $nomsociete;
+
 
     #[ORM\Column(name: 'Logo', type: 'string', length: 255, nullable: false)]
     private string $logo;
@@ -49,6 +54,4 @@ class Sponsor
 
         return $this;
     }
-
-
 }

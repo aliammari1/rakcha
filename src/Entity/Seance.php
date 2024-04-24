@@ -10,6 +10,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 use App\Entity\Film;
 use App\Entity\Salle;
 
@@ -21,6 +23,7 @@ use App\Entity\Salle;
 #[ORM\Index(name: 'fk_salle_seance', columns: ['id_salle'])]
 class Seance
 {
+
     #[ORM\Column(name: 'id_seance', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -29,20 +32,24 @@ class Seance
     /**
      * @var DateTime
      */
+
     #[ORM\Column(name: 'HD', type: 'time', nullable: false)]
     private DateTimeInterface $hd;
 
     /**
      * @var DateTime
      */
+
     #[ORM\Column(name: 'HF', type: 'time', nullable: false)]
     private DateTimeInterface $hf;
 
     /**
      * @var DateTime
      */
+
     #[ORM\Column(name: 'date', type: 'date', nullable: false)]
     private DateTimeInterface $date;
+
 
     #[ORM\Column(name: 'prix', type: 'float', precision: 10, scale: 0, nullable: false)]
     private float $prix;
@@ -197,5 +204,4 @@ class Seance
 
         return $this;
     }
-
 }

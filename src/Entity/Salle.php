@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\SalleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
@@ -11,13 +13,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'fk_cinema_salle', columns: ['id_cinema'])]
 class Salle
 {
+
     #[ORM\Column(name: 'id_salle', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idSalle;
 
+
     #[ORM\Column(name: 'nb_places', type: 'integer', nullable: false)]
     private int $nbPlaces;
+
 
     #[ORM\Column(name: 'nom_salle', type: 'string', length: 50, nullable: false)]
     private string $nomSalle;
@@ -66,6 +71,4 @@ class Salle
 
         return $this;
     }
-
-
 }

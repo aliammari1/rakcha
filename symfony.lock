@@ -65,22 +65,71 @@
             "./config/packages/knpu_oauth2_client.yaml"
         ]
     },
+    "liip/imagine-bundle": {
+        "version": "2.12",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.8",
+            "ref": "d1227d002b70d1a1f941d91845fcd7ac7fbfc929"
+        },
+        "files": [
+            "./config/packages/liip_imagine.yaml",
+            "./config/routes/liip_imagine.yaml"
+        ]
+    },
+    "meilisearch/search-bundle": {
+        "version": "0.15",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "0.10",
+            "ref": "f0730f97441a5391832fb176305f69abe86b70a3"
+        },
+        "files": [
+            "./config/packages/meilisearch.yaml"
+        ]
+    },
+    "omines/datatables-bundle": {
+        "version": "0.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "0.1",
+            "ref": "467488ddc00aa190c37a4357f226457d4dd6b339"
+        },
+        "files": [
+            "./config/packages/datatables.yaml"
+        ]
+    },
+    "oneup/flysystem-bundle": {
+        "version": "3.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "e6c6440b279273a468e1f570b0fc1d4ff54ad69e"
+        },
+        "files": [
+            "./config/packages/oneup_flysystem.yaml"
+        ]
+    },
     "php-flasher/flasher-noty-symfony": {
         "version": "v1.15.14"
     },
     "php-flasher/flasher-symfony": {
         "version": "v1.15.14"
     },
-    "phpstan/phpstan": {
-        "version": "1.10",
+    "php-http/discovery": {
+        "version": "1.19",
         "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
+            "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "1.0",
-            "ref": "5e490cc197fb6bb1ae22e5abbc531ddc633b6767"
+            "version": "1.18",
+            "ref": "f45b5dd173a27873ab19f5e3180b2f661c21de02"
         },
         "files": [
-            "./phpstan.dist.neon"
+            "./config/packages/http_discovery.yaml"
         ]
     },
     "phpunit/phpunit": {
@@ -300,14 +349,9 @@
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "2.13",
-            "ref": "6acd9ff4f7fd5626d2962109bd4ebab351d43c43"
-        },
-        "files": [
-            "./assets/bootstrap.js",
-            "./assets/controllers.json",
-            "./assets/controllers/hello_controller.js"
-        ]
+            "version": "2.8",
+            "ref": "9e33a8a3794b603fb4be6c04ee5ecab901ce549e"
+        }
     },
     "symfony/translation": {
         "version": "5.4",
@@ -335,11 +379,38 @@
             "./templates/base.html.twig"
         ]
     },
+    "symfony/ux-live-component": {
+        "version": "2.16",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.6",
+            "ref": "73e69baf18f47740d6f58688c5464b10cdacae06"
+        },
+        "files": [
+            "./config/routes/ux_live_component.yaml"
+        ]
+    },
+    "symfony/ux-swup": {
+        "version": "v2.16.0"
+    },
     "symfony/ux-toggle-password": {
         "version": "v2.16.0"
     },
     "symfony/ux-turbo": {
         "version": "v2.16.0"
+    },
+    "symfony/ux-twig-component": {
+        "version": "2.16",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.13",
+            "ref": "67814b5f9794798b885cec9d3f48631424449a01"
+        },
+        "files": [
+            "./config/packages/twig_component.yaml"
+        ]
     },
     "symfony/validator": {
         "version": "5.4",
@@ -366,6 +437,25 @@
             "./config/routes/web_profiler.yaml"
         ]
     },
+    "symfony/webpack-encore-bundle": {
+        "version": "1.17",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.10",
+            "ref": "eff2e505d4557c967b6710fe06bd947ba555cae5"
+        },
+        "files": [
+            "./assets/app.js",
+            "./assets/bootstrap.js",
+            "./assets/controllers.json",
+            "./assets/controllers/hello_controller.js",
+            "./assets/styles/app.css",
+            "./config/packages/webpack_encore.yaml",
+            "./package.json",
+            "./webpack.config.js"
+        ]
+    },
     "symfonycasts/reset-password-bundle": {
         "version": "1.21",
         "recipe": {
@@ -382,7 +472,7 @@
         "version": "v1.17.0"
     },
     "twig/extra-bundle": {
-        "version": "v3.8.0"
+        "version": "v3.9.3"
     },
     "zenstruck/foundry": {
         "version": "1.37",

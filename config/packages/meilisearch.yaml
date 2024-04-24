@@ -1,0 +1,46 @@
+meilisearch:
+    url: '%env(MEILISEARCH_URL)%' # URL of the Meilisearch server (mandatory)
+    api_key: '%env(MEILISEARCH_API_KEY)%' # API key to access the Meilisearch server (mandatory)
+    prefix: '%env(MEILISEARCH_PREFIX)%'
+    indices:
+        # Define entities or documents that should be indexed to Meilisearch.
+        # See https://github.com/meilisearch/meilisearch-symfony/wiki/configure-searchable-data
+        #- name: posts
+        #  class: App\Entity\Post
+        - name: users
+          class: App\Entity\Users
+          enable_serializer_groups: true
+          settings:
+            searchableAttributes:
+              - nom
+              - prenom
+              - email
+              - phone
+              - address
+              - city
+              - country
+              - postal_code
+              - created_at
+              - updated_at
+            displayedAttributes:
+              - nom
+              - prenom
+              - email
+              - phone
+              - address
+              - city
+              - country
+              - postal_code
+              - created_at
+              - updated_at
+            rankingRules:
+              - words
+              - typo
+              - proximity
+              - attribute
+              - exactness
+        - name: films
+          class: App\Entity\Film
+          enable_serializer_groups: true
+    
+        

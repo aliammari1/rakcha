@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block body %}
+	{{ dump(statut) }}
 	<div
 		class="main-content position-relative max-height-vh-100 h-100">
 		<!-- Navbar -->
@@ -57,158 +58,308 @@
 			</div>
 		</nav>
 		<!-- End Navbar -->
-		<div class="card shadow-lg mx-4 card-profile-bottom">
-			<div class="card-body p-3">
-				<div class="row gx-4">
-					<div class="col-auto">
-						<div class="avatar avatar-xl position-relative">
-							<img alt="profile_image" class="w-100 border-radius-lg shadow-sm" src="{{ asset(app.user.photoDeProfil) }}"/>
+		{% if app.user == user  %}
+			<div class="card shadow-lg mx-4 card-profile-bottom">
+				<div class="card-body p-3">
+					<div class="row gx-4">
+						<div class="col-auto">
+							<div class="avatar avatar-xl position-relative">
+								<img alt="profile_image" class="w-100 border-radius-lg shadow-sm" src="{{ asset(user.photoDeProfil ?? '/img/users/empty.jpg') }}"/>
+							</div>
 						</div>
-					</div>
-					<div class="col-auto my-auto">
-						<div class="h-100">
-							<h5 class="mb-1">{{app.user.nom ~ ' ' ~ app.user.prenom}}</h5>
-							<p class="mb-0 font-weight-bold text-sm">{{ 'Public Relations'|auto_translate }}</p>
+						<div class="col-auto my-auto">
+							<div class="h-100">
+								<h5 class="mb-1">{{(app.user.nom ?? '') ~ ' ' ~ (app.user.prenom ?? '')}}</h5>
+								<p class="mb-0 font-weight-bold text-sm">{{ 'Public Relations'|auto_translate }}</p>
+							</div>
 						</div>
-					</div>
-					<div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-						<div class="nav-wrapper position-relative end-0">
-							<ul class="nav nav-pills nav-fill p-1" role="tablist">
-								<li class="nav-item">
-									<a aria-selected="true" class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center" data-bs-toggle="tab" href="javascript:;" role="tab">{{ 'App'|auto_translate }}</a>
-								</li>
-								<li class="nav-item">
-									<a aria-selected="false" class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center" data-bs-toggle="tab" href="javascript:;" role="tab">{{ 'Messages'|auto_translate }}</a>
-								</li>
-								<li class="nav-item">
-									<a aria-selected="false" class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center" data-bs-toggle="tab" href="javascript:;" role="tab">{{ 'Settings'|auto_translate }}</a>
-								</li>
-							</ul>
+						<div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+							<div class="nav-wrapper position-relative end-0">
+								<ul class="nav nav-pills nav-fill p-1" role="tablist">
+									<li class="nav-item">
+										<a aria-selected="true" class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center" data-bs-toggle="tab" href="javascript:;" role="tab">{{ 'App'|auto_translate }}</a>
+									</li>
+									<li class="nav-item">
+										<a aria-selected="false" class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center" data-bs-toggle="tab" href="javascript:;" role="tab">{{ 'Messages'|auto_translate }}</a>
+									</li>
+									<li class="nav-item">
+										<a aria-selected="false" class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center" data-bs-toggle="tab" href="javascript:;" role="tab">{{ 'Settings'|auto_translate }}</a>
+									</li>
+									<li class="nav-item">
+										<a aria-selected="false" class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center" data-bs-toggle="tab" href="javascript:;" role="tab">{{ 'logged in'|auto_translate }}</a>
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="container-fluid py-4">
-			<div class="row">
-				<div class="col-md-8">
-					<div class="card">
-						<div class="card-header pb-0">
-							<div class="d-flex align-items-center">
-								<p class="mb-0">{{ 'Edit Profile'|auto_translate }}</p>
-								<button class="btn btn-danger btn-sm ms-auto">Settings</button>
-							</div>
-						</div>
-						<div class="card-body">
-							<p class="text-uppercase text-sm">{{ 'User Information'|auto_translate }}</p>
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-control-label" for="example-text-input">First name</label>
-										<input class="form-control" type="text" value="{{app.user.prenom}}"/>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-control-label" for="example-text-input">Last name</label>
-										<input class="form-control" type="text" value="{{app.user.nom}}"/>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-control-label" for="example-text-input">Date of Birth</label>
-										<input class="form-control" type="date" value="{{app.user.dateDeNaissance|date('d/m/Y')}}"/>
-									</div>
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label class="form-control-label" for="example-text-input">Email address</label>
-										<input class="form-control" type="email" value="{{app.user.email}}"/>
-									</div>
+			<div class="container-fluid py-4">
+				<div class="row">
+					<div class="col-md-8">
+						<div class="card">
+							<div class="card-header pb-0">
+								<div class="d-flex align-items-center">
+									<p class="mb-0">{{ 'Edit Profile'|auto_translate }}</p>
+									<button class="btn btn-danger btn-sm ms-auto">Settings</button>
 								</div>
 							</div>
-							<hr class="horizontal dark"/>
-							<p class="text-uppercase text-sm">{{ 'Contact Information'|auto_translate }}</p>
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group">
-										<label class="form-control-label" for="example-text-input">Address</label>
-										<input class="form-control" type="text" value="{{app.user.adresse is not null ? app.user.adresse : 'No address provided'}}"/>
+							<div class="card-body">
+								<p class="text-uppercase text-sm">{{ 'User Information'|auto_translate }}</p>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">First name</label>
+											<input class="form-control" type="text" value="{{app.user.prenom ?? ''}}"/>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">Last name</label>
+											<input class="form-control" type="text" value="{{app.user.nom ?? ''}}"/>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">Date of Birth</label>
+											<input class="form-control" type="date" value="{{(app.user.dateDeNaissance ?? '')|date('d/m/Y')}}"/>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">Email address</label>
+											<input class="form-control" type="email" value="{{app.user.email ?? ''}}"/>
+										</div>
 									</div>
 								</div>
-								<div class="col-md-12">
-									<div class="form-group">
-										<label class="form-control-label" for="example-text-input">numero de telephone</label>
-										<input class="form-control" type="text" value="{{ app.user.numTelephone is not null ? app.user.numTelephone : 'No phone number provided' }}"/>
+								<hr class="horizontal dark"/>
+								<p class="text-uppercase text-sm">{{ 'Contact Information'|auto_translate }}</p>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">Address</label>
+											<input class="form-control" type="text" value="{{app.user.adresse ?? 'No address provided'}}"/>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">numero de telephone</label>
+											<input class="form-control" type="text" value="{{ app.user.numTelephone ?? 'No phone number provided' }}"/>
+										</div>
 									</div>
 								</div>
-							</div>
 
+							</div>
+							<div class="card-footer pb-0">
+								<div class="d-flex align-items-center">
+									<button class="btn btn-danger btn-sm ms-auto">
+										<a class="text-white" href="{{path('app_2fa_enable')}}">enable 2fa</a>
+									</button>
+								</div>
+							</div>
 						</div>
-						<div class="card-footer pb-0">
-							<div class="d-flex align-items-center">
-								<button class="btn btn-danger btn-sm ms-auto">
-									<a class="text-white" href="{{path('app_2fa_enable')}}">enable 2fa</a>
-								</button>
+					</div>
+					<div class="col-md-4">
+						<div class="card card-profile">
+							<img alt="Image placeholder" class="card-img-top" src="{{ asset('img/bg-profile.jpg') }}"/>
+							<div class="row justify-content-center">
+								<div class="col-4 col-lg-4 order-lg-2">
+									<div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
+										<a href="javascript:;"></a>
+									</div>
+								</div>
+							</div>
+							<div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
+								<div class="d-flex justify-content-between">
+									<a class="btn btn-sm btn-info mb-0 d-none d-lg-block" href="javascript:;">{{ 'Connect'|auto_translate }}</a>
+									<a class="btn btn-sm btn-info mb-0 d-block d-lg-none" href="javascript:;"></a>
+									<a class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block" href="javascript:;">{{ 'Message'|auto_translate }}</a>
+									<a class="btn btn-sm btn-dark float-right mb-0 d-block d-lg-none" href="javascript:;"></a>
+								</div>
+							</div>
+							<div class="card-body pt-0">
+								<div class="row">
+									<div class="col">
+										<div class="d-flex justify-content-center">
+											<div class="d-grid text-center">
+												<span class="text-lg font-weight-bolder">{{ '22'|auto_translate }}</span>
+												<span class="text-sm opacity-8">{{ 'Friends'|auto_translate }}</span>
+											</div>
+											<div class="d-grid text-center mx-4">
+												<span class="text-lg font-weight-bolder">{{ '10'|auto_translate }}</span>
+												<span class="text-sm opacity-8">{{ 'Photos'|auto_translate }}</span>
+											</div>
+											<div class="d-grid text-center">
+												<span class="text-lg font-weight-bolder">{{ '89'|auto_translate }}</span>
+												<span class="text-sm opacity-8">{{ 'Comments'|auto_translate }}</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="text-center mt-4">
+									<h5>{{ 'Mark Davis, 35'|auto_translate }}</h5>
+									<div class="h6 font-weight-300">
+										<i class="ni location_pin mr-2"></i>Bucharest, Romania
+									</div>
+									<div class="h6 mt-4">
+										<i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
+									</div>
+									<div>
+										<i class="ni education_hat mr-2"></i>University of Computer Science
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
-					<div class="card card-profile">
-						<img alt="Image placeholder" class="card-img-top" src="{{ asset('img/bg-profile.jpg') }}"/>
-						<div class="row justify-content-center">
-							<div class="col-4 col-lg-4 order-lg-2">
-								<div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
-									<a href="javascript:;"></a>
-								</div>
+				{{ block('footer') }}
+			</div>
+		{% else %}
+			<div class="card shadow-lg mx-4 card-profile-bottom">
+				<div class="card-body p-3">
+					<div class="row gx-4">
+						<div class="col-auto">
+							<div class="avatar avatar-xl position-relative">
+								<img alt="profile_image" class="w-100 border-radius-lg shadow-sm" src="{{ asset(user.photoDeProfil ?? '/img/users/empty.jpg') }}"/>
 							</div>
 						</div>
-						<div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
-							<div class="d-flex justify-content-between">
-								<a class="btn btn-sm btn-info mb-0 d-none d-lg-block" href="javascript:;">{{ 'Connect'|auto_translate }}</a>
-								<a class="btn btn-sm btn-info mb-0 d-block d-lg-none" href="javascript:;"></a>
-								<a class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block" href="javascript:;">{{ 'Message'|auto_translate }}</a>
-								<a class="btn btn-sm btn-dark float-right mb-0 d-block d-lg-none" href="javascript:;"></a>
+						<div class="col-auto my-auto">
+							<div class="h-100">
+								<h5 class="mb-1">{{(user.nom ?? '') ~ ' ' ~ (user.prenom ?? '')}}</h5>
+								<p class="mb-0 font-weight-bold text-sm">{{ 'Public Relations'|auto_translate }}</p>
 							</div>
 						</div>
-						<div class="card-body pt-0">
-							<div class="row">
-								<div class="col">
-									<div class="d-flex justify-content-center">
-										<div class="d-grid text-center">
-											<span class="text-lg font-weight-bolder">{{ '22'|auto_translate }}</span>
-											<span class="text-sm opacity-8">{{ 'Friends'|auto_translate }}</span>
-										</div>
-										<div class="d-grid text-center mx-4">
-											<span class="text-lg font-weight-bolder">{{ '10'|auto_translate }}</span>
-											<span class="text-sm opacity-8">{{ 'Photos'|auto_translate }}</span>
-										</div>
-										<div class="d-grid text-center">
-											<span class="text-lg font-weight-bolder">{{ '89'|auto_translate }}</span>
-											<span class="text-sm opacity-8">{{ 'Comments'|auto_translate }}</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="text-center mt-4">
-								<h5>{{ 'Mark Davis, 35'|auto_translate }}</h5>
-								<div class="h6 font-weight-300">
-									<i class="ni location_pin mr-2"></i>Bucharest, Romania
-								</div>
-								<div class="h6 mt-4">
-									<i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
-								</div>
-								<div>
-									<i class="ni education_hat mr-2"></i>University of Computer Science
+						<div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+							<div class="nav-wrapper position-relative end-0">
+								<div id="friendRequestContainer" class="d-flex align-items-center">
+									<button id="sendFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Send Friend Request</button>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			{{ block('footer') }}
-		</div>
+			<div class="container-fluid py-4">
+				<div class="row">
+					<div class="col-md-8">
+						<div class="card">
+							<div class="card-header pb-0">
+								<div class="d-flex align-items-center">
+									<p class="mb-0">{{ 'Edit Profile'|auto_translate }}</p>
+									<button class="btn btn-danger btn-sm ms-auto">Settings</button>
+								</div>
+							</div>
+							<div class="card-body">
+								<p class="text-uppercase text-sm">{{ 'User Information'|auto_translate }}</p>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">First name</label>
+											<input class="form-control" type="text" value="{{user.prenom ?? ''}}"/>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">Last name</label>
+											<input class="form-control" type="text" value="{{user.nom ?? ''}}"/>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">Date of Birth</label>
+											<input class="form-control" type="date" value="{{(user.dateDeNaissance ?? '')|date('d/m/Y')}}"/>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">Email address</label>
+											<input class="form-control" type="email" value="{{user.email ?? ''}}"/>
+										</div>
+									</div>
+								</div>
+								<hr class="horizontal dark"/>
+								<p class="text-uppercase text-sm">{{ 'Contact Information'|auto_translate }}</p>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">Address</label>
+											<input class="form-control" type="text" value="{{user.adresse ?? 'No address provided'}}"/>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="form-group">
+											<label class="form-control-label" for="example-text-input">numero de telephone</label>
+											<input class="form-control" type="text" value="{{ user.numTelephone ?? 'No phone number provided' }}"/>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<div class="card-footer pb-0">
+								<div class="d-flex align-items-center">
+									<button class="btn btn-danger btn-sm ms-auto">
+										<a class="text-white" href="{{path('app_2fa_enable')}}">enable 2fa</a>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="card card-profile">
+							<img alt="Image placeholder" class="card-img-top" src="{{ asset('img/bg-profile.jpg') }}"/>
+							<div class="row justify-content-center">
+								<div class="col-4 col-lg-4 order-lg-2">
+									<div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
+										<a href="javascript:;"></a>
+									</div>
+								</div>
+							</div>
+							<div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
+								<div class="d-flex justify-content-between">
+									<a class="btn btn-sm btn-info mb-0 d-none d-lg-block" href="javascript:;">{{ 'Connect'|auto_translate }}</a>
+									<a class="btn btn-sm btn-info mb-0 d-block d-lg-none" href="javascript:;"></a>
+									<a class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block" href="javascript:;">{{ 'Message'|auto_translate }}</a>
+									<a class="btn btn-sm btn-dark float-right mb-0 d-block d-lg-none" href="javascript:;"></a>
+								</div>
+							</div>
+							<div class="card-body pt-0">
+								<div class="row">
+									<div class="col">
+										<div class="d-flex justify-content-center">
+											<div class="d-grid text-center">
+												<span class="text-lg font-weight-bolder">{{ '22'|auto_translate }}</span>
+												<span class="text-sm opacity-8">{{ 'Friends'|auto_translate }}</span>
+											</div>
+											<div class="d-grid text-center mx-4">
+												<span class="text-lg font-weight-bolder">{{ '10'|auto_translate }}</span>
+												<span class="text-sm opacity-8">{{ 'Photos'|auto_translate }}</span>
+											</div>
+											<div class="d-grid text-center">
+												<span class="text-lg font-weight-bolder">{{ '89'|auto_translate }}</span>
+												<span class="text-sm opacity-8">{{ 'Comments'|auto_translate }}</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="text-center mt-4">
+									<h5>{{ 'Mark Davis, 35'|auto_translate }}</h5>
+									<div class="h6 font-weight-300">
+										<i class="ni location_pin mr-2"></i>Bucharest, Romania
+									</div>
+									<div class="h6 mt-4">
+										<i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
+									</div>
+									<div>
+										<i class="ni education_hat mr-2"></i>University of Computer Science
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{ block('footer') }}
+			</div>
+		{% endif %}
 	</div>
 	<div class="fixed-plugin">
 		<a class="fixed-plugin-button text-dark position-fixed px-3 py-2"></a>
@@ -262,6 +413,104 @@
 			</div>
 		</div>
 	</div>
+	{% if statut == 'no friend request' or statut == 'cancel friend request' %}
+		<script>
+document.getElementById('sendFriendRequestBtn').addEventListener('click', function () {
+fetch("{{ path('send_friend_request') }}", {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: JSON.stringify(
+{'receiver': {{ user.id }}}
+)
+}).then(response => response.json()).then(data => {
+console.log(data);
+if (data.success) {
+document.getElementById('friendRequestContainer').innerHTML = '<button id="cancelFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Cancel Friend Request</button>';
+document.getElementById("cancelFriendRequestBtn").addEventListener('click', function () {
+fetch('{{ path('cancel_friend_request') }}', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: JSON.stringify(
+{'receiver': {{ user.id }}}
+)
+}).then(response => response.json()).then(data => {
+console.log(data);
+if (data.success) {
+document.getElementById('friendRequestContainer').innerHTML = '<button id="sendFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Send Friend Request</button>';
+}
+});
+});
+}
+});
+});
+		</script>
+	{% elseif statut == 'pending friend request' %}
+		<script>
+document.getElementById('friendRequestContainer').innerHTML = '<button id="cancelFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Cancel Friend Request</button>';
+document.getElementById("cancelFriendRequestBtn").addEventListener('click', function () {
+fetch("{{ path('cancel_friend_request') }}", {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: JSON.stringify(
+{'receiver': {{ user.id }}}
+)
+}).then(response => response.json()).then(data => {
+console.log(data);
+if (data.success) {
+document.getElementById('friendRequestContainer').innerHTML = '<button id="sendFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Send Friend Request</button>';
+}
+});
+});
+		</script>
+	{% elseif statut == 'waiting for response' %}
+		<script>
+document.getElementById('friendRequestContainer').innerHTML = '<button id="acceptFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Accept Friend Request</button><button id="rejectFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Reject Friend Request</button>';
+document.getElementById("acceptFriendRequestBtn").addEventListener('click', function () {
+fetch("{{ path('accept_friend_request') }}", {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: JSON.stringify(
+{'receiver': {{ user.id }}}
+)
+}).then(response => response.json()).then(data => {
+console.log(data);
+if (data.success) {
+document.getElementById('friendRequestContainer').innerHTML = '<button id="sendFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Send Friend Request</button>';
+}
+});
+});
+document.getElementById("rejectFriendRequestBtn").addEventListener('click', function () {
+fetch("{{ path('reject_friend_request') }}", {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+},
+body: JSON.stringify(
+{'receiver': {{ user.id }}}
+)
+}).then(response => response.json()).then(data => {
+console.log(data);
+if (data.success) {
+document.getElementById('friendRequestContainer').innerHTML = '<button id="sendFriendRequestBtn" class="btn btn-danger btn-sm ms-auto me-4">Friends</button>';
+}
+});
+});
+
+		</script>
+	{% endif %}
 	<!--   Core JS Files   -->
 	<script src="{{ asset('js/core/popper.min.js') }}"></script>
 	<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>

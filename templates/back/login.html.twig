@@ -38,8 +38,8 @@
 						<div class="collapse navbar-collapse" id="navigation">
 							<ul class="navbar-nav mx-auto">
 
-								{% set items = ['Home', 'Profile', 'Register', 'Login'] %}
-								{% set pathItems = ['app_users_index','app_profile_index','app_register','app_login'] %}
+								{% set items = ['Users', 'Register', 'Login'] %}
+								{% set pathItems = ['app_users_index','app_register','app_login'] %}
 								{% for i in range(0, items|length - 1) %}
 									<li class="nav-item">
 										<a class="nav-link me-2" href="{{ path(pathItems[i]) }}">{{ items[i]|auto_translate }}</a>
@@ -128,19 +128,7 @@
 		<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
 	</body>
 </html>
- 
-										</p>
- 
-										</p>
- 
-							</p>
- 
-							</p>
- 
-							</p>
- 
-							</p>
- 
+  
 							</p>
  
 							</p>

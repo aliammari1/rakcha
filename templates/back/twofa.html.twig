@@ -55,11 +55,11 @@
 			</div>
 		</div>
 		<script>
-			let pageLoaded = false;
+			let pageLoadedVar = false;
 
-// Set pageLoaded to true when the page finishes loading
+// Set pageLoadedVar to true when the page finishes loading
 window.onload = function () {
-pageLoaded = true;
+pageLoadedVar = true;
 // If 5 seconds have already passed, hide the loading screen
 if (new Date().getTime() - startTime >= 5000) {
 document.getElementById('loading').style.display = 'none';
@@ -70,7 +70,7 @@ let startTime = new Date().getTime();
 
 // Hide the loading screen 5 seconds after the page starts loading
 setTimeout(function () {
-if (pageLoaded) {
+if (pageLoadedVar) {
 document.getElementById('loading').style.display = 'none';
 }
 }, 5000);

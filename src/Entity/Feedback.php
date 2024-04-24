@@ -7,6 +7,8 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 
 
@@ -16,13 +18,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'fk_feedback_user', columns: ['id_user'])]
 class Feedback
 {
+
     #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
 
+
     #[ORM\Column(name: 'id_user', type: 'integer', nullable: false)]
     private int $idUser;
+
 
     #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: false)]
     private string $description;
@@ -30,8 +35,10 @@ class Feedback
     /**
      * @var DateTime
      */
+
     #[ORM\Column(name: 'date', type: 'date', nullable: false)]
     private DateTimeInterface $date;
+
 
     #[ORM\Column(name: 'id_episode', type: 'integer', nullable: false)]
     private int $idEpisode;
@@ -88,6 +95,4 @@ class Feedback
 
         return $this;
     }
-
-
 }
