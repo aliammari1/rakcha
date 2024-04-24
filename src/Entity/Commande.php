@@ -7,6 +7,8 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
@@ -14,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'fk_idClient', columns: ['idClient'])]
 class Commande
 {
+
     #[ORM\Column(name: 'idCommande', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -22,14 +25,18 @@ class Commande
     /**
      * @var DateTime
      */
+
     #[ORM\Column(name: 'dateCommande', type: 'date', nullable: false)]
     private DateTimeInterface $datecommande;
+
 
     #[ORM\Column(name: 'statu', type: 'string', length: 50, nullable: false, options: ['default' => 'En cours'])]
     private string $statu = 'En cours';
 
+
     #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: false)]
     private int $numTelephone;
+
 
     #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: false)]
     private string $adresse;
@@ -102,6 +109,4 @@ class Commande
 
         return $this;
     }
-
-
 }

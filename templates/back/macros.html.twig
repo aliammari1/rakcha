@@ -23,26 +23,3 @@
 		{{ form_end(modalForm) }}
 	</div>
 {% endmacro %}
-
-
-{% macro display_notifications_noty(errorType,flashBag) %}
-	{% for flash in flashBag %}
-		<script>
-			new Noty({
-type: '{{ errorType }}',
-layout: 'topRight',
-text: '{{ flash.message }}',
-theme: 'sunset',
-timeout: 5000
-}).show();
-		</script>
-	{% endfor %}
-{% endmacro %}
-
-{% macro display_form_notifications_noty(form) %}
-	{% for field in form %}
-		{% if field.vars.errors|length > 0 %}
-			{{ _self.display_notifications_noty('error',field.vars.errors) }}
-		{% endif %}
-	{% endfor %}
-{% endmacro %}

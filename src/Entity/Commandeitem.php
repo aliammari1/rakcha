@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CommandeitemRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 
 #[ORM\Entity(repositoryClass: CommandeitemRepository::class)]
@@ -12,10 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'fk_commande', columns: ['idCommande'])]
 class Commandeitem
 {
+
     #[ORM\Column(name: 'idCommandeItem', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idcommandeitem;
+
 
     #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
     private int $quantity;
@@ -68,6 +72,4 @@ class Commandeitem
 
         return $this;
     }
-
-
 }

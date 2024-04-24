@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\FeedbackEvenementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 
 #[ORM\Entity(repositoryClass: FeedbackEvenementRepository::class)]
@@ -12,10 +14,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'FK_user_feed', columns: ['id_user'])]
 class FeedbackEvenement
 {
+
     #[ORM\Column(name: 'ID', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
+
 
     #[ORM\Column(name: 'commentaire', type: 'string', length: 500, nullable: false)]
     private string $commentaire;
@@ -68,6 +72,4 @@ class FeedbackEvenement
 
         return $this;
     }
-
-
 }

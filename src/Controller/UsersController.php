@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Users;
-use App\Form\UsersType;
+use App\Form\AdminFormType;
+use App\Form\RegistrationFormType;
+use App\Repository\FriendshipsRepository;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Meilisearch\Bundle\SearchService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,19 +21,25 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/users')]
 class UsersController extends AbstractController
 {
+    public function __construct(
+        private readonly SearchService $searchService,
+    ) {
+    }
+
     #[Route('/', name: 'app_users_index', methods: ['GET', 'POST'])]
     public function index(UsersRepository $usersRepository, EntityManagerInterface $em, PaginatorInterface $paginator, Request $request): Response
     {
-        $form = $this->createForm(UsersType::class, new Users());
+
+        $form = $this->createForm(AdminFormType::class, new Users());
         $updateForms = array();
         for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(UsersType::class, $usersRepository->findAll()[$i])->createView();
+            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $usersRepository->findAll()[$i])->createView();
         }
         $users = $usersRepository->findAll();
         $pagination = $paginator->paginate(
-            $users, /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            5 /*limit per page*/
+            $users,
+            $request->query->getInt('page', 1),
+            5
         );
 
 
@@ -42,18 +51,26 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/profile', name: 'app_profile_index', methods: ['GET', 'POST'])]
-    public function profile(UsersRepository $usersRepository, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/profile/{id}', name: 'app_profile_index', methods: ['GET', 'POST'])]
+    public function userProfile($id, UsersRepository $usersRepository, FriendshipsRepository $friendshipsRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UsersType::class, new Users());
-        $updateForms = array();
-        for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(UsersType::class, $usersRepository->findAll()[$i])->createView();
+        $user = $usersRepository->find($id);
+        $statut = null;
+        if ($user != $this->getUser()) {
+            $statut = $friendshipsRepository->findOneBy(['sender' => $this->getUser(), 'receiver' => $user])?->getStatut();
+            if ($statut == null) {
+                $statut = $friendshipsRepository->findOneBy(['sender' => $user, 'receiver' => $this->getUser()])?->getStatut();
+                if($statut != null && $statut == 'pending friend request')
+                    $statut = 'waiting for response';
+                else if($statut != null && $statut == 'accepted friend request')
+                    $statut = 'accepted friend request';
+            }
         }
+        if ($statut == null)
+            $statut = 'no friend request';
         return $this->render('back/profile.html.twig', [
-            'users' => $usersRepository->findAll(),
-            'form' => $form->createView(),
-            'updateForms' => $updateForms,
+            'user' => $user,
+            'statut' => $statut,
         ]);
     }
 
@@ -63,34 +80,39 @@ class UsersController extends AbstractController
         $user = new Users();
         $updateForms = array();
         for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(UsersType::class, $usersRepository->findAll()[$i])->createView();
+            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $usersRepository->findAll()[$i])->createView();
         }
         $pagination = $paginator->paginate(
             $usersRepository->findAll(), /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             5 /*limit per page*/
         );
-        $form = $this->createForm(UsersType::class, $user);
+
+        $form = $this->createForm(AdminFormType::class, $user);
+
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('plainPassword')->getData();
-            if ($plainPassword !== null) {
-                $encodedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
-                $user->setPassword($encodedPassword);
-            }
-            $file = $form['photoDeProfil']->getData();
+        $plainPassword = $form->get('plainPassword')->getData();
 
-            if ($file) {
-                $extension = $file->guessExtension();
-                if (!$extension) {
-                    // extension cannot be guessed
-                    $extension = 'bin';
-                }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $file->move($this->getParameter('kernel.project_dir') . "/public/img/users", $filename);
-                $user->setPhotoDeProfil("/img/users/" . $filename);
+        if ($plainPassword !== null && !empty($plainPassword)) {
+            $encodedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($encodedPassword);
+        }
+
+        $file = $form['photoDeProfil']->getData();
+
+        if ($file) {
+            $extension = $file->guessExtension();
+            if (!$extension) {
+                $extension = 'bin';
             }
+            $filename = rand(1, 99999) . '.' . $extension;
+            $file->move($this->getParameter('kernel.project_dir') . "/public/img/users", $filename);
+            $user->setPhotoDeProfil("/img/users/" . $filename);
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
             $user->setIsVerified(false);
             $role = $user->getRole();
             switch ($role) {
@@ -106,6 +128,7 @@ class UsersController extends AbstractController
             }
             $entityManager->persist($user);
             $entityManager->flush();
+            $this->addFlash('users', 'User Created successfully');
             return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
         }
         $hasErrorsCreate = true;
@@ -130,7 +153,7 @@ class UsersController extends AbstractController
         $updateForms = array();
         $users = $usersRepository->findAll();
         for ($i = 0; $i < count($users); $i++) {
-            $updateForms[$i] = $this->createForm(UsersType::class, $users[$i])->createView();
+            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $users[$i])->createView();
         }
         $pagination = $paginator->paginate(
             $usersRepository->findAll(),
@@ -139,39 +162,45 @@ class UsersController extends AbstractController
         );
 
 
-        $form = $this->createForm(UsersType::class, new Users());
+        $form = $this->createForm(AdminFormType::class, new Users());
 
-        $updateform = $this->createForm(UsersType::class, $user);
+        $updateform = $this->createForm(RegistrationFormType::class, $user);
 
         $updateform->handleRequest($request);
 
+        $plainPassword = $updateform->get('plainPassword')->getData();
+        if ($plainPassword !== null) {
+            $encodedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($encodedPassword);
+        }
+
+        $file = $updateform->get('photoDeProfil')->getData();
+
+        if ($file) {
+            $extension = $file->guessExtension();
+            if (!$extension) {
+                $extension = 'bin';
+            }
+            $filename = rand(1, 99999) . '.' . $extension;
+            $file->move($this->getParameter('kernel.project_dir') . "/public/img/users", $filename);
+            $user->setPhotoDeProfil("/img/users/" . $filename);
+        }
+
         if ($updateform->isSubmitted() && $updateform->isValid()) {
-            $plainPassword = $form->get('plainPassword')->getData();
-            if ($plainPassword !== null) {
-                $encodedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
-                $user->setPassword($encodedPassword);
-            }
-
-            $file = $form['photoDeProfil']->getData();
-
-            if ($file) {
-                $extension = $file->guessExtension();
-                if (!$extension) {
-                    $extension = 'bin';
-                }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $file->move($this->getParameter('kernel.project_dir') . "/public/img/users", $filename);
-                $user->setPhotoDeProfil("/img/users/" . $filename);
-            }
             if ($user->getRole() == 'client')
                 $user->setRoles(['ROLE_CLIENT']);
             else if ($user->getRole() == 'admin')
                 $user->setRoles(['ROLE_ADMIN']);
             else if ($user->getRole() == 'responsableDeCinema')
                 $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
+
             $entityManager->flush();
+            flash()->addSuccess('User updated successfully');
             return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
+        } else {
+            flash()->addError('User not updated');
         }
+
         $entityManager->refresh($user);
         return $this->render('back/UserTables.html.twig', [
             'pagination' => $pagination,
@@ -189,9 +218,10 @@ class UsersController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
-            $this->addFlash('users', 'User deleted successfully');
+            flash()->addSuccess('User Deleted successfully');
+        } else {
+            flash()->addError('User not deleted');
         }
-
         return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
     }
 }

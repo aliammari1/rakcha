@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\FilmcategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 
 
@@ -13,10 +15,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'fk_filmCategorie_1', columns: ['film_id'])]
 class Filmcategory
 {
+
     #[ORM\Column(name: 'film_id', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private int $filmId;
+
 
     #[ORM\Column(name: 'category_id', type: 'integer', nullable: false)]
     #[ORM\Id]
@@ -32,6 +36,4 @@ class Filmcategory
     {
         return $this->categoryId;
     }
-
-
 }

@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
 use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
 use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
@@ -23,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
 
+
     #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -35,12 +37,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'string', message: 'The name must be a string')]
     private string $nom;
 
+
     #[ORM\Column(name: 'prenom', type: 'string', length: 50)]
     #[Assert\NotBlank(message: 'The surname cannot be blank')]
     #[Assert\NotNull(message: 'The surname cannot be null')]
     #[Assert\Length(min: 2, max: 50, minMessage: 'The surname must have at least {{ limit }} characters', maxMessage: 'The surname cannot exceed {{ limit }} characters')]
     #[Assert\Type(type: 'string', message: 'The surname must be a string')]
     private string $prenom;
+
 
     #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: true)]
     #[Assert\NotBlank(message: 'The telephone number cannot be blank')]
@@ -49,12 +53,10 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'integer', message: 'The telephone number must be an integer')]
     private ?int $numTelephone;
 
+
     #[ORM\Column(name: 'password', type: 'string', length: 180)]
-    #[Assert\NotBlank(message: 'The password cannot be blank')]
-    #[Assert\NotNull(message: 'The password cannot be null')]
-    #[Assert\Length(min: 8, max: 180, minMessage: 'The password must have at least {{ limit }} characters', maxMessage: 'The password cannot exceed {{ limit }} characters')]
-    #[Assert\Type(type: 'string', message: 'The password must be a string')]
     private string $password;
+
 
     #[ORM\Column(name: 'role', type: 'string', length: 50)]
     #[Assert\NotBlank(message: 'The role cannot be blank')]
@@ -63,12 +65,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'string', message: 'The role must be a string')]
     private string $role;
 
+
     #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: true)]
     #[Assert\NotBlank(message: 'The address cannot be blank')]
     #[Assert\NotNull(message: 'The address cannot be null')]
     #[Assert\Length(min: 5, max: 50, minMessage: 'The address must have at least {{ limit }} characters', maxMessage: 'The address cannot exceed {{ limit }} characters')]
     #[Assert\Type(type: 'string', message: 'The address must be a string')]
     private ?string $adresse = null;
+
 
     #[ORM\Column(name: 'date_de_naissance', type: 'date', nullable: true)]
     #[Assert\NotBlank(message: 'The date of birth cannot be blank')]
@@ -77,6 +81,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: '\DateTimeInterface', message: 'The date of birth must be a valid date')]
     private ?DateTimeInterface $dateDeNaissance = null;
 
+
     #[ORM\Column(name: 'email', type: 'string', length: 180, unique: true)]
     #[Assert\NotBlank(message: 'The email cannot be blank')]
     #[Assert\NotNull(message: 'The email cannot be null')]
@@ -84,8 +89,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'string', message: 'The email must be a string')]
     private string $email;
 
-    #[ORM\Column(name: 'photo_de_profil', type: 'string', length: 255)]
-    private string $photoDeProfil;
+
+    #[ORM\Column(name: 'photo_de_profil', type: 'string', length: 255, nullable: true)]
+    private ?string $photoDeProfil = null;
 
     /**
      * @var Collection<int, Cinema>
@@ -108,6 +114,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'idClient')]
     private Collection $idProduit;
 
+
     #[ORM\Column(name: 'is_verified', type: 'boolean')]
     private bool $isVerified;
 
@@ -123,7 +130,10 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
         return $this;
     }
 
-
+    #[Assert\NotBlank(message: 'The password cannot be blank')]
+    #[Assert\NotNull(message: 'The password cannot be null')]
+    #[Assert\Length(min: 8, max: 180, minMessage: 'The password must have at least {{ limit }} characters', maxMessage: 'The password cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The password must be a string')]
     private string $plainPassword;
     public function getPlainPassword(): string
     {
@@ -136,9 +146,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
 
         return $this;
     }
-    /**
-     * Constructor
-     */
+
     public function __construct()
     {
         $this->numTelephone = null;
@@ -147,6 +155,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
         $this->idCinema = new ArrayCollection();
         $this->idSeance = new ArrayCollection();
         $this->idProduit = new ArrayCollection();
+        $this->incomingFriendRequests = new ArrayCollection();
+        $this->sentFriendRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -330,6 +340,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     }
 
 
+
     #[ORM\Column]
     private array $roles = [];
 
@@ -411,8 +422,15 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     {
         return $this->isVerified;
     }
+    
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $totpSecret;
+
+    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Friendships::class)]
+    private Collection $incomingFriendRequests;
+
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Friendships::class)]
+    private Collection $sentFriendRequests;
     public function getTotpSecret(): ?string
     {
         return $this->totpSecret;
@@ -434,5 +452,66 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
     {
         return new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA1, 30, 6);
+    }
+
+
+    /**
+     * @return Collection<int, Friendships>
+     */
+    public function getIncomingFriendRequests(): Collection
+    {
+        return $this->incomingFriendRequests;
+    }
+
+    public function addIncomingFriendRequest(Friendships $incomingFriendRequest): static
+    {
+        if (!$this->incomingFriendRequests->contains($incomingFriendRequest)) {
+            $this->incomingFriendRequests->add($incomingFriendRequest);
+            $incomingFriendRequest->setReceiver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIncomingFriendRequest(Friendships $incomingFriendRequest): static
+    {
+        if ($this->incomingFriendRequests->removeElement($incomingFriendRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($incomingFriendRequest->getReceiver() === $this) {
+                $incomingFriendRequest->setReceiver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Friendships>
+     */
+    public function getSentFriendRequests(): Collection
+    {
+        return $this->sentFriendRequests;
+    }
+
+    public function addSentFriendRequest(Friendships $sentFriendRequest): static
+    {
+        if (!$this->sentFriendRequests->contains($sentFriendRequest)) {
+            $this->sentFriendRequests->add($sentFriendRequest);
+            $sentFriendRequest->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSentFriendRequest(Friendships $sentFriendRequest): static
+    {
+        if ($this->sentFriendRequests->removeElement($sentFriendRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($sentFriendRequest->getSender() === $this) {
+                $sentFriendRequest->setSender(null);
+            }
+        }
+
+        return $this;
     }
 }

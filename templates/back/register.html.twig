@@ -23,6 +23,7 @@
 		<link href="{{ asset('css/loading.css') }}" rel="stylesheet">
 	</head>
 	<body class="">
+		{{ flasher_render() }}
 		<div id="loading">
 			<div class="loader">
 				<div class="box box0">
@@ -55,14 +56,14 @@
 			</div>
 		</div>
 		<script>
-			let pageLoaded = false;
+			let pageLoadedVar = false;
 
-// Set pageLoaded to true when the page finishes loading
+// Set pageLoadedVar to true when the page finishes loading
 window.onload = function () {
-pageLoaded = true;
+pageLoadedVar = true;
 // If 5 seconds have already passed, hide the loading screen
-if (new Date().getTime() - startTime >= 5000) {
-document.getElementById('loading').style.display = 'none';
+if (new Date().getTime() - startTime >= 3000) {
+document.getElementById("loading").style.display = "none";
 }
 };
 
@@ -70,10 +71,10 @@ let startTime = new Date().getTime();
 
 // Hide the loading screen 5 seconds after the page starts loading
 setTimeout(function () {
-if (pageLoaded) {
-document.getElementById('loading').style.display = 'none';
+if (pageLoadedVar) {
+document.getElementById("loading").style.display = "none";
 }
-}, 5000);
+}, 3000);
 		</script>
 		<!-- Navbar -->
 		<nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
@@ -91,11 +92,6 @@ document.getElementById('loading').style.display = 'none';
 								<a class="nav-link me-2" href="{{ path(pathItems[i]) }}">{{ items[i]|auto_translate }}</a>
 							</li>
 						{% endfor %}
-					</ul>
-					<ul class="navbar-nav d-lg-block d-none">
-						<li class="nav-item">
-							<a class="btn btn-sm mb-0 me-1 bg-gradient-light" href="https://www.creative-tim.com/product/argon-dashboard">{{ 'Free Download'|auto_translate }}</a>
-						</li>
 					</ul>
 				</div>
 			</div>
@@ -176,22 +172,23 @@ document.getElementById('loading').style.display = 'none';
 								{% for flash_error in app.flashes('verify_email_error') %}
 									<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
 								{% endfor %}
-
 								{{ form_errors(registrationForm) }}
 
-								{{ form_start(registrationForm) }}
+								{{ form_start(registrationForm, {'action': path('app_register'),'attr': {'novalidate': 'novalidate'}}) }}
 								{% for field in registrationForm %}
 									<div class=" {% if field.vars.name != '_token' %} mb-3 {% endif %} {% if field.vars.name == 'agreeTerms' %} form-check {% endif %}">
 
 										{% if field.vars.name == 'agreeTerms' %}
 											{{ form_label(field, 'I agree to Terms and Services', {'label_attr': {'class': 'form-check-label'}}) }}
 										{% elseif field.vars.name != '_token' %}
-											{# field.vars.label|auto_translate #}
 											{{ form_label(field, null, {'label_attr': {'class': 'col-form-label'}}) }}
 										{% endif %}
+
 										{% if field.vars.name == 'agreeTerms' %}
 											{{ form_widget(field, {'attr': {'class': 'form-check-input', 'id': 'flexCheckDefault'}}) }}
-
+										{% elseif field.vars.name == 'photoDeProfil' %}
+											<img src="{{asset('img/users/empty.jpg')}}" alt="" class="img-thumbnail img-fluid mb-2" id="photoDeProfilImage">
+											{{ form_widget(field, { 'attr': {'class': 'form-control'}}) }}
 										{% else %}
 											{{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
 										{% endif %}
@@ -199,7 +196,7 @@ document.getElementById('loading').style.display = 'none';
 									</div>
 								{% endfor %}
 								<div class="text-center">
-									<button class="btn bg-gradient-dark w-100 mb-2">Register</button>
+									<button class="btn bg-gradient-dark w-100 mb-2" type="submit">Register</button>
 								</div>
 								{{ form_end(registrationForm) }}
 								<p class="text-sm mt-3 mb-0">
@@ -245,6 +242,16 @@ document.getElementById('loading').style.display = 'none';
 		<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
 		<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
 		<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+		<script>
+			let photoDeProfilImage = document.getElementById('photoDeProfilImage');
+let photoDeProfilInput = document.getElementById('registration_form_photoDeProfil');
+photoDeProfilInput.onchange = evt => {
+const [file] = photoDeProfilInput.files
+if (file) {
+photoDeProfilImage.src = URL.createObjectURL(file)
+}
+}
+		</script>
 		<script>
 			var win = navigator.platform.indexOf('Win') > -1;
 if (win && document.querySelector('#sidenav-scrollbar')) {
