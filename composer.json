@@ -12,7 +12,6 @@
     "doctrine/doctrine-bundle": "^2.10",
     "doctrine/doctrine-migrations-bundle": "^3.2",
     "doctrine/orm": "^2.16",
-    "easycorp/easyadmin-bundle": "^4.9",
     "google/apiclient": "*",
     "kartik-v/bootstrap-star-rating": "@dev",
     "madcoda/php-youtube-api": "^1.2",

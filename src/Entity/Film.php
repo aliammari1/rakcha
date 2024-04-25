@@ -64,6 +64,9 @@ class Film
     #[ORM\Column(name: 'annederalisation', type: 'integer', nullable: false)]
     private int $annederalisation;
 
+    #[ORM\Column(name: 'isBookmarked', type: 'boolean')]
+    private bool $isBookmarked;
+
     #[ORM\ManyToMany(targetEntity: Actor::class, inversedBy: 'films')]
     #[Assert\NotBlank(message: 'The film actors is required.')]
     #[Assert\Count(min: 1, minMessage: 'The film must have at least one actor.')]
@@ -86,7 +89,18 @@ class Film
     {
         return $this->id;
     }
+    public function getIsBookmarked(): ?bool
+    {
+        return $this->isBookmarked;
+    }
 
+    
+    public function setIsBookmarked(bool $isBookmarked): static
+    {
+        $this->isBookmarked = $isBookmarked;
+
+        return $this;
+    }
     public function getNom(): ?string
     {
         return $this->nom;

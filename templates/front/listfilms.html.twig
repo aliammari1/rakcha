@@ -1,7 +1,15 @@
 {% extends 'baseFront.html.twig' %}
 
 {% block pageStyle %}
-	<link href="{{ asset('/css/about.css') }}" rel="stylesheet">
+	<link
+	href="{{ asset('/css/about.css') }}" rel="stylesheet">
+ <script>
+		var BookMarkArray = [];
+
+		{% for film in films %}
+			BookMarkArray.push('{{film.isBookmarked}}' ? true : false);
+		{% endfor %}
+	</script>
 {% endblock %}
 
 {% block body %}
@@ -85,149 +93,217 @@
 			}
 		</style>
 		<section id="team" class="pt-4 pb-4 bg_grey">
+			<input
+			type="search" class="form-control bg-black" placeholder="Search Site..." id="filmSearchBar">
+			 <script>
+										document.getElementById("filmSearchBar").addEventListener("keypress",()=> {
+											let filmArray = document.querySelectorAll('.flip-card');
+											console.log(filmArray);
+											fetch("{{path('app_search_film')}}",{
+													method: "POST",
+													headers : {
+														'Content-Type': 'application/json',
+														'X-Requested-With': 'XMLHttpRequest'
+													},
+													body: JSON.stringify({'search' : document.getElementById("filmSearchBar").value})
+												}).then(response => response.json()).then(data => {
+													console.log(data);
+												if(data.success) {
+													let filteredFilms = Array.from(filmArray).filter(film => {
+    // Check if the film element has a child element with the specified ID
+    return data.films.some(searchId => film.querySelector("flip-card-" + searchId) !== null);
+});
+
+// Get the container element where you want to set the filtered elements
+let container = document.getElementById('filmContainer'); // Replace 'your-container-id' with the ID of your container element
+
+// Clear previous content of the container
+container.innerHTML = '';
+
+// Add the filtered elements to the container
+filteredFilms.forEach(film => {
+    container.appendChild(film.cloneNode(true));
+});
+
+												}
+												});
+										});
+									</script>
 			<div class="container-xl">
 				{% set j = 0 %}
-				{% for i in range(0,films|length // 3) %}
-					<div class="team_1i row {% if not loop.first %} mt-4{% endif %} ">
-						{% for film in films|slice(loop.index0 * 3, 3) %}
-							<div class="flip-card col-md-4 ">
-								<div class="flip-card-inner ">
-									<div
-										class="flip-card-front">
-										{# <p class="title">FLIP CARD</p> #}
-										<img src="{{ asset(film.image) }}" alt="" style="border-radius: 15px;" class="w-100 h-100">
-										<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0" style="border-radius: 0px 0px 15px 15px; height: 30%;">
-											<h4 class="col_red">{{film.nom}}</h4>
-											<h6>categorys:
-												{% for category in film.categorys %}
-													<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
-													{% if not loop.last %},
-													{% endif %}
+				<div id="filmContainer" class="team_1i d-flex flex-wrap justify-content-center" style="width: 90vw;">
+					{% for film in films %}
+						<div id="flip-card-{{film.id}}" class="flip-card col-md-4 " style="width:330px;margin-bottom: 20px;margin-right: 20px;">
+							<div class="flip-card-inner ">
+								<div
+									class="flip-card-front">
 
-												{% endfor %}
-											</h6>
-											<h4 style="color: white;">{{ averageRatings[j][0]['rate_avg']|default('0')|number_format(1) }}<i class="fa fa-star" style="color: red;margin-left: 6px;"></i></h4>
+									{# <p class="title">FLIP CARD</p> #}
+									<img src="{{ asset(film.image) }}" alt="" style="border-radius: 15px;" class="w-100 h-100">
+									<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0" style="border-radius: 0px 0px 15px 15px; height: 30%;">
+										<button id="bookmarkFront{{j}}" class="btn position-absolute" style="background-color: transparent;top: -309px;right: 10px;">
+											<i id="bookmarkIconFront{{j}}" style="{% if film.isBookmarked %} color: red; {% endif %} font-size: 30px;" class="fa fa-bookmark"></i>
+										</button>
 
-										</div>
+										<h4 class="col_red">{{film.nom}}</h4>
+										<h6>categorys:
+											{% for category in film.categorys %}
+												<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
+												{% if not loop.last %},
+												{% endif %}
+
+											{% endfor %}
+										</h6>
+										<h4 style="color: white;">{{ averageRatings[j][0]['rate_avg']|default('0')|number_format(1) }}<i class="fa fa-star" style="color: red;margin-left: 6px;"></i>
+										</h4>
+
 									</div>
-									<div class="flip-card-back">
-										<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0" style="height: 100%;border-radius:15px;">
-											<h4 class="col_red">{{film.nom}}</h4>
-											<h6>categorys:
-												{% for category in film.categorys %}
-													<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
-													{% if not loop.last %},
-													{% endif %}
+								</div>
+								<div class="flip-card-back">
+									<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0" style="height: 100%;border-radius:15px;">
+										<button id="bookmark{{j}}" class="btn position-absolute" style="background-color: transparent;top: 10px;right: 10px;">
+											<i id="bookmarkIcon{{j}}" style="{% if film.isBookmarked %} color: red; {% endif %} font-size: 30px;" class="fa fa-bookmark"></i>
+										</button>
+										 <script>
+																																						document.getElementById("bookmark{{j}}").addEventListener("click",() => {
+																																							BookMarkArray[{{j}}] = !BookMarkArray[{{j}}];
+																																							let isBookmarked = BookMarkArray[{{j}}];
+																																							fetch("{{path('app_bookmark_film')}}",{
+																																								method: "POST",
+																																								headers : {
+																																									'Content-Type': 'application/json',
+																																									'X-Requested-With': 'XMLHttpRequest'
+																																								},
+																																								body: JSON.stringify({'id' : {{film.id}},'isBookmarked': isBookmarked})
+																																							}).then(response => response.json()).then(data => {console.log(data);
+																																							if(data.success) {
+																																								document.getElementById('bookmarkIcon{{j}}').style.color = isBookmarked ? "red" : "black";
+																																								document.getElementById('bookmarkIconFront{{j}}').style.color = isBookmarked ? "red" : "black";
+																																							new Noty({
+																																								type: isBookmarked ? 'success' : 'error',
+																																								layout: 'topRight',
+																																								text: `{{film.nom}} is ${isBookmarked ? 'bookmarked' : 'unbookmarked'}`,
+																																								theme: 'sunset',
+																																								timeout: 5000
+																																								}).show();
+																																								}
+																																							});
+																																						});
+																																						</script>
+										<h4 class="col_red">{{film.nom}}</h4>
+										<h6>categorys:
+											{% for category in film.categorys %}
+												<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
+												{% if not loop.last %},
+												{% endif %}
 
-												{% endfor %}
-											</h6>
-											
-											<h6>Actors:
-												{% for actor in film.actors %}
-													<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
-													{% if not loop.last %},
-													{% endif %}
-												{% endfor %}
-											</h6>
-											<h6>Description:
-												{{film.description}}
-											</h6>
-											<form id="rateForm{{j}}">
-												<input id="input-{{j}}-sm" class="rating rating-loading" name="rate" data-min="0" data-max="5" data-step="0.5" data-size="sm" data-show-clear="false" data-show-caption="false">
-											</form>
-											 <script>
-																						
-																																	</script>
-											 <script>
-																																	$("#input-{{j}}-sm").rating().on("rating:change", function(event, value) {
-																						console.log("You rated {{film.nom}}: " + value);
-																						console.log($("#rateForm{{j}}").serialize());
-																						let xhr = new XMLHttpRequest();
-																						xhr.open('POST', '{{path("app_rate_film_index")}}', true);
-																						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-																						xhr.onload = function() {
-																							console.log(xhr.responseText);
-																						};
-																						
-																						// Encode the data in URL-encoded format
-																						let data = 'rate=' + encodeURIComponent(value) + '&filmId=' + encodeURIComponent({{film.id}});
-																						
-																						xhr.send(data);										
-																																																																		});
-																																																																													</script>
+											{% endfor %}
+										</h6>
 
-											<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#Youtubewatch{{j}}" data-thevideo="{{videoUrl[j]}}">
-												<i class="fa fa-play-circle align-middle me-1"></i>
-												Watch Trailer</button>
+										<h6>Actors:
+											{% for actor in film.actors %}
+												<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
+												{% if not loop.last %},
+												{% endif %}
+											{% endfor %}
+										</h6>
+										<h6>Description:
+											{{film.description}}
+										</h6>
+										<form id="rateForm{{j}}">
+											<input id="input-{{j}}-sm" value="{{ratings[j]|default('0')}}" class="rating rating-loading" name="rate" data-min="0" data-max="5" data-step="0.5" data-size="sm" data-show-clear="false" data-show-caption="false">
+										</form>
+										 <script>
+																																																																																						
+																																																																																																	</script>
+										 <script>
+																																																																																																	$("#input-{{j}}-sm").rating().on("rating:change", function(event, value) {
+																																																																																						console.log("You rated {{film.nom}}: " + value);
+																																																																																						console.log($("#rateForm{{j}}").serialize());
+																																																																																						let xhr = new XMLHttpRequest();
+																																																																																						xhr.open('POST', '{{path("app_rate_film_index")}}', true);
+																																																																																						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+																																																																																						xhr.onload = function() {
+																																																																																							console.log(xhr.responseText);
+																																																																																						};
+																																																																																						
+																																																																																						// Encode the data in URL-encoded format
+																																																																																						let data = 'rate=' + encodeURIComponent(value) + '&filmId=' + encodeURIComponent({{film.id}});
+																																																																																						
+																																																																																						xhr.send(data);										
+																																																																																																																																		});
+																																																																																																																																													</script>
+
+										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#Youtubewatch{{j}}" data-thevideo="{{videoUrl[j]}}">
+											<i class="fa fa-play-circle align-middle me-1"></i>
+											Watch Trailer</button>
 
 
-										</div>
 									</div>
 								</div>
 							</div>
-							<div class="modal fade" id="Youtubewatch{{j}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden=" true">
-								<div class="modal-dialog" style="max-width: 594px;">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-											<button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
-										</div>
-										<div class="modal-body">
-											<iframe width="560" height="315" src="{{videoUrl[j]}}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-										</div>
-										<div class="modal-footer"></div>
+						</div>
+						<div class="modal fade" id="Youtubewatch{{j}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden=" true">
+							<div class="modal-dialog" style="max-width: 594px;">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+										<button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
+									<div class="modal-body">
+										<iframe width="560" height="315" src="{{videoUrl[j]}}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+									</div>
+									<div class="modal-footer"></div>
 								</div>
 							</div>
-							{% set j = j + 1  %}
-						{% endfor %}
+						</div>
+						{% set j = j + 1  %}
+					{% endfor %}
 
-					</div>
-
-				{% endfor %}
+				</div>
 			</div>
 		</section>
 
 		{{ block("footer") }}
 	 <script>
-																												function autoPlayYouTubeModal() {
-																																var triggers = document.querySelectorAll('[data-bs-toggle="modal"]');
-																																triggers.forEach(function (trigger) {
-																																trigger.addEventListener('click', function () {
-																																var theModal = this.getAttribute('data-bs-target');
-																																var videoSRC = this.getAttribute('data-theVideo');
-																																var videoSRCauto = videoSRC + "?autoplay=1";
-																																document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
-																																
-																																var closeButton = document.querySelector(theModal + ' button.close');
-																																closeButton.addEventListener('click', function () {
-																																document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
-																																});
-																																});
-																																});
-																																}
-																																document.addEventListener('DOMContentLoaded', function () {
-																																autoPlayYouTubeModal();
-																																});
-																																		</script>
+																																		function autoPlayYouTubeModal() {
+																																						var triggers = document.querySelectorAll('[data-bs-toggle="modal"]');
+																																						triggers.forEach(function (trigger) {
+																																						trigger.addEventListener('click', function () {
+																																						var theModal = this.getAttribute('data-bs-target');
+																																						var videoSRC = this.getAttribute('data-theVideo');
+																																						var videoSRCauto = videoSRC + "?autoplay=1";
+																																						document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
+																																						
+																																						var closeButton = document.querySelector(theModal + ' button.close');
+																																						closeButton.addEventListener('click', function () {
+																																						document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
+																																						});
+																																						});
+																																						});
+																																						}
+																																						document.addEventListener('DOMContentLoaded', function () {
+																																						autoPlayYouTubeModal();
+																																						});
+																																								</script>
 		 <script>
-																																																				window.onscroll = function () {
-																																																										myFunction()
-																																																										};
-																																																										
-																																																										var navbar_sticky = document.getElementById("navbar_sticky");
-																																																										var sticky = navbar_sticky.offsetTop;
-																																																										var navbar_height = document.querySelector('.navbar').offsetHeight;
-																																																										
-																																																										function myFunction() {
-																																																										if (window.pageYOffset >= sticky + navbar_height) {
-																																																										navbar_sticky.classList.add("sticky")
-																																																										document.body.style.paddingTop = navbar_height + 'px';
-																																																										} else {
-																																																										navbar_sticky.classList.remove("sticky");
-																																																										document.body.style.paddingTop = '0'
-																																																										}
-																																																										}
-																																																												</script>
+																																																																window.onscroll = function () {
+																																																																						myFunction()
+																																																																						};
+																																																																						
+																																																																						var navbar_sticky = document.getElementById("navbar_sticky");
+																																																																						var sticky = navbar_sticky.offsetTop;
+																																																																						var navbar_height = document.querySelector('.navbar').offsetHeight;
+																																																																						
+																																																																						function myFunction() {
+																																																																						if (window.pageYOffset >= sticky + navbar_height) {
+																																																																						navbar_sticky.classList.add("sticky")
+																																																																						document.body.style.paddingTop = navbar_height + 'px';
+																																																																						} else {
+																																																																						navbar_sticky.classList.remove("sticky");
+																																																																						document.body.style.paddingTop = '0'
+																																																																						}
+																																																																						}
+																																																																								</script>
 	</body>
 {% endblock %}

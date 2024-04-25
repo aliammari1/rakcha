@@ -38,17 +38,8 @@
             "./migrations/.gitignore"
         ]
     },
-    "easycorp/easyadmin-bundle": {
-        "version": "4.9",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "3.0",
-            "ref": "b131e6cbfe1b898a508987851963fff485986285"
-        }
-    },
     "google/apiclient": {
-        "version": "2.15",
+        "version": "2.16",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "main",
@@ -253,7 +244,7 @@
         ]
     },
     "symfony/stimulus-bundle": {
-        "version": "2.16",
+        "version": "2.17",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -293,7 +284,7 @@
         ]
     },
     "symfony/ux-turbo": {
-        "version": "v2.16.0"
+        "version": "v2.17.0"
     },
     "symfony/validator": {
         "version": "5.4",
@@ -321,6 +312,6 @@
         ]
     },
     "twig/extra-bundle": {
-        "version": "v3.8.0"
+        "version": "v3.9.3"
     }
 }
