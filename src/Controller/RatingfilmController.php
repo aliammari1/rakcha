@@ -31,7 +31,7 @@ class RatingfilmController extends AbstractController
         $form->handleRequest($request);
         $ratingfilm->setRate($request->get('rate'));
         $ratingfilm->setIdFilm($request->get('filmId'));
-        $ratingfilm->setIdUser(1);
+        $ratingfilm->setIdUser(2);
         // Persist and flush the entity
         $entityManager->persist($ratingfilm);
         $entityManager->flush();
