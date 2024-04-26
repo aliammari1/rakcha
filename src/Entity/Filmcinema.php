@@ -25,11 +25,11 @@ class Filmcinema
 
      
     #[ORM\ManyToOne(targetEntity: Cinema::class, inversedBy: "filmCinemas")]
-    #[ORM\JoinColumn(name: 'id_cinema', referencedColumnName: 'id_cinema', nullable: false)] // Mettez à jour le nom de la colonne
+    #[ORM\JoinColumn(name: 'id_cinema', referencedColumnName: 'id_cinema', nullable: false)]
     private $cinema;
 
     #[ORM\ManyToOne(targetEntity: Film::class, inversedBy: "filmCinemas")]
-    #[ORM\JoinColumn(name: 'id_film', referencedColumnName: 'id', nullable: false)] // Assurez-vous que le nom de la colonne correspond au bon
+    #[ORM\JoinColumn(name: 'id_film', referencedColumnName: 'id', nullable: false)] 
     private $film;
 
     public function getIdFilm(): ?int

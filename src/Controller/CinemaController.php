@@ -46,6 +46,15 @@ class CinemaController extends AbstractController
         ]);
     }
 
+    #[Route('/location', name: 'app_cinema_location', methods: ['GET'])]
+    public function localiser(): Response
+    {
+    // Vous pouvez utiliser l'objet $cinema ici dans votre logique de contrôleur
+    // Par exemple, vous pouvez récupérer les détails du cinéma et les passer au modèle Twig
+
+    return $this->render('cinema/Map.html.twig', []);
+    }
+
 
     #[Route('/listeCinemaAdmin', name: 'app_cinemaAdmin_index', methods: ['GET', 'POST'])]
     public function listeCinemaAdmin(CinemaRepository $cinemaRepository, UsersRepository $usersRepository, Request $request, EntityManagerInterface $entityManager): Response
@@ -59,7 +68,6 @@ class CinemaController extends AbstractController
 
 
         if (!empty($errors)) {
-            // Afficher une alerte avec l'erreur
             $errorMessage = $errors[0]->getMessage();
             $this->addFlash('error', $errorMessage);
         }
@@ -98,8 +106,6 @@ class CinemaController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $imageFile = $form->get('logo')->getData();
             if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to generate a unique file name based on original file name
                 $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
                 $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
 
@@ -116,7 +122,6 @@ class CinemaController extends AbstractController
             }
             $userId = 151;
             $cinema->setStatut('Pending');
-            // Fetch the user by ID
             $user = $usersRepository->find($userId);
             if ($user->getRole() == 'responsable') {
                 $cinema->setResponsable($user->getId());
@@ -161,7 +166,6 @@ class CinemaController extends AbstractController
         if ($updateform->isSubmitted() && $updateform->isValid()) {
             $imageFile = $updateform->get('logo')->getData();
             if ($imageFile) {
-                // this is needed to generate a unique file name based on original file name
                 $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
                 $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
 
@@ -184,7 +188,7 @@ class CinemaController extends AbstractController
         return $this->render('cinema/CinemasTable.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
             'users' => $usersRepository->findAll(),
-            'form' => $form->createView(), // Utilisez le formulaire original pour afficher les erreurs dans le modal
+            'form' => $form->createView(), 
             'updateForms' => $updateForms,
             "formUpdateNumber" => $formUpdateNumber,
             'updateform' => $updateform->createView(),
@@ -197,6 +201,7 @@ class CinemaController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete' . $cinema->getIdCinema(), $request->request->get('_token'))) {
             $entityManager->remove($cinema);
+            
             $entityManager->flush();
         }
 
@@ -226,6 +231,10 @@ class CinemaController extends AbstractController
 
         return $this->redirectToRoute('app_cinemaAdmin_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
+
+ 
 
 
 
