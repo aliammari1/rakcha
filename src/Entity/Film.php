@@ -5,12 +5,10 @@ namespace App\Entity;
 use App\Repository\FilmRepository;
 use DateTime;
 use DateTimeInterface;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
-
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
 #[ORM\Table(name: 'film')]
@@ -77,8 +75,12 @@ class Film
     #[Assert\Count(min: 1, minMessage: 'The film must have at least one category.')]
     private Collection $categorys;
 
+    #[ORM\OneToMany(targetEntity: Filmcinema::class, mappedBy: "film")]
+    
+    private $filmCinemas;
     public function __construct()
     {
+        $this->filmCinemas = new ArrayCollection();
         $this->actors = new ArrayCollection();
         $this->categorys = new ArrayCollection();
         $this->duree = new DateTime();
@@ -160,7 +162,6 @@ class Film
 
         return $this;
     }
-
     /**
      * @return Collection<int, Actor>
      */
@@ -205,6 +206,36 @@ class Film
     public function removeCategory(Category $category): static
     {
         $this->categorys->removeElement($category);
+
+        return $this;
+    }
+
+ /**
+     * @return Collection|Filmcinema[]
+     */
+    public function getFilmCinemas(): Collection
+    {
+        return $this->filmCinemas;
+    }
+
+    public function addFilmCinema(Filmcinema $filmCinema): self
+    {
+        if (!$this->filmCinemas->contains($filmCinema)) {
+            $this->filmCinemas[] = $filmCinema;
+            $filmCinema->setFilm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFilmCinema(Filmcinema $filmCinema): self
+    {
+        if ($this->filmCinemas->removeElement($filmCinema)) {
+            // set the owning side to null (unless already changed)
+            if ($filmCinema->getFilm() === $this) {
+                $filmCinema->setFilm(null);
+            }
+        }
 
         return $this;
     }
