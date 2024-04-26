@@ -5,10 +5,14 @@
 	href="{{ asset('/css/about.css') }}" rel="stylesheet">
  <script>
 		var BookMarkArray = [];
-
+		var filmArray = [];
 		{% for film in films %}
 			BookMarkArray.push('{{film.isBookmarked}}' ? true : false);
 		{% endfor %}
+		window.addEventListener('DOMContentLoaded', () => { 
+		filmArray = document.querySelectorAll('.flip-card');
+		console.log(filmArray);
+		});
 	</script>
 {% endblock %}
 
@@ -93,43 +97,111 @@
 			}
 		</style>
 		<section id="team" class="pt-4 pb-4 bg_grey">
-			<input
-			type="search" class="form-control bg-black" placeholder="Search Site..." id="filmSearchBar">
+			<div class="d-flex justify-content-center mb-3">
+				<input type="search" class="form-control bg-black" placeholder="Search Site..." id="filmSearchBar" style="width: 413px;">
+			</div>
+			<div class="d-flex justify-content-center">
+			<div class="d-flex justify-content-center flex-wrap mb-3" style="width: 80vw;">
+				{% for category in categorys %}
+					<div class="btn  me-2 mb-2" style="background-color: white;">
+						<div class="form-check">
+							<input class="form-check-input form-check-input-category" type="checkbox" value="{{category.nom}}" id="flexCheckChecked{{category.nom}}">
+							<label class="form-check-label" for="flexCheckChecked{{category.nom}}">
+								{{category.nom}}
+							</label>
+						</div>
+					</div>
+				{% endfor %}
+				<script>
+
+// Add event listener to checkboxes
+document.querySelectorAll('.form-check-input-category').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        // Get checked checkboxes
+        let checkedCheckboxes = document.querySelectorAll('.form-check-input-category:checked');
+
+        // Extract values of checked checkboxes
+        let checkedValues = Array.from(checkedCheckboxes).map(function(checkbox) {
+            return checkbox.value;
+        });
+
+        // Send fetch request with checked checkboxes
+        fetch("{{path('app_filter_category_film')}}", {
+        method: 'POST', // or 'GET', 'PUT', 'DELETE', etc.
+        headers: {
+            'Content-Type': 'application/json',
+			'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ checkboxes: checkedValues }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Fetch response:', data);
+		if(data.success) {
+			let filmIds = data.filmsCategorized.map(film => `flip-card-${film}`);
+			console.log(filmIds);
+			let filteredFilms = Array.from(filmArray).filter(film => {
+				// Check if the film element has a child element with the specified ID
+				return filmIds.some(filmId => film.id === filmId);
+			});
+			console.log({'filterscategories': filteredFilms});
+			// Get the container element where you want to set the filtered elements
+			let container = document.getElementById('filmContainer'); // Replace 'your-container-id' with the ID of your container element
+			
+			// Clear previous content of the container
+			container.innerHTML = '';
+			
+			// Add the filtered elements to the container
+			filteredFilms.forEach(film => {
+				container.appendChild(film.cloneNode(true));
+			});
+			
+										
+		}
+		})
+    });
+});
+
+				</script>
+
+			</div>
+			</div>
 			 <script>
-										document.getElementById("filmSearchBar").addEventListener("keypress",()=> {
-											let filmArray = document.querySelectorAll('.flip-card');
-											console.log(filmArray);
-											fetch("{{path('app_search_film')}}",{
-													method: "POST",
-													headers : {
-														'Content-Type': 'application/json',
-														'X-Requested-With': 'XMLHttpRequest'
-													},
-													body: JSON.stringify({'search' : document.getElementById("filmSearchBar").value})
-												}).then(response => response.json()).then(data => {
-													console.log(data);
-												if(data.success) {
-													let filteredFilms = Array.from(filmArray).filter(film => {
-    // Check if the film element has a child element with the specified ID
-    return data.films.some(searchId => film.querySelector("flip-card-" + searchId) !== null);
-});
-
-// Get the container element where you want to set the filtered elements
-let container = document.getElementById('filmContainer'); // Replace 'your-container-id' with the ID of your container element
-
-// Clear previous content of the container
-container.innerHTML = '';
-
-// Add the filtered elements to the container
-filteredFilms.forEach(film => {
-    container.appendChild(film.cloneNode(true));
-});
-
-												}
-												});
-										});
-									</script>
-			<div class="container-xl">
+																document.getElementById("filmSearchBar").addEventListener("input",()=> {
+																	fetch("{{path('app_search_film')}}",{
+																			method: "POST",
+																			headers : {
+																				'Content-Type': 'application/json',
+																				'X-Requested-With': 'XMLHttpRequest'
+																			},
+																			body: JSON.stringify({'search' : document.getElementById("filmSearchBar").value})
+																		}).then(response => response.json()).then(data => {
+																			console.log(data);
+																		if(data.success) {
+																			let filmIds = data.films.map(film => `flip-card-${film}`);
+																			console.log(filmIds);
+																			let filteredFilms = Array.from(filmArray).filter(film => {
+																				// Check if the film element has a child element with the specified ID
+																				return filmIds.some(filmId => film.id === filmId);
+																			});
+																			console.log({'filters': filteredFilms});
+																			// Get the container element where you want to set the filtered elements
+																			let container = document.getElementById('filmContainer'); // Replace 'your-container-id' with the ID of your container element
+																			
+																			// Clear previous content of the container
+																			container.innerHTML = '';
+																			
+																			// Add the filtered elements to the container
+																			filteredFilms.forEach(film => {
+																				container.appendChild(film.cloneNode(true));
+																			});
+																			
+																										
+																		}
+																		});
+																});
+															</script>
+			<div class="d-flex justify-content-center container-xl">
 				{% set j = 0 %}
 				<div id="filmContainer" class="team_1i d-flex flex-wrap justify-content-center" style="width: 90vw;">
 					{% for film in films %}
@@ -165,31 +237,31 @@ filteredFilms.forEach(film => {
 											<i id="bookmarkIcon{{j}}" style="{% if film.isBookmarked %} color: red; {% endif %} font-size: 30px;" class="fa fa-bookmark"></i>
 										</button>
 										 <script>
-																																						document.getElementById("bookmark{{j}}").addEventListener("click",() => {
-																																							BookMarkArray[{{j}}] = !BookMarkArray[{{j}}];
-																																							let isBookmarked = BookMarkArray[{{j}}];
-																																							fetch("{{path('app_bookmark_film')}}",{
-																																								method: "POST",
-																																								headers : {
-																																									'Content-Type': 'application/json',
-																																									'X-Requested-With': 'XMLHttpRequest'
-																																								},
-																																								body: JSON.stringify({'id' : {{film.id}},'isBookmarked': isBookmarked})
-																																							}).then(response => response.json()).then(data => {console.log(data);
-																																							if(data.success) {
-																																								document.getElementById('bookmarkIcon{{j}}').style.color = isBookmarked ? "red" : "black";
-																																								document.getElementById('bookmarkIconFront{{j}}').style.color = isBookmarked ? "red" : "black";
-																																							new Noty({
-																																								type: isBookmarked ? 'success' : 'error',
-																																								layout: 'topRight',
-																																								text: `{{film.nom}} is ${isBookmarked ? 'bookmarked' : 'unbookmarked'}`,
-																																								theme: 'sunset',
-																																								timeout: 5000
-																																								}).show();
-																																								}
-																																							});
-																																						});
-																																						</script>
+																																																										document.getElementById("bookmark{{j}}").addEventListener("click",() => {
+																																																											BookMarkArray[{{j}}] = !BookMarkArray[{{j}}];
+																																																											let isBookmarked = BookMarkArray[{{j}}];
+																																																											fetch("{{path('app_bookmark_film')}}",{
+																																																												method: "POST",
+																																																												headers : {
+																																																													'Content-Type': 'application/json',
+																																																													'X-Requested-With': 'XMLHttpRequest'
+																																																												},
+																																																												body: JSON.stringify({'id' : {{film.id}},'isBookmarked': isBookmarked})
+																																																											}).then(response => response.json()).then(data => {console.log(data);
+																																																											if(data.success) {
+																																																												document.getElementById('bookmarkIcon{{j}}').style.color = isBookmarked ? "red" : "black";
+																																																												document.getElementById('bookmarkIconFront{{j}}').style.color = isBookmarked ? "red" : "black";
+																																																											new Noty({
+																																																												type: isBookmarked ? 'success' : 'error',
+																																																												layout: 'topRight',
+																																																												text: `{{film.nom}} is ${isBookmarked ? 'bookmarked' : 'unbookmarked'}`,
+																																																												theme: 'sunset',
+																																																												timeout: 5000
+																																																												}).show();
+																																																												}
+																																																											});
+																																																										});
+																																																										</script>
 										<h4 class="col_red">{{film.nom}}</h4>
 										<h6>categorys:
 											{% for category in film.categorys %}
@@ -214,25 +286,25 @@ filteredFilms.forEach(film => {
 											<input id="input-{{j}}-sm" value="{{ratings[j]|default('0')}}" class="rating rating-loading" name="rate" data-min="0" data-max="5" data-step="0.5" data-size="sm" data-show-clear="false" data-show-caption="false">
 										</form>
 										 <script>
-																																																																																						
-																																																																																																	</script>
+																																																																																																										
+																																																																																																																					</script>
 										 <script>
-																																																																																																	$("#input-{{j}}-sm").rating().on("rating:change", function(event, value) {
-																																																																																						console.log("You rated {{film.nom}}: " + value);
-																																																																																						console.log($("#rateForm{{j}}").serialize());
-																																																																																						let xhr = new XMLHttpRequest();
-																																																																																						xhr.open('POST', '{{path("app_rate_film_index")}}', true);
-																																																																																						xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-																																																																																						xhr.onload = function() {
-																																																																																							console.log(xhr.responseText);
-																																																																																						};
-																																																																																						
-																																																																																						// Encode the data in URL-encoded format
-																																																																																						let data = 'rate=' + encodeURIComponent(value) + '&filmId=' + encodeURIComponent({{film.id}});
-																																																																																						
-																																																																																						xhr.send(data);										
-																																																																																																																																		});
-																																																																																																																																													</script>
+																																																																																																																					$("#input-{{j}}-sm").rating().on("rating:change", function(event, value) {
+																																																																																																										console.log("You rated {{film.nom}}: " + value);
+																																																																																																										console.log($("#rateForm{{j}}").serialize());
+																																																																																																										let xhr = new XMLHttpRequest();
+																																																																																																										xhr.open('POST', '{{path("app_rate_film_index")}}', true);
+																																																																																																										xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+																																																																																																										xhr.onload = function() {
+																																																																																																											console.log(xhr.responseText);
+																																																																																																										};
+																																																																																																										
+																																																																																																										// Encode the data in URL-encoded format
+																																																																																																										let data = 'rate=' + encodeURIComponent(value) + '&filmId=' + encodeURIComponent({{film.id}});
+																																																																																																										
+																																																																																																										xhr.send(data);										
+																																																																																																																																																						});
+																																																																																																																																																																	</script>
 
 										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#Youtubewatch{{j}}" data-thevideo="{{videoUrl[j]}}">
 											<i class="fa fa-play-circle align-middle me-1"></i>
@@ -266,44 +338,44 @@ filteredFilms.forEach(film => {
 
 		{{ block("footer") }}
 	 <script>
-																																		function autoPlayYouTubeModal() {
-																																						var triggers = document.querySelectorAll('[data-bs-toggle="modal"]');
-																																						triggers.forEach(function (trigger) {
-																																						trigger.addEventListener('click', function () {
-																																						var theModal = this.getAttribute('data-bs-target');
-																																						var videoSRC = this.getAttribute('data-theVideo');
-																																						var videoSRCauto = videoSRC + "?autoplay=1";
-																																						document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
-																																						
-																																						var closeButton = document.querySelector(theModal + ' button.close');
-																																						closeButton.addEventListener('click', function () {
-																																						document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
-																																						});
-																																						});
-																																						});
-																																						}
-																																						document.addEventListener('DOMContentLoaded', function () {
-																																						autoPlayYouTubeModal();
-																																						});
-																																								</script>
+																																				function autoPlayYouTubeModal() {
+																																								var triggers = document.querySelectorAll('[data-bs-toggle="modal"]');
+																																								triggers.forEach(function (trigger) {
+																																								trigger.addEventListener('click', function () {
+																																								var theModal = this.getAttribute('data-bs-target');
+																																								var videoSRC = this.getAttribute('data-theVideo');
+																																								var videoSRCauto = videoSRC + "?autoplay=1";
+																																								document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
+																																								
+																																								var closeButton = document.querySelector(theModal + ' button.close');
+																																								closeButton.addEventListener('click', function () {
+																																								document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
+																																								});
+																																								});
+																																								});
+																																								}
+																																								document.addEventListener('DOMContentLoaded', function () {
+																																								autoPlayYouTubeModal();
+																																								});
+																																										</script>
 		 <script>
-																																																																window.onscroll = function () {
-																																																																						myFunction()
-																																																																						};
-																																																																						
-																																																																						var navbar_sticky = document.getElementById("navbar_sticky");
-																																																																						var sticky = navbar_sticky.offsetTop;
-																																																																						var navbar_height = document.querySelector('.navbar').offsetHeight;
-																																																																						
-																																																																						function myFunction() {
-																																																																						if (window.pageYOffset >= sticky + navbar_height) {
-																																																																						navbar_sticky.classList.add("sticky")
-																																																																						document.body.style.paddingTop = navbar_height + 'px';
-																																																																						} else {
-																																																																						navbar_sticky.classList.remove("sticky");
-																																																																						document.body.style.paddingTop = '0'
-																																																																						}
-																																																																						}
-																																																																								</script>
+																																																																				window.onscroll = function () {
+																																																																										myFunction()
+																																																																										};
+																																																																										
+																																																																										var navbar_sticky = document.getElementById("navbar_sticky");
+																																																																										var sticky = navbar_sticky.offsetTop;
+																																																																										var navbar_height = document.querySelector('.navbar').offsetHeight;
+																																																																										
+																																																																										function myFunction() {
+																																																																										if (window.pageYOffset >= sticky + navbar_height) {
+																																																																										navbar_sticky.classList.add("sticky")
+																																																																										document.body.style.paddingTop = navbar_height + 'px';
+																																																																										} else {
+																																																																										navbar_sticky.classList.remove("sticky");
+																																																																										document.body.style.paddingTop = '0'
+																																																																										}
+																																																																										}
+																																																																												</script>
 	</body>
 {% endblock %}
