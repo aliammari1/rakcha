@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Film;
 use App\Repository\ActorRepository;
+use App\Repository\CategoryRepository;
 use App\Repository\FilmRepository;
 use App\Repository\RatingfilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,13 +18,14 @@ use Symfony\Component\HttpFoundation\Request;
 class ListfilmsController extends AbstractController
 {
     #[Route('/listfilms', name: 'app_listfilms_index')]
-    public function index(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
+    public function index(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository ,CategoryRepository $categoryRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyDnbB_QFZd-4YVa5d8dHHbN_SXDj2mq2EE'));
+        $youtube = new Youtube(array('key' => 'AIzaSyAAvDWtJSisaKpK49TnMp8E759U2kd9UxE'));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         $averageRatings = array();
         $ratings = array();
+        $categorys = $categoryRepository->findAll();
         foreach ($films as $film) {
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
             $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => 1])?->getRate();
@@ -40,14 +42,15 @@ class ListfilmsController extends AbstractController
             'films' => $filmRepository->findAll(),
             'videoUrl' => $videoUrls,
             'averageRatings' => $averageRatings,
-            'ratings' => $ratings
+            'ratings' => $ratings,
+            'categorys' => $categorys
         ]);
     }
 
     #[Route('/listfilms/bookmarks', name: 'app_film_bookmarks_index')]
     public function bookmarks(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyDnbB_QFZd-4YVa5d8dHHbN_SXDj2mq2EE'));
+        $youtube = new Youtube(array('key' => 'AIzaSyABEi2834N8l6Cty8yFCEiGRisZjyXonEM'));
         $films = $filmRepository->findBy(['isBookmarked' => true]);
         $videoUrls = array();
         $averageRatings = array();
@@ -93,9 +96,53 @@ class ListfilmsController extends AbstractController
            ->getResult();
     
         $films = array_column($films, 'id');
-        return new JsonResponse(["success" => true, 'films' => $films, 'data' => $data]);
+        return $this->json(["success" => true, 'films' => $films, 'data' => $data]);
+    }
+    #[Route('/reserve', name: 'app_reserve_film')]
+    public function reserve(Request $request, FilmRepository $filmRepository): Response
+    {
+        return $this->render('reserve');
     }
 
+    
+    #[Route('/filterByCategory', name: 'app_filter_category_film')]
+    public function filterByCategory(Request $request, FilmRepository $filmRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        
+        // Retrieve films from the database
+        $films = $filmRepository->findAll();
+        // Initialize an empty array to store categorized films
+        $filmsCategorized = [];
+
+        foreach ($films as $film) {
+            $categories = $film->getCategorys();
+            
+            $allCategoriesPresent = true;
+            
+            foreach ($data["checkboxes"] as $categoryName) {
+                $categoryFound = false;
+                foreach ($categories as $category) {
+                    if ($category->getNom() === $categoryName) {
+                        $categoryFound = true;
+                        break;
+                    }
+                }
+                if (!$categoryFound) {
+                    // If any category is not found, set the flag to false and exit the loop
+                    $allCategoriesPresent = false;
+                    break;
+                }
+            }
+            
+            // If all categories are present for the current film, add it to the categorized films array
+            if ($allCategoriesPresent) {
+                $filmsCategorized[] = $film->getId();
+            }
+        }        
+
+        return $this->json(["success" => true,'filmsCategorized' => $filmsCategorized,'data' => $data["checkboxes"],'ids' => array_column($filmRepository->findAll(), 'id')]);
+}
     #[Route('/filmHome', name: 'app_listhome_index')]
     public function indexHome(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
     {

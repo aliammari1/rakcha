@@ -7,7 +7,6 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -21,6 +20,7 @@ class Film
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
+    
     #[Assert\NotBlank(message: 'The film name is required.')]
     #[Assert\Length(max: 255, maxMessage: 'The film name cannot exceed {{ limit }} characters.')]
     #[Assert\Regex(
