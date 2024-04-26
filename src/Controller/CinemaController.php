@@ -46,14 +46,25 @@ class CinemaController extends AbstractController
         ]);
     }
 
-    #[Route('/location', name: 'app_cinema_location', methods: ['GET'])]
-    public function localiser(): Response
-    {
-    // Vous pouvez utiliser l'objet $cinema ici dans votre logique de contrôleur
-    // Par exemple, vous pouvez récupérer les détails du cinéma et les passer au modèle Twig
+    #[Route('/location/{idCinema}', name: 'app_cinema_location', methods: ['GET', 'POST'])]
+public function localiser(int $idCinema): Response
+{
+    $entityManager = $this->getDoctrine()->getManager();
+    $cinemaRepository = $entityManager->getRepository(Cinema::class);
+    $cinema = $cinemaRepository->find($idCinema);
 
-    return $this->render('cinema/Map.html.twig', []);
+    if (!$cinema) {
+        throw $this->createNotFoundException('Cinema not found');
     }
+
+    $adresseCinema = $cinema->getAdresse(); 
+    $nomCinema = $cinema->getNom();
+
+    return $this->render('cinema/Map.html.twig', [
+        'adresseCinema' => $adresseCinema,
+        'nomCinema' => $nomCinema,
+    ]);
+}
 
 
     #[Route('/listeCinemaAdmin', name: 'app_cinemaAdmin_index', methods: ['GET', 'POST'])]
