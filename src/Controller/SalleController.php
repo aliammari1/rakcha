@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Cinema;
+use App\Entity\Seat;
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormError;
@@ -77,7 +78,13 @@ public function new(int $idCinema, Request $request, EntityManagerInterface $ent
     if ($form->isSubmitted() && $form->isValid()) {
         $entityManager->persist($salle);
         $entityManager->flush();
-
+        for($i = 0;$i < $salle->getNbPlaces(); $i++) {
+            $seat = new Seat();
+            $seat->setSalle($salle);
+            $seat->setStatut("vide");
+            $entityManager->persist($seat);
+        }
+        $entityManager->flush();
         return $this->redirectToRoute('app_salle_index', ['idCinema' => $idCinema], Response::HTTP_SEE_OTHER);
     }
 
