@@ -1,86 +1,125 @@
 {% extends 'baseFront.html.twig' %}
 
-    {% block pageStyle %}
-        <link href="{{ asset('/css/about.css') }}" rel="stylesheet">
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-        <style>
-            #maCarte { 
-                height: 400px; 
-                width: 100%;
-            }
-        </style>
-    {% endblock %}
-    
-    {% block body %}
-        {{ block("header") }}
-    
-        <section id="center" class="center_o pt-2 pb-2">
-            <div class="container-xl">
-                <div class="row center_o1">
-                    <div class="col-md-5">
-                        <div class="center_o1l">
-                            <h2 class="mb-0">Cinemas</h2>
-                        </div>
+{% block pageStyle %}
+    <link href="{{ asset('/css/about.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <style>
+        #maCarte { 
+            height: 700px; 
+            width: 1500px;
+            margin-left: 200px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {{ block("header") }}
+
+    <section id="center" class="center_o pt-2 pb-2">
+        <div class="container-xl">
+            <div class="row center_o1">
+                <div class="col-md-5">
+                    <div class="center_o1l">
+                        <h2 class="mb-0">Cinema location</h2>
                     </div>
-                    <div class="col-md-7">
-                        <div class="center_o1r text-end">
-                            <h6 class="mb-0 col_red">
-                                <a href="{{ path('app_film_index') }}">Home</a>
-                                <span class="me-2 ms-2 text-light">
-                                    <i class="fa fa-caret-right align-middle"></i>
-                                </span>
-                                Cinemas</h6>
-                        </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="center_o1r text-end">
+                        <h6 class="mb-0 col_red">
+                            <a href="{{ path('app_film_index') }}">Home</a>
+                            <span class="me-2 ms-2 text-light">
+                                <i class="fa fa-caret-right align-middle"></i>
+                            </span>
+                            <a href="{{ path('app_cinema_liste') }}">Cinemas List</a>
+                            <span class="me-2 ms-2 text-light">
+                                <i class="fa fa-caret-right align-middle"></i>
+                            </span> Cinema Location
+                            </h6>
                     </div>
                 </div>
             </div>
-        </section>
-    
-        <div id="maCarte"></div>
-    
-        {{ block("footer") }}
-    
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-        <script>
-            var carte = L.map('maCarte');
-    
-            // Fonction pour obtenir les coordonnées (latitude et longitude) de l'adresse
-            function getCoordinates(address) {
-                return new Promise(function(resolve, reject) {
-                    fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURI(address) + '&format=json&limit=1')
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data && data.length > 0) {
-                                resolve({ latitude: parseFloat(data[0].lat), longitude: parseFloat(data[0].lon) });
-                            } else {
-                                reject("Adresse non trouvée");
-                            }
-                        })
-                        .catch(error => reject(error));
-                });
-            }
-    
-            var adresseCinema = "{{ adresseCinema }}"; // Récupérez l'adresse du cinéma depuis le contrôleur ou l'entité
-    
-            // Appelez la fonction pour obtenir les coordonnées de l'adresse du cinéma
-            getCoordinates(adresseCinema)
-                .then(function(coordinates) {
-                    initializeMap(coordinates.latitude, coordinates.longitude);
+        </div>
+    </section>
+
+    <div id="maCarte"></div>
+
+    {{ block("footer") }}
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        var carte = L.map('maCarte');
+        var userPosition = null;
+
+        // Get user's current location
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                userPosition = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                initializeMap(userPosition.latitude, userPosition.longitude);
+            });
+        }
+
+        // Function to get coordinates from address
+        function getCoordinates(address) {
+            return new Promise(function(resolve, reject) {
+                fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURI(address) + '&format=json&limit=1')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            resolve({ latitude: parseFloat(data[0].lat), longitude: parseFloat(data[0].lon) });
+                        } else {
+                            reject("Address not found");
+                        }
+                    })
+                    .catch(error => reject(error));
+            });
+        }
+
+        var adresseCinema = "{{ adresseCinema }}"; // Get cinema address from controller or entity
+
+        // Call function to get coordinates of cinema address
+        getCoordinates(adresseCinema)
+            .then(function(coordinates) {
+                initializeMap(coordinates.latitude, coordinates.longitude);
+            })
+            .catch(function(error) {
+                console.error("Error getting coordinates:", error);
+            });
+
+        function initializeMap(latitude, longitude) {
+            carte.setView([latitude, longitude], 13); // Set coordinates to center the map on the cinema with an initial zoom of 13
+            L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                minZoom: 1,
+                maxZoom: 20
+            }).addTo(carte);
+            var marqueur = L.marker([latitude, longitude]).addTo(carte);
+            marqueur.bindPopup("<h4>{{ nomCinema }}</h4>").openPopup();
+            L.Routing.control({
+                geocoder: L.Control.Geocoder.nominatim(),
+                routeWhileDragging: true,
+                reverseWaypoints: true,
+                waypoints: [
+                    L.latLng(userPosition.latitude, userPosition.longitude), // Start point
+                    L.latLng(latitude, longitude) // End point
+                ],
+                lineOptions: {
+                    styles: [{
+                        color: "blue",
+                        weight: 5
+                    }]
+                },
+                router: new L.Routing.OSRMv1({
+                    language: 'fr',
+                    color: "black"
                 })
-                .catch(function(error) {
-                    console.error("Erreur lors de la récupération des coordonnées :", error);
-                });
-    
-            function initializeMap(latitude, longitude) {
-                carte.setView([latitude, longitude], 13); // Réglage des coordonnées pour centrer la carte sur le cinéma avec un zoom initial de 13
-                L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors',
-                    minZoom: 1,
-                    maxZoom: 20
-                }).addTo(carte);
-                var marqueur = L.marker([latitude, longitude]).addTo(carte);
-                marqueur.bindPopup("<h4>{{ nomCinema }}</h4>").openPopup();
-            }
-        </script>
-    {% endblock %}
-    
+            }).addTo(carte);
+        }
+    </script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+{% endblock %}
