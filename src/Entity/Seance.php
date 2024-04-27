@@ -87,6 +87,7 @@ class Seance
     public function __construct()
     {
         $this->idUser = new ArrayCollection();
+        $this->seats = new ArrayCollection();
     }
 
     public function getIdSeance(): ?int

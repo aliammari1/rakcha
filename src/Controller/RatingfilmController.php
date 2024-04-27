@@ -26,17 +26,17 @@ class RatingfilmController extends AbstractController
     #[Route('/ratefilm', name: 'app_rate_film_index', methods: ['POST', 'GET'])]
     public function rateFilm(Request $request, EntityManagerInterface $entityManager, RatingfilmRepository $ratingfilmRepository): Response
     {
-        $ratingfilm = new Ratingfilm();
-        $form = $this->createForm(RatingfilmType::class, $ratingfilm);
-        $form->handleRequest($request);
-        $ratingfilm->setRate($request->get('rate'));
-        $ratingfilm->setIdFilm($request->get('filmId'));
-        $ratingfilm->setIdUser(2);
-        // Persist and flush the entity
+        $data = json_decode($request->getContent(), true);
+        if($data['id'] == 0)
+            $ratingfilm = new Ratingfilm();
+        else
+            $ratingfilm =  $ratingfilmRepository->findOneBy(['id' => $data['id']]);
+        $ratingfilm->setRate($data['rate']);
+        $ratingfilm->setIdFilm($data['filmId']);
+        $ratingfilm->setIdUser(1);
         $entityManager->persist($ratingfilm);
         $entityManager->flush();
-
-        return new JsonResponse('Rating submitted successfully.', RESPONSE::HTTP_OK);
+        return $this->json(["success" => true, 'ratingfilm' => $ratingfilm]);
     }
 
     #[Route('/new', name: 'app_ratingfilm_new', methods: ['GET', 'POST'])]

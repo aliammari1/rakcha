@@ -2,33 +2,62 @@
 
 namespace App\Controller;
 
+use IMDb\Title;
 use App\Entity\Film;
-use App\Repository\ActorRepository;
-use App\Repository\CategoryRepository;
+use BaconQrCode\Writer;
+use Madcoda\Youtube\Youtube;
 use App\Repository\FilmRepository;
+use App\Repository\ActorRepository;
+use App\Repository\SeanceRepository;
+use App\Repository\CategoryRepository;
+use BaconQrCode\Renderer\ImageRenderer;
 use App\Repository\RatingfilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Madcoda\Youtube\Youtube;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCodeBundle\Response\QrCodeResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ListfilmsController extends AbstractController
 {
     #[Route('/listfilms', name: 'app_listfilms_index')]
-    public function index(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository ,CategoryRepository $categoryRepository): Response
+    public function index(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyAAvDWtJSisaKpK49TnMp8E759U2kd9UxE'));
+        $youtube = new Youtube(array('key' => 'AIzaSyDNB8-7tbeyc8atd2O9b7OTC52BT1Mra5Q'));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         $averageRatings = array();
         $ratings = array();
+        $seanceFilmMatrix = array(array());
         $categorys = $categoryRepository->findAll();
+         $urls = array();
+        // dd(phpinfo());
+        //$qrCodes = array();
         foreach ($films as $film) {
+            // Instantiate the IMDbPHP Title class
+            $search = new \Imdb\TitleSearch(null /* config */ , null /* logger */ , null);
+            $firstResultTitle = $search->search($film->getNom())[0];
+            $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
+            // // If movie found, redirect to IMDb URL
+            // // $imdbId = $search[0]['imdbid'];
+            // // $url = "https://www.imdb.com/title/$imdbId/";
+            $urls[] = $url;
+            // $qrCodeData = $this->generateQRCode($url);
+
+            // Encode QR code as base64
+            // $base64QrCode = base64_encode($qrCodeData);
+            // $urls[$film->getId()] = $url;
+            // $qrCodes[$film->getId()] = $base64QrCode;
+
+            // $qrCodes[] = $base64QrCode;
+            $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => 1])?->getRate();
+            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => 1]);
             $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
             if (!empty($videoList)) {
                 $firstVideo = $videoList[0]['id']['videoId'];
@@ -39,18 +68,32 @@ class ListfilmsController extends AbstractController
         }
         // dd($averageRatings);
         return $this->render('front/listfilms.html.twig', [
-            'films' => $filmRepository->findAll(),
+            'films' => $films,
             'videoUrl' => $videoUrls,
             'averageRatings' => $averageRatings,
             'ratings' => $ratings,
-            'categorys' => $categorys
+            'categorys' => $categorys,
+            'seances' => $seanceFilmMatrix,
+             'urls' => $urls // Pass URLs to Twig
+            //'qrCodes' => $qrCodes
         ]);
     }
 
+
+    public function generateQRCode($url)
+    {
+        $renderer = new ImageRenderer(
+            new RendererStyle(400),
+            new ImagickImageBackEnd()
+        );
+        $writer = new Writer($renderer);
+        // Generate QR code image
+        return $writer->writeString($url);
+    }
     #[Route('/listfilms/bookmarks', name: 'app_film_bookmarks_index')]
     public function bookmarks(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyABEi2834N8l6Cty8yFCEiGRisZjyXonEM'));
+        $youtube = new Youtube(array('key' => 'AIzaSyAVQjiCCSXXU4ulljg7ey7vQRMfLUMi2Lg'));
         $films = $filmRepository->findBy(['isBookmarked' => true]);
         $videoUrls = array();
         $averageRatings = array();
@@ -83,33 +126,55 @@ class ListfilmsController extends AbstractController
         return new JsonResponse(["success" => true, 'bookmarked' => $film->getIsBookmarked()]);
     }
 
+    #[Route('/qrcode/{filmName}', name: 'app_qrcode_film')]
+    public function qrcode($filmName, FilmRepository $filmRepository, EntityManagerInterface $entityManager): Response
+    {
+
+        $result = Builder::create()
+            ->data($this->searchImdb($filmName))
+            ->size(150)
+            ->build();
+        return new QrCodeResponse($result); 
+            // return new Response($result->getString(), 200, ['Content-Type' => 'image/png']);
+    }
+
+    #[Route('/qrcodeurl/{filmName}', name: 'app_qrcodeurl_film')]
+    public function qrcodeurl($filmName, FilmRepository $filmRepository, EntityManagerInterface $entityManager): Response
+    {
+        return new Response();
+    }
+    function searchImdb($filmName) : string {
+        $search = new \Imdb\TitleSearch(null /* config */ , null /* logger */ , null);
+        $firstResultTitle = $search->search($filmName)[0];
+        $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
+        return $url;
+    }
     #[Route('/search', name: 'app_search_film')]
     public function search(Request $request, FilmRepository $filmRepository): Response
     {
         $data = json_decode($request->getContent(), true);
-    
+
         $films = $filmRepository->createQueryBuilder('f')
-           ->select('f.id')
-           ->andWhere('f.nom LIKE :nom')
-           ->setParameter('nom', '%' .($data['search'] ?? ''). '%')
-           ->getQuery()
-           ->getResult();
-    
+            ->select('f.id')
+            ->andWhere('f.nom LIKE :nom')
+            ->setParameter('nom', '%' . ($data['search'] ?? '') . '%')
+            ->getQuery()
+            ->getResult();
+
         $films = array_column($films, 'id');
         return $this->json(["success" => true, 'films' => $films, 'data' => $data]);
     }
     #[Route('/reserve', name: 'app_reserve_film')]
-    public function reserve(Request $request, FilmRepository $filmRepository): Response
+    public function reserve(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository): Response
     {
-        return $this->render('reserve');
+        return new JsonResponse(['success' => true]);
     }
 
-    
     #[Route('/filterByCategory', name: 'app_filter_category_film')]
     public function filterByCategory(Request $request, FilmRepository $filmRepository): Response
     {
         $data = json_decode($request->getContent(), true);
-        
+
         // Retrieve films from the database
         $films = $filmRepository->findAll();
         // Initialize an empty array to store categorized films
@@ -117,9 +182,9 @@ class ListfilmsController extends AbstractController
 
         foreach ($films as $film) {
             $categories = $film->getCategorys();
-            
+
             $allCategoriesPresent = true;
-            
+
             foreach ($data["checkboxes"] as $categoryName) {
                 $categoryFound = false;
                 foreach ($categories as $category) {
@@ -134,15 +199,15 @@ class ListfilmsController extends AbstractController
                     break;
                 }
             }
-            
+
             // If all categories are present for the current film, add it to the categorized films array
             if ($allCategoriesPresent) {
                 $filmsCategorized[] = $film->getId();
             }
-        }        
+        }
 
-        return $this->json(["success" => true,'filmsCategorized' => $filmsCategorized,'data' => $data["checkboxes"],'ids' => array_column($filmRepository->findAll(), 'id')]);
-}
+        return $this->json(["success" => true, 'filmsCategorized' => $filmsCategorized, 'data' => $data["checkboxes"], 'ids' => array_column($filmRepository->findAll(), 'id')]);
+    }
     #[Route('/filmHome', name: 'app_listhome_index')]
     public function indexHome(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
