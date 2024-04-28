@@ -21,7 +21,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 #[Route('/commentairecinema')]
 class CommentairecinemaController extends AbstractController
 {
-    #[Route('/{idCinema}', name: 'app_commentairecinema_index', methods: ['GET'])]
+    #[Route('/{idCinema}', name: 'app_commentairecinema_index', methods: ['GET', 'POST'])]
     public function index(int $idCinema, CommentairecinemaRepository $commentairecinemaRepository, EntityManagerInterface $entityManager, ChartBuilderInterface $chartBuilder, UsersRepository $usersRepository): Response
 {
     // Récupérer le cinema
