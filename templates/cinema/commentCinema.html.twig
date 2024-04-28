@@ -1,0 +1,178 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block body %}
+	<body>
+
+		{{ block("header") }}
+
+		<section id="center" class="center_o pt-2 pb-2">
+			<div class="container-xl">
+				<div class="row center_o1">
+					<div class="col-md-5">
+						<div class="center_o1l">
+							<h2 class="mb-0">Contact</h2>
+						</div>
+					</div>
+					<div class="col-md-7">
+						<div class="center_o1r text-end">
+							<h6 class="mb-0 col_red">
+								<a href="#">Home</a>
+								<span class="me-2 ms-2 text-light">
+									<i class="fa fa-caret-right align-middle"></i>
+								</span>
+								Contact</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="contact" class="pt-4 pb-4 bg_grey">
+			<div class="container-xl">
+				<div class="row contact_1 bg_dark  pt-5 pb-5">
+					<div class="col-md-3">
+						<div class="contact_1i row">
+							<div class="col-md-2 col-2">
+								<div class="contact_1il">
+									<span class="col_red fs-3">
+										<i class="fa fa-map-marker"></i>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-10 col-10">
+								<div class="contact_1ir">
+									<h5 class="col_red">Company Address</h5>
+									<p class="mb-0">5311 Ceaver Sidge Td. Pakland, DE 13507</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="contact_1i row">
+							<div class="col-md-2 col-2">
+								<div class="contact_1il">
+									<span class="col_red fs-3">
+										<i class="fa fa-clock-o"></i>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-10 col-10">
+								<div class="contact_1ir">
+									<h5 class="col_red">Office Hours</h5>
+									<p class="mb-0">Monday To Saturday - 10.00 - 07.00</p>
+									<p class="mb-0">Sunday - Closed</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="contact_1i row">
+							<div class="col-md-2 col-2">
+								<div class="contact_1il">
+									<span class="col_red fs-3">
+										<i class="fa fa-envelope"></i>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-10 col-10">
+								<div class="contact_1ir">
+									<h5 class="col_red">E-mail</h5>
+									<p class="mb-0">info@gmail.com</p>
+									<p class="mb-0">info@gmail.com</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="contact_1i row">
+							<div class="col-md-2 col-2">
+								<div class="contact_1il">
+									<span class="col_red fs-3">
+										<i class="fa fa-phone"></i>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-10 col-10">
+								<div class="contact_1ir">
+									<h5 class="col_red">Phone Numbers</h5>
+									<p class="mb-0">+123 123 456</p>
+									<p class="mb-0">+123 123 456</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row contact_2 mt-4">
+					<div class="col-md-3">
+						<div class="contact_2r">
+							<h5 class="mb-3">LONDON OFFICE</h5>
+							<p>
+								<i class="fa fa-car col_red me-1"></i>
+								111 Queen Sv, WIC 1, India</p>
+							<p>
+								<i class="fa fa-phone col_red me-1"></i>
+								+123 123 456</p>
+							<p>
+								<i class="fa fa-globe col_red me-1"></i>
+								<a href="#">info@gmail.com</a>
+							</p>
+							<p>
+								<i class="fa fa-envelope col_red me-1"></i>
+								<a href="#">info@gmail.com</a>
+							</p>
+							<h5 class="mb-3 mt-4">BUSINESS HOURS</h5>
+							<p>Hotline is available for 24 hours a day!..</p>
+							<p>Monday – Friday :
+								<span class="fw-bold text-white">9am to 7pm</span>
+							</p>
+							<p>Saturday :
+								<span class="fw-bold text-white">11am to 3pm</span>
+							</p>
+							<p>Sunday :
+								<span class="fw-bold text-white">Closed</span>
+							</p>
+						</div>
+					</div>
+					<div class="col-md-9">
+    <div class="contact_2l row">
+        <div class="col-md-12">
+            <h4>Comments List</h4>
+        </div>
+        <div class="col-md-12">
+            <h4>Add Comment</h4>
+            {{ form_start(form, {'action': path('app_commentairecinema_new', {'idCinema': cinema.idCinema}), 'method': 'POST'}) }}
+                {{ form_row(form.commentaire) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+				</div>
+				
+			</div>
+		</section>
+
+		{{ block("footer") }}
+
+		<script>
+			window.onscroll = function () {
+myFunction()
+};
+
+var navbar_sticky = document.getElementById("navbar_sticky");
+var sticky = navbar_sticky.offsetTop;
+var navbar_height = document.querySelector('.navbar').offsetHeight;
+
+function myFunction() {
+if (window.pageYOffset >= sticky + navbar_height) {
+navbar_sticky.classList.add("sticky")
+document.body.style.paddingTop = navbar_height + 'px';
+} else {
+navbar_sticky.classList.remove("sticky");
+document.body.style.paddingTop = '0'
+}
+}
+		</script>
+
+	</body>
+{% endblock %}
