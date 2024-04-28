@@ -155,13 +155,15 @@
 
 						<div class="card-body px-0 pt-0 pb-2">
 							<div class="table-responsive p-0">
-								<table class="table align-items-center mb-0">
+								<table class="table align-items-center mb-0"  id="cinemaTable">
 									<thead>
 										<tr>
 											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Cinema</th>
 											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Address</th>
 											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Manager</th>
 											<th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+											<th class="text-secondary opacity-7"></th>
+											<th class="text-secondary opacity-7"></th>
 											<th class="text-secondary opacity-7"></th>
 										</tr>
 									</thead>
@@ -561,7 +563,13 @@ const modalToggle = document.getElementById("{{ 'staticBackdrop' ~ formUpdateNum
 myModal.show(modalToggle);
 		</script>
 	{% endif %}
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+<script>
+	$(document).ready( function () {
+    $('#cinemaTable').DataTable();
+} );
+</script>
 </body>
 {% endblock %}
 
