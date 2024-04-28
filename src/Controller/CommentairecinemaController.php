@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Cinema;
 use Sentiment\Analyzer;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 
 
@@ -20,20 +22,61 @@ use Sentiment\Analyzer;
 class CommentairecinemaController extends AbstractController
 {
     #[Route('/{idCinema}', name: 'app_commentairecinema_index', methods: ['GET'])]
-    public function index(int $idCinema, CommentairecinemaRepository $commentairecinemaRepository, EntityManagerInterface $entityManager): Response
-    {
-        $commentairecinema = new Commentairecinema();
-        $form = $this->createForm(CommentairecinemaType::class, $commentairecinema);
+    public function index(int $idCinema, CommentairecinemaRepository $commentairecinemaRepository, EntityManagerInterface $entityManager, ChartBuilderInterface $chartBuilder, UsersRepository $usersRepository): Response
+{
+    // Récupérer le cinema
+    $cinema = $entityManager->getRepository(Cinema::class)->findOneBy(['idCinema' => $idCinema]);
+    $commentairecinema = new Commentairecinema();
+    $form = $this->createForm(CommentairecinemaType::class, $commentairecinema);
+    
+    // Récupérer les commentaires pour ce cinéma spécifique
+    $commentairecinemas = $commentairecinemaRepository->findBy(['idcinema' => $idCinema]);
 
-        // Récupérer le cinema
-        $cinema = $entityManager->getRepository(Cinema::class)->findOneBy(['idCinema' => $idCinema]);
-
-        return $this->render('cinema/commentCinema.html.twig', [
-            'commentairecinemas' => $commentairecinemaRepository->findAll(), 
-            'form' => $form->createView(),
-            'cinema' => $cinema, // Assurez-vous de passer le cinema au modèle
-        ]);
+    // Compter le nombre de commentaires pour chaque type de sentiment
+    $positiveCount = 0;
+    $negativeCount = 0;
+    $neutralCount = 0;
+    foreach ($commentairecinemas as $commentairecinema) {
+        $sentiment = $commentairecinema->getSentiment();
+        if ($sentiment === 'pos') {
+            $positiveCount++;
+        } elseif ($sentiment === 'neg') {
+            $negativeCount++;
+        } else {
+            $neutralCount++;
+        }
     }
+
+    // Calculer les pourcentages
+    $total = count($commentairecinemas);
+    $positivePercentage = ($total > 0) ? ($positiveCount / $total) * 100 : 0;
+    $negativePercentage = ($total > 0) ? ($negativeCount / $total) * 100 : 0;
+    $neutralPercentage = ($total > 0) ? ($neutralCount / $total) * 100 : 0;
+
+    // Créer le graphique
+    $chart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
+    $chart->setData([
+        'labels' => ['Positive', 'Negative', 'Neutral'],
+        'datasets' => [
+            [
+                'label' => 'Sentiments',
+                'backgroundColor' => ['#36A2EB', '#FF6384', '#FFCE56'],
+                'data' => [$positivePercentage, $negativePercentage, $neutralPercentage],
+            ],
+        ],
+    ]);
+
+
+
+    return $this->render('cinema/commentCinema.html.twig', [
+        'commentairecinemas' => $commentairecinemas, 
+        'chart' => $chart,
+        'cinema' => $cinema,
+        'users' => $usersRepository->findAll(),
+        'form' => $form->createView(),
+    ]);
+}
+
 
     #[Route('/new/{idCinema}', name: 'app_commentairecinema_new', methods: ['GET', 'POST'])]
     public function new(int $idCinema, Request $request, EntityManagerInterface $entityManager, UsersRepository $usersRepository, CommentairecinemaRepository $commentairecinemaRepository): Response
