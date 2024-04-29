@@ -8,6 +8,7 @@
 		<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 		<link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
 		<link href="{{ asset('css/global.css') }}" rel="stylesheet"> {% block pageStyle %}{% endblock %}
+		{{ encore_entry_link_tags('app') }}
 		<link
 		href="https://fonts.googleapis.com/css2?family=Rajdhani&display=swap" rel="stylesheet">
 		 <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
@@ -177,7 +178,7 @@
 									<h6 class="fw-normal">
 										<i class="fa fa-map-marker fs-5 align-middle col_red me-1"></i>
 										5311 Ceaver Sidge Td.
-																																																																																																																																																																																												Pakland, DE 13507</h6>
+																																																																																																																																																																																																						Pakland, DE 13507</h6>
 									<h6 class="fw-normal mt-3">
 										<i class="fa fa-envelope fs-5 align-middle col_red me-1"></i>
 										info@gmail.com</h6>
@@ -355,5 +356,6 @@
 			</section>
 		{% endblock %}
 	{% endblock %}
+	{{ encore_entry_script_tags('app') }}
 
 </html>
