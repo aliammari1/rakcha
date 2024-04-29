@@ -7,7 +7,7 @@ parameters:
 
 
     APP_IMAGE_DIRECTORY: 'C:\Users\elbootic.com\OneDrive\Bureau\rakcha-web\public\img\cinemas'
-
+    
 services:
     # default configuration for services in *this* file
     _defaults:

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use IMDb\Title;
 use App\Entity\Film;
+use App\Form\ReservationFormType;
 use BaconQrCode\Writer;
 use Madcoda\Youtube\Youtube;
 use App\Repository\FilmRepository;
@@ -21,6 +22,7 @@ use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCodeBundle\Response\QrCodeResponse;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ListfilmsController extends AbstractController
@@ -28,19 +30,20 @@ class ListfilmsController extends AbstractController
     #[Route('/listfilms', name: 'app_listfilms_index')]
     public function index(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyDNB8-7tbeyc8atd2O9b7OTC52BT1Mra5Q'));
+        $youtube = new Youtube(array('key' => 'AIzaSyDnRG4BiN3i3A9d9hkjdqH8QeQ121bPRWk'));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         $averageRatings = array();
         $ratings = array();
-        $seanceFilmMatrix = array(array());
+        $seanceFilmMatrix = array();
         $categorys = $categoryRepository->findAll();
-         $urls = array();
+        $urls = array();
+        ;
         // dd(phpinfo());
         //$qrCodes = array();
         foreach ($films as $film) {
             // Instantiate the IMDbPHP Title class
-            $search = new \Imdb\TitleSearch(null /* config */ , null /* logger */ , null);
+            $search = new \Imdb\TitleSearch(null, null, null);
             $firstResultTitle = $search->search($film->getNom())[0];
             $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
             // // If movie found, redirect to IMDb URL
@@ -74,7 +77,63 @@ class ListfilmsController extends AbstractController
             'ratings' => $ratings,
             'categorys' => $categorys,
             'seances' => $seanceFilmMatrix,
-             'urls' => $urls // Pass URLs to Twig
+            'urls' => $urls,
+            'stripe_key' => $_ENV["STRIPE_KEY"],
+            //'qrCodes' => $qrCodes
+        ]);
+    }
+    #[Route('/listfilms/bookmarks', name: 'app_film_bookmarks_index')]
+    public function bookmarks(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
+    {
+        $youtube = new Youtube(array('key' => 'AIzaSyDnRG4BiN3i3A9d9hkjdqH8QeQ121bPRWk'));
+        $films = $filmRepository->findBy(['isBookmarked' => true]);
+        $videoUrls = array();
+        $averageRatings = array();
+        $ratings = array();
+        $seanceFilmMatrix = array();
+        $categorys = $categoryRepository->findAll();
+        $urls = array();
+        ;
+        // dd(phpinfo());
+        //$qrCodes = array();
+        foreach ($films as $film) {
+            // Instantiate the IMDbPHP Title class
+            $search = new \Imdb\TitleSearch(null, null, null);
+            $firstResultTitle = $search->search($film->getNom())[0];
+            $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
+            // // If movie found, redirect to IMDb URL
+            // // $imdbId = $search[0]['imdbid'];
+            // // $url = "https://www.imdb.com/title/$imdbId/";
+            $urls[] = $url;
+            // $qrCodeData = $this->generateQRCode($url);
+
+            // Encode QR code as base64
+            // $base64QrCode = base64_encode($qrCodeData);
+            // $urls[$film->getId()] = $url;
+            // $qrCodes[$film->getId()] = $base64QrCode;
+
+            // $qrCodes[] = $base64QrCode;
+            $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
+            $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
+            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => 1]);
+            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
+            if (!empty($videoList)) {
+                $firstVideo = $videoList[0]['id']['videoId'];
+            } else {
+                $firstVideo = '';
+            }
+            $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
+        }
+        // dd($averageRatings);
+        return $this->render('front/listfilms.html.twig', [
+            'films' => $films,
+            'videoUrl' => $videoUrls,
+            'averageRatings' => $averageRatings,
+            'ratings' => $ratings,
+            'categorys' => $categorys,
+            'seances' => $seanceFilmMatrix,
+            'urls' => $urls,
+            'stripe_key' => $_ENV["STRIPE_KEY"],
             //'qrCodes' => $qrCodes
         ]);
     }
@@ -90,39 +149,19 @@ class ListfilmsController extends AbstractController
         // Generate QR code image
         return $writer->writeString($url);
     }
-    #[Route('/listfilms/bookmarks', name: 'app_film_bookmarks_index')]
-    public function bookmarks(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
-    {
-        $youtube = new Youtube(array('key' => 'AIzaSyAVQjiCCSXXU4ulljg7ey7vQRMfLUMi2Lg'));
-        $films = $filmRepository->findBy(['isBookmarked' => true]);
-        $videoUrls = array();
-        $averageRatings = array();
-        foreach ($films as $film) {
-            $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
-            if (!empty($videoList)) {
-                $firstVideo = $videoList[0]['id']['videoId'];
-            } else {
-                $firstVideo = '';
-            }
-            $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
-        }
-        // dd($averageRatings);
-        return $this->render('front/listfilms.html.twig', [
-            'films' => $filmRepository->findBy(['isBookmarked' => true]),
-            'videoUrl' => $videoUrls,
-            'averageRatings' => $averageRatings
-        ]);
-    }
-
+    
     #[Route('/bookmark', name: 'app_bookmark_film')]
     public function bookmark(Request $request, FilmRepository $filmRepository, EntityManagerInterface $entityManager): Response
     {
+        try {
         $data = json_decode($request->getContent(), true);
         $film = $filmRepository->findOneBy(['id' => $data["id"]]);
         $film->setIsBookmarked($data["isBookmarked"]);
         $entityManager->persist($film);
         $entityManager->flush();
+        } catch(Exception $e) {
+            return new JsonResponse(["success" => false,"message"=> $e->getMessage()]);
+        }
         return new JsonResponse(["success" => true, 'bookmarked' => $film->getIsBookmarked()]);
     }
 
@@ -134,8 +173,8 @@ class ListfilmsController extends AbstractController
             ->data($this->searchImdb($filmName))
             ->size(150)
             ->build();
-        return new QrCodeResponse($result); 
-            // return new Response($result->getString(), 200, ['Content-Type' => 'image/png']);
+        return new QrCodeResponse($result);
+        // return new Response($result->getString(), 200, ['Content-Type' => 'image/png']);
     }
 
     #[Route('/qrcodeurl/{filmName}', name: 'app_qrcodeurl_film')]
@@ -143,7 +182,8 @@ class ListfilmsController extends AbstractController
     {
         return new Response();
     }
-    function searchImdb($filmName) : string {
+    function searchImdb($filmName): string
+    {
         $search = new \Imdb\TitleSearch(null /* config */ , null /* logger */ , null);
         $firstResultTitle = $search->search($filmName)[0];
         $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
