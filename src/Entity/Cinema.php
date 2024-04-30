@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 
 
@@ -22,19 +24,42 @@ class Cinema
     private int $idCinema;
 
 
+   
+   
     #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
-    private string $nom;
+    #[Assert\NotBlank(message: 'The cinema name is required.')]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: 'The cinema name must be at least {{ limit }} characters long.',
+        maxMessage: 'The cinema name cannot exceed {{ limit }} characters.'
+    )]   
+     private string $nom;
+
 
 
     #[ORM\Column(name: 'adresse', type: 'string', length: 100, nullable: false)]
+    #[Assert\NotBlank(message: 'The cinema adresse is required.')]
+    #[Assert\Length(
+        min: 3,
+        minMessage: 'The cinema address must be at least {{ limit }} characters long.',
+    )] 
     private string $adresse;
 
 
     #[ORM\Column(name: 'responsable', type: 'integer', nullable: false)]
+
     private int $responsable;
 
 
-    #[ORM\Column(name: 'logo', type: 'text', length: 0, nullable: true)]
+    #[ORM\Column(name: 'logo', type: 'string', length: 1000, nullable: false)]
+    #[Assert\NotBlank(message: 'The cinema logo is required.')]
+    #[Assert\File(
+        mimeTypes: ["image/jpeg", "image/png", "image/jpg"],
+        mimeTypesMessage: "Only JPEG, JPG and PNG images are allowed.",
+        maxSize: "5M", // Taille maximale de 5 Mo
+        maxSizeMessage: "The file is too large. Maximum allowed size is {{ limit }} {{ suffix }}."
+    )]
     private ?string $logo = null;
 
 
@@ -50,13 +75,57 @@ class Cinema
     #[ORM\ManyToMany(targetEntity: Users::class, inversedBy: 'idCinema')]
     private Collection $idUser;
 
+    
+    #[ORM\OneToMany(targetEntity: Salle::class, mappedBy: "cinema")]
+     
+    private $salles;
+
+    
+    #[ORM\OneToMany(targetEntity: Filmcinema::class, mappedBy: "cinema")]
+
+    private $filmCinemas;
+    
     /**
      * Constructor
      */
     public function __construct()
     {
         $this->idUser = new ArrayCollection();
+        $this->salles = new ArrayCollection();
+        $this->filmCinemas = new ArrayCollection();
+
     }
+
+    /**
+     * @return Collection|Filmcinema[]
+     */
+
+     public function getFilmCinemas(): Collection
+     {
+         return $this->filmCinemas;
+     }
+ 
+     public function addFilmCinema(Filmcinema $filmCinema): self
+     {
+         if (!$this->filmCinemas->contains($filmCinema)) {
+             $this->filmCinemas[] = $filmCinema;
+             $filmCinema->setCinema($this);
+         }
+ 
+         return $this;
+     }
+ 
+     public function removeFilmCinema(Filmcinema $filmCinema): self
+     {
+         if ($this->filmCinemas->removeElement($filmCinema)) {
+             // set the owning side to null (unless already changed)
+             if ($filmCinema->getCinema() === $this) {
+                 $filmCinema->setCinema(null);
+             }
+         }
+ 
+         return $this;
+     }
 
     public function getIdCinema(): ?int
     {
@@ -146,4 +215,35 @@ class Cinema
 
         return $this;
     }
+
+     /**
+     * @return Collection|Salle[]
+     */
+    public function getSalles(): Collection
+    {
+        return $this->salles;
+    }
+
+    public function addSalle(Salle $salle): self
+    {
+        if (!$this->salles->contains($salle)) {
+            $this->salles[] = $salle;
+            $salle->setCinema($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSalle(Salle $salle): self
+    {
+        if ($this->salles->removeElement($salle)) {
+            // set the owning side to null (unless already changed)
+            if ($salle->getCinema() === $this) {
+                $salle->setCinema(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

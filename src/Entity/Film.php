@@ -8,6 +8,9 @@ use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 
 
 
@@ -44,6 +47,16 @@ class Film
 
     #[ORM\Column(name: 'annederalisation', type: 'integer', nullable: false)]
     private int $annederalisation;
+
+    
+    #[ORM\OneToMany(targetEntity: Filmcinema::class, mappedBy: "film")]
+    
+    private $filmCinemas;
+
+    public function __construct()
+    {
+        $this->filmCinemas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -109,4 +122,36 @@ class Film
 
         return $this;
     }
+
+     /**
+     * @return Collection|Filmcinema[]
+     */
+    public function getFilmCinemas(): Collection
+    {
+        return $this->filmCinemas;
+    }
+
+    public function addFilmCinema(Filmcinema $filmCinema): self
+    {
+        if (!$this->filmCinemas->contains($filmCinema)) {
+            $this->filmCinemas[] = $filmCinema;
+            $filmCinema->setFilm($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFilmCinema(Filmcinema $filmCinema): self
+    {
+        if ($this->filmCinemas->removeElement($filmCinema)) {
+            // set the owning side to null (unless already changed)
+            if ($filmCinema->getFilm() === $this) {
+                $filmCinema->setFilm(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

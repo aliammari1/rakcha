@@ -1,0 +1,221 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block pageStyle %}
+	<link href="{{ asset('/css/about.css') }}" rel="stylesheet">
+    <style>
+        .cardBox {
+            width: 355px;
+            height: 355px;
+            position: relative;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 10px 0px,
+              rgba(0, 0, 0, 0.5) 0px 2px 25px 0px;
+            margin-right: 85px; /* Ajouter une marge à droite */
+            margin-bottom: 20px; /* Ajouter une marge en bas */
+          }
+          
+
+.card {
+  position: absolute;
+  width: 355px;
+  height: 355px;
+  background: #19191a;
+  border-radius: 20px;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  color: #ffffff;
+  overflow: hidden;
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 60px -12px inset,
+    rgba(0, 0, 0, 0.5) 0px 18px 36px -18px inset;
+    border: 3px solid red; /* Ajouter un border initial transparent */
+ 
+}
+
+.card img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.card:hover img {
+  display: none;
+  background: #ffffff; /* Change background color to white */
+}
+
+.card .content .h3 {
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.card .content p {
+  font-size: 26px;
+  line-height: 1.4em;
+}
+
+.card .content {
+  position: relative; /* Set position to relative */
+  transform: translateY(100%);
+  opacity: 0;
+  transition: 0.3s ease-in-out;
+}
+
+svg {
+  position: absolute;
+  bottom: -80px; /* Adjust vertical position as needed */
+  left: 200px; /* Adjust horizontal position as needed */
+  height: 50px;
+  width: 50px;
+}
+
+.card:hover .content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.card:hover {
+  width: 340px;
+  height: 340px;
+  border: 2px solid transparent; /* Ajouter un border initial transparent */
+
+}
+
+.card:hover .h4 {
+  opacity: 0;
+}
+
+.cardBox::before {
+  content: "";
+  position: absolute;
+  width: 40%;
+  height: 150%;
+  background: red;
+  background: -webkit-linear-gradient(to right, red, black, beige);
+  background: linear-gradient(to right, red, black);
+  transform-origin: center;
+  animation: glowing_401 5s linear infinite;
+}
+
+@keyframes glowing_401 {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.planning {
+  background: white;
+  color: black;
+  margin-top: 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 1.5rem;
+  padding: 0.4rem 0.6rem;
+  box-shadow: rgba(165, 132, 130, 0.1333333333) 0px 5px 5px 0px;
+}
+
+.planning:hover {
+  background: red;
+  color: white;
+}
+
+
+
+
+
+    </style>
+{% endblock %}
+
+{% block body %}
+  <body>
+      {{ block("header") }}
+
+      <!-- Champ de recherche -->
+      <input type="text" id="search-input" placeholder="Search Cinema">
+
+      <!-- Section des cartes de cinéma -->
+      <section id="team" class="pt-4 pb-4 bg_grey">
+          <div class="container-xl">
+              {% for i in range(0, cinemas|length // 3) %}
+                  <div class="team_1i row {% if not loop.first %} mt-4{% endif %}">
+                      {% for cinema in cinemas|slice(loop.index0 * 3, 3) %}
+                          <div class="cardBox" data-name="{{ cinema.nom|lower }}">
+                              <div class="card">
+                                  <img src="{{ asset(cinema.logo) }}" alt="{{ cinema.nom }}" height="180" width="220">
+                                  <div class="content">
+                                      <div class="h3">{{ cinema.nom }}</div>
+                                      <p>{{ cinema.adresse }}</p>
+                                      <form method="post" action="{{ path('app_planning', {'idCinema': cinema.idCinema})}}">
+                                          <button class="planning">Show Planning</button>
+                                      </form>
+                                      <form method="post" action="{{ path('app_cinema_location', {'idCinema': cinema.idCinema})}}">
+                                          <div>
+                                              <button type="submit" class="map-button">
+                                                  <svg fill="#a00303" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 395.71 395.71" xml:space="preserve" stroke="#a00303">
+                                                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                                      <g id="SVGRepo_iconCarrier">
+                                                          <g>
+                                                              <path d="M197.849,0C122.131,0,60.531,61.609,60.531,137.329c0,72.887,124.591,243.177,129.896,250.388l4.951,6.738 c0.579,0.792,1.501,1.255,2.471,1.255c0.985,0,1.901-0.463,2.486-1.255l4.948-6.738c5.308-7.211,129.896-177.501,129.896-250.388 C335.179,61.609,273.569,0,197.849,0z M197.849,88.138c27.13,0,49.191,22.062,49.191,49.191c0,27.115-22.062,49.191-49.191,49.191 c-27.114,0-49.191-22.076-49.191-49.191C148.658,110.2,170.734,88.138,197.849,88.138z"></path>
+                                                          </g>
+                                                      </g>
+                                                  </svg>
+                                              </button>
+                                          </div>
+                                      </form>
+                                      <form method="post" action="{{ path('app_commentairecinema_index', {'idCinema': cinema.idCinema})}}">
+                                          <div>
+                                              <button type="submit" class="comment-button">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0,0,300,150">
+                                                      <g fill="#7e0808" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+                                                          <g transform="scale(5.12,5.12)">
+                                                              <path d="M25,4c-12.68359,0 -23,8.97266 -23,20c0,6.1875 3.33594,12.06641 8.94922,15.83984c-0.13281,1.05078 -0.66406,3.60156 -2.76562,6.58594l-1.10547,1.56641l1.97656,0.00781c5.42969,0 9.10156,-3.32812 10.30859,-4.60547c1.83203,0.40234 3.72656,0.60547 5.63672,0.60547c12.68359,0 23,-8.97266 23,-20c0,-11.02734 -10.31641,-20 -23,-20z"></path>
+                                                          </g>
+                                                      </g>
+                                                  </svg>
+                                              </button>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+                      {% endfor %}
+                  </div>
+              {% endfor %}
+          </div>
+      </section>
+
+      {{ block("footer") }}
+
+      <script>
+          // Fonction de recherche
+          document.getElementById('search-input').addEventListener('input', function() {
+              var searchText = this.value.toLowerCase();
+              var cards = document.querySelectorAll('.cardBox');
+
+              cards.forEach(function(card) {
+                  var cinemaName = card.dataset.name;
+                  if (cinemaName.includes(searchText)) {
+                      card.style.display = 'block';
+                  } else {
+                      card.style.display = 'none';
+                  }
+              });
+          });
+      </script>
+  </body>
+{% endblock %}
