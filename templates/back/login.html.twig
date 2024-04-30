@@ -23,7 +23,6 @@
 		<!-- CSS Files -->
 		<link href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
 	</head>
-	<body></body>
 	<body class="container position-sticky z-index-sticky top-0">
 		<div class="row">
 			<div
@@ -39,10 +38,10 @@
 							<ul class="navbar-nav mx-auto">
 
 								{% set items = ['Users', 'Register', 'Login'] %}
-								{% set pathItems = ['app_users_index','app_register','app_login'] %}
+								{% set pathItems = [path('app_users_index'),path('app_register'),path('app_login')] %}
 								{% for i in range(0, items|length - 1) %}
 									<li class="nav-item">
-										<a class="nav-link me-2" href="{{ path(pathItems[i]) }}">{{ items[i]|auto_translate }}</a>
+										<a class="nav-link me-2" href="{{ pathItems[i] }}">{{ items[i]|auto_translate }}</a>
 									</li>
 								{% endfor %}
 							</ul>
@@ -52,46 +51,47 @@
 				<!-- End Navbar -->
 			</div>
 		</div>
-	</body>
-</html></div><main class="main-content mt-0">
-<section>
-	<div class="page-header min-vh-100">
-		<div class="container">
-			<div class="row">
-				<div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
-					<div class="card card-plain">
-						<div class="card-header pb-0 text-start">
-							<h4 class="font-weight-bolder">{{ 'Sign In'|auto_translate }}</h4>
-							<p class="mb-0">
-								{{ 'Enter your email and password to sign in'|auto_translate }}
-							</p>
-						</div>
-						<div class="card-body">
-							{% if error_message %}
-								<div class="alert alert-danger">
-									{{ error_message.messageKey|trans(error_message.messageData,'security')|auto_translate }}
-								</div>
-							{% endif %}
-							<form method="post" role="form">
-								<div class="mb-3">
-									<input aria-label="Email" autofocus="" class="form-control form-control-lg" name="email" placeholder="Email" required="" type="email" value="{{ last_username }}"/>
-								</div>
-								<div class="mb-3">
-									<input aria-label="Password" class="form-control form-control-lg" name="password" placeholder="Password" required="" type="password"/>
-								</div>
-								<div class="form-check form-switch">
-									<input class="form-check-input" id="rememberMe" name="_remember_me" type="checkbox"/>
-									<label class="form-check-label" for=" rememberMe">Remember me</label>
-								</div>
-								<input name="_csrf_token" type="hidden" value="{{ csrf_token('authenticate') }}"/>
-								<div class="text-center">
-									<button class="btn btn-lg btn-danger btn-lg w-100 mt-4 mb-0" type="submit">Sign in</button>
-								</div>
-							</form>
-						</div>
-						<div class="card-footer text-center pt-0 px-lg-2 px-1">
-							<p class="mb-4 text-sm mx-auto">
-								{{ 'Don\'t have an account? Sign up'|auto_translate }} 
+		<main class="main-content mt-0">
+			<section>
+				<div class="page-header min-vh-100">
+					<div class="container">
+						<div class="row">
+							<div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
+								<div class="card card-plain">
+									<div class="card-header pb-0 text-start">
+										<h4 class="font-weight-bolder">{{ 'Sign In'|auto_translate }}</h4>
+										<p class="mb-0">
+											{{ 'Enter your email and password to sign in'|auto_translate }}
+										</p>
+									</div>
+									<video id="video" width="600" height="450" autoplay></video>
+
+									<div class="card-body">
+										{% if error_message %}
+											<div class="alert alert-danger">
+												{{ error_message.messageKey|trans(error_message.messageData,'security')|auto_translate }}
+											</div>
+										{% endif %}
+										<form method="post" role="form">
+											<div class="mb-3">
+												<input id="email" aria-label="Email" autofocus="" class="form-control form-control-lg" name="email" placeholder="Email" required="" type="email" value="{{ last_username }}"/>
+											</div>
+											<div class="mb-3">
+												<input id="password" aria-label="Password" class="form-control form-control-lg" name="password" placeholder="Password" required="" type="password"/>
+											</div>
+											<div class="form-check form-switch">
+												<input class="form-check-input" id="rememberMe" name="_remember_me" type="checkbox"/>
+												<label class="form-check-label" for=" rememberMe">Remember me</label>
+											</div>
+											<input name="_csrf_token" type="hidden" value="{{ csrf_token('authenticate') }}"/>
+											<div class="text-center">
+												<button class="btn btn-lg btn-danger btn-lg w-100 mt-4 mb-0" type="submit">Sign in</button>
+											</div>
+										</form>
+									</div>
+									<div class="card-footer text-center pt-0 px-lg-2 px-1">
+										<p class="mb-4 text-sm mx-auto">
+											{{ 'Don\'t have an account? Sign up'|auto_translate }} 
 										</p>
 									</div>
 								</div>
@@ -113,6 +113,99 @@
 		<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
 		<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
 		<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+		<script src="{{ asset('js/face-api.min.js') }}"></script>
+    <script>
+
+	const video = document.getElementById("video");
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+      Promise.all([
+        faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+        faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+        faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      ]).then(startWebcam);
+
+      function startWebcam() {
+        navigator.mediaDevices
+          .getUserMedia({
+            video: true,
+            audio: false,
+          })
+          .then((stream) => {
+            video.srcObject = stream;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+
+function getLabeledFaceDescriptions() {
+    let usersData = new Array();
+    {% for user in users %}
+        usersData.push({
+            photoDeProfil: "{{ user.photoDeProfil }}",
+            nom: "{{ user.nom }}",
+            prenom: "{{ user.prenom }}",
+            email: "{{ user.email }}",
+            password: "{{ user.password }}",
+        });
+    {% endfor %}
+    return Promise.all(
+        usersData.map(async (userData) => {
+            const descriptions = [];
+            const img = await faceapi.fetchImage(userData.photoDeProfil);
+            const detections = await faceapi
+                .detectSingleFace(img)
+                .withFaceLandmarks()
+                .withFaceDescriptor();
+           // descriptions.push(detections.descriptor);
+            return new faceapi.LabeledFaceDescriptors(userData.nom + " " + userData.prenom + " " + userData.email+" "+userData.password, descriptions);
+        })
+    );
+}
+
+video.addEventListener("play", async () => {
+    const labeledFaceDescriptors = await getLabeledFaceDescriptions();
+    const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
+
+    const canvas = faceapi.createCanvasFromMedia(video);
+    document.body.append(canvas);
+
+    const displaySize = { width: video.width, height: video.height };
+    faceapi.matchDimensions(canvas, displaySize);
+
+    let intervalId = setInterval(async () => {
+        const detections = await faceapi
+            .detectAllFaces(video)
+            .withFaceLandmarks()
+            .withFaceDescriptors();
+        const resizedDetections = faceapi.resizeResults(
+            detections,
+            displaySize
+        );
+
+        canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+
+        const results = resizedDetections.map((d) => {
+            return faceMatcher.findBestMatch(d.descriptor);
+        });
+        results.forEach((result, i) => {
+            const box = resizedDetections[i].detection.box;
+            const drawBox = new faceapi.draw.DrawBox(box, {
+                label: result.toString(),
+            });
+            const userData = result.label.split(" ");
+			if (result.distance < 0.6) {
+				clearInterval(intervalId); // clear the interval
+				window.location.href = "/login?email=" + encodeURIComponent(userData[2]) + "&password=" + encodeURIComponent(userData[3]);
+			}
+            email.value = userData[2];
+			password.value = userData[3];
+            drawBox.draw(canvas);
+        });
+    }, 100);
+});
+    </script>
 		<script>
 					var win = navigator.platform.indexOf('Win') > -1;
 		if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -128,7 +221,3 @@
 		<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
 	</body>
 </html>
-  
-							</p>
- 
-							</p>
