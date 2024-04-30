@@ -29,7 +29,6 @@ class UsersController extends AbstractController
     #[Route('/', name: 'app_users_index', methods: ['GET', 'POST'])]
     public function index(UsersRepository $usersRepository, EntityManagerInterface $em, PaginatorInterface $paginator, Request $request): Response
     {
-
         $form = $this->createForm(AdminFormType::class, new Users());
         $updateForms = array();
         for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
@@ -41,7 +40,6 @@ class UsersController extends AbstractController
             $request->query->getInt('page', 1),
             5
         );
-
 
         return $this->render('back/UserTables.html.twig', [
             'pagination' => $pagination,
@@ -60,9 +58,9 @@ class UsersController extends AbstractController
             $statut = $friendshipsRepository->findOneBy(['sender' => $this->getUser(), 'receiver' => $user])?->getStatut();
             if ($statut == null) {
                 $statut = $friendshipsRepository->findOneBy(['sender' => $user, 'receiver' => $this->getUser()])?->getStatut();
-                if($statut != null && $statut == 'pending friend request')
+                if ($statut != null && $statut == 'pending friend request')
                     $statut = 'waiting for response';
-                else if($statut != null && $statut == 'accepted friend request')
+                else if ($statut != null && $statut == 'accepted friend request')
                     $statut = 'accepted friend request';
             }
         }

@@ -85,10 +85,10 @@ document.getElementById('loading').style.display = 'none';
 				<div class="collapse navbar-collapse" id="navigation">
 					<ul class="navbar-nav mx-auto">
 						{% set items = ['Home', 'Profile', 'Register', 'Login'] %}
-						{% set pathItems = ['app_users_index','app_profile_index','app_register','app_login'] %}
+						{% set pathItems = [path('app_users_index'),path('app_profile_index',{'id':app.user.id}),path('app_register'),path('app_login')] %}
 						{% for i in range(0, items|length - 1) %}
 							<li class="nav-item">
-								<a class="nav-link me-2" href="{{ path(pathItems[i]) }}">{{ items[i]|auto_translate }}</a>
+								<a class="nav-link me-2" href="{{ pathItems[i] }}">{{ items[i]|auto_translate }}</a>
 							</li>
 						{% endfor %}
 					</ul>
@@ -128,84 +128,52 @@ document.getElementById('loading').style.display = 'none';
 								<div class="text-center text-muted mb-4">
 									<h2>2-Step Verification</h2>
 								</div>
-								<div class="row gx-2 gx-sm-3">
-									<div class="col">
-										<div class="form-group">
-											<input type="text" class="form-control form-control-lg" maxlength="1" autocomplete="off" autocapitalize="off">
-										</div>
+								<form class="form" action="/2fa_check" method="post">
+									<p class="widget">
+										<input id="_auth_code" type="text" name="_auth_code" autocomplete="one-time-code" class="form-control" autofocus="">
+									</p>
+									<div class="text-center">
+										<button type="submit" class="btn bg-gradient-warning w-100">Send code</button>
+										<span class="text-muted text-sm">Haven't received it?<a href="javascript:;">
+												Resend a new code</a>.</span>
 									</div>
-									<div class="col">
-										<div class="form-group">
-											<input type="text" class="form-control form-control-lg" maxlength="1" autocomplete="off" autocapitalize="off">
-										</div>
-									</div>
-									<div class="col">
-										<div class="form-group">
-											<input type="text" class="form-control form-control-lg" maxlength="1" autocomplete="off" autocapitalize="off">
-										</div>
-									</div>
-									<div class="col">
-										<div class="form-group">
-											<input type="text" class="form-control form-control-lg" maxlength="1" autocomplete="off" autocapitalize="off">
-										</div>
-									</div>
-								</div>
-								<div class="text-center">
-									<button type="button" class="btn bg-gradient-warning w-100">Send code</button>
-									<span class="text-muted text-sm">Haven't received it?<a href="javascript:;">
-											Resend a new code</a>.</span>
-								</div>
+								</form>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</main>
-		<!-- -------- START FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-		<footer class="footer py-5">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-8 mb-4 mx-auto text-center">
-						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Company'|auto_translate }}</a>
-						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'About Us'|auto_translate }}</a>
-						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Team'|auto_translate }}</a>
-						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Products'|auto_translate }}</a>
-						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Blog'|auto_translate }}</a>
-						<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Pricing'|auto_translate }}</a>
-					</div>
-					<div class="col-lg-8 mx-auto text-center mb-4 mt-2">
-						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
-						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
-						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
-						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
-						<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-8 mx-auto text-center mt-1">
-						<p class="mb-0 text-secondary">{{ 'Copyright ©Soft by Creative Tim.'|auto_translate }}</p>
-					</div>
-				</div>
-			</div>
-		</footer>
-		<!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-		<!--   Core JS Files   -->
-		<script src="{{ asset('js/core/popper.min.js') }}"></script>
-		<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-		<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
-		<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-		<script>
-			var win = navigator.platform.indexOf('Win') > -1;
+		</body>
+	</body>
+</html></main><!-- -------- START FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- --><footer class="footer py-5">
+<div class="container">
+	<div class="row">
+		<div class="col-lg-8 mb-4 mx-auto text-center">
+			<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Company'|auto_translate }}</a>
+			<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'About Us'|auto_translate }}</a>
+			<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Team'|auto_translate }}</a>
+			<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Products'|auto_translate }}</a>
+			<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Blog'|auto_translate }}</a>
+			<a class="text-secondary me-xl-5 me-3 mb-sm-0 mb-2" href="javascript:;" target="_blank">{{ 'Pricing'|auto_translate }}</a>
+		</div>
+		<div class="col-lg-8 mx-auto text-center mb-4 mt-2">
+			<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+			<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+			<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+			<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+			<a class="text-secondary me-xl-4 me-4" href="javascript:;" target="_blank"></a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-8 mx-auto text-center mt-1">
+			<p class="mb-0 text-secondary">{{ 'Copyright ©Soft by Creative Tim.'|auto_translate }}</p>
+		</div>
+	</div>
+</div></footer><!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- --><!--   Core JS Files   --><script src="{{ asset('js/core/popper.min.js') }}"></script><script src="{{ asset('js/core/bootstrap.min.js') }}"></script><script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script><script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script><script>
+var win = navigator.platform.indexOf('Win') > -1;
 if (win && document.querySelector('#sidenav-scrollbar')) {
 var options = {
 damping: '0.5'
 }
 Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-}
-		</script>
-		<!-- Github buttons -->
-		<script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
-		<!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-		<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
-	</body>
-</html>
+}</script><!-- Github buttons --><script async="" defer="" src="https://buttons.github.io/buttons.js"></script><!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc --><script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script></body></html>

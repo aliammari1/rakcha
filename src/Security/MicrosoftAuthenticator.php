@@ -49,7 +49,7 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
                 $microsoftUser = $client->fetchUserFromToken($accessToken);
                 //dd($microsoftUser);
                 $email = $microsoftUser->getEmail();
-
+                
                 // 1) have they logged in with Microsoft before? Easy!
                 $existingUser = $this->entityManager->getRepository(Users::class)->findOneBy(['id' => $microsoftUser->getId()]);
 
@@ -72,7 +72,7 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
                 $user->setPassword('microsoft');
                 $user->setNom($microsoftUser->getFirstName());
                 $user->setPrenom($microsoftUser->getLastName());
-                $user->setPhotoDeProfil($microsoftUser->getAvatar());
+                $user->setPhotoDeProfil("/img/users/empty.jpg");
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
                 return $user;
@@ -83,7 +83,7 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         // change "app_homepage" to some route in your app
-        $targetUrl = $this->router->generate('app_profile_index');
+        $targetUrl = $this->router->generate('app_home_index');
 
         return new RedirectResponse($targetUrl);
 

@@ -85,11 +85,11 @@ document.getElementById("loading").style.display = "none";
 				</button>
 				<div class="collapse navbar-collapse" id="navigation">
 					<ul class="navbar-nav mx-auto">
-						{% set items = ['Home', 'Profile', 'Register', 'Login'] %}
-						{% set pathItems = ['app_users_index','app_profile_index','app_register','app_login'] %}
+						{% set items = ['Users', 'Register', 'Login'] %}
+						{% set pathItems = [path('app_users_index'),path('app_register'),path('app_login')] %}
 						{% for i in range(0, items|length - 1) %}
 							<li class="nav-item">
-								<a class="nav-link me-2" href="{{ path(pathItems[i]) }}">{{ items[i]|auto_translate }}</a>
+								<a class="nav-link me-2" href="{{ pathItems[i] }}">{{ items[i]|auto_translate }}</a>
 							</li>
 						{% endfor %}
 					</ul>
