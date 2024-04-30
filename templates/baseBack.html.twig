@@ -29,6 +29,14 @@
 		<!-- in the <head> section -->
 		<link
 		rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
+		 <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+		 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet"/> <link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
+		<!-- Font Awesome Icons -->
+		 <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+		<link
+		href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
 		<link id="pagestyle" href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" rel="stylesheet"/>
 		<link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />
   
@@ -104,6 +112,28 @@ document.getElementById("loading").style.display = "none";
 								<div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
 									{% set iconClass %}
 									{% if item == 'users' %}
+					{% for item in ['cinema','film','actor','category'] %}
+						<li class="nav-item">
+							<a class="nav-link {% if item == 'billing' %}active{% endif %}" href="{{path('app_' ~ item ~ '_index')}}">
+								<div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+									{% set iconClass %}
+									{% if item == 'dashboard' %}
+										ni-tv-2 text-danger
+									{% elseif item == 'tables' %}
+										ni-calendar-grid-58 text-warning
+									{% elseif item == 'billing' %}
+										ni-credit-card text-success
+									{% elseif item == 'film' %}
+										fa fa-film text-primary
+									{% elseif item == 'actor' %}
+										ni-user-run text-danger
+									{% elseif item == 'category' %}
+										ni-credit-card text-success
+									{% elseif item == 'cinema' %}
+										ni-credit-card text-success
+									{% elseif item == 'virtual-reality' %}
+										ni-app text-info
+									{% elseif item == 'rtl' %}
 										ni-world-2 text-danger
 									{% elseif item == 'profile' %}
 										ni-single-02 text-dark
