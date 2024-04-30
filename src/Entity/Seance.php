@@ -14,6 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 use App\Entity\Film;
 use App\Entity\Salle;
+use Symfony\Component\Validator\Constraints as Assert ;
+
 
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
@@ -23,8 +25,7 @@ use App\Entity\Salle;
 #[ORM\Index(name: 'fk_salle_seance', columns: ['id_salle'])]
 class Seance
 {
-
-    #[ORM\Column(name: 'id_seance', type: 'integer', nullable: false)]
+    #[ORM\Column(name: 'id_seance', type: 'integer', nullable:  false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idSeance;
@@ -32,26 +33,27 @@ class Seance
     /**
      * @var DateTime
      */
-
-    #[ORM\Column(name: 'HD', type: 'time', nullable: false)]
+    #[ORM\Column(name: 'HD', type: 'time', nullable: true)]
+    #[Assert\NotBlank(message: 'Begining time is required.')]
     private DateTimeInterface $hd;
 
     /**
      * @var DateTime
      */
-
-    #[ORM\Column(name: 'HF', type: 'time', nullable: false)]
+    #[ORM\Column(name: 'HF', type: 'time', nullable: true)]
+    #[Assert\NotBlank(message: 'End time is required.')]
     private DateTimeInterface $hf;
 
     /**
      * @var DateTime
      */
-
-    #[ORM\Column(name: 'date', type: 'date', nullable: false)]
+    #[ORM\Column(name: 'date', type: 'date', nullable: true)]
+    #[Assert\NotBlank(message: 'date is required.')]
     private DateTimeInterface $date;
 
-
-    #[ORM\Column(name: 'prix', type: 'float', precision: 10, scale: 0, nullable: false)]
+    #[ORM\Column(name: 'prix', type: 'float', precision: 10, scale: 0, nullable: true)]
+    #[Assert\NotBlank(message: 'The price is required.')]
+    #[Assert\Positive(message: 'The price must be a positive integer.')]
     private float $prix;
 
     /**
@@ -73,7 +75,7 @@ class Seance
      */
     #[ORM\ManyToOne(targetEntity: Cinema::class)]
     #[ORM\JoinColumn(name: 'id_cinema', referencedColumnName: 'id_cinema')]
-    private Cinema $idCinema;
+    private ?Cinema $idCinema = null;
 
     /**
      * @var Collection<int, Users>
@@ -99,10 +101,15 @@ class Seance
         return $this->hd;
     }
 
-    public function setHd(\DateTimeInterface $hd): static
+    public function setHd(?DateTimeInterface $hd): static
     {
-        $this->hd = $hd;
-
+        if ($hd !== null) {
+            $this->hd = $hd;
+        } else {
+            // Si la date est nulle, vous pouvez attribuer une date par défaut ou gérer le cas selon vos besoins
+            $this->hd = new DateTime(); // Exemple d'attribution d'une nouvelle instance de DateTime
+        }
+    
         return $this;
     }
 
@@ -111,24 +118,35 @@ class Seance
         return $this->hf;
     }
 
-    public function setHf(\DateTimeInterface $hf): static
+    public function setHf(?DateTimeInterface $hf): static
     {
-        $this->hf = $hf;
-
+        if ($hf !== null) {
+            $this->hf = $hf;
+        } else {
+            // Si la date est nulle, vous pouvez attribuer une date par défaut ou gérer le cas selon vos besoins
+            $this->hf = new DateTime(); // Exemple d'attribution d'une nouvelle instance de DateTime
+        }
+    
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): \DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
-    {
+    public function setDate(?DateTimeInterface $date): static
+{
+    if ($date !== null) {
         $this->date = $date;
-
-        return $this;
+    } else {
+        // Si la date est nulle, vous pouvez attribuer une date par défaut ou gérer le cas selon vos besoins
+        $this->date = new DateTime(); // Exemple d'attribution d'une nouvelle instance de DateTime
     }
+
+    return $this;
+}
+
 
     public function getPrix(): ?float
     {
@@ -204,4 +222,5 @@ class Seance
 
         return $this;
     }
+
 }

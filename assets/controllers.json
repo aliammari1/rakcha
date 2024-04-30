@@ -15,6 +15,12 @@
                 "fetch": "eager"
             }
         },
+        "@symfony/ux-chartjs": {
+            "chart": {
+                "enabled": true,
+                "fetch": "eager"
+            }
+        },
         "@symfony/ux-toggle-password": {
             "toggle-password": {
                 "enabled": true,
