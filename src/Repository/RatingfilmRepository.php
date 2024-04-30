@@ -21,6 +21,19 @@ class RatingfilmRepository extends ServiceEntityRepository
         parent::__construct($registry, Ratingfilm::class);
     }
 
+    public function getAverageRating($id)
+    {
+        $query = $this->createQueryBuilder('r')
+            ->select('AVG(r.rate) as rate_avg')
+            ->where('r.idFilm = :idFilm')
+            ->groupBy('r.idFilm')
+            ->setParameter('idFilm', $id)
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
+
 //    /**
 //     * @return Ratingfilm[] Returns an array of Ratingfilm objects
 //     */
@@ -36,7 +49,7 @@ class RatingfilmRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Ratingfilm
+    //    public function findOneBySomeField($value): ?Ratingfilm
 //    {
 //        return $this->createQueryBuilder('r')
 //            ->andWhere('r.exampleField = :val')

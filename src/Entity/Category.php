@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 
 
@@ -23,11 +27,27 @@ class Category
 
 
     #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
+    #[Assert\NotBlank(message: 'The name cannot be blank')]
+    #[Assert\Length(max: 255, maxMessage: 'The name cannot exceed {{ limit }} characters')]
+    #[Assert\Regex(
+        pattern: "/^[A-Z][a-zA-Z0-9\s]*$/",
+        message: 'The category name must start with an uppercase letter .'
+    )]
+
     private string $nom;
 
 
     #[ORM\Column(name: 'description', type: 'text', length: 0, nullable: false)]
+    #[Assert\NotBlank(message: 'The description cannot be blank')]
     private string $description;
+
+    #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'categorys')]
+    private Collection $films;
+
+    public function __construct()
+    {
+        $this->films = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -57,4 +77,33 @@ class Category
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Film>
+     */
+    public function getFilms(): Collection
+    {
+        return $this->films;
+    }
+
+    public function addFilm(Film $film): static
+    {
+        if (!$this->films->contains($film)) {
+            $this->films->add($film);
+            $film->addCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFilm(Film $film): static
+    {
+        if ($this->films->removeElement($film)) {
+            $film->removeCategory($this);
+        }
+
+        return $this;
+    }
+
+
 }

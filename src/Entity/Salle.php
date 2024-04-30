@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SalleRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert ;
@@ -48,8 +49,40 @@ class Salle
      
     private $cinema;
 
+    #[ORM\OneToMany(mappedBy: 'salle', targetEntity: Seat::class)]
+    private Collection $seats;
   
-  
+  /**
+     * @return Collection<int, Seat>
+     */
+    public function getSeats(): Collection
+    {
+        return $this->seats;
+    }
+
+    public function addSeat(Seat $seat): static
+    {
+        if (!$this->seats->contains($seat)) {
+            $this->seats->add($seat);
+            $seat->setSeance($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeat(Seat $seat): static
+    {
+        if ($this->seats->removeElement($seat)) {
+            // set the owning side to null (unless already changed)
+            if ($seat->getSeance() === $this) {
+                $seat->setSeance(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 
     public function getIdSalle(): ?int
     {
