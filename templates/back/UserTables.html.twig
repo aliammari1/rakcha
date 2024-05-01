@@ -2,511 +2,618 @@
 {% import 'back/macros.html.twig' as macros %}
 
 {% block backContent %}
-	<div class="min-height-300 bg-danger position-absolute w-100"></div>
+    <div class="min-height-300 bg-danger position-absolute w-100"></div>
 {% endblock %}
 
 {% block body %}
-	{{ flasher_render() }}
-	<main
-		class="main-content position-relative border-radius-lg">
-		<!-- Navbar -->
-		<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" data-scroll="false" id="navbarBlur">
-			<div class="container-fluid py-1 px-3">
-				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-						<li class="breadcrumb-item text-sm">
-							<a class="opacity-5 text-white" href="javascript:;">{{ 'Pages'|auto_translate }}</a>
-						</li>
-						<li aria-current="page" class="breadcrumb-item text-sm text-white active">Tables</li>
-					</ol>
-					<h6 class="font-weight-bolder text-white mb-0">{{ 'Tables'|auto_translate }}</h6>
-				</nav>
-				<div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-					<div class="ms-md-auto pe-md-3 d-flex align-items-center">
-						<div class="input-group">
-							<span class="input-group-text text-body"></span>
-							<input class="form-control" placeholder="Type here..." type="text"/>
-						</div>
-					</div>
-					<ul class="navbar-nav justify-content-end">
-						<li class="nav-item d-flex align-items-center">
-							<a class="nav-link text-white font-weight-bold px-0" href="{{ path('app_logout') }}">{{ 'Logout'|auto_translate }}</a>
-						</li>
-						<li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-							<a class="nav-link text-white p-0" href="javascript:;" id="iconNavbarSidenav"></a>
-						</li>
-						<li class="nav-item px-3 d-flex align-items-center">
-							<a class="nav-link text-white p-0" href="javascript:;"></a>
-						</li>
-						<li class="nav-item dropdown pe-2 d-flex align-items-center">
-							<a aria-expanded="false" class="nav-link text-white p-0" data-bs-toggle="dropdown" href="javascript:;" id="dropdownMenuButton"></a>
-							<ul aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4">
-								<li class="mb-2">
-									<a class="dropdown-item border-radius-md" href="javascript:;">{{ 'New messagefrom Laur13 minutes ago'|auto_translate }}</a>
-								</li>
-								<li class="mb-2">
-									<a class="dropdown-item border-radius-md" href="javascript:;">{{ 'New albumby Travis Scott1 day'|auto_translate }}</a>
-								</li>
-								<li>
-									<a class="dropdown-item border-radius-md" href="javascript:;">{{ 'credit-cardPayment successfully completed2 days'|auto_translate }}</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-		<!-- End Navbar -->
-		<div class="container-fluid py-4">
-			<div id="user-table" class="row">
-				<div class="col-12">
-					<div class="card mb-4">
-						<div class="card-header pb-0 d-flex justify-content-between">
-							<h6>{{  'Authors table'|auto_translate }}</h6>
-							<button class="btn btn-primary" data-bs-target="#staticBackdrop" data-bs-toggle="modal" type="button">
-								<svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewbox="0 0 448 512" style="color: white;"><path fill="currentColor" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32v144H48c-17.7 0-32 14.3-32 32s14.3 32 32 32h144v144c0 17.7 14.3 32 32 32s32-14.3 32-32V288h144c17.7 0 32-14.3 32-32s-14.3-32-32-32H256z"/></svg>
-							</button>
-						</div>
-						<div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="staticBackdrop" tabindex="-1">
-							<div class="modal-dialog">{{macros.render_modal_form(form,path('app_users_new'),'Create User')}}
-							</div>
-						</div>
-						<div class="card-body px-0 pt-0 pb-2">
-							<div class="table-responsive p-0">
-								<table class="table align-items-center mb-0">
-									<thead>
-										<tr>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 {% if pagination.isSorted('a.prenom') %} sorted {% endif %}">
-												{{ knp_pagination_sortable(pagination, 'Username', ['a.prenom','a.nom']) }}
-											</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.email') %} sorted {% endif %}">
-												{{ knp_pagination_sortable(pagination, 'Email', 'a.email') }}
-											</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.role') %} sorted {% endif %}">
-												{{ knp_pagination_sortable(pagination, 'Role', 'a.role') }}
-											</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.password') %} sorted {% endif %}">
-												{{ knp_pagination_sortable(pagination, 'Password', 'a.password') }}
-											</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.adresse') %} sorted {% endif %}">
-												{{ knp_pagination_sortable(pagination, 'Address', 'a.adresse') }}
-											</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.dateDeNaissance') %} sorted {% endif %}">
-												{{ knp_pagination_sortable(pagination, 'Birth Date', 'a.dateDeNaissance') }}
-											</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.numTelephone') %} sorted {% endif %}">
-												{{ knp_pagination_sortable(pagination, 'Phone Number', 'a.numTelephone') }}
-											</th>
-											<th class="text-secondary opacity-7"></th>
-										</tr>
-									</thead>
-									<tbody>
-										{% for i in range(0, pagination|length - 1) %}
-											{% set user = pagination[i] %}
-											<tr>
-												<td>
-													<div>
-														<img alt="{{ user.nom }}" class="avatar avatar-sm me-3" src="{{ asset(user.photoDeProfil ?? '/img/users/empty.jpg') }}" onerror="this.onerror=null;this.src='{{ asset('/img/users/empty.jpg') }}';"/>
-													</div>
-												</td>
-												<td>
-													<div class="d-flex px-2 py-1">
-														<div class="d-flex flex-column justify-content-center">
-															<h6 class="mb-0 text-sm">{{ user.nom ~ ' ' ~ user.prenom }}</h6>
-														</div>
-													</div>
-												</td>
-												<td>
-													<p class="text-xs text-secondary mb-0">{{ user.email }}</p>
-												</td>
-												<td>
-													<p class="text-xs font-weight-bold mb-0">{{ user.role }}</p>
-												</td>
-												<td>
-													<p class="text-xs text-secondary mb-0">{{ user.password }}</p>
-												</td>
-												<td class="align-middle text-center text-sm">
-													<p class="text-xs font-weight-bold mb-0">{{ user.adresse }}</p>
-												</td>
-												<td class="align-middle text-center">
-													<span class="text-secondary text-xs font-weight-bold">{{ user.dateDeNaissance|date('d/m/Y') }}</span>
-												</td>
-												<td class="align-middle text-center">
-													<span class="text-secondary text-xs font-weight-bold">{{ user.numTelephone }}</span>
-												</td>
-												<td class="align-middle">
-													<form action="{{ path('app_users_delete', {'id': user.id}) }}" method="post" id="delete{{i}}">
-														<input name="_token" type="hidden" value="{{ csrf_token('delete' ~ user.id) }}"/>
-														<button class="btn btn-danger" onclick="showSweetAlert('delete{{i}}')">
-															<svg xmlns="http://www.w3.org/2000/svg" width="1.7em" height="1.7em" viewbox="0 0 24 24" style="color: white;"><path fill="currentColor" d="M7.615 20q-.67 0-1.143-.472Q6 19.056 6 18.385V6H5V5h4v-.77h6V5h4v1h-1v12.385q0 .69-.462 1.152T16.385 20zM17 6H7v12.385q0 .269.173.442t.442.173h8.77q.23 0 .423-.192t.192-.423zM9.808 17h1V8h-1zm3.384 0h1V8h-1zM7 6v13z"/></svg>
-														</button>
-													</form>
-												</td>
-												<td class="align-middle">
-													<button class="btn btn-primary" data-bs-target="#staticBackdrop{{i}}" data-bs-toggle="modal" type="button">
-														<svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewbox="0 0 24 24" style="color: primary;"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5L2 22l1.5-5.5Zm-2 2l4 4"/></svg>
-													</button>
-													<div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" id="staticBackdrop{{i}}" tabindex="-1">
-														<div class="modal-dialog">
-															{% if formUpdateNumber is not defined or i != formUpdateNumber %}
-																{{ macros.render_modal_form(updateForms[i], path('app_users_edit', {'id': user.id, 'formUpdateNumber': i}), 'Edit User ' ~ i) }}
-															{% else %}
-																{{ macros.render_modal_form(updateform, path('app_users_edit', {'id': user.id, 'formUpdateNumber': i}), 'Edit User ' ~ i) }}
-															{% endif %}
-														</div>
-													</div>
-												</td>
-											</tr>
-										{% endfor %}
-									</tbody>
-								</table>
-								<div class="navigation d-flex justify-content-center">
-									{{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig') }}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-12">
-					<div class="card mb-4">
-						<div class="card-header pb-0">
-							<h6>{{ 'Projects table'|auto_translate }}</h6>
-						</div>
-						<div class="card-body px-0 pt-0 pb-2">
-							<div class="table-responsive p-0">
-								<table id='projectsTable' class="table align-items-center justify-content-center mb-0">
-									<thead>
-										<tr>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Project</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Budget</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-											<th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">Completion</th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<div class="d-flex px-2">
-													<div>
-														<img alt="spotify" class="avatar avatar-sm rounded-circle me-2" src="{{ asset('img/small-logos/logo-spotify.svg') }}"/>
-													</div>
-													<div class="my-auto">
-														<h6 class="mb-0 text-sm">{{ 'Spotify'|auto_translate }}</h6>
-													</div>
-												</div>
-											</td>
-											<td>
-												<p class="text-sm font-weight-bold mb-0">{{ '$2,500'|auto_translate }}</p>
-											</td>
-											<td>
-												<span class="text-xs font-weight-bold">{{ 'working'|auto_translate }}</span>
-											</td>
-											<td class="align-middle text-center">
-												<div class="d-flex align-items-center justify-content-center">
-													<span class="me-2 text-xs font-weight-bold">{{ '60%'|auto_translate }}</span>
-													<div>
-														<div class="progress">
-															<div aria-valuemax="100" aria-valuemin="0" aria-valuenow="60" class="progress-bar bg-gradient-info" role="progressbar" style="width: 60%;"></div>
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="align-middle">
-												<button class="btn btn-link text-secondary mb-0">
-													<i class="fa fa-ellipsis-v text-xs"></i>
-												</button>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex px-2">
-													<div>
-														<img alt="invision" class="avatar avatar-sm rounded-circle me-2" src="{{ asset('img/small-logos/logo-invision.svg') }}"/>
-													</div>
-													<div class="my-auto">
-														<h6 class="mb-0 text-sm">{{ 'Invision'|auto_translate }}</h6>
-													</div>
-												</div>
-											</td>
-											<td>
-												<p class="text-sm font-weight-bold mb-0">{{ '$5,000'|auto_translate }}</p>
-											</td>
-											<td>
-												<span class="text-xs font-weight-bold">{{ 'done'|auto_translate }}</span>
-											</td>
-											<td class="align-middle text-center">
-												<div class="d-flex align-items-center justify-content-center">
-													<span class="me-2 text-xs font-weight-bold">{{ '100%'|auto_translate }}</span>
-													<div>
-														<div class="progress">
-															<div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="progress-bar bg-gradient-success" role="progressbar" style="width: 100%;"></div>
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="align-middle">
-												<button aria-expanded="false" aria-haspopup="true" class="btn btn-link text-secondary mb-0">
-													<i class="fa fa-ellipsis-v text-xs"></i>
-												</button>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex px-2">
-													<div>
-														<img alt="jira" class="avatar avatar-sm rounded-circle me-2" src="{{ asset('img/small-logos/logo-jira.svg') }}"/>
-													</div>
-													<div class="my-auto">
-														<h6 class="mb-0 text-sm">{{ 'Jira'|auto_translate }}</h6>
-													</div>
-												</div>
-											</td>
-											<td>
-												<p class="text-sm font-weight-bold mb-0">{{ '$3,400'|auto_translate }}</p>
-											</td>
-											<td>
-												<span class="text-xs font-weight-bold">{{ 'canceled'|auto_translate }}</span>
-											</td>
-											<td class="align-middle text-center">
-												<div class="d-flex align-items-center justify-content-center">
-													<span class="me-2 text-xs font-weight-bold">{{ '30%'|auto_translate }}</span>
-													<div>
-														<div class="progress">
-															<div aria-valuemax="30" aria-valuemin="0" aria-valuenow="30" class="progress-bar bg-gradient-danger" role="progressbar" style="width: 30%;"></div>
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="align-middle">
-												<button aria-expanded="false" aria-haspopup="true" class="btn btn-link text-secondary mb-0">
-													<i class="fa fa-ellipsis-v text-xs"></i>
-												</button>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex px-2">
-													<div>
-														<img alt="slack" class="avatar avatar-sm rounded-circle me-2" src="{{ asset('img/small-logos/logo-slack.svg') }}"/>
-													</div>
-													<div class="my-auto">
-														<h6 class="mb-0 text-sm">{{ 'Slack'|auto_translate }}</h6>
-													</div>
-												</div>
-											</td>
-											<td>
-												<p class="text-sm font-weight-bold mb-0">{{ '$1,000'|auto_translate }}</p>
-											</td>
-											<td>
-												<span class="text-xs font-weight-bold">{{ 'canceled'|auto_translate }}</span>
-											</td>
-											<td class="align-middle text-center">
-												<div class="d-flex align-items-center justify-content-center">
-													<span class="me-2 text-xs font-weight-bold">{{ '0%'|auto_translate }}</span>
-													<div>
-														<div class="progress">
-															<div aria-valuemax="0" aria-valuemin="0" aria-valuenow="0" class="progress-bar bg-gradient-success" role="progressbar" style="width: 0%;"></div>
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="align-middle">
-												<button aria-expanded="false" aria-haspopup="true" class="btn btn-link text-secondary mb-0">
-													<i class="fa fa-ellipsis-v text-xs"></i>
-												</button>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex px-2">
-													<div>
-														<img alt="webdev" class="avatar avatar-sm rounded-circle me-2" src="{{ asset('img/small-logos/logo-webdev.svg') }}"/>
-													</div>
-													<div class="my-auto">
-														<h6 class="mb-0 text-sm">{{ 'Webdev'|auto_translate }}</h6>
-													</div>
-												</div>
-											</td>
-											<td>
-												<p class="text-sm font-weight-bold mb-0">{{ '$14,000'|auto_translate }}</p>
-											</td>
-											<td>
-												<span class="text-xs font-weight-bold">{{ 'working'|auto_translate }}</span>
-											</td>
-											<td class="align-middle text-center">
-												<div class="d-flex align-items-center justify-content-center">
-													<span class="me-2 text-xs font-weight-bold">{{ '80%'|auto_translate }}</span>
-													<div>
-														<div class="progress">
-															<div aria-valuemax="80" aria-valuemin="0" aria-valuenow="80" class="progress-bar bg-gradient-info" role="progressbar" style="width: 80%;"></div>
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="align-middle">
-												<button aria-expanded="false" aria-haspopup="true" class="btn btn-link text-secondary mb-0">
-													<i class="fa fa-ellipsis-v text-xs"></i>
-												</button>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<div class="d-flex px-2">
-													<div>
-														<img alt="xd" class="avatar avatar-sm rounded-circle me-2" src="{{ asset('img/small-logos/logo-xd.svg') }}"/>
-													</div>
-													<div class="my-auto">
-														<h6 class="mb-0 text-sm">{{ 'Adobe XD'|auto_translate }}</h6>
-													</div>
-												</div>
-											</td>
-											<td>
-												<p class="text-sm font-weight-bold mb-0">{{ '$2,300'|auto_translate }}</p>
-											</td>
-											<td>
-												<span class="text-xs font-weight-bold">{{ 'done'|auto_translate }}</span>
-											</td>
-											<td class="align-middle text-center">
-												<div class="d-flex align-items-center justify-content-center">
-													<span class="me-2 text-xs font-weight-bold">{{ '100%'|auto_translate }}</span>
-													<div>
-														<div class="progress">
-															<div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100" class="progress-bar bg-gradient-success" role="progressbar" style="width: 100%;"></div>
-														</div>
-													</div>
-												</div>
-											</td>
-											<td class="align-middle">
-												<button aria-expanded="false" aria-haspopup="true" class="btn btn-link text-secondary mb-0">
-													<i class="fa fa-ellipsis-v text-xs"></i>
-												</button>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			{{ block('footer') }}</div>
-	</main>
-	<div class="fixed-plugin">
-		<a class="fixed-plugin-button text-dark position-fixed px-3 py-2"></a>
-		<div class="card shadow-lg">
-			<div class="card-header pb-0 pt-3">
-				<div class="float-start">
-					<h5 class="mt-3 mb-0">{{ 'Argon Configurator'|auto_translate }}</h5>
-					<p>{{ 'See our dashboard options.'|auto_translate }}</p>
-				</div>
-				<div class="float-end mt-4">
-					<button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
-						<i class="fa fa-close"></i>
-					</button>
-				</div><!-- End Toggle Button --></div><hr class="horizontal dark my-1"/><divclass="card-bodypt-sm-3pt-0overflow-auto"><!-- Sidebar Backgrounds --><div>
-					<h6 class="mb-0">{{ 'Sidebar Colors'|auto_translate }}</h6>
-				</div>
-				<a class="switch-trigger background-color" href="javascript:void(0)"></a><!-- Sidenav Type --><div class="mt-3">
-					<h6 class="mb-0">{{ 'Sidenav Type'|auto_translate }}</h6>
-					<p class="text-sm">{{ 'Choose between 2 different sidenav types.'|auto_translate }}</p>
-				</div>
-				<div class="d-flex">
-					<button class="btn bg-gradient-danger w-100 px-3 mb-2 active me-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
-					<button class="btn bg-gradient-danger w-100 px-3 mb-2" data-class="bg-default" onclick="sidebarType(this)">Dark</button>
-				</div>
-				<p class="text-sm d-xl-none d-block mt-2">{{ 'You can change the sidenav type just on desktop view.'|auto_translate }}</p><!-- Navbar Fixed --><div class="d-flex my-3">
-					<h6 class="mb-0">{{ 'Navbar Fixed'|auto_translate }}</h6>
-					<div class="form-check form-switch ps-0 ms-auto my-auto"><input class="form-check-input mt-1 ms-auto" id="navbarFixed" onclick="navbarFixed(this)" type="checkbox"/></div>
-				</div><hr class="horizontal dark my-sm-4"/><div class="mt-2 mb-5 d-flex">
-					<h6 class="mb-0">{{ 'Light / Dark'|auto_translate }}</h6>
-					<div class="form-check form-switch ps-0 ms-auto my-auto"><input class="form-check-input mt-1 ms-auto" id="dark-version" onclick="darkMode(this)" type="checkbox"/></div>
-				</div>
-				<a class="btn bg-gradient-dark w-100" href="https://www.creative-tim.com/product/argon-dashboard">{{ 'Free Download'|auto_translate }}</a>
-				<a class="btn btn-outline-dark w-100" href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard">{{ 'View documentation'|auto_translate }}</a>
-				<div class="w-100 text-center">
-					<a aria-label="Star creativetimofficial/argon-dashboard on GitHub" class="github-button" data-icon="octicon-star" data-show-count="true" data-size="large" href="https://github.com/creativetimofficial/argon-dashboard">{{ 'Star'|auto_translate }}</a>
-					<h6 class="mt-3">{{ 'Thank you for sharing!'|auto_translate }}</h6>
-					<a class="btn btn-dark mb-0 me-2" href="https://twitter.com/intent/tweet?text=Check%20Argon%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fargon-dashboard" target="_blank">{{ 'Tweet'|auto_translate }}</a>
-					<a class="btn btn-dark mb-0 me-2" href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/argon-dashboard" target="_blank">{{ 'Share'|auto_translate }}</a>
-				</div>
-			</div>
-		</div>
-	</div><!--   Core JS Files   --><script src="{{ asset('js/core/popper.min.js') }}"></script>
-	<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-	<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
-	<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-	<script>
-		var win = navigator.platform.indexOf('Win') > -1;
-if (win && document.querySelector('#sidenav-scrollbar')) {
-var options = {
-damping: '0.5'
-}
-Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-}
-	</script><!-- Github buttons --><script async="" defer="" src="https://buttons.github.io/buttons.js"></script><!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc --><script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<!-- before the closing <body> tag -->
-	<script type="text/javascript" src="https://cdn.datatables.net/2.0.5/js/dataTables.min.js"></script>
-	<script>
-		$('#projectsTable').DataTable({
-			"pagingType": "full_numbers",
-			"lengthMenu": [
-				[1, 25, 50, -1],
-				[1, 25, 50, "All"]
-			],
-			responsive: true,
-		});
-	</script>
-	<script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1/dist/es-module-shims.min.js" crossorigin="anonymous"></script>
-	{% if hasErrorsCreate is defined  %}
-		<script>
-			const myModal = new bootstrap.Modal('#staticBackdrop', {keyboard: false});
-			const modalToggle = document.getElementById('staticBackdrop');
-			myModal.show(modalToggle);
-		</script>
-	{% endif %}
-	{% if formUpdateNumber is defined %}
-		<script>
-			const myModal = new bootstrap.Modal("{{ '#staticBackdrop' ~ formUpdateNumber }}", {keyboard: false});
-			const modalToggle = document.getElementById("{{ 'staticBackdrop' ~ formUpdateNumber }}");
-			myModal.show(modalToggle);
-		</script>
-	{% endif %}
-	<script>
-		function showSweetAlert(formName) {
-document.getElementById(formName).addEventListener('submit', function (event) {
-event.preventDefault();
-const swalWithBootstrapButtons = Swal.mixin({
-customClass: {
-confirmButton: "btn btn-success ms-4",
-cancelButton: "btn btn-danger"
-},
-buttonsStyling: false
-});
-swalWithBootstrapButtons.fire({
-title: "Are you sure?",
-text: "You won't be able to revert this!",
-icon: "warning",
-showCancelButton: true,
-confirmButtonText: "Yes, delete it!",
-cancelButtonText: "No, cancel!",
-reverseButtons: true
-}).then((result) => {
-if (result.isConfirmed) {
-swalWithBootstrapButtons.fire({title: "Deleted!", text: "The user has been deleted.", icon: "success"});
-document.getElementById(formName).submit();
-} else if (
-/* Read more about handling dismissals below */
-result.dismiss === Swal.DismissReason.cancel
-) {
-swalWithBootstrapButtons.fire({title: "Cancelled", text: "The user account is not deleted :)", icon: "error"});
-}
-});
-});
-}
-	</script>
+    {{ flasher_render() }}
+    <main
+            class="main-content position-relative border-radius-lg">
+        <!-- Navbar -->
+        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" data-scroll="false"
+             id="navbarBlur">
+            <div class="container-fluid py-1 px-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+                        <li class="breadcrumb-item text-sm">
+                            <a class="opacity-5 text-white" href="javascript:">{{ 'Pages' }}</a>
+                        </li>
+                        <li aria-current="page" class="breadcrumb-item text-sm text-white active">Tables</li>
+                    </ol>
+                    <h6 class="font-weight-bolder text-white mb-0">{{ 'Tables' }}</h6>
+                </nav>
+                <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                    <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                        <div class="input-group">
+                            <span class="input-group-text text-body"></span>
+                            <label>
+                                <input class="form-control" placeholder="Type here..." type="text"/>
+                            </label>
+                        </div>
+                    </div>
+                    <ul class="navbar-nav justify-content-end">
+                        <li class="nav-item d-flex align-items-center">
+                            <a class="nav-link text-white font-weight-bold px-0"
+                               href="{{ path('app_logout') }}">{{ 'Logout' }}</a>
+                        </li>
+                        <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                            <a class="nav-link text-white p-0" href="javascript:" id="iconNavbarSidenav"></a>
+                        </li>
+                        <li class="nav-item px-3 d-flex align-items-center">
+                            <a class="nav-link text-white p-0" href="javascript:"></a>
+                        </li>
+                        <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                            <a aria-expanded="false" class="nav-link text-white p-0" data-bs-toggle="dropdown"
+                               href="javascript:" id="dropdownMenuButton"></a>
+                            <ul aria-labelledby="dropdownMenuButton"
+                                class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4">
+                                <li class="mb-2">
+                                    <a class="dropdown-item border-radius-md"
+                                       href="javascript:">{{ 'New messagefrom Laur13 minutes ago' }}</a>
+                                </li>
+                                <li class="mb-2">
+                                    <a class="dropdown-item border-radius-md"
+                                       href="javascript:">{{ 'New albumby Travis Scott1 day' }}</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item border-radius-md"
+                                       href="javascript:">{{ 'credit-cardPayment successfully completed2 days' }}</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="container-fluid py-4">
+            <div id="user-table" class="row">
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="card-header pb-0 d-flex justify-content-between">
+                            <h6>{{ 'Authors table' }}</h6>
+                            <button class="btn btn-primary" data-bs-target="#staticBackdrop" data-bs-toggle="modal"
+                                    type="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em"
+                                     viewbox="0 0 448 512" style="color: white;">
+                                    <path fill="currentColor"
+                                          d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32v144H48c-17.7 0-32 14.3-32 32s14.3 32 32 32h144v144c0 17.7 14.3 32 32 32s32-14.3 32-32V288h144c17.7 0 32-14.3 32-32s-14.3-32-32-32H256z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div aria-hidden="true" aria-labelledby="staticBackdropLabel" class="modal fade"
+                             data-bs-backdrop="static" data-bs-keyboard="false" id="staticBackdrop" tabindex="-1">
+                            <div class="modal-dialog">{{ macros.render_modal_form(form,path('app_users_new'),'Create User') }}
+                            </div>
+                        </div>
+                        <div class="card-body px-0 pt-0 pb-2">
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            #
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 {% if pagination.isSorted('a.prenom') %} sorted {% endif %}">
+                                            {{ knp_pagination_sortable(pagination, 'Username', ['a.prenom','a.nom']) }}
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.email') %} sorted {% endif %}">
+                                            {{ knp_pagination_sortable(pagination, 'Email', 'a.email') }}
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.role') %} sorted {% endif %}">
+                                            {{ knp_pagination_sortable(pagination, 'Role', 'a.role') }}
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.password') %} sorted {% endif %}">
+                                            {{ knp_pagination_sortable(pagination, 'Password', 'a.password') }}
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.adresse') %} sorted {% endif %}">
+                                            {{ knp_pagination_sortable(pagination, 'Address', 'a.adresse') }}
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.dateDeNaissance') %} sorted {% endif %}">
+                                            {{ knp_pagination_sortable(pagination, 'Birth Date', 'a.dateDeNaissance') }}
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 {% if pagination.isSorted('a.numTelephone') %} sorted {% endif %}">
+                                            {{ knp_pagination_sortable(pagination, 'Phone Number', 'a.numTelephone') }}
+                                        </th>
+                                        <th class="text-secondary opacity-7"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for i in range(0, pagination|length - 1) %}
+                                        {% set user = pagination[i] %}
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <img alt="{{ user.nom }}" class="avatar avatar-sm me-3"
+                                                         src="{{ asset(user.photoDeProfil ?? '/img/users/empty.jpg') }}"
+                                                         onerror="this.onerror=null;this.src='{{ asset('/img/users/empty.jpg') }}';"/>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ user.nom ~ ' ' ~ user.prenom }}</h6>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs text-secondary mb-0">{{ user.email }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ user.role }}</p>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs text-secondary mb-0">{{ user.password }}</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <p class="text-xs font-weight-bold mb-0">{{ user.adresse }}</p>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-secondary text-xs font-weight-bold">{{ user.dateDeNaissance|date('d/m/Y') }}</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-secondary text-xs font-weight-bold">{{ user.numTelephone }}</span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <form action="{{ path('app_users_delete', {'id': user.id}) }}"
+                                                      method="post" id="delete{{ i }}">
+                                                    <input name="_token" type="hidden"
+                                                           value="{{ csrf_token('delete' ~ user.id) }}"/>
+                                                    <button class="btn btn-danger"
+                                                            onclick="showSweetAlert('delete{{ i }}')">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="1.7em"
+                                                             height="1.7em" viewbox="0 0 24 24" style="color: white;">
+                                                            <path fill="currentColor"
+                                                                  d="M7.615 20q-.67 0-1.143-.472Q6 19.056 6 18.385V6H5V5h4v-.77h6V5h4v1h-1v12.385q0 .69-.462 1.152T16.385 20zM17 6H7v12.385q0 .269.173.442t.442.173h8.77q.23 0 .423-.192t.192-.423zM9.808 17h1V8h-1zm3.384 0h1V8h-1zM7 6v13z"></path>
+                                                        </svg>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            <td class="align-middle">
+                                                <button class="btn btn-primary" data-bs-target="#staticBackdrop{{ i }}"
+                                                        data-bs-toggle="modal" type="button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em"
+                                                         viewbox="0 0 24 24" style="color: primary;">
+                                                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                                              stroke-linejoin="round" stroke-width="2"
+                                                              d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5L2 22l1.5-5.5Zm-2 2l4 4"></path>
+                                                    </svg>
+                                                </button>
+                                                <div aria-hidden="true" aria-labelledby="staticBackdropLabel"
+                                                     class="modal fade" data-bs-backdrop="static"
+                                                     data-bs-keyboard="false" id="staticBackdrop{{ i }}" tabindex="-1">
+                                                    <div class="modal-dialog">
+                                                        {% if formUpdateNumber is not defined or i != formUpdateNumber %}
+                                                            {{ macros.render_modal_form(updateForms[i], path('app_users_edit', {'id': user.id, 'formUpdateNumber': i}), 'Edit User ' ~ i) }}
+                                                        {% else %}
+                                                            {{ macros.render_modal_form(updateform, path('app_users_edit', {'id': user.id, 'formUpdateNumber': i}), 'Edit User ' ~ i) }}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="navigation d-flex justify-content-center">
+                                    {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="card-header pb-0">
+                            <h6>{{ 'Projects table' }}</h6>
+                        </div>
+                        <div class="card-body px-0 pt-0 pb-2">
+                            <div class="table-responsive p-0">
+                                <table id='projectsTable' class="table align-items-center justify-content-center mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                            Project
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Budget
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Status
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder text-center opacity-7 ps-2">
+                                            Completion
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2">
+                                                <div>
+                                                    <img alt="spotify" class="avatar avatar-sm rounded-circle me-2"
+                                                         src="{{ asset('img/small-logos/logo-spotify.svg') }}"/>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <h6 class="mb-0 text-sm">{{ 'Spotify' }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm font-weight-bold mb-0">{{ '$2,500' }}</p>
+                                        </td>
+                                        <td>
+                                            <span class="text-xs font-weight-bold">{{ 'working' }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="me-2 text-xs font-weight-bold">{{ '60%' }}</span>
+                                                <div>
+                                                    <div class="progress">
+                                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="60"
+                                                             class="progress-bar bg-gradient-info" role="progressbar"
+                                                             style="width: 60%;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button class="btn btn-link text-secondary mb-0">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2">
+                                                <div>
+                                                    <img alt="invision" class="avatar avatar-sm rounded-circle me-2"
+                                                         src="{{ asset('img/small-logos/logo-invision.svg') }}"/>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <h6 class="mb-0 text-sm">{{ 'Invision' }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm font-weight-bold mb-0">{{ '$5,000' }}</p>
+                                        </td>
+                                        <td>
+                                            <span class="text-xs font-weight-bold">{{ 'done' }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="me-2 text-xs font-weight-bold">{{ '100%' }}</span>
+                                                <div>
+                                                    <div class="progress">
+                                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100"
+                                                             class="progress-bar bg-gradient-success" role="progressbar"
+                                                             style="width: 100%;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button aria-expanded="false" aria-haspopup="true"
+                                                    class="btn btn-link text-secondary mb-0">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2">
+                                                <div>
+                                                    <img alt="jira" class="avatar avatar-sm rounded-circle me-2"
+                                                         src="{{ asset('img/small-logos/logo-jira.svg') }}"/>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <h6 class="mb-0 text-sm">{{ 'Jira' }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm font-weight-bold mb-0">{{ '$3,400' }}</p>
+                                        </td>
+                                        <td>
+                                            <span class="text-xs font-weight-bold">{{ 'canceled' }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="me-2 text-xs font-weight-bold">{{ '30%' }}</span>
+                                                <div>
+                                                    <div class="progress">
+                                                        <div aria-valuemax="30" aria-valuemin="0" aria-valuenow="30"
+                                                             class="progress-bar bg-gradient-danger" role="progressbar"
+                                                             style="width: 30%;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button aria-expanded="false" aria-haspopup="true"
+                                                    class="btn btn-link text-secondary mb-0">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2">
+                                                <div>
+                                                    <img alt="slack" class="avatar avatar-sm rounded-circle me-2"
+                                                         src="{{ asset('img/small-logos/logo-slack.svg') }}"/>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <h6 class="mb-0 text-sm">{{ 'Slack' }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm font-weight-bold mb-0">{{ '$1,000' }}</p>
+                                        </td>
+                                        <td>
+                                            <span class="text-xs font-weight-bold">{{ 'canceled' }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="me-2 text-xs font-weight-bold">{{ '0%' }}</span>
+                                                <div>
+                                                    <div class="progress">
+                                                        <div aria-valuemax="0" aria-valuemin="0" aria-valuenow="0"
+                                                             class="progress-bar bg-gradient-success" role="progressbar"
+                                                             style="width: 0;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button aria-expanded="false" aria-haspopup="true"
+                                                    class="btn btn-link text-secondary mb-0">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2">
+                                                <div>
+                                                    <img alt="webdev" class="avatar avatar-sm rounded-circle me-2"
+                                                         src="{{ asset('img/small-logos/logo-webdev.svg') }}"/>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <h6 class="mb-0 text-sm">{{ 'Webdev' }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm font-weight-bold mb-0">{{ '$14,000' }}</p>
+                                        </td>
+                                        <td>
+                                            <span class="text-xs font-weight-bold">{{ 'working' }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="me-2 text-xs font-weight-bold">{{ '80%' }}</span>
+                                                <div>
+                                                    <div class="progress">
+                                                        <div aria-valuemax="80" aria-valuemin="0" aria-valuenow="80"
+                                                             class="progress-bar bg-gradient-info" role="progressbar"
+                                                             style="width: 80%;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button aria-expanded="false" aria-haspopup="true"
+                                                    class="btn btn-link text-secondary mb-0">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex px-2">
+                                                <div>
+                                                    <img alt="xd" class="avatar avatar-sm rounded-circle me-2"
+                                                         src="{{ asset('img/small-logos/logo-xd.svg') }}"/>
+                                                </div>
+                                                <div class="my-auto">
+                                                    <h6 class="mb-0 text-sm">{{ 'Adobe XD' }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm font-weight-bold mb-0">{{ '$2,300' }}</p>
+                                        </td>
+                                        <td>
+                                            <span class="text-xs font-weight-bold">{{ 'done' }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="me-2 text-xs font-weight-bold">{{ '100%' }}</span>
+                                                <div>
+                                                    <div class="progress">
+                                                        <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="100"
+                                                             class="progress-bar bg-gradient-success" role="progressbar"
+                                                             style="width: 100%;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button aria-expanded="false" aria-haspopup="true"
+                                                    class="btn btn-link text-secondary mb-0">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ block('footer') }}</div>
+    </main>
+    <div class="fixed-plugin">
+        <a class="fixed-plugin-button text-dark position-fixed px-3 py-2"></a>
+        <div class="card shadow-lg">
+            <div class="card-header pb-0 pt-3">
+                <div class="float-start">
+                    <h5 class="mt-3 mb-0">{{ 'Argon Configurator' }}</h5>
+                    <p>{{ 'See our dashboard options.' }}</p>
+                </div>
+                <div class="float-end mt-4">
+                    <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+                        <i class="fa fa-close"></i>
+                    </button>
+                </div><!-- End Toggle Button --></div>
+            <hr class="horizontal dark my-1"/>
+            <div class="card-bodypt-sm-3pt-0overflow-auto"><!-- Sidebar Backgrounds -->
+                <div>
+                    <h6 class="mb-0">{{ 'Sidebar Colors' }}</h6>
+                </div>
+                <a class="switch-trigger background-color" href="javascript:void(0)"></a><!-- Sidenav Type -->
+                <div class="mt-3">
+                    <h6 class="mb-0">{{ 'Sidenav Type' }}</h6>
+                    <p class="text-sm">{{ 'Choose between 2 different sidenav types.' }}</p>
+                </div>
+                <div class="d-flex">
+                    <button class="btn bg-gradient-danger w-100 px-3 mb-2 active me-2" data-class="bg-white"
+                            onclick="sidebarType(this)">White
+                    </button>
+                    <button class="btn bg-gradient-danger w-100 px-3 mb-2" data-class="bg-default"
+                            onclick="sidebarType(this)">Dark
+                    </button>
+                </div>
+                <p class="text-sm d-xl-none d-block mt-2">{{ 'You can change the sidenav type just on desktop view.' }}</p>
+                <!-- Navbar Fixed -->
+                <div class="d-flex my-3">
+                    <h6 class="mb-0">{{ 'Navbar Fixed' }}</h6>
+                    <div class="form-check form-switch ps-0 ms-auto my-auto"><label for="navbarFixed"></label><input
+                                class="form-check-input mt-1 ms-auto"
+                                id="navbarFixed"
+                                onclick="navbarFixed(this)"
+                                type="checkbox"/></div>
+                </div>
+                <hr class="horizontal dark my-sm-4"/>
+                <div class="mt-2 mb-5 d-flex">
+                    <h6 class="mb-0">{{ 'Light / Dark' }}</h6>
+                    <div class="form-check form-switch ps-0 ms-auto my-auto"><label for="dark-version"></label><input
+                                class="form-check-input mt-1 ms-auto"
+                                id="dark-version"
+                                onclick="darkMode(this)"
+                                type="checkbox"/></div>
+                </div>
+                <a class="btn bg-gradient-dark w-100"
+                   href="https://www.creative-tim.com/product/argon-dashboard">{{ 'Free Download' }}</a>
+                <a class="btn btn-outline-dark w-100"
+                   href="https://www.creative-tim.com/learning-lab/bootstrap/license/argon-dashboard">{{ 'View documentation' }}</a>
+                <div class="w-100 text-center">
+                    <a aria-label="Star creativetimofficial/argon-dashboard on GitHub" class="github-button"
+                       data-icon="octicon-star" data-show-count="true" data-size="large"
+                       href="https://github.com/creativetimofficial/argon-dashboard">{{ 'Star' }}</a>
+                    <h6 class="mt-3">{{ 'Thank you for sharing!' }}</h6>
+                    <a class="btn btn-dark mb-0 me-2"
+                       href="https://twitter.com/intent/tweet?text=Check%20Argon%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fargon-dashboard"
+                       target="_blank">{{ 'Tweet' }}</a>
+                    <a class="btn btn-dark mb-0 me-2"
+                       href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/argon-dashboard"
+                       target="_blank">{{ 'Share' }}</a>
+                </div>
+            </div>
+        </div>
+    </div><!--   Core JS Files   -->
+    <script src="{{ asset('js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <script>
+        var win = navigator.platform.indexOf('Win') > -1;
+        if (win && document.querySelector('#sidenav-scrollbar')) {
+            var options = {
+                damping: '0.5'
+            }
+            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+    </script>
+    <!-- Github buttons -->
+    <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+    <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- before the closing <body> tag -->
+    <script type="text/javascript" src="https://cdn.datatables.net/2.0.5/js/dataTables.min.js"></script>
+    <script>
+        $('#projectsTable').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [1, 25, 50, -1],
+                [1, 25, 50, "All"]
+            ],
+            responsive: true,
+        });
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/es-module-shims@1/dist/es-module-shims.min.js"
+            crossorigin="anonymous"></script>
+    {% if hasErrorsCreate is defined %}
+        <script>
+            const myModal = new bootstrap.Modal('#staticBackdrop', {keyboard: false});
+            const modalToggle = document.getElementById('staticBackdrop');
+            myModal.show(modalToggle);
+        </script>
+    {% endif %}
+    {% if formUpdateNumber is defined %}
+        <script>
+            const myModal = new bootstrap.Modal("{{ '#staticBackdrop' ~ formUpdateNumber }}", {keyboard: false});
+            const modalToggle = document.getElementById("{{ 'staticBackdrop' ~ formUpdateNumber }}");
+            myModal.show(modalToggle);
+        </script>
+    {% endif %}
+    <script>
+        function showSweetAlert(formName) {
+            document.getElementById(formName).addEventListener('submit', function (event) {
+                event.preventDefault();
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: "btn btn-success ms-4",
+                        cancelButton: "btn btn-danger"
+                    },
+                    buttonsStyling: false
+                });
+                swalWithBootstrapButtons.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel!",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        swalWithBootstrapButtons.fire({
+                            title: "Deleted!",
+                            text: "The user has been deleted.",
+                            icon: "success"
+                        });
+                        document.getElementById(formName).submit();
+                    } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire({
+                            title: "Cancelled",
+                            text: "The user account is not deleted :)",
+                            icon: "error"
+                        });
+                    }
+                });
+            });
+        }
+    </script>
 {% endblock %}

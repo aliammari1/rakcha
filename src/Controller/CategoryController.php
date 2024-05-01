@@ -68,9 +68,9 @@ class CategoryController extends AbstractController
     public function edit(Request $request, Category $category, EntityManagerInterface $entityManager, $formUpdateNumber, CategoryRepository $categoryRepository): Response
     {
         $updateForms = array();
-        $users = $categoryRepository->findAll();
-        for ($i = 0; $i < count($users); $i++) {
-            $updateForms[$i] = $this->createForm(CategoryType::class, $users[$i])->createView();
+        $catrogories = $categoryRepository->findAll();
+        for ($i = 0; $i < count($catrogories); $i++) {
+            $updateForms[$i] = $this->createForm(CategoryType::class, $catrogories[$i])->createView();
         }
         $form = $this->createForm(CategoryType::class, new Category());
         $updateform = $this->createForm(CategoryType::class, $category);

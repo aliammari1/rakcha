@@ -81,9 +81,9 @@ class ActorController extends AbstractController
     public function edit(Request $request, Actor $actor, EntityManagerInterface $entityManager, $formUpdateNumber, ActorRepository $actorRepository): Response
     {
         $updateForms = array();
-        $users = $actorRepository->findAll();
-        for ($i = 0; $i < count($users); $i++) {
-            $updateForms[$i] = $this->createForm(ActorType::class, $users[$i])->createView();
+        $actors = $actorRepository->findAll();
+        for ($i = 0; $i < count($actors); $i++) {
+            $updateForms[$i] = $this->createForm(ActorType::class, $actors[$i])->createView();
         }
         $form = $this->createForm(ActorType::class, new Actor());
         $updateform = $this->createForm(ActorType::class, $actor);

@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Repository\FeedbackEvenementRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-
 
 
 #[ORM\Entity(repositoryClass: FeedbackEvenementRepository::class)]
