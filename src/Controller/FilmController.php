@@ -7,11 +7,9 @@ use App\Form\FilmType;
 use App\Repository\FilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Madcoda\Youtube\Youtube;
 
 #[Route('/film')]
 class FilmController extends AbstractController
@@ -84,9 +82,9 @@ class FilmController extends AbstractController
     public function edit(Request $request, Film $film, $formUpdateNumber, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
         $updateForms = array();
-        $users = $filmRepository->findAll();
-        for ($i = 0; $i < count($users); $i++) {
-            $updateForms[$i] = $this->createForm(FilmType::class, $users[$i])->createView();
+        $films = $filmRepository->findAll();
+        for ($i = 0; $i < count($films); $i++) {
+            $updateForms[$i] = $this->createForm(FilmType::class, $films[$i])->createView();
         }
         $form = $this->createForm(FilmType::class, new Film());
         $updateform = $this->createForm(FilmType::class, $film);

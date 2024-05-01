@@ -362,7 +362,7 @@ console.log(filmArray);
 										'Content-Type': 'application/json',
 										'X-Requested-With': 'XMLHttpRequest'
 										},
-										body: JSON.stringify({'filmId' : {{film.id}},'rate': value,'idUser': {{ app.user ?? 1}}})
+										body: JSON.stringify({'filmId' : {{film.id}},'rate': value})
 										}).then(response => response.json()).then(data => {console.log(data);
 										if(data.success) {
 										new Noty({

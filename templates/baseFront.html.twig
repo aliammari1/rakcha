@@ -1,327 +1,294 @@
 <!DOCTYPE html>
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8"/>
-		<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
-		<meta content="width=device-width, initial-scale=1" name="viewport"/>
-		<title>Planet</title>
-		<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"/>
-		<link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet"/>
-		<link href="{{ asset('css/global.css') }}" rel="stylesheet"/> {% block pageStyle %}{% endblock %}
-		<link href="https://fonts.googleapis.com/css2?family=Rajdhani&amp;display=swap" rel="stylesheet"/>
-		<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-		<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-		<link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
-		<link href="{{ asset('css/global.css') }}" rel="stylesheet"> {% block pageStyle %}{% endblock %}
-		{{ encore_entry_link_tags('app') }}
-		<link
-		href="https://fonts.googleapis.com/css2?family=Rajdhani&display=swap" rel="stylesheet">
-		 <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-		<link
-		rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
-		 <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
-		<link
-		href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css"/>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>Rakcha</title>
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/global.css') }}" rel="stylesheet"/> {% block pageStyle %}{% endblock %}
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani&amp;display=swap" rel="stylesheet"/>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    {{ encore_entry_link_tags('app') }}
+    <link
+            rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all"
+          rel="stylesheet" type="text/css"/>
+    <link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css"
+          media="all" rel="stylesheet" type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js"
+            type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/locales/LANG.js"></script>
+</head>
 
-		<!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme CSS files as mentioned below (and change the theme property of the plugin) -->
-		<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css"/>
+{% block body %}
+    {% block header %}
+        <section id="top">
+            <div class="container">
+                <div class="row top_1">
+                    <div class="col-md-3">
+                        <div class="top_1l pt-1">
+                            <h3 class="mb-0">
+                                <a class="text-white" href="{{ path('app_home_index') }}">
+                                    <img height="50" src="{{ asset('img/Logo.png') }}" alt="Rakcha">
+                                    Rakcha
+                                </a>
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="top_1m">
+                            <div class="input-group">
+                                <label>
+                                    <input class="form-control bg-black" placeholder="Search Site..." type="text"/>
+                                </label>
+                                <span class="fa fa-search"
+                                      style="width: 43px;display: flex;align-items: center;justify-content: center;background: #383838;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="top_1r text-end">
+                            <ul class="social-network social-circle mb-0">
+                                <li>
+                                    <a class="icoRss" href="#" title="Rss"></a>
+                                </li>
+                                <li>
+                                    <a class="icoFacebook" href="#" title="Facebook"></a>
+                                </li>
+                                <li>
+                                    <a class="icoTwitter" href="#" title="Twitter"></a>
+                                </li>
+                                <li>
+                                    <a class="icoGoogle" href="#" title="Google +"></a>
+                                </li>
+                                <li>
+                                    <a class="icoLinkedin" href="#" title="Linkedin"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="header">
+            <nav class="navbar navbar-expand-md navbar-light" id="navbar_sticky">
+                <div class="container">
+                    <a class="navbar-brand text-white fw-bold" href="{{ path('app_home_index') }}">{{ 'Rakcha' }}</a>
+                    <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                            class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse"
+                            type="button">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mb-0">
+                            <li class="nav-item">
+                                <a aria-current="page" class="nav-link active"
+                                   href="{{ path('app_home_index') }}">{{ 'Home' }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_listfilms_index') }}">{{ 'film' }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_cinema_liste') }}">{{ 'cinemas' }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="">{{ 'Team' }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="">{{ 'Contact Us' }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </section>
+    {% endblock %}
+    {% block footer %}
 
-	<!-- important mandatory libraries -->
-		 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		 <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js" type="text/javascript"></script>
-
-		<!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme JS files as mentioned below (and change the theme property of the plugin) -->
-		 <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
-
-		<!-- optionally if you need translation for your language then include locale file as mentioned below (replace LANG.js with your own locale file) -->
-		 <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/locales/LANG.js"></script>
-		 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-
-	</head>
-
-	{% block body %}
-		{% block header %}
-			<section id="top">
-				<div class="container">
-					<div class="row top_1">
-						<div class="col-md-3">
-							<div class="top_1l pt-1">
-								<h3 class="mb-0">
-									<a class="text-white" href="index.html.twig">
-										<i class="fa fa-video-camera col_red me-1"></i>
-										Planet</a>
-									<hr/>
-								</h3>
-							</div>
-						</div>
-						<div class="col-md-5">
-							<div class="top_1m">
-								<div class="input-group">
-									<input class="form-control bg-black" placeholder="Search Site..." type="text"/>
-									<span class="fa fa-search" style="width: 43px;display: flex;align-items: center;justify-content: center;background: #383838;"></span>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="top_1r text-end">
-								<ul class="social-network social-circle mb-0">
-									<li>
-										<a class="icoRss" href="#" title="Rss"></a>
-									</li>
-									<li>
-										<a class="icoFacebook" href="#" title="Facebook"></a>
-									</li>
-									<li>
-										<a class="icoTwitter" href="#" title="Twitter"></a>
-									</li>
-									<li>
-										<a class="icoGoogle" href="#" title="Google +"></a>
-									</li>
-									<li>
-										<a class="icoLinkedin" href="#" title="Linkedin"></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<section id="header">
-				<nav class="navbar navbar-expand-md navbar-light" id="navbar_sticky">
-					<div class="container">
-						<a class="navbar-brand text-white fw-bold" href="index.html.twig">{{ 'Planet'|auto_translate }}</a>
-						<button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse" type="button">
-							<span class="navbar-toggler-icon"></span>
-						</button>
-						<div class="collapse navbar-collapse" id="navbarSupportedContent">
-							<ul class="navbar-nav mb-0">
-								<li class="nav-item">
-									<a aria-current="page" class="nav-link active" href="index.html.twig">{{ 'Home'|auto_translate }}</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="about.html.twig">{{ 'About Us'|auto_translate }}</a>
-								</li>
-								<li class="nav-item dropdown">
-									<a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="navbarDropdown" role="button">{{ 'Blog'|auto_translate }}</a>
-									<ul aria-labelledby="navbarDropdown" class="dropdown-menu drop_1">
-										<li>
-											<a class="dropdown-item" href="blog.html.twig">{{ 'Blog'|auto_translate }}</a>
-										</li>
-										<li>
-											<a class="dropdown-item border-0" href="blog_detail.html.twig">{{ 'Blog Detail'|auto_translate }}</a>
-										</li>
-									</ul>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="services.html.twig">{{ 'Services'|auto_translate }}</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="team.html.twig">{{ 'Team'|auto_translate }}</a>
-								</li>
-								<li class="nav-item dropdown">
-									<a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="navbarDropdown" role="button">{{ 'Pages'|auto_translate }}</a>
-									<ul aria-labelledby="navbarDropdown" class="dropdown-menu drop_1">
-										<li>
-											<a class="dropdown-item" href="about.html.twig">{{ 'About Us'|auto_translate }}</a>
-										</li>
-										<li>
-											<a class="dropdown-item" href="services.html.twig">{{ 'Services'|auto_translate }}</a>
-										</li>
-										<li>
-											<a class="dropdown-item" href="team.html.twig">{{ 'Team'|auto_translate }}</a>
-										</li>
-										<li>
-											<a class="dropdown-item border-0" href="contact.html.twig">{{ 'Contact'|auto_translate }}</a>
-										</li>
-									</ul>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="contact.html.twig">{{ 'Contact Us'|auto_translate }}</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</nav>
-			</section>
-		{% endblock %}
-		{% block footer %}
-
-			<section id="footer">
-				<div class="footer_m clearfix">
-					<div class="container">
-						<div class="row footer_1">
-							<div class="col-md-4">
-								<div class="footer_1i">
-									<h3>
-										<a class="text-white" href="index.html.twig">
-											<i class="fa fa-video-camera col_red me-1"></i>
-											Planet</a>
-									</h3>
-									<p class="mt-3">Lorem ipsum dolor sit amet consect etur adi pisicing elit sed do eiusmod tempor incididunt. Lorem ipsum dolor sit amet consect etur.
-									</p>
-									<h6 class="fw-normal">
-										<i class="fa fa-map-marker fs-5 align-middle col_red me-1"></i>
-										5311 Ceaver Sidge Td.
-																																																																																																																																																																																																						Pakland, DE 13507</h6>
-									<h6 class="fw-normal mt-3">
-										<i class="fa fa-envelope fs-5 align-middle col_red me-1"></i>
-										info@gmail.com</h6>
-									<h6 class="fw-normal mt-3 mb-0">
-										<i class="fa fa-phone fs-5 align-middle col_red me-1"></i>
-										+123 123 456</h6>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="footer_1i">
-									<h4>{{  'FlickrStream'|auto_translate }}</h4>
-									<div class="footer_1i1 row mt-4">
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="footer_1i1 row mt-3">
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="footer_1i">
-									<h4>{{  'SignNewsletter'|auto_translate }}</h4>
-									<p class="mt-3">{{  'Subscribe to our newsletter list to get latest news and updates from us'|auto_translate }}</p>
-									<div class="input-group">
-										<input class="form-control bg-black" placeholder="Email" type="text"/>
-										<span class="input-group-btn">{{ 'Subscribe'|auto_translate }}</span>
-									</div>
-									<ul class="social-network social-circle mb-0 mt-4">
-										<li>
-											<a class="icoRss" href="#" title="Rss"></a>
-										</li>
-										<li>
-											<a class="icoFacebook" href="#" title="Facebook"></a>
-										</li>
-										<li>
-											<a class="icoTwitter" href="#" title="Twitter"></a>
-										</li>
-										<li>
-											<a class="icoGoogle" href="#" title="Google +"></a>
-										</li>
-										<li>
-											<a class="icoLinkedin" href="#" title="Linkedin"></a>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<section class="pt-3 pb-3 bg_grey" id="footer_b">
-				<div class="container">
-					<div class="row footer_1">
-						<div class="col-md-8">
-							<div class="footer_1l">
-								<p class="mb-0">{{  '© 2013 Your Website Name. All Rights Reserved | Design byTemplateOnWeb'|auto_translate }}</p>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="footer_1r">
-								<ul class="mb-0">
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Home'|auto_translate }}</a>
-									</li>
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Features'|auto_translate }}</a>
-									</li>
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Pages'|auto_translate }}</a>
-									</li>
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Portfolio'|auto_translate }}</a>
-									</li>
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Blog'|auto_translate }}</a>
-									</li>
-									<li class="d-inline-block">
-										<a href="#">{{ 'Contact'|auto_translate }}</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-		{% endblock %}
-	{% endblock %}
-	{{ encore_entry_script_tags('app') }}
+        <section id="footer">
+            <div class="footer_m clearfix">
+                <div class="container">
+                    <div class="row footer_1">
+                        <div class="col-md-4">
+                            <div class="footer_1i">
+                                <h3>
+                                    <a class="text-white" href="{{ path('app_home_index') }}">
+                                        <i class="fa fa-video-camera col_red me-1"></i>
+                                        Rakcha</a>
+                                </h3>
+                                <p class="mt-3">Lorem ipsum dolor sit amet consect etur adi pisicing elit sed do eiusmod
+                                    tempor incididunt. Lorem ipsum dolor sit amet consect etur.
+                                </p>
+                                <h6 class="fw-normal">
+                                    <i class="fa fa-map-marker fs-5 align-middle col_red me-1"></i>
+                                    5311 Ceaver Sidge Td.
+                                    Pakland, DE 13507</h6>
+                                <h6 class="fw-normal mt-3">
+                                    <i class="fa fa-envelope fs-5 align-middle col_red me-1"></i>
+                                    info@gmail.com</h6>
+                                <h6 class="fw-normal mt-3 mb-0">
+                                    <i class="fa fa-phone fs-5 align-middle col_red me-1"></i>
+                                    +123 123 456</h6>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="footer_1i">
+                                <h4>{{ 'FlickrStream' }}</h4>
+                                <div class="footer_1i1 row mt-4">
+                                    <div class="col-md-3 col-3">
+                                        <div class="footer_1i1i">
+                                            <div class="grid clearfix">
+                                                <figure class="effect-jazz mb-0">
+                                                    <a href="#"></a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-3">
+                                        <div class="footer_1i1i">
+                                            <div class="grid clearfix">
+                                                <figure class="effect-jazz mb-0">
+                                                    <a href="#"></a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-3">
+                                        <div class="footer_1i1i">
+                                            <div class="grid clearfix">
+                                                <figure class="effect-jazz mb-0">
+                                                    <a href="#"></a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-3">
+                                        <div class="footer_1i1i">
+                                            <div class="grid clearfix">
+                                                <figure class="effect-jazz mb-0">
+                                                    <a href="#"></a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer_1i1 row mt-3">
+                                    <div class="col-md-3 col-3">
+                                        <div class="footer_1i1i">
+                                            <div class="grid clearfix">
+                                                <figure class="effect-jazz mb-0">
+                                                    <a href="#"></a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-3">
+                                        <div class="footer_1i1i">
+                                            <div class="grid clearfix">
+                                                <figure class="effect-jazz mb-0">
+                                                    <a href="#"></a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-3">
+                                        <div class="footer_1i1i">
+                                            <div class="grid clearfix">
+                                                <figure class="effect-jazz mb-0">
+                                                    <a href="#"></a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-3">
+                                        <div class="footer_1i1i">
+                                            <div class="grid clearfix">
+                                                <figure class="effect-jazz mb-0">
+                                                    <a href="#"></a>
+                                                </figure>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="footer_1i">
+                                <h4>{{ 'SignNewsletter' }}</h4>
+                                <p class="mt-3">{{ 'Subscribe to our newsletter list to get latest news and updates from us' }}</p>
+                                <div class="input-group">
+                                    <label>
+                                        <input class="form-control bg-black" placeholder="Email" type="text"/>
+                                    </label>
+                                    <span class="input-group-btn">{{ 'Subscribe' }}</span>
+                                </div>
+                                <ul class="social-network social-circle mb-0 mt-4">
+                                    <li>
+                                        <a class="icoRss" href="#" title="Rss"></a>
+                                    </li>
+                                    <li>
+                                        <a class="icoFacebook" href="#" title="Facebook"></a>
+                                    </li>
+                                    <li>
+                                        <a class="icoTwitter" href="#" title="Twitter"></a>
+                                    </li>
+                                    <li>
+                                        <a class="icoGoogle" href="#" title="Google +"></a>
+                                    </li>
+                                    <li>
+                                        <a class="icoLinkedin" href="#" title="Linkedin"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="pt-3 pb-3 bg_grey" id="footer_b">
+            <div class="container">
+                <div class="row footer_1">
+                    <div class="col-md-8">
+                        <div class="footer_1l">
+                            <p class="mb-0">{{ '© 2013 Your Website Name. All Rights Reserved | Design byTemplateOnWeb' }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="footer_1r">
+                            <ul class="mb-0">
+                                <li class="d-inline-block me-2">
+                                    <a href="#">{{ 'Home' }}</a>
+                                </li>
+                                <li class="d-inline-block me-2">
+                                    <a href="#">{{ 'Features' }}</a>
+                                </li>
+                                <li class="d-inline-block me-2">
+                                    <a href="#">{{ 'Pages' }}</a>
+                                </li>
+                                <li class="d-inline-block me-2">
+                                    <a href="#">{{ 'Portfolio' }}</a>
+                                </li>
+                                <li class="d-inline-block me-2">
+                                    <a href="#">{{ 'Blog' }}</a>
+                                </li>
+                                <li class="d-inline-block">
+                                    <a href="#">{{ 'Contact' }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endblock %}
+{% endblock %}
+{{ encore_entry_script_tags('app') }}
 
 </html>

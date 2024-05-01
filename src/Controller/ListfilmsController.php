@@ -2,28 +2,26 @@
 
 namespace App\Controller;
 
-use IMDb\Title;
-use App\Entity\Film;
 use App\Form\ReservationFormType;
-use BaconQrCode\Writer;
-use Madcoda\Youtube\Youtube;
-use App\Repository\FilmRepository;
 use App\Repository\ActorRepository;
-use App\Repository\SeanceRepository;
 use App\Repository\CategoryRepository;
-use BaconQrCode\Renderer\ImageRenderer;
+use App\Repository\FilmRepository;
 use App\Repository\RatingfilmRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\SeanceRepository;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
+use Doctrine\ORM\EntityManagerInterface;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCodeBundle\Response\QrCodeResponse;
 use Exception;
+use Madcoda\Youtube\Youtube;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ListfilmsController extends AbstractController
 {
@@ -60,7 +58,7 @@ class ListfilmsController extends AbstractController
             // $qrCodes[] = $base64QrCode;
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => 1]);
+            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $this->getUser()->getId()]);
             $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
             if (!empty($videoList)) {
                 $firstVideo = $videoList[0]['id']['videoId'];
@@ -115,7 +113,7 @@ class ListfilmsController extends AbstractController
             // $qrCodes[] = $base64QrCode;
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => 1]);
+            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $this->getUser()->getId()]);
             $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
             if (!empty($videoList)) {
                 $firstVideo = $videoList[0]['id']['videoId'];

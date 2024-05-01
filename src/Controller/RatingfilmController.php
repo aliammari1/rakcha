@@ -7,7 +7,6 @@ use App\Form\RatingfilmType;
 use App\Repository\RatingfilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,12 +26,12 @@ class RatingfilmController extends AbstractController
     public function rateFilm(Request $request, EntityManagerInterface $entityManager, RatingfilmRepository $ratingfilmRepository): Response
     {
         $data = json_decode($request->getContent(), true);
-        $ratingfilm =  $ratingfilmRepository->findOneBy(['idUser' => $data['idUser'],'idFilm' => $data['filmId']]);
-        if($ratingfilm == null)
+        $ratingfilm =  $ratingfilmRepository->findOneBy(['idUser' => $data['idUser'], 'idFilm' => $data['filmId']]);
+        if ($ratingfilm == null)
             $ratingfilm = new Ratingfilm();
         $ratingfilm->setRate($data['rate']);
         $ratingfilm->setIdFilm($data['filmId']);
-        $ratingfilm->setIdUser(1);
+        $ratingfilm->setIdUser($this->getUser()->getId());
         $entityManager->persist($ratingfilm);
         $entityManager->flush();
         return $this->json(["success" => true, 'ratingfilm' => $ratingfilm]);

@@ -70,14 +70,13 @@ final class UsersFactory extends ModelFactory
             'adresse' => self::faker()->address(),
             'dateDeNaissance' => self::faker()->dateTime(),
             'email' => self::faker()->email(),
-            'isVerified' => self::faker()->boolean(0),
-            'nom' => self::faker()->firstName(),
+            'isVerified' => self::faker()->boolean(1),
+            'nom' => self::faker()->lastName(50),
             'numTelephone' => intval(self::faker()->phoneNumber()),
-            'plainPassword' => "tada",
+            'plainPassword' => "password",
             'photoDeProfil' => self::faker()->image("./public/img/users", format: 'jpg'),
-            'prenom' => self::faker()->lastName(50),
+            'prenom' => self::faker()->firstName(50),
             'role' => "client",
-            'roles' => ["ROLE_USER"],
         ];
     }
 
@@ -91,8 +90,24 @@ final class UsersFactory extends ModelFactory
                 if ($user->getPlainPassword()) {
                     $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPlainPassword()));
                 }
-            })
-        ;
+                switch ($user->getRole()) {
+                    case "admin":
+                        $user->setRoles(["ROLE_ADMIN"]);
+                        break;
+                    case "client":
+                        $user->setRoles(["ROLE_CLIENT"]);
+                        break;
+                    case "responsable de cinema":
+                        $user->setRoles(["ROLE_RESPONSABLE_DE_CINEMA"]);
+                        break;
+                    default:
+                        $user->setRoles(["ROLE_CLIENT"]);
+                        break;
+                }
+                if ($user->getPhotoDeProfil()) {
+                    $user->setPhotoDeProfil(str_replace("./public/", "./", $user->getPhotoDeProfil()));
+                }
+            });
     }
 
     protected static function getClass(): string
