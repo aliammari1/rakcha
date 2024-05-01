@@ -5,11 +5,11 @@ namespace App\Controller;
 use App\Repository\CinemaRepository;
 use App\Repository\FilmRepository;
 use App\Repository\SalleRepository;
+use App\Repository\SeanceRepository;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\SeanceRepository;
-use DateTime;
 
 class PlanningController extends AbstractController
 {
@@ -53,7 +53,7 @@ public function index($idCinema, CinemaRepository $cinemaRepository, FilmReposit
 
     $seanceData = json_encode($seanceData);
 
-    return $this->render('planning/planning.html.twig', compact('seanceData'));
+    return $this->render('front/planning.html.twig', compact('seanceData'));
 }
 
     

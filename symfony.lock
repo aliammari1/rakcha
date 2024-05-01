@@ -50,6 +50,9 @@
             "./migrations/.gitignore"
         ]
     },
+    "endroid/qr-code-bundle": {
+        "version": "3.4.3"
+    },
     "knplabs/knp-paginator-bundle": {
         "version": "v5.9.0"
     },
@@ -88,18 +91,6 @@
         },
         "files": [
             "./config/packages/meilisearch.yaml"
-        ]
-    },
-    "omines/datatables-bundle": {
-        "version": "0.7",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "0.1",
-            "ref": "467488ddc00aa190c37a4357f226457d4dd6b339"
-        },
-        "files": [
-            "./config/packages/datatables.yaml"
         ]
     },
     "oneup/flysystem-bundle": {
@@ -378,6 +369,9 @@
             "./config/packages/twig.yaml",
             "./templates/base.html.twig"
         ]
+    },
+    "symfony/ux-chartjs": {
+        "version": "v2.17.0"
     },
     "symfony/ux-live-component": {
         "version": "2.17",

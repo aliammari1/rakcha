@@ -5,25 +5,19 @@ namespace App\Controller;
 use App\Entity\Cinema;
 use App\Form\CinemaType;
 use App\Repository\CinemaRepository;
-use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\FormErrorIterator;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 
 #[Route('/cinema')]
 class CinemaController extends AbstractController
 {
     #[Route('/', name: 'app_cinema_index', methods: ['GET', 'POST'])]
-    public function index(CinemaRepository $cinemaRepository, UsersRepository $usersRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function index(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CinemaType::class, new Cinema());
         $updateForms = array();
@@ -37,9 +31,8 @@ class CinemaController extends AbstractController
             $errorMessage = $errors[0]->getMessage();
             $this->addFlash('error', $errorMessage);
         }
-        return $this->render('cinema/CinemasTable.html.twig', [
+        return $this->render('back/CinemasTable.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
-            'users' => $usersRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
 
@@ -47,28 +40,28 @@ class CinemaController extends AbstractController
     }
 
     #[Route('/location/{idCinema}', name: 'app_cinema_location', methods: ['GET', 'POST'])]
-public function localiser(int $idCinema): Response
-{
-    $entityManager = $this->getDoctrine()->getManager();
-    $cinemaRepository = $entityManager->getRepository(Cinema::class);
-    $cinema = $cinemaRepository->find($idCinema);
+    public function localiser(int $idCinema): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $cinemaRepository = $entityManager->getRepository(Cinema::class);
+        $cinema = $cinemaRepository->find($idCinema);
 
-    if (!$cinema) {
-        throw $this->createNotFoundException('Cinema not found');
+        if (!$cinema) {
+            throw $this->createNotFoundException('Cinema not found');
+        }
+
+        $adresseCinema = $cinema->getAdresse();
+        $nomCinema = $cinema->getNom();
+
+        return $this->render('front/Map.html.twig', [
+            'adresseCinema' => $adresseCinema,
+            'nomCinema' => $nomCinema,
+        ]);
     }
-
-    $adresseCinema = $cinema->getAdresse(); 
-    $nomCinema = $cinema->getNom();
-
-    return $this->render('cinema/Map.html.twig', [
-        'adresseCinema' => $adresseCinema,
-        'nomCinema' => $nomCinema,
-    ]);
-}
 
 
     #[Route('/listeCinemaAdmin', name: 'app_cinemaAdmin_index', methods: ['GET', 'POST'])]
-    public function listeCinemaAdmin(CinemaRepository $cinemaRepository, UsersRepository $usersRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function listeCinemaAdmin(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CinemaType::class, new Cinema());
         $updateForms = array();
@@ -84,7 +77,6 @@ public function localiser(int $idCinema): Response
         }
         return $this->render('cinema/CinemasTableAdmin.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
-            'users' => $usersRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
 
@@ -94,7 +86,7 @@ public function localiser(int $idCinema): Response
     #[Route('/listecinema', name: 'app_cinema_liste', methods: ['GET'])]
     public function liste(CinemaRepository $cinemaRepository): Response
     {
-        return $this->render('cinema/listCinema.html.twig', [
+        return $this->render('front/listCinema.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
         ]);
     }
@@ -102,7 +94,7 @@ public function localiser(int $idCinema): Response
 
 
     #[Route('/new', name: 'app_cinema_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UsersRepository $usersRepository, CinemaRepository $cinemaRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager,CinemaRepository $cinemaRepository): Response
     {
 
         $cinema = new Cinema();
@@ -110,7 +102,7 @@ public function localiser(int $idCinema): Response
         for ($i = 0; $i < count($cinemaRepository->findAll()); $i++) {
             $updateForms[$i] = $this->createForm(CinemaType::class, $cinemaRepository->findAll()[$i])->createView();
         }
-        
+
         $form = $this->createForm(CinemaType::class, $cinema);
         $form->handleRequest($request);
 
@@ -124,27 +116,22 @@ public function localiser(int $idCinema): Response
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('APP_IMAGE_DIRECTORY'),
+                        $this->getParameter('kernel.project_dir').'/public/img/cinemas',
                         $newFilename
                     );
                 } catch (FileException $e) {
                 }
                 $cinema->setLogo($newFilename);
             }
-            $userId = 151;
             $cinema->setStatut('Pending');
-            $user = $usersRepository->find($userId);
-            if ($user->getRole() == 'responsable') {
-                $cinema->setResponsable($user->getId());
-            }
+            $cinema->setResponsable($this->getUser()->getId());
             $entityManager->persist($cinema);
             $entityManager->flush();
             return $this->redirectToRoute('app_cinema_index', [], Response::HTTP_SEE_OTHER);
         }
         $hasErrorsCreate = true;
-        return $this->render('cinema/CinemasTable.html.twig', [
+        return $this->render('back/CinemasTable.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
-            'users' => $usersRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate,
@@ -160,10 +147,10 @@ public function localiser(int $idCinema): Response
     }
 
     #[Route('/{idCinema}/edit/{formUpdateNumber}/', name: 'app_cinema_edit', methods: ['GET', 'POST'])]
-    public function edit($formUpdateNumber, Request $request, Cinema $cinema, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository, UsersRepository $usersRepository): Response
+    public function edit($formUpdateNumber, Request $request, Cinema $cinema, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository): Response
     {
-           $updateForms = array();
-           $cinemas = $cinemaRepository->findAll();
+        $updateForms = array();
+        $cinemas = $cinemaRepository->findAll();
         for ($i = 0; $i < count($cinemas); $i++) {
             $updateForms[$i] = $this->createForm(CinemaType::class, $cinemas[$i])->createView();
         }
@@ -172,7 +159,7 @@ public function localiser(int $idCinema): Response
         $updateform = $this->createForm(CinemaType::class, $cinema);
 
         $updateform->handleRequest($request);
-     
+
 
         if ($updateform->isSubmitted() && $updateform->isValid()) {
             $imageFile = $updateform->get('logo')->getData();
@@ -184,7 +171,7 @@ public function localiser(int $idCinema): Response
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('APP_IMAGE_DIRECTORY'),
+                        $this->getParameter('kernel.project_dir').'/public/img/cinemas',
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -196,10 +183,9 @@ public function localiser(int $idCinema): Response
             return $this->redirectToRoute('app_cinema_index', [], Response::HTTP_SEE_OTHER);
         }
         $entityManager->refresh($cinema);
-        return $this->render('cinema/CinemasTable.html.twig', [
+        return $this->render('back/CinemasTable.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
-            'users' => $usersRepository->findAll(),
-            'form' => $form->createView(), 
+            'form' => $form->createView(),
             'updateForms' => $updateForms,
             "formUpdateNumber" => $formUpdateNumber,
             'updateform' => $updateform->createView(),
@@ -212,7 +198,7 @@ public function localiser(int $idCinema): Response
     {
         if ($this->isCsrfTokenValid('delete' . $cinema->getIdCinema(), $request->request->get('_token'))) {
             $entityManager->remove($cinema);
-            
+
             $entityManager->flush();
         }
 
@@ -242,11 +228,4 @@ public function localiser(int $idCinema): Response
 
         return $this->redirectToRoute('app_cinemaAdmin_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    
-
- 
-
-
-
 }

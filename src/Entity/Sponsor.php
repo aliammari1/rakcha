@@ -2,11 +2,9 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-
-
 use App\Repository\SponsorRepository;
+use Doctrine\ORM\Mapping as ORM;
+
 
 #[ORM\Entity(repositoryClass: SponsorRepository::class)]
 #[ORM\Table(name: 'sponsor')]

@@ -3,7 +3,6 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="App\" />
-      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="App\Tests\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/cache" />
@@ -30,7 +29,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpdoc-parser" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpstan" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-code-coverage" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-file-iterator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpunit/php-invoker" />
@@ -135,11 +133,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/twig/twig" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/var" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/easycorp/easyadmin-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-flasher/flasher" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-flasher/flasher-symfony" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-uuid" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/uid" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/google-mailer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfonycasts/verify-email-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/data-fixtures" />
@@ -149,14 +144,92 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/zenstruck/assert" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/zenstruck/callback" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/zenstruck/foundry" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/hwi/oauth-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/knplabs/knp-components" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/knplabs/knp-paginator-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-flasher/flasher-noty" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-flasher/flasher-noty-symfony" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-apcu" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bacon/bacon-qr-code" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/beberlei/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/clue/stream-filter" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dasprid/enum" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/davmixcool/php-sentiment-analyzer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/endroid/installer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/endroid/qr-code" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/endroid/qr-code-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/guzzle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/promises" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/imagine/imagine" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/imdbphp/imdbphp" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/kartik-v/bootstrap-star-rating" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/khanamiryan/qrcode-detector-decoder" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/knpuniversity/oauth2-client-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/lcobucci/clock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/lcobucci/jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/mime-type-detection" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/oauth2-client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/oauth2-google" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/liip/imagine-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/madcoda/php-youtube-api" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/meilisearch/meilisearch-php" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/meilisearch/search-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/myclabs/php-enum" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/nyholm/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/oneup/flysystem-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/constant_time_encoding" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-ai/php-ml" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-http/client-common" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-http/discovery" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-http/httplug" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-http/message" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-http/promise" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/clock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-factory" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/simple-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ralouphie/getallheaders" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/scheb/2fa-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/scheb/2fa-qr-code" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/scheb/2fa-totp" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/scheb/2fa-trusted-device" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spomky-labs/otphp" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/stella-maris/clock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/stevenmaguire/oauth2-microsoft" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/stripe/stripe-php" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/lock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/rate-limiter" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-chartjs" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-live-component" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-swup" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-toggle-password" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-twig-component" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/webpack-encore-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfonycasts/dynamic-forms" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfonycasts/reset-password-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/thecodingmachine/safe" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/common" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/amqp-messenger" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/redis-messenger" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="buttons" level="application" />
+    <orderEntry type="library" name="theme" level="application" />
+    <orderEntry type="library" name="star-rating" level="application" />
+    <orderEntry type="library" name="noty" level="application" />
+    <orderEntry type="library" name="jquery-3.6.0" level="application" />
+    <orderEntry type="library" name="LANG" level="application" />
+    <orderEntry type="library" name="fullcalendar" level="application" />
+    <orderEntry type="library" name="sweetalert2" level="application" />
+    <orderEntry type="library" name="42d5adcbca" level="application" />
+    <orderEntry type="library" name="dataTables.dataTables" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="dataTables" level="application" />
+    <orderEntry type="library" name="es-module-shims" level="application" />
   </component>
 </module>
