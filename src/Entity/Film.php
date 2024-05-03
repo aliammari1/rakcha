@@ -77,16 +77,20 @@ class Film
     #[Assert\NotBlank(message: 'The film category is required.')]
     #[Assert\Count(min: 1, minMessage: 'The film must have at least one category.')]
     private Collection $categorys;
-
-    #[ORM\OneToMany(targetEntity: Filmcinema::class, mappedBy: "film")]
     
-    private $filmCinemas;
+    #[ORM\ManyToMany(targetEntity: Cinema::class, cascade: ['persist', 'remove'])]
+    #[ORM\JoinTable(
+        name: "film_cinema",
+        joinColumns: [new ORM\JoinColumn(name: "film_id", referencedColumnName: "id")],
+        inverseJoinColumns: [new ORM\JoinColumn(name: "cinema_id", referencedColumnName: "id_cinema")]
+    )]
+    private Collection $cinemas;
     public function __construct()
     {
-        $this->filmCinemas = new ArrayCollection();
         $this->actors = new ArrayCollection();
         $this->categorys = new ArrayCollection();
         $this->duree = new DateTime();
+        $this->cinemas = new ArrayCollection();
     }
 
 
@@ -99,7 +103,7 @@ class Film
         return $this->isBookmarked;
     }
 
-    
+
     public function setIsBookmarked(bool $isBookmarked): static
     {
         $this->isBookmarked = $isBookmarked;
@@ -213,35 +217,27 @@ class Film
         return $this;
     }
 
- /**
-     * @return Collection|Filmcinema[]
+    /**
+     * @return Collection<int, cinema>
      */
-    public function getFilmCinemas(): Collection
+    public function getCinemas(): Collection
     {
-        return $this->filmCinemas;
+        return $this->cinemas;
     }
 
-    public function addFilmCinema(Filmcinema $filmCinema): self
+    public function addCinema(cinema $cinema): static
     {
-        if (!$this->filmCinemas->contains($filmCinema)) {
-            $this->filmCinemas[] = $filmCinema;
-            $filmCinema->setFilm($this);
+        if (!$this->cinemas->contains($cinema)) {
+            $this->cinemas->add($cinema);
         }
 
         return $this;
     }
 
-    public function removeFilmCinema(Filmcinema $filmCinema): self
+    public function removeCinema(cinema $cinema): static
     {
-        if ($this->filmCinemas->removeElement($filmCinema)) {
-            // set the owning side to null (unless already changed)
-            if ($filmCinema->getFilm() === $this) {
-                $filmCinema->setFilm(null);
-            }
-        }
+        $this->cinemas->removeElement($cinema);
 
         return $this;
     }
-
-
 }

@@ -60,7 +60,7 @@ class SeanceType extends AbstractType
 
         $formModifier = function (FormInterface $form, Cinema $cinema = null) {
             $salles = $cinema ? $cinema->getSalles() : [];
-            $films = $cinema ? $cinema->getFilmCinemas()->map(function($filmCinema) {
+            $films = $cinema ? $cinema->getFilms()->map(function($filmCinema) {
                 return $filmCinema->getFilm();
             })->toArray() : [];
 
