@@ -17,8 +17,16 @@ class CategorieProduitController extends AbstractController
     #[Route('/', name: 'app_categorie_produit_index', methods: ['GET'])]
     public function index(CategorieProduitRepository $categorieProduitRepository): Response
     {
-        return $this->render('categorie_produit/index.html.twig', [
-            'categorie_produits' => $categorieProduitRepository->findAll(),
+
+        $form = $this->createForm(CategorieProduitType::class, new CategorieProduit());
+        $updateForms = array();
+        for ($i = 0; $i < count($categorieProduitRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(CategorieProduitType::class, $categorieProduitRepository->findAll()[$i])->createView();
+        }
+        return $this->render('back/categoriProduitTable.html.twig', [
+            'categorieproduit' => $categorieProduitRepository->findAll(),
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
         ]);
     }
 
@@ -36,8 +44,8 @@ class CategorieProduitController extends AbstractController
             return $this->redirectToRoute('app_categorie_produit_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('categorie_produit/new.html.twig', [
-            'categorie_produit' => $categorieProduit,
+        return $this->renderForm('back/categoriProduitTable.html.twig', [
+            'categorieproduit' => $categorieProduit,
             'form' => $form,
         ]);
     }
@@ -45,8 +53,8 @@ class CategorieProduitController extends AbstractController
     #[Route('/{idCategorie}', name: 'app_categorie_produit_show', methods: ['GET'])]
     public function show(CategorieProduit $categorieProduit): Response
     {
-        return $this->render('categorie_produit/show.html.twig', [
-            'categorie_produit' => $categorieProduit,
+        return $this->render('front/show.html.twig', [
+            'categorieproduit' => $categorieProduit,
         ]);
     }
 
@@ -62,8 +70,8 @@ class CategorieProduitController extends AbstractController
             return $this->redirectToRoute('app_categorie_produit_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('categorie_produit/edit.html.twig', [
-            'categorie_produit' => $categorieProduit,
+        return $this->renderForm('back/categoriProduitTable.html.twig', [
+            'categorieproduit' => $categorieProduit,
             'form' => $form,
         ]);
     }
@@ -71,7 +79,7 @@ class CategorieProduitController extends AbstractController
     #[Route('/{idCategorie}', name: 'app_categorie_produit_delete', methods: ['POST'])]
     public function delete(Request $request, CategorieProduit $categorieProduit, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$categorieProduit->getIdCategorie(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $categorieProduit->getIdCategorie(), $request->request->get('_token'))) {
             $entityManager->remove($categorieProduit);
             $entityManager->flush();
         }

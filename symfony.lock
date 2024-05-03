@@ -26,7 +26,7 @@
         ]
     },
     "doctrine/doctrine-fixtures-bundle": {
-        "version": "3.5",
+        "version": "3.6",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -51,7 +51,7 @@
         ]
     },
     "endroid/qr-code-bundle": {
-        "version": "3.4.3"
+        "version": "5.0.1"
     },
     "knplabs/knp-paginator-bundle": {
         "version": "v5.9.0"
@@ -79,18 +79,6 @@
         "files": [
             "./config/packages/liip_imagine.yaml",
             "./config/routes/liip_imagine.yaml"
-        ]
-    },
-    "meilisearch/search-bundle": {
-        "version": "0.15",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "0.10",
-            "ref": "f0730f97441a5391832fb176305f69abe86b70a3"
-        },
-        "files": [
-            "./config/packages/meilisearch.yaml"
         ]
     },
     "oneup/flysystem-bundle": {
@@ -138,12 +126,12 @@
         ]
     },
     "scheb/2fa-bundle": {
-        "version": "5.13",
+        "version": "6.6",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "5.0",
-            "ref": "0a83961ef50ff91812b229a6f0caf28431d94aec"
+            "version": "6.0",
+            "ref": "1e6f68089146853a790b5da9946fc5974f6fcd49"
         },
         "files": [
             "./config/packages/scheb_2fa.yaml",

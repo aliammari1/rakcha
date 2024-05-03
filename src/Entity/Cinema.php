@@ -19,9 +19,6 @@ class Cinema
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idCinema;
 
-
-   
-   
     #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
     #[Assert\NotBlank(message: 'The cinema name is required.')]
     #[Assert\Length(
@@ -29,8 +26,8 @@ class Cinema
         max: 50,
         minMessage: 'The cinema name must be at least {{ limit }} characters long.',
         maxMessage: 'The cinema name cannot exceed {{ limit }} characters.'
-    )]   
-     private string $nom;
+    )]
+    private string $nom;
 
 
 
@@ -39,7 +36,7 @@ class Cinema
     #[Assert\Length(
         min: 3,
         minMessage: 'The cinema address must be at least {{ limit }} characters long.',
-    )] 
+    )]
     private string $adresse;
 
 
@@ -71,16 +68,15 @@ class Cinema
     #[ORM\ManyToMany(targetEntity: Users::class, inversedBy: 'idCinema')]
     private Collection $idUser;
 
-    
+
     #[ORM\OneToMany(targetEntity: Salle::class, mappedBy: "cinema")]
-     
+
     private $salles;
 
-    
-    #[ORM\OneToMany(targetEntity: Filmcinema::class, mappedBy: "cinema")]
 
-    private $filmCinemas;
-    
+    #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'cinemas')]
+    private Collection $films;
+
     /**
      * Constructor
      */
@@ -88,40 +84,10 @@ class Cinema
     {
         $this->idUser = new ArrayCollection();
         $this->salles = new ArrayCollection();
-        $this->filmCinemas = new ArrayCollection();
-
+        $this->films = new ArrayCollection();
     }
 
-    /**
-     * @return Collection|Filmcinema[]
-     */
 
-     public function getFilmCinemas(): Collection
-     {
-         return $this->filmCinemas;
-     }
- 
-     public function addFilmCinema(Filmcinema $filmCinema): self
-     {
-         if (!$this->filmCinemas->contains($filmCinema)) {
-             $this->filmCinemas[] = $filmCinema;
-             $filmCinema->setCinema($this);
-         }
- 
-         return $this;
-     }
- 
-     public function removeFilmCinema(Filmcinema $filmCinema): self
-     {
-         if ($this->filmCinemas->removeElement($filmCinema)) {
-             // set the owning side to null (unless already changed)
-             if ($filmCinema->getCinema() === $this) {
-                 $filmCinema->setCinema(null);
-             }
-         }
- 
-         return $this;
-     }
 
     public function getIdCinema(): ?int
     {
@@ -212,7 +178,7 @@ class Cinema
         return $this;
     }
 
-     /**
+    /**
      * @return Collection|Salle[]
      */
     public function getSalles(): Collection
@@ -242,4 +208,30 @@ class Cinema
         return $this;
     }
 
+    /**
+     * @return Collection<int, Film>
+     */
+    public function getFilms(): Collection
+    {
+        return $this->films;
+    }
+
+    public function addFilm(Film $film): static
+    {
+        if (!$this->films->contains($film)) {
+            $this->films->add($film);
+            $film->addCinema($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFilm(Film $film): static
+    {
+        if ($this->films->removeElement($film)) {
+            $film->removeCinema($this);
+        }
+
+        return $this;
+    }
 }

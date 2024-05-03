@@ -26,7 +26,7 @@ class RatingfilmController extends AbstractController
     public function rateFilm(Request $request, EntityManagerInterface $entityManager, RatingfilmRepository $ratingfilmRepository): Response
     {
         $data = json_decode($request->getContent(), true);
-        $ratingfilm =  $ratingfilmRepository->findOneBy(['idUser' => $data['idUser'], 'idFilm' => $data['filmId']]);
+        $ratingfilm =  $ratingfilmRepository->findOneBy(['idUser' => $this->getUser()->getId(), 'idFilm' => $data['filmId']]);
         if ($ratingfilm == null)
             $ratingfilm = new Ratingfilm();
         $ratingfilm->setRate($data['rate']);

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Actor;
 use App\Entity\Category;
+use App\Entity\Cinema;
 use App\Entity\Film;
 use App\Form\Type\CheckboxDropdownType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -43,6 +44,12 @@ class FilmType extends AbstractType
             ])
             ->add('categorys', EntityType::class, [
                 'class' => Category::class,
+                'choice_label' => 'nom',
+                'multiple' => true,
+                'expanded' => true,
+            ])
+            ->add('cinemas', EntityType::class, [
+                'class' => Cinema::class,
                 'choice_label' => 'nom',
                 'multiple' => true,
                 'expanded' => true,

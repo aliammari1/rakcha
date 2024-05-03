@@ -34,29 +34,29 @@ class FilmController extends AbstractController
         $updateForms = array();
         for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
             $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
-        } 
+        }
         $film = new Film();
         $form = $this->createForm(FilmType::class, $film);
         $form->handleRequest($request);
-
+        $film->setIsBookmarked(false);
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['image']->getData();
             if ($file) {
 
-            $extension = $file->guessExtension();
-            if (!$extension) {
-                // extension cannot be guessed
-                $extension = 'bin';
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
+                }
+                $filename = rand(1, 99999) . '.' . $extension;
+                $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
+                $film->setImage("/img/films/" . $filename);
             }
-            $filename = rand(1, 99999) . '.' . $extension;
-            $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
-            $film->setImage("/img/films/" . $filename);
-        }
-            $entityManager->persist($film);//creation the query of create 
-            $entityManager->flush();//execute the query
-            
-            
-            $this->addFlash('films','film added successfully');
+            $entityManager->persist($film); //creation the query of create 
+            $entityManager->flush(); //execute the query
+
+
+            $this->addFlash('films', 'film added successfully');
 
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -67,7 +67,6 @@ class FilmController extends AbstractController
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate
         ]);
-
     }
 
     #[Route('/{id}', name: 'app_film_show', methods: ['GET'])]
@@ -93,17 +92,17 @@ class FilmController extends AbstractController
         if ($updateform->isSubmitted() && $updateform->isValid()) {
             $file = $form['image']->getData();
             if ($file) {
-            $extension = $file->guessExtension();
-            if (!$extension) {
-                // extension cannot be guessed
-                $extension = 'bin';
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
+                }
+                $filename = rand(1, 99999) . '.' . $extension;
+                $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
+                $film->setImage("/img/films/" . $filename);
             }
-            $filename = rand(1, 99999) . '.' . $extension;
-            $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
-            $film->setImage("/img/films/" . $filename);  
-        }   
             $entityManager->flush();
-            $this->addFlash('films','film edited successfully');
+            $this->addFlash('films', 'film edited successfully');
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
         }
         $entityManager->refresh($film);
@@ -114,7 +113,6 @@ class FilmController extends AbstractController
             'updateForms' => $updateForms,
             'updateform' => $updateform->createView(),
         ]);
-
     }
 
     #[Route('/{id}', name: 'app_film_delete', methods: ['POST'])]
@@ -123,7 +121,7 @@ class FilmController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $film->getId(), $request->request->get('_token'))) {
             $entityManager->remove($film);
             $entityManager->flush();
-            $this->addFlash('films','film deleted successfully');
+            $this->addFlash('films', 'film deleted successfully');
         }
         return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
     }

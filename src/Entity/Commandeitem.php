@@ -12,23 +12,27 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'fk_commande', columns: ['idCommande'])]
 class Commandeitem
 {
-
     #[ORM\Column(name: 'idCommandeItem', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idcommandeitem;
 
-
     #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
     private int $quantity;
 
-    #[ORM\ManyToOne(targetEntity: Commande::class)]
+    
+    #[ORM\ManyToOne(targetEntity: Commande::class,cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'idCommande', referencedColumnName: 'idCommande')]
     private ?Commande $idcommande = null;
 
     #[ORM\ManyToOne(targetEntity: Produit::class)]
     #[ORM\JoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
     private ?Produit $idProduit = null;
+
+    
+   
+   
+
 
     public function getIdcommandeitem(): ?int
     {
@@ -70,4 +74,6 @@ class Commandeitem
 
         return $this;
     }
+
+
 }

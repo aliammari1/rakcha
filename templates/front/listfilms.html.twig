@@ -435,14 +435,14 @@ console.log(filmArray);
 									<div class="modal-body d-flex flex-wrap justify-content-center">
 										{% if seances[j] is not empty %}
 											<h4 class="btn btn-danger" id="reserveStripePrix{{j}}">prix: 0dt</h4>
-											<select id="cinemaSeanceSelect{{j}}" id="" class="form-select form-select-lg mb-3" aria-label="Large select example">
+											<select id="cinemaSeanceSelect{{j}}" class="form-select form-select-lg mb-3" aria-label="Large select example">
 												<option value="0" selected>select the cinema</option>
 												{% for seance in seances[j]%}
 													<option value="{{seance.idCinema.idCinema}}">{{seance.idCinema.nom}}</option>
 												{% endfor %}
 											</select>
 											<select id="dateSeanceSelect{{j}}" class="form-select form-select-lg mb-3" aria-label="Large select example">
-												<option selected>select the date</option>
+												<option value="0" selected>select the date</option>
 												{% for seance in seances[j] %}
 													<option value="1">
 														{{seance.date|date('d/m/y')}}
@@ -455,16 +455,21 @@ console.log(filmArray);
 											</select>
 											 <script>
 												document.getElementById('cinemaSeanceSelect{{j}}').addEventListener('change', function() {
+												if(document.getElementById('cinemaSeanceSelect{{j}}').value == 0) {
+													document.getElementById('dateSeanceSelect{{j}}').disabled = true;
+													return;
+												}
 												let options = ""; 
 												
 												{% for seance in seances[j] %}
 												if(document.getElementById('cinemaSeanceSelect{{j}}').value == {{seance.idCinema.idCinema}}) {
-												options += '<option value="1">{{seance.date|date('d/m/y')}} : {{seance.hd|date('H:i')}} - {{seance.hf|date('H:i')}}</option>';
+												options += "<option value='1'>{{seance.date|date('d/m/y')}} : {{seance.hd|date('H:i')}} - {{seance.hf|date('H:i')}}</option>";
 												}
 												{% endfor %}
 												document.getElementById('dateSeanceSelect{{j}}').innerHTML = options;
 												document.getElementById('dateSeanceSelect{{j}}').disabled = false;
 												});
+
 												</script>
 												{% for seat in seances[j][0].idSalle.seats %}
 													<img id="seat-{{seat.id}}{{j}}" src="{% if seat.statut == 'vide' %} {{asset('img/seats/armchair.png')}} {% elseif seat.statut == 'reserve' %} {{asset('img/seats/couch.png')}} {% else %} {{asset('img/seats/sofa.png')}} {% endif %}" style="width: 100px;"></img>
@@ -527,10 +532,10 @@ x														{% if seat.statut != 'reserve' %}
 					var elements{{j}} = stripe.elements();
 					var cardElement{{j}} = elements{{j}}.create('card');
 					cardElement{{j}}.mount('#card-element{{j}}');
-					/*document.getElementById("reserveStripeModal{{j}}").addEventListener("click", () => {
+					{# /*document.getElementById("reserveStripeModal{{j}}").addEventListener("click", () => {
 						document.getElementById("pay-btn{{j}}").innerHTML = `pay ${document.querySelectorAll('img[src="/img/seats/sofa.png"]').length * {{seances[1][0].prix}}}dt`;
-					
-					});*/
+
+					});*/ #}
 					function createToken{{j}}() {
 					stripe.createToken(cardElement{{j}}).then(function(result) {
 					console.log(result);
@@ -550,7 +555,7 @@ x														{% if seat.statut != 'reserve' %}
 					'Content-Type': 'application/json',
 					'X-Requested-With': 'XMLHttpRequest'
 					},
-					body: JSON.stringify({'prix': document.querySelectorAll('img[src="/img/seats/sofa.png"]').length * {{seances[1][0].prix}},'stripeToken':document.getElementById("stripe-token-id{{j}}").value,'seatIds' : seatIds{{j}} })
+					body: JSON.stringify({'prix': document.querySelectorAll('img[src="/img/seats/sofa.png"]').length * 10,'stripeToken':document.getElementById("stripe-token-id{{j}}").value,'seatIds' : seatIds{{j}} })
 					}).then(response => response.json()).then(data => {
 					console.log(data);
 					if(data.success) {
