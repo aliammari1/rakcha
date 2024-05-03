@@ -42,8 +42,7 @@ class Salle
 
     
     #[ORM\ManyToOne(targetEntity: Cinema::class, inversedBy: "salles")]
-    #[ORM\JoinColumn(name: "id_cinema", referencedColumnName: "id_cinema" , nullable: false)]
-     
+    #[ORM\JoinColumn(name: "id_cinema", referencedColumnName: "id_cinema" , nullable: false, onDelete: "CASCADE")]
     private $cinema;
 
     #[ORM\OneToMany(mappedBy: 'salle', targetEntity: Seat::class)]

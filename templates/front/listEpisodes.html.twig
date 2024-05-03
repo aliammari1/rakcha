@@ -1,0 +1,112 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block pageStyle %}
+    <link href="{{ asset('/css/about.css') }}" rel="stylesheet">
+    <style>
+        /* Ajoutez votre propre style pour la mise en page Netflix ici */
+        .series-container {
+            display: flex;
+            flex-wrap: nowrap; 
+            overflow-x: auto; 
+        }
+
+        .episode-item {
+            width: 300px; 
+            margin-right: 20px; 
+            position: relative; 
+        }
+
+        .play-button {
+            position: absolute;
+            top: 40%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+
+        /* Reste du style comme avant */
+        .series-image {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .series-image img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .episode-list {
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .episode-thumbnail img {
+            width: 100%;
+            height: auto;
+        }
+
+        .series-details {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .series-details p {
+            margin: 5px 0;
+        }
+
+        .series-details strong {
+            font-weight: bold;
+            color: #666;
+        }
+        
+    </style>
+{% endblock %}
+
+{% block body %}
+    <body>
+
+    {{ block("header") }}
+
+    <!-- Reste de votre code HTML -->
+
+    <section id="team" class="pt-4 pb-4 bg_grey">
+        <div class="container-xl">
+            <div class="series-container"> <!-- Utilisez cette classe pour aligner les épisodes sur la même ligne -->
+                {% for episode in episodes %}
+                    <div class="episode-item">
+                        <div class="episode-thumbnail">
+                            <img src="{{ asset(episode.image) }}" alt="{{ episode.titre }}">
+                            <a href="{{ path('app_episode_watch', {'idEpisode': episode.idepisode}) }}" class="play-button">Play</a>
+                        </div>
+                        <div class="episode-details">
+                            <div class="series-details">
+                                <p><strong>Title of episode:</strong> {{ episode.titre }}</p>
+                                <p><strong>Season :</strong> {{ episode.saison }}</p>
+                                <p><strong>Episode number :</strong> {{ episode.numeroepisode }}</p>
+                            </div>
+                         <!-- Ajoutez d'autres détails de l'épisode ici -->
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Reste de votre code HTML -->
+
+    {{ block("footer") }}
+   
+
+    
+    
+    </body>
+{% endblock %}
+

@@ -12,10 +12,8 @@ class FeedbackType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('idUser')
             ->add('description')
             ->add('date')
-            ->add('idEpisode')
         ;
     }
 
