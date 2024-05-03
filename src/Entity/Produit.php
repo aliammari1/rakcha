@@ -3,40 +3,47 @@
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
+use App\Entity\CategorieProduit;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 #[ORM\Table(name: 'produit')]
 #[ORM\Index(name: 'fk_categories', columns: ['id_categorieProduit'])]
 class Produit
 {
-
     #[ORM\Column(name: 'id_produit', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idProduit;
 
-
     #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: 'Please enter a name.')]
+    #[Assert\Length(max: 50, maxMessage: 'Name cannot exceed {{ limit }} characters.')]
+    #[Assert\NotNull(message: 'Name cannot be null.')]
     private string $nom;
 
-
     #[ORM\Column(name: 'prix', type: 'integer', nullable: false)]
+    #[Assert\NotBlank(message: 'Please enter a price.')]
+    #[Assert\Positive(message: 'Price must be a positive number.')]
+    #[Assert\NotNull(message: 'Price cannot be null.')]
     private int $prix;
-
 
     #[ORM\Column(name: 'image', type: 'string', length: 255, nullable: false)]
     private string $image;
 
-
     #[ORM\Column(name: 'description', type: 'string', length: 100, nullable: false)]
+    #[Assert\NotBlank(message: 'Please enter a description.')]
+    #[Assert\Length(min: 20, max: 100, minMessage: 'Description must be at least {{ limit }} characters.', maxMessage: 'Description cannot exceed {{ limit }} characters.')]
+    #[Assert\NotNull(message: 'Description cannot be null.')]
     private string $description;
 
-
     #[ORM\Column(name: 'quantiteP', type: 'integer', nullable: false)]
+    #[Assert\NotBlank(message: 'Please enter a quantity.')]
+    #[Assert\PositiveOrZero(message: 'Quantity must be a positive number or zero.')]
+    #[Assert\NotNull(message: 'Quantity cannot be null.')]
     private int $quantitep;
 
     /**
@@ -49,10 +56,7 @@ class Produit
     /**
      * @var Collection<int, Users>
      */
-    #[ORM\JoinTable(name: 'panier')]
-    #[ORM\JoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
-    #[ORM\InverseJoinColumn(name: 'id_client', referencedColumnName: 'id')]
-    #[ORM\ManyToMany(targetEntity: Users::class, inversedBy: 'idProduit')]
+
     private Collection $idClient;
 
     /**
@@ -163,4 +167,57 @@ class Produit
 
         return $this;
     }
+
+    /* #[ORM\OneToMany(targetEntity:Panier::class, mappedBy:"idproduit")]*/
+
+    private Collection $paniers;
+
+
+
+    /**
+     * @return Collection<int, Panier>
+     */
+    public function getPaniers(): Collection
+    {
+        return $this->paniers;
+    }
+
+    public function addPanier(Panier $panier): self
+    {
+        if (!$this->paniers->contains($panier)) {
+            $this->paniers[] = $panier;
+            $panier->setIdproduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removePanier(Panier $panier): self
+    {
+        if ($this->paniers->removeElement($panier)) {
+            // set the owning side to null (unless already changed)
+            if ($panier->getIdproduit() === $this) {
+                $panier->setIdproduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+   
+    private Collection $commentaires;
+
+    
+    /**
+     * @return Collection<int, Commentaire>
+     */
+        public function getCommentaires(): Collection
+        {
+            
+            return $this->commentaires;
+        }
+
+
+
+
 }
