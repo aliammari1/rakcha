@@ -13,31 +13,42 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
+
 #[Route('/cinema')]
 class CinemaController extends AbstractController
 {
     #[Route('/', name: 'app_cinema_index', methods: ['GET', 'POST'])]
     public function index(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(CinemaType::class, new Cinema());
-        $updateForms = array();
-        for ($i = 0; $i < count($cinemaRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(CinemaType::class, $cinemaRepository->findAll()[$i])->createView();
-        }
-
-
-        if (!empty($errors)) {
-            // Afficher une alerte avec l'erreur
-            $errorMessage = $errors[0]->getMessage();
-            $this->addFlash('error', $errorMessage);
-        }
-        return $this->render('back/CinemasTable.html.twig', [
-            'cinemas' => $cinemaRepository->findAll(),
-            'form' => $form->createView(),
-            'updateForms' => $updateForms,
-
-        ]);
+{
+    // Get the currently logged-in user
+    $user = $this->getUser()->getId();
+    
+    // Fetch cinemas where the responsible ID matches the ID of the current user
+    $userCinemas = $cinemaRepository->findBy(['responsable' => $user]);
+    
+    // Create form for adding a new cinema
+    $form = $this->createForm(CinemaType::class, new Cinema());
+    
+    // Create forms for updating existing cinemas
+    $updateForms = [];
+    foreach ($userCinemas as $cinema) {
+        $updateForms[] = $this->createForm(CinemaType::class, $cinema)->createView();
     }
+    
+    // Handle errors (if any)
+    if (!empty($errors)) {
+        // Afficher une alerte avec l'erreur
+        $errorMessage = $errors[0]->getMessage();
+        $this->addFlash('error', $errorMessage);
+    }
+    
+    return $this->render('back/CinemasTable.html.twig', [
+        'cinemas' => $userCinemas,
+        'form' => $form->createView(),
+        'updateForms' => $updateForms,
+    ]);
+}
+
 
     #[Route('/location/{idCinema}', name: 'app_cinema_location', methods: ['GET', 'POST'])]
     public function localiser(int $idCinema): Response
@@ -75,7 +86,7 @@ class CinemaController extends AbstractController
             $errorMessage = $errors[0]->getMessage();
             $this->addFlash('error', $errorMessage);
         }
-        return $this->render('cinema/CinemasTableAdmin.html.twig', [
+        return $this->render('back/CinemasTableAdmin.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,

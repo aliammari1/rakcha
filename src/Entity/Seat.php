@@ -17,7 +17,7 @@ class Seat
     private ?string $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'seats')]
-    #[ORM\JoinColumn(name: 'id_salle', referencedColumnName: 'id_salle', nullable: false)]
+    #[ORM\JoinColumn(name: 'id_salle', referencedColumnName: 'id_salle', nullable: false,onDelete: "CASCADE")]
     private ?Salle $salle = null;
 
     public function getId(): ?int

@@ -4,20 +4,12 @@ namespace App\Form;
 
 use App\Entity\Produit;
 use App\Entity\CategorieProduit;
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\Type;
-
-
-
-
 
 class ProduitType extends AbstractType
 {
@@ -25,8 +17,6 @@ class ProduitType extends AbstractType
     {
         $builder
             ->add('nom', null, [
-                
-
                 'label'=> 'Name',
                 'attr' => [
                     'placeholder' => 'Enter your name',

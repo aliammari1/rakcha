@@ -70,7 +70,7 @@ class Cinema
 
 
     #[ORM\OneToMany(targetEntity: Salle::class, mappedBy: "cinema")]
-
+    #[ORM\JoinColumn(name: 'cinema_id', referencedColumnName: 'id_cinema', onDelete: 'CASCADE')]
     private $salles;
 
 

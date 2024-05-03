@@ -13,49 +13,46 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PlanningController extends AbstractController
 {
-    private $seanceRepository;
 
-    public function __construct(SeanceRepository $seanceRepository)
+    #[Route('/planningPost/{idCinema}', name: 'app_planning_post', methods: ['POST'])]
+    public function planningPost($idCinema)
     {
-        $this->seanceRepository = $seanceRepository;
+        return $this->redirectToRoute('app_planning', ['idCinema' => $idCinema]);
     }
 
     #[Route('/planning/{idCinema}', name: 'app_planning')]
-public function index($idCinema, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository, SeanceRepository $seanceRepository): Response
-{
-    // Obtenir la date du début et de la fin de la semaine courante
-    $currentDate = new DateTime();
-    $startWeek = $currentDate->format('Y-m-d');
-    $endWeek = $currentDate->modify('+6 day')->format('Y-m-d');
+    public function index($idCinema, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository, SeanceRepository $seanceRepository): Response
+    {
+        // Obtenir la date du début et de la fin de la semaine courante
+        $currentDate = new DateTime();
+        $startWeek = $currentDate->format('Y-m-d');
+        $endWeek = $currentDate->modify('+6 day')->format('Y-m-d');
 
-    // Récupérer toutes les séances pour les 7 prochains jours et le cinéma spécifié
-    $seances = $seanceRepository->createQueryBuilder('s')
-        ->innerJoin('s.idSalle', 'sa')
-        ->andWhere('s.date BETWEEN :startWeek AND :endWeek')
-        ->andWhere('sa.idCinema = :idCinema') // Ajouter cette condition pour filtrer par idCinema
-        ->setParameter('startWeek', $startWeek)
-        ->setParameter('endWeek', $endWeek)
-        ->setParameter('idCinema', $idCinema) // Liaison du paramètre idCinema
-        ->getQuery()
-        ->getResult();
+        // Récupérer toutes les séances pour les 7 prochains jours et le cinéma spécifié
+        $seances = $seanceRepository->createQueryBuilder('s')
+            ->innerJoin('s.idSalle', 'sa')
+            ->andWhere('s.date BETWEEN :startWeek AND :endWeek')
+            ->andWhere('sa.idCinema = :idCinema') // Ajouter cette condition pour filtrer par idCinema
+            ->setParameter('startWeek', $startWeek)
+            ->setParameter('endWeek', $endWeek)
+            ->setParameter('idCinema', $idCinema) // Liaison du paramètre idCinema
+            ->getQuery()
+            ->getResult();
 
-    $seanceData = [];
-    foreach ($seances as $seance) {
-        $seanceData[] = [
-            'title' => $seance->getIdFilm()->getNom(),
-            'start' => $seance->getDate()->format('Y-m-d') . 'T' .$seance->getHd()->format('H:i:s'),
-            'end' => $seance->getDate()->format('Y-m-d') . 'T' . $seance->getHf()->format('H:i:s'),
-            'image' => $seance->getIdFilm()->getImage(), // Ajout de l'image du film
-            'prix' => $seance->getPrix(),
-            'salle' => $seance->getIdSalle()->getNomSalle(),
-        ];
+        $seanceData = [];
+        foreach ($seances as $seance) {
+            $seanceData[] = [
+                'title' => $seance->getIdFilm()->getNom(),
+                'start' => $seance->getDate()->format('Y-m-d') . 'T' . $seance->getHd()->format('H:i:s'),
+                'end' => $seance->getDate()->format('Y-m-d') . 'T' . $seance->getHf()->format('H:i:s'),
+                'image' => $seance->getIdFilm()->getImage(), // Ajout de l'image du film
+                'prix' => $seance->getPrix(),
+                'salle' => $seance->getIdSalle()->getNomSalle(),
+            ];
+        }
+
+        $seanceData = json_encode($seanceData);
+
+        return $this->render('front/planning.html.twig', compact('seanceData'));
     }
-
-    $seanceData = json_encode($seanceData);
-
-    return $this->render('front/planning.html.twig', compact('seanceData'));
 }
-
-    
-}
-?>
