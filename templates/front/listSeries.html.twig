@@ -1,0 +1,214 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block pageStyle %}
+    <link href="{{ asset('/css/about.css') }}" rel="stylesheet">
+
+
+    <style>
+        .play-button-container {
+            position: absolute;
+            top: 70px; /* Position au sommet */
+            left: 50%;
+            transform: translateX(-50%); /* Centrage horizontal */
+            z-index: 1; /* Assurez-vous que le bouton de lecture est au-dessus de l'image */
+        }
+
+        .play-button {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .series-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Colonnes avec une largeur minimale de 200px */
+            grid-gap: 20px; /* Espacement entre les séries */
+        }
+
+        .series-item {
+            position: relative;
+            overflow: hidden; /* Pour s'assurer que les images ne débordent pas du cadre */
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+        }
+
+        .series-item img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease; /* Transition pour l'effet de survol */
+        }
+
+        .series-item:hover img {
+            transform: scale(1.1); /* Agrandissement de l'image au survol */
+        }
+
+        .series-item-details {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7); /* Fond semi-transparent */
+            color: white;
+            transition: transform 0.3s ease; /* Transition pour l'effet de survol */
+            transform: translateY(100%);
+        }
+
+        .series-item:hover .series-item-details {
+            transform: translateY(0); /* Faire apparaître les détails au survol */
+        }
+
+
+ 
+    /* Styles pour le bouton des favoris */
+     .favorite-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 24px;
+    transition: transform 0.3s ease;
+    }
+
+    .favorite-button:hover {
+    transform: scale(1.2);
+}
+.netflix-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px; /* Ajustez l'espacement selon vos préférences */
+}
+ 
+/* Style pour le bouton "Ajouter aux favoris" */
+.add-to-favorites-btn {
+    background-color: #E50914; /* Couleur de fond rouge Netflix */
+    color: white; /* Couleur du texte */
+    border: none; /* Pas de bordure */
+    padding: 10px 20px; /* Espacement à l'intérieur du bouton */
+    border-radius: 5px; /* Coins arrondis */
+    font-size: 16px; /* Taille de police */
+    cursor: pointer; /* Curseur pointeur au survol */
+    transition: background-color 0.3s ease; /* Transition pour un effet de survol */
+}
+
+.add-to-favorites-btn:hover {
+    background-color: #B20710; /* Changement de couleur de fond au survol */
+}
+
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <body>
+
+    {{ block("header") }}
+     
+    <section id="center" class="center_o pt-2 pb-2">
+        <div class="container-xl">
+            <div class="row center_o1">
+                <div class="col-md-5">
+                    <div class="center_o1l">
+                        <h2 class="mb-0">Series </h2>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="center_o1r text-end">
+                        <h6 class="mb-0 col_red">
+                            <a href="{{ path('app_series_index') }}">Home</a>
+                            <span class="me-2 ms-2 text-light">
+                                <i class="fa fa-caret-right align-middle"></i>
+                            </span>
+                            Series
+                        </h6>
+                        {#
+                   <form action="{{ path('app_series_liste') }}" method="get">
+    <input type="text" name="nom" placeholder="Recherche par nom">
+    <!-- Ajoutez d'autres champs pour le directeur, le pays, etc. si nécessaire -->
+    <select name="sort_by">
+        <option value="nom">Nom</option>
+        <!-- Ajoutez d'autres options pour d'autres champs de tri si nécessaire -->
+    </select>
+    <select name="sort_order">
+        <option value="asc">Ascendant</option>
+        <option value="desc">Descendant</option>
+    </select>
+    <button type="submit">Rechercher</button>
+</form>
+#}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+     <section id="team" class="pt-4 pb-4 bg_grey">
+        <div class="container-xl">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="series-container">
+                        {% for serie in series %}
+                            <div class="series-item">
+                                <a href="{{ path('app_episodes_showw', {'idserie': serie.idserie}) }}">
+                                    <img src="{{ asset(serie.image) }}" alt="{{ serie.nom }}">
+                                </a>
+                                <div class="series-item-details">
+                                    <h4>{{ serie.nom }}</h4>
+                                    <p>{{ serie.resume }}</p>
+                                    <p><strong>Director:</strong> {{ serie.directeur }}</p>
+                                    <p><strong>Country:</strong> {{ serie.pays }}</p>
+                                    <p><strong>Category:</strong> {{ serie.idcategorie.nom }}</p>
+                                     <!-- Ajout de l'icône "like" -->
+                                      <a href="{{ path('app_like_series', {'idserie': serie.idserie}) }}">
+                                       <span style="font-size: 24px">&#128077;</span>{{ serie.nblikes }}
+
+                                     </a>
+                                     &nbsp; <!-- Ajoute un espace -->
+                                    <a href="{{ path('app_dislike_series', {'idserie': serie.idserie}) }}">
+                                    <span style="font-size: 24px">&#128078;</span>{{ serie.nbdislikes }}
+                                  </a>
+                                   <!-- Formulaire d'ajout aux favoris -->
+                                    <form id="add-to-favorites-form-{{ serie.idSerie }}" action="{{ path('app_add_to_favorites', {'idSerie': serie.idSerie}) }}" method="post">
+                                       <button type="submit" class="add-to-favorites-btn">Add to Favorites</button>
+                                       </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+      <!-- Section pour afficher les recommandations -->
+    <section id="recommendations" class="pt-4 pb-4 bg_light_grey">
+        <div class="container-xl">
+        <h2 class="netflix-title">The Top 3 :</h2>
+            <div class="row">
+                {% for recommendation in recommendations %}
+                    <div class="col-md-3">
+                        <div class="series-item ">
+                            <a href="{{ path('app_episodes_showw', {'idserie': recommendation.idserie}) }}">
+                                <img src="{{ asset(recommendation.image) }}" alt="{{ recommendation.nom }}">
+                            </a>
+                            <div class="series-item-details">
+                                <h4>{{ recommendation.nom }}</h4>
+                                <p>{{ recommendation.resume }}</p>
+                                <p><strong>Director:</strong> {{ recommendation.directeur }}</p>
+                                <p><strong>Country:</strong> {{ recommendation.pays }}</p>
+                                <p><strong>Category:</strong> {{ recommendation.idcategorie.nom }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    {{ block("footer") }}
+  
+
+    </body>
+{% endblock %}

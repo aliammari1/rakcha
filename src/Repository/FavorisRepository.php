@@ -21,6 +21,21 @@ class FavorisRepository extends ServiceEntityRepository
         parent::__construct($registry, Favoris::class);
     }
 
+    public function favoriExists(int $userId, int $serieId): bool
+    {
+        $favori = $this->findOneBy([
+            'idUser' => $userId,
+            'idSerie' => $serieId,
+        ]);
+
+        return $favori !== null;
+    }
+
+
+
+
+
+
 //    /**
 //     * @return Favoris[] Returns an array of Favoris objects
 //     */

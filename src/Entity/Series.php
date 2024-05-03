@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\SeriesRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Categories;
 use Doctrine\ORM\Mapping as ORM;
+
 
 
 #[ORM\Entity(repositoryClass: SeriesRepository::class)]
@@ -11,51 +14,58 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idcategorie', columns: ['idcategorie'])]
 class Series
 {
-
     #[ORM\Column(name: 'idserie', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idserie;
 
-
     #[ORM\Column(name: 'nom', type: 'string', length: 30, nullable: false)]
+    #[Assert\NotBlank(message: 'The name cannot be blank')]
+    #[Assert\NotNull(message: 'The name cannot be null')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'The name must have at least {{ limit }} characters', maxMessage: 'The surname cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The name must be a string')]
     private string $nom;
 
-
     #[ORM\Column(name: 'resume', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: 'The summary cannot be blank')]
+    #[Assert\NotNull(message: 'The summary cannot be null')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'The summary must have at least {{ limit }} characters', maxMessage: 'The summary cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The summary must be a string')]
     private string $resume;
 
-
     #[ORM\Column(name: 'directeur', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: 'The director cannot be blank')]
+    #[Assert\NotNull(message: 'The director cannot be null')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'The director must have at least {{ limit }} characters', maxMessage: 'The director cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The director must be a string')]
     private string $directeur;
 
-
     #[ORM\Column(name: 'pays', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: 'The country cannot be blank')]
+    #[Assert\NotNull(message: 'The country cannot be null')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'The country must have at least {{ limit }} characters', maxMessage: 'The country cannot exceed {{ limit }} characters')]
+    #[Assert\Type(type: 'string', message: 'The country must be a string')]
     private string $pays;
-
 
     #[ORM\Column(name: 'image', type: 'string', length: 255, nullable: false)]
     private string $image;
 
+    #[ORM\Column(name: 'liked', type: 'integer', nullable: true)]
+    private ?int $liked = 0; // Initialiser à zéro
 
-    #[ORM\Column(name: 'liked', type: 'integer', nullable: false)]
-    private int $liked;
+    #[ORM\Column(name: 'nbLikes', type: 'integer', nullable: true)]
+    private ?int $nblikes = 0; // Initialiser à zéro
 
+    #[ORM\Column(name: 'disliked', type: 'integer', nullable: true)]
+    private ?int $disliked = 0; // Initialiser à zéro
 
-    #[ORM\Column(name: 'nbLikes', type: 'integer', nullable: false)]
-    private int $nblikes;
-
-
-    #[ORM\Column(name: 'disliked', type: 'integer', nullable: false)]
-    private int $disliked;
-
-
-    #[ORM\Column(name: 'nbDislikes', type: 'integer', nullable: false)]
-    private int $nbdislikes;
+    #[ORM\Column(name: 'nbDislikes', type: 'integer', nullable: true)]
+    private ?int $nbdislikes = 0; // Initialiser à zéro
 
 
-    #[ORM\Column(name: 'idcategorie', type: 'integer', nullable: false)]
-    private int $idcategorie;
+    #[ORM\ManyToOne(targetEntity: Categories::class)]
+    #[ORM\JoinColumn(name: 'idcategorie', referencedColumnName: 'idcategorie')]
+    private ?Categories $idcategorie = null;
 
     public function getIdserie(): ?int
     {
@@ -170,15 +180,17 @@ class Series
         return $this;
     }
 
-    public function getIdcategorie(): ?int
+    public function getIdcategorie(): ?Categories
     {
         return $this->idcategorie;
     }
 
-    public function setIdcategorie(int $idcategorie): static
+    public function setIdcategorie( ?Categories $idcategorie): static
     {
         $this->idcategorie = $idcategorie;
 
         return $this;
     }
+
+    
 }

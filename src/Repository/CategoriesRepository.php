@@ -45,4 +45,9 @@ class CategoriesRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+// Dans votre méthode ou service
+
+
+
 }

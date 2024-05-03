@@ -77,14 +77,15 @@ class Film
     #[Assert\NotBlank(message: 'The film category is required.')]
     #[Assert\Count(min: 1, minMessage: 'The film must have at least one category.')]
     private Collection $categorys;
-    
-    #[ORM\ManyToMany(targetEntity: Cinema::class, cascade: ['persist', 'remove'])]
+
+    #[ORM\ManyToMany(targetEntity: Cinema::class, inversedBy: 'films')]
     #[ORM\JoinTable(
         name: "film_cinema",
-        joinColumns: [new ORM\JoinColumn(name: "film_id", referencedColumnName: "id")],
+        joinColumns: [new ORM\JoinColumn(name: "film_id", referencedColumnName: "id", onDelete: "CASCADE")],
         inverseJoinColumns: [new ORM\JoinColumn(name: "cinema_id", referencedColumnName: "id_cinema")]
     )]
     private Collection $cinemas;
+
     public function __construct()
     {
         $this->actors = new ArrayCollection();
@@ -134,12 +135,12 @@ class Film
         return $this;
     }
 
-    public function getDuree(): ?\DateTimeInterface
+    public function getDuree(): ?DateTimeInterface
     {
         return $this->duree;
     }
 
-    public function setDuree(\DateTimeInterface $duree): static
+    public function setDuree(DateTimeInterface $duree): static
     {
         $this->duree = $duree;
 

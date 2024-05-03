@@ -60,7 +60,7 @@ class Seance
      * @var Salle
      */
     #[ORM\ManyToOne(targetEntity: Salle::class)]
-    #[ORM\JoinColumn(name: 'id_salle', referencedColumnName: 'id_salle')]
+    #[ORM\JoinColumn(name: 'id_salle', referencedColumnName: 'id_salle', onDelete: 'CASCADE')]
     private Salle $idSalle;
 
     /**

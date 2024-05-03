@@ -78,7 +78,11 @@
     "symfonycasts/reset-password-bundle": "^1.21",
     "symfonycasts/verify-email-bundle": "^1.17",
     "twig/extra-bundle": "^2.12|^3.0",
-    "twig/twig": "^2.12|^3.0"
+    "twig/twig": "^2.12|^3.0",
+    "embed/embed": "^4.4",
+    "guzzlehttp/guzzle": "^7.8",
+    "symfony/asset-mapper": "6.3.*",
+    "twilio/sdk": "^8.0"
   },
   "config": {
     "allow-plugins": {

@@ -161,103 +161,105 @@
 		{{ block("footer") }}
 
 		 <script>
-		            window.onscroll = function () {
-		                myFunction()
-		            };
-		
-		            var navbar_sticky = document.getElementById("navbar_sticky");
-		            var sticky = navbar_sticky.offsetTop;
-		            var navbar_height = document.querySelector('.navbar').offsetHeight;
-		
-		            function myFunction() {
-		                if (window.pageYOffset >= sticky + navbar_height) {
-		                    navbar_sticky.classList.add("sticky");
-		                    document.body.style.paddingTop = navbar_height + 'px';
-		                } else {
-		                    navbar_sticky.classList.remove("sticky");
-		                    document.body.style.paddingTop = '0';
-		                }
-		            }
-		
-		            window.onload = () => {
-		                let formatTime = (timeStr) => {
-		                    // Concaténer une date factice pour obtenir un format ISO 8601 complet
-		                    let time = new Date(`2000-01-01T${timeStr}`);
-		
-		                    // Vérifier si la date est valide
-		                    if (isNaN(time.getTime())) {
-		                        return "Invalid Date";
-		                    }
-		
-		                    // Ajouter le fuseau horaire de la Tunisie
-		                    let options = {
-		                        hour: '2-digit',
-		                        minute: '2-digit',
-		                        second: '2-digit',
-		                        timeZone: 'Africa/Tunis'
-		                    };
-		
-		                    // Formater l'heure en temps local en Tunisie
-		                    return time.toLocaleTimeString([], options);
-		                };
-		
-		
-		                let calendarElt = document.querySelector("#calendrier");
-		                let calendar = new FullCalendar.Calendar(calendarElt, {
-		                    initialView: 'dayGridDay',
-		                    locale: "tn",
-		                    timeZone: "Africa/Tunis", // Spécifier le fuseau horaire
-		                    eventDidMount: function (info) {
-		                        const eventEl = info.el;
-		                        const eventContent =
-		                            `<div class="card" style="display: flex;">
-		                                <div class="card-content">
-		                                    <img src="${info.event.extendedProps.image}" alt="Movie" class="image" width="180" height="150">
-		                                    <div>
-		                                        <h3 class="heading">${info.event.title}</h3>
-		                                        <p class="para">Heure: ${formatTime(info.event.startStr.split('T')[1])} - ${formatTime(info.event.endStr.split('T')[1])}</p>
-		                                        <p class="para">Price: ${info.event.extendedProps.prix} DT</p>
-		                                        <p class="para">Room: ${info.event.extendedProps.salle}</p>
-		                                        <button class="card-btn">Réserver</button>
-		                                    </div>
-		                                </div>
-		                                <div class="overlay"></div>
-		                            </div>`;
-		                        eventEl.innerHTML = eventContent;
-		                    },
-		                    dateClick: function (info) {
-		                        showSeancesByDate(info.dateStr);
-		                    }
-		                });
-		
-		                let seanceData = JSON.parse(document.getElementById('seanceData').textContent);
-		                seanceData.forEach(seance => {
-		                    calendar.addEvent({
-		                        title: seance.title,
-		                        start: seance.start,
-		                        end: seance.end,
-		                        extendedProps: {
-		                            image: seance.image,
-		                            prix: seance.prix,
-		                            salle: seance.salle
-		                        }
-		                    });
-		                });
-		
-		                calendar.render();
-		                showSeancesByDate(calendar.getDate().toISOString().split('T')[0]);
-		            };
-		
-		            function showSeancesByDate(dateStr) {
-		                const cards = document.querySelectorAll('.card');
-		                cards.forEach(card => {
-		                    if (card.dataset.date === dateStr) {
-		                        card.style.display = "flex";
-		                    } else {
-		                        card.style.display = "none";
-		                    }
-		                });
-		            }
-		        </script>
+				window.onscroll = function () {
+				myFunction()
+				};
+				
+				var navbar_sticky = document.getElementById("navbar_sticky");
+				var sticky = navbar_sticky.offsetTop;
+				var navbar_height = document.querySelector('.navbar').offsetHeight;
+				
+				function myFunction() {
+				if (window.pageYOffset >= sticky + navbar_height) {
+				navbar_sticky.classList.add("sticky");
+				document.body.style.paddingTop = navbar_height + 'px';
+				} else {
+				navbar_sticky.classList.remove("sticky");
+				document.body.style.paddingTop = '0';
+				}
+				}
+				console.log("hello");
+				document.addEventListener('DOMContentLoaded', (event) => {
+				let formatTime = (timeStr) => {
+				// Concaténer une date factice pour obtenir un format ISO 8601 complet
+				let time = new Date(`2000-01-01T${timeStr}`);
+				
+				// Vérifier si la date est valide
+				if (isNaN(time.getTime())) {
+				return "Invalid Date";
+				}
+				
+				// Ajouter le fuseau horaire de la Tunisie
+				let options = {
+				hour: '2-digit',
+				minute: '2-digit',
+				second: '2-digit',
+				timeZone: 'Africa/Tunis'
+				};
+				
+				// Formater l'heure en temps local en Tunisie
+				return time.toLocaleTimeString([], options);
+				};
+				
+				
+				let calendarElt = document.querySelector("#calendrier");
+				let calendar = new FullCalendar.Calendar(calendarElt, {
+				initialView: 'dayGridDay',
+				locale: "tn",
+				timeZone: "Africa/Tunis", // Spécifier le fuseau horaire
+				eventDidMount: function (info) {
+				const eventEl = info.el;
+				const eventContent =
+				`<div class="card" style="display: flex;">
+				<div class="card-content">
+				<img src="${info.event.extendedProps.image}" alt="Movie" class="image" width="180" height="150">
+				<div>
+				<h3 class="heading">${info.event.title}</h3>
+				<p class="para">Heure: ${formatTime(info.event.startStr.split('T')[1])} - ${formatTime(info.event.endStr.split('T')[1])}</p>
+				<p class="para">Price: ${info.event.extendedProps.prix} DT</p>
+				<p class="para">Room: ${info.event.extendedProps.salle}</p>
+				<button class="card-btn">Réserver</button>
+				</div>
+				</div>
+				<div class="overlay"></div>
+				</div>`;
+				eventEl.innerHTML = eventContent;
+				},
+				dateClick: function (info) {
+				showSeancesByDate(info.dateStr);
+				}
+				});
+				
+				let seanceData = JSON.parse(document.getElementById('seanceData').textContent);
+				seanceData.forEach(seance => {
+				calendar.addEvent({
+				title: seance.title,
+				start: seance.start,
+				end: seance.end,
+				extendedProps: {
+				image: seance.image,
+				prix: seance.prix,
+				salle: seance.salle
+				}
+				});
+				});
+				console.log(seanceData);
+				
+				calendar.render();
+				showSeancesByDate(calendar.getDate().toISOString().split('T')[0]);
+				});
+				
+			
+				function showSeancesByDate(dateStr) {
+				const cards = document.querySelectorAll('.card');
+				cards.forEach(card => {
+				if (card.dataset.date === dateStr) {
+				card.style.display = "flex";
+				} else {
+				card.style.display = "none";
+				}
+				});
+				}
+				</script>
 	</body>
 {% endblock %}

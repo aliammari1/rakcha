@@ -1,0 +1,153 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block pageStyle %}
+    <link href="{{ asset('/css/about.css') }}" rel="stylesheet">
+
+
+    <style>
+        .play-button-container {
+            position: absolute;
+            top: 70px; /* Position au sommet */
+            left: 50%;
+            transform: translateX(-50%); /* Centrage horizontal */
+            z-index: 1; /* Assurez-vous que le bouton de lecture est au-dessus de l'image */
+        }
+
+        .play-button {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .series-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Colonnes avec une largeur minimale de 200px */
+            grid-gap: 20px; /* Espacement entre les séries */
+        }
+
+        .series-item {
+            position: relative;
+            overflow: hidden; /* Pour s'assurer que les images ne débordent pas du cadre */
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+        }
+
+        .series-item img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease; /* Transition pour l'effet de survol */
+        }
+
+        .series-item:hover img {
+            transform: scale(1.1); /* Agrandissement de l'image au survol */
+        }
+
+        .series-item-details {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7); /* Fond semi-transparent */
+            color: white;
+            transition: transform 0.3s ease; /* Transition pour l'effet de survol */
+            transform: translateY(100%);
+        }
+
+        .series-item:hover .series-item-details {
+            transform: translateY(0); /* Faire apparaître les détails au survol */
+        }
+
+
+ 
+    /* Styles pour le bouton des favoris */
+     .favorite-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 24px;
+    transition: transform 0.3s ease;
+    }
+
+    .favorite-button:hover {
+    transform: scale(1.2);
+}
+.netflix-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin-bottom: 20px; /* Ajustez l'espacement selon vos préférences */
+}
+ 
+/* Style pour le bouton "Ajouter aux favoris" */
+.add-to-favorites-btn {
+    background-color: #E50914; /* Couleur de fond similaire à celle de Netflix */
+    color: white; /* Couleur du texte */
+    border: none; /* Pas de bordure */
+    padding: 10px 20px; /* Espacement à l'intérieur du bouton */
+    border-radius: 5px; /* Coins arrondis */
+    font-size: 16px; /* Taille de police */
+    cursor: pointer; /* Curseur pointeur au survol */
+    transition: background-color 0.3s ease; /* Transition pour un effet de survol */
+}
+
+.add-to-favorites-btn:hover {
+    background-color: #B20710; /* Changement de couleur de fond au survol */
+}
+
+
+
+ 
+    </style>
+{% endblock %}
+
+{% block body %}
+    {{ block("header") }}
+ 
+     
+    <section id="center" class="center_o pt-2 pb-2">
+        <!-- Votre code HTML existant ici -->
+    </section>
+
+    <section id="team" class="pt-4 pb-4 bg_grey">
+        <div class="container-xl">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>My Favorites :</h1>
+                    <div class="series-container">
+                        {% for key, favori in favoris %}
+                            <div class="series-item">
+                                <a href="{{ path('app_episodes_showw', {'idserie': series[key].idSerie }) }}">
+                                <img src="{{ asset(series[key].image) }}" alt="{{ series[key].nom }}">
+                                <div class="series-item-details">
+                                    <h4>{{ series[key].nom }}</h4>
+                                    <p><strong>Director:</strong>{{ series[key].resume }}</p>
+                                    <p><strong>Director:</strong>{{ series[key].directeur }}</p>
+                                    <p><strong>Country:</strong>{{ series[key].pays }}</p>
+                                    <p><strong>Category:</strong>{{ series[key].idcategorie.nom  }}</p>
+                                    <!-- Ajoutez d'autres détails de série si nécessaire -->
+                                    <!-- Ajout du bouton de favoris -->
+                                     <!-- Bouton pour retirer des favoris -->
+                                    <form id="remove-from-favorites-form-{{ series[key].idSerie }}" action="{{ path('app_remove_from_favorites', {'idSerie': series[key].idSerie}) }}" method="post">
+                                     <button type="submit" class="add-to-favorites-btn">Remove from Favorites</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{ block("footer") }}
+</body>
+{% endblock %}
+
+
+
+

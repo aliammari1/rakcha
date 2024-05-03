@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Cinema;
 use App\Entity\Salle;
 use App\Entity\Seance;
+use App\Entity\Film;
 use App\Repository\CinemaRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -60,8 +61,9 @@ class SeanceType extends AbstractType
 
         $formModifier = function (FormInterface $form, Cinema $cinema = null) {
             $salles = $cinema ? $cinema->getSalles() : [];
-            $films = $cinema ? $cinema->getFilms()->map(function($filmCinema) {
-                return $filmCinema->getFilm();
+
+            $films = $cinema ? $cinema->getFilms()->map(function ($film) {
+                return $film;
             })->toArray() : [];
 
             $form->add('idSalle', EntityType::class, [
@@ -75,7 +77,7 @@ class SeanceType extends AbstractType
             ]);
 
             $form->add('idFilm', EntityType::class, [
-                'class' => \App\Entity\Film::class,
+                'class' => Film::class,
                 'choices' => $films,
                 'required' => false,
                 'choice_label' => 'nom',
@@ -85,7 +87,8 @@ class SeanceType extends AbstractType
             ]);
         };
 
-        
+
+
         $builder->get('idCinema')->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) use ($formModifier) {
@@ -93,8 +96,6 @@ class SeanceType extends AbstractType
                 $formModifier($event->getForm()->getParent(), $cinema);
             }
         );
-
-        
     }
 
     public function configureOptions(OptionsResolver $resolver)
