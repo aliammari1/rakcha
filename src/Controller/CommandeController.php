@@ -8,7 +8,6 @@ use App\Entity\Panier;;
 
 use App\Form\CommandeType;
 use App\Repository\CommandeRepository;
-use App\Repository\UsersRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -86,18 +85,16 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_commande_new', methods: ['POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
 
         $selectedItemIds = $request->query->get('selectedItemIds');
         $commande = new Commande();
-        $userId = 1;
-        $user = $usersRepository->findOneBy(['id' => $userId]);
         $form = $this->createForm(CommandeType::class, $commande);
         $form->handleRequest($request);
 
         $commande = $form->getData();
-        $commande->setIdclient($user);
+        $commande->setIdclient($this->getUser());
         $commande->setStatu('en cours');
         $commande->setDatecommande(new DateTime());
 

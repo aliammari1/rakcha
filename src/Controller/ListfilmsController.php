@@ -28,15 +28,14 @@ class ListfilmsController extends AbstractController
     #[Route('/listfilms', name: 'app_listfilms_index')]
     public function index(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyDnRG4BiN3i3A9d9hkjdqH8QeQ121bPRWk'));
+        $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         $averageRatings = array();
         $ratings = array();
         $seanceFilmMatrix = array();
         $categorys = $categoryRepository->findAll();
-        $urls = array();
-        ;
+        $urls = array();;
         // dd(phpinfo());
         //$qrCodes = array();
         foreach ($films as $film) {
@@ -83,15 +82,14 @@ class ListfilmsController extends AbstractController
     #[Route('/listfilms/bookmarks', name: 'app_film_bookmarks_index')]
     public function bookmarks(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
     {
-        $youtube = new Youtube(array('key' => 'AIzaSyDnRG4BiN3i3A9d9hkjdqH8QeQ121bPRWk'));
+        $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
         $films = $filmRepository->findBy(['isBookmarked' => true]);
         $videoUrls = array();
         $averageRatings = array();
         $ratings = array();
         $seanceFilmMatrix = array();
         $categorys = $categoryRepository->findAll();
-        $urls = array();
-        ;
+        $urls = array();;
         // dd(phpinfo());
         //$qrCodes = array();
         foreach ($films as $film) {
@@ -147,18 +145,18 @@ class ListfilmsController extends AbstractController
         // Generate QR code image
         return $writer->writeString($url);
     }
-    
+
     #[Route('/bookmark', name: 'app_bookmark_film')]
     public function bookmark(Request $request, FilmRepository $filmRepository, EntityManagerInterface $entityManager): Response
     {
         try {
-        $data = json_decode($request->getContent(), true);
-        $film = $filmRepository->findOneBy(['id' => $data["id"]]);
-        $film->setIsBookmarked($data["isBookmarked"]);
-        $entityManager->persist($film);
-        $entityManager->flush();
-        } catch(Exception $e) {
-            return new JsonResponse(["success" => false,"message"=> $e->getMessage()]);
+            $data = json_decode($request->getContent(), true);
+            $film = $filmRepository->findOneBy(['id' => $data["id"]]);
+            $film->setIsBookmarked($data["isBookmarked"]);
+            $entityManager->persist($film);
+            $entityManager->flush();
+        } catch (Exception $e) {
+            return new JsonResponse(["success" => false, "message" => $e->getMessage()]);
         }
         return new JsonResponse(["success" => true, 'bookmarked' => $film->getIsBookmarked()]);
     }
@@ -182,7 +180,7 @@ class ListfilmsController extends AbstractController
     }
     function searchImdb($filmName): string
     {
-        $search = new \Imdb\TitleSearch(null /* config */ , null /* logger */ , null);
+        $search = new \Imdb\TitleSearch(null /* config */, null /* logger */, null);
         $firstResultTitle = $search->search($filmName)[0];
         $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
         return $url;
@@ -250,7 +248,7 @@ class ListfilmsController extends AbstractController
     public function indexHome(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
 
-        $youtube = new Youtube(array('key' => 'AIzaSyCj9EOgQTfpnnY5MDwcp91FkmyfXp2k1KY'));
+        $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
         $films = $filmRepository->findAll();
         $videoUrls = array();
         $averageRatings = array();
@@ -274,5 +272,28 @@ class ListfilmsController extends AbstractController
         return $this->render('front/listactors.html.twig', [
             'actors' => $filmRepository->findAll(),
         ]);
+    }
+
+    #[Route('/seanceSeats', name: 'app_seance_seats_film')]
+    public function getSeatsBySeance(Request $request, SeanceRepository $seanceRepository): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            $seance = $seanceRepository->findOneBy(['idSeance' => $data['seanceId']]);
+            $seanceSeats = $seance->getIdSalle()->getSeats();
+            $seatsArray = [];
+
+            foreach ($seanceSeats as $seat) {
+                $seatsArray[] = [
+                    'id' => $seat->getId(),
+                    'status' => $seat->getStatut(),
+                    'prix' => $seance->getPrix()
+                ];
+            }
+
+        } catch (Exception $e) {
+            return $this->json(["success" => false, "message" => $e->getMessage()]);
+        }
+        return $this->json(["success" => true, 'seatsArray' => $seatsArray, 'data' => $data]);
     }
 }
