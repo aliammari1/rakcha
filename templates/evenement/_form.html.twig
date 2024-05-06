@@ -1,0 +1,51 @@
+{{ form_start(form) }}
+    <div class="form-group">
+        <label for="nom">Nom:</label>
+        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.nom) }}  {# Display errors for 'nom' field #}
+    </div>
+
+    <div class="form-group">
+        <label for="datedebut">Date Debut:</label>
+        {{ form_widget(form.datedebut, {'attr': {'class': 'form-control'}}) }}
+       
+    </div>
+
+    <div class="form-group">
+        <label for="datefin">Date Fin:</label>
+        {{ form_widget(form.datefin, {'attr': {'class': 'form-control'}}) }}
+        
+    </div>
+
+    <div class="form-group">
+        <label for="lieu">Lieu:</label>
+        {{ form_widget(form.lieu, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.lieu) }}  {# Display errors for 'lieu' field #}
+    </div>
+
+    <div class="form-group">
+        <label for="etat">Etat:</label>
+        {{ form_widget(form.etat, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.etat) }}  {# Display errors for 'etat' field #}
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description:</label>
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.description) }}  {# Display errors for 'description' field #}
+    </div>
+
+    <div class="form-group">
+        <label for="afficheEvent">Affiche Event:</label>
+        {{ form_widget(form.afficheEvent, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.afficheEvent) }}  {# Display errors for 'afficheEvent' field #}
+    </div>
+
+    <div class="form-group">
+        <label for="idCategorie">Categorie:</label>
+        {{ form_widget(form.idCategorie, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.idCategorie) }}  {# Display errors for 'idCategorie' field #}
+    </div>
+
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

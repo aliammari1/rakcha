@@ -1,0 +1,23 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Edit Evenement{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4"><i class="fas fa-edit text-primary mr-2"></i>Edit Evenement</h1>
+
+        <div class="card shadow-lg border-primary">
+            <div class="card-body">
+                {{ include('evenement/_form.html.twig', {'button_label': 'Update'}) }}
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_evenement_affichback') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left mr-2"></i>Back to List
+            </a>
+
+            {{ include('evenement/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

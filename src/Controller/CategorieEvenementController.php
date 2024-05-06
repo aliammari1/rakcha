@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\CategorieEvenement;
 use App\Form\CategorieEvenementType;
-use App\Repository\CategorieEvenementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +14,25 @@ use Symfony\Component\Routing\Annotation\Route;
 class CategorieEvenementController extends AbstractController
 {
     #[Route('/', name: 'app_categorie_evenement_index', methods: ['GET'])]
-    public function index(CategorieEvenementRepository $categorieEvenementRepository): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $categorieEvenements = $entityManager
+            ->getRepository(CategorieEvenement::class)
+            ->findAll();
+
         return $this->render('categorie_evenement/index.html.twig', [
-            'categorie_evenements' => $categorieEvenementRepository->findAll(),
+            'categorie_evenements' => $categorieEvenements,
+        ]);
+    }
+     #[Route('/affichback', name: 'app_categorie_evenement_affichback', methods: ['GET'])]
+    public function affichback(EntityManagerInterface $entityManager): Response
+    {
+        $categorieEvenements = $entityManager
+            ->getRepository(CategorieEvenement::class)
+            ->findAll();
+
+        return $this->render('categorie_evenement/affichback.html.twig', [
+            'categorie_evenements' => $categorieEvenements,
         ]);
     }
 

@@ -13,15 +13,15 @@ class CommentaireProduit
     #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
     private ?int $id = null;
 
-    
-   
-    #[ORM\ManyToOne(targetEntity: Users::class)]
-    #[ORM\JoinColumn(name: 'id_client_id', referencedColumnName: 'id')]
-    private ?Users $idClient ;
 
-    
+
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(name: 'id_client_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private ?Users $idClient;
+
+
     #[ORM\Column(name: 'commentaire', type: 'string', length: 255)]
-    private ?string $commentaire ;
+    private ?string $commentaire;
 
     #[ORM\ManyToOne(targetEntity: Produit::class)]
     #[ORM\JoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
@@ -30,7 +30,6 @@ class CommentaireProduit
 
     public function __construct()
     {
-        
     }
 
     public function getId(): ?int
@@ -38,7 +37,7 @@ class CommentaireProduit
         return $this->id;
     }
 
-   
+
 
     public function getIdClient(): ?Users
     {

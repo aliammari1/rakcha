@@ -10,22 +10,32 @@
 		<link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet"/>
 		<link href="{{ asset('css/global.css') }}" rel="stylesheet"/> {% block pageStyle %}{% endblock %}
 		<link href="https://fonts.googleapis.com/css2?family=Rajdhani&amp;display=swap" rel="stylesheet"/>
-		<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>  <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+		 <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+		 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+		<link
+		rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>  <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
 		<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css"/>
 		<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css"/>
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js" type="text/javascript"></script>
-		<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/locales/LANG.js"></script>
-	</head>
+		 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		 <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js" type="text/javascript"></script>
+		 <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
+		 <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/locales/LANG.js"></script>
+			<style>
+.footer_li1 {
+	margin-left: 500px;
+}
+.footer_2i {
+	margin-left: 950px;
+	margin-top: -110px;
+	width: 100%;
+}
+	</style>
 
-	{% block body %}
-		{% block header %}
-			<section id="top">
-				<div class="container">
-					<div class="row top_1">
+	</head>
+		{% block body %}
+			{% block header %}
+				<section id="top"> <div class="container">
+					<div class="row top_1 d-flex justify-content-evenly">
 						<div class="col-md-3">
 							<div class="top_1l pt-1">
 								<h3 class="mb-0">
@@ -36,36 +46,50 @@
 								</h3>
 							</div>
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-5 d-flex align-items-center justify-content-center">
 							<div class="top_1m">
 								<div class="input-group">
 									<label>
-										<input class="form-control bg-black" placeholder="Search Site..." type="text"/>
+										<input style="width: 20vw;" class="form-control bg-black" placeholder="Search Site..." type="text"/>
 									</label>
 									<span class="fa fa-search" style="width: 43px;display: flex;align-items: center;justify-content: center;background: #383838;"></span>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<div class="top_1r text-end">
-								<ul class="social-network social-circle mb-0">
-									<li>
-										<a class="icoRss" href="#" title="Rss"></a>
-									</li>
-									<li>
-										<a class="icoFacebook" href="#" title="Facebook"></a>
-									</li>
-									<li>
-										<a class="icoTwitter" href="#" title="Twitter"></a>
-									</li>
-									<li>
-										<a class="icoGoogle" href="#" title="Google +"></a>
-									</li>
-									<li>
-										<a class="icoLinkedin" href="#" title="Linkedin"></a>
-									</li>
-								</ul>
-							</div>
+						<div class="col-md-1">
+							{% if is_granted('ROLE_USER') %}
+								<div class="d-flex justify-content-center align-items-center">
+									<div class="dropdown-center ms-4">
+										<img src="{{asset(app.user.photoDeProfil)}}" class="rounded-circle" alt="Profile Picture" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="width: 60px; height: 60px;">
+
+										<ul class="dropdown-menu">
+											<li>
+												<a class="dropdown-item" href="{{path('app_profile_index',{'id':app.user.id})}}">profile</a>
+											</li>
+											<li>
+												<a class="dropdown-item" href="{{path('app_logout')}}">logout</a>
+											</li>
+										</ul>
+									</div>
+									<a href="{{ path('app_panier_liste') }}" class="ms-4">
+										<i class="fa fa-shopping-cart fa-2x"></i>
+									</a>
+									
+								</div>
+							{% else %}
+								<div class="d-flex">
+									<a href="{{path('app_login')}}" class="me-4">
+										<button class="btn btn-danger">
+											login
+										</button>
+									</a>
+									<a href="{{path('app_register')}}">
+										<button class="btn btn-danger">
+											register
+										</button>
+									</a>
+								</div>
+							{% endif %}
 						</div>
 					</div>
 				</div>
@@ -92,6 +116,13 @@
 									<a class="nav-link" href="{{ path('app_produit_liste') }}">Products</a>
 								</li>
 								<li class="nav-item">
+									<a class="nav-link" href="{{ path('app_series_liste') }}">Series</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="{{ path('app_evenement_index') }}">Events</a>
+								</li>
+
+								<li class="nav-item">
 									<a class="nav-link" href="">{{ 'Contact Us' }}</a>
 								</li>
 							</ul>
@@ -107,177 +138,141 @@
 					<div class="container">
 						<div class="row footer_1">
 							<div class="col-md-4">
+								<div class="footer_li1">
+									<a href="#"><img src="{{ asset('img/Logo.png') }}" height="400" width="400" alt="img25"></a>
+								</div>
 								<div class="footer_1i">
-									<h3>
-										<a class="text-white" href="{{ path('app_home_index') }}">
-											<i class="fa fa-video-camera col_red me-1"></i>
-											Rakcha</a>
-									</h3>
-									<p class="mt-3">Lorem ipsum dolor sit amet consect etur adi pisicing elit sed do eiusmod
-																				                                    tempor incididunt. Lorem ipsum dolor sit amet consect etur.
+									<p class="mt-3">Discover our website, Rakcha, conveniently located at our address. For assistance or inquiries, feel free to reach us at our telephone number
+																																																																			      																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										                                    tempor incididunt. Lorem ipsum dolor sit amet consect etur.
 									</p>
+								</div>
+								<div class="footer_2i">
 									<h6 class="fw-normal">
 										<i class="fa fa-map-marker fs-5 align-middle col_red me-1"></i>
-										5311 Ceaver Sidge Td.
-																				                                    Pakland, DE 13507</h6>
-									<h6 class="fw-normal mt-3">
-										<i class="fa fa-envelope fs-5 align-middle col_red me-1"></i>
-										info@gmail.com</h6>
-									<h6 class="fw-normal mt-3 mb-0">
-										<i class="fa fa-phone fs-5 align-middle col_red me-1"></i>
-										+123 123 456</h6>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="footer_1i">
-									<h4>{{ 'FlickrStream' }}</h4>
-									<div class="footer_1i1 row mt-4">
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="footer_1i1 row mt-3">
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-										<div class="col-md-3 col-3">
-											<div class="footer_1i1i">
-												<div class="grid clearfix">
-													<figure class="effect-jazz mb-0">
-														<a href="#"></a>
-													</figure>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="footer_1i">
-									<h4>{{ 'SignNewsletter' }}</h4>
-									<p class="mt-3">{{ 'Subscribe to our newsletter list to get latest news and updates from us' }}</p>
-									<div class="input-group">
-										<label>
-											<input class="form-control bg-black" placeholder="Email" type="text"/>
-										</label>
-										<span class="input-group-btn">{{ 'Subscribe' }}</span>
-									</div>
-									<ul class="social-network social-circle mb-0 mt-4">
-										<li>
-											<a class="icoRss" href="#" title="Rss"></a>
-										</li>
-										<li>
-											<a class="icoFacebook" href="#" title="Facebook"></a>
-										</li>
-										<li>
-											<a class="icoTwitter" href="#" title="Twitter"></a>
-										</li>
-										<li>
-											<a class="icoGoogle" href="#" title="Google +"></a>
-										</li>
-										<li>
-											<a class="icoLinkedin" href="#" title="Linkedin"></a>
-										</li>
-									</ul>
-								</div>
+										Ariana Soghra Esprit.
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																													                                    Pakland, DE 13507</h6>
+									<i class="fa fa-envelope fs-5 align-middle col_red me-1"></i>
+									Rakcha@gmail.com</h6>
+								<h6 class="fw-normal mt-3 mb-0">
+									<i class="fa fa-phone fs-5 align-middle col_red me-1"></i>
+									+216 29201398</h6>
 							</div>
 						</div>
-					</div>
-				</div>
-			</section>
-			<section class="pt-3 pb-3 bg_grey" id="footer_b">
-				<div class="container">
-					<div class="row footer_1">
-						<div class="col-md-8">
-							<div class="footer_1l">
-								<p class="mb-0">{{ '© 2013 Your Website Name. All Rights Reserved | Design byTemplateOnWeb' }}</p>
-							</div>
-						</div>
-						<div class="col-md-4">
-							<div class="footer_1r">
-								<ul class="mb-0">
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Home' }}</a>
-									</li>
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Features' }}</a>
-									</li>
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Pages' }}</a>
-									</li>
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Portfolio' }}</a>
-									</li>
-									<li class="d-inline-block me-2">
-										<a href="#">{{ 'Blog' }}</a>
-									</li>
-									<li class="d-inline-block">
-										<a href="#">{{ 'Contact' }}</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-		{% endblock %}
-	{% endblock %}
+						<di class="col-md-4">
+							<div class="footer_1i">
 
-</html>
+								<div class="footer_1i1 row mt-4">
+									<div class="col-md-3 col-3">
+										<div class="footer_1i1i">
+											<div class="grid clearfix">
+												<figure class="effect-jazz mb-0">
+													<a href="#"></a>
+												</figure>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3 col-3">
+										<div class="footer_1i1i">
+											<div class="grid clearfix">
+												<figure class="effect-jazz mb-0">
+													<a href="#"></a>
+												</figure>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3 col-3">
+										<div class="footer_1i1i">
+											<div class="grid clearfix">
+												<figure class="effect-jazz mb-0">
+													<a href="#"></a>
+												</figure>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3 col-3">
+										<div class="footer_1i1i">
+											<div class="grid clearfix">
+												<figure class="effect-jazz mb-0">
+													<a href="#"></a>
+												</figure>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="footer_1i1 row mt-3">
+									<div class="col-md-3 col-3">
+										<div class="footer_1i1i">
+											<div class="grid clearfix">
+												<figure class="effect-jazz mb-0">
+													<a href="#"></a>
+												</figure>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3 col-3">
+										<div class="footer_1i1i">
+											<div class="grid clearfix">
+												<figure class="effect-jazz mb-0">
+													<a href="#"></a>
+												</figure>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3 col-3">
+										<div class="footer_1i1i">
+											<div class="grid clearfix">
+												<figure class="effect-jazz mb-0">
+													<a href="#"></a>
+												</figure>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-3 col-3">
+										<div class="footer_1i1i">
+											<div class="grid clearfix">
+												<figure class="effect-jazz mb-0">
+													<a href="#"></a>
+												</figure>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</di</div>
+					</div>
+				</div>
+			</html>
+		</html>
+	</div>
+</html></html></section><section class="pt-3 pb-3 bg_grey" id="footer_b"><div class="container">
+<div class="row footer_1">
+	<div class="col-md-8">
+		<div class="footer_1l">
+			<p class="mb-0">{{ '© 2013 Your Website Name. All Rights Reserved | Design byTemplateOnWeb' }}</p>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="footer_1r">
+			<ul class="mb-0">
+				<li class="d-inline-block me-2">
+					<a href="#">{{ 'Home' }}</a>
+				</li>
+				<li class="d-inline-block me-2">
+					<a href="#">{{ 'Features' }}</a>
+				</li>
+				<li class="d-inline-block me-2">
+					<a href="#">{{ 'Pages' }}</a>
+				</li>
+				<li class="d-inline-block me-2">
+					<a href="#">{{ 'Portfolio' }}</a>
+				</li>
+				<li class="d-inline-block me-2">
+					<a href="#">{{ 'Blog' }}</a>
+				</li>
+				<li class="d-inline-block">
+					<a href="#">{{ 'Contact' }}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div></div></section>{% endblock %}{% endblock %}</html>

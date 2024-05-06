@@ -1,104 +1,97 @@
 <!DOCTYPE html>
 
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-    <link href="{{ asset('img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
-    <link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png"/>
-    <title>
-        Rakcha
-    </title>
-    <!--     Fonts and icons     -->
-    <link
-            href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
-    <!-- Nucleo Icons -->
-    <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
-    <!-- Font Awesome Icons -->
-    <script crossorigin="anonymous" src="https://kit.fontawesome.com/42d5adcbca.js"></script>
-    <link
-            href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
-    <link href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
-</head>
-<body class="container position-sticky z-index-sticky top-0">
-<div class="row">
-    <div
-            class="col-12">
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
-            <div class="container-fluid">
-                <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3"
-                   href="{{ path('app_home_index') }}">{{ 'Rakcha' }}</a>
-                <button aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation"
-                        class="navbar-toggler shadow-none ms-2" data-bs-target="#navigation" data-bs-toggle="collapse"
-                        type="button">
-                    <span class="navbar-toggler-icon mt-2"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navigation">
-                    <ul class="navbar-nav mx-auto">
+	<head>
+		<meta charset="utf-8"/>
+		<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+		<link href="{{ asset('img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
+		<link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png"/>
+		<title>
+			Rakcha
+		</title>
+		<!--     Fonts and icons     -->
+		<link
+		href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+		<!-- Nucleo Icons -->
+		<link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet">
+		<link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
+		<!-- Font Awesome Icons -->
+		 <script crossorigin="anonymous" src="https://kit.fontawesome.com/42d5adcbca.js"></script>
+		<link
+		href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
+		<link href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
+	</head>
+	<body class="container position-sticky z-index-sticky top-0">
+		<div class="row">
+			<div
+				class="col-12">
+				<!-- Navbar -->
+				<nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
+					<div class="container-fluid">
+						<a class="navbar-brand font-weight-bolder ms-lg-0 ms-3" href="{{ path('app_home_index') }}">{{ 'Rakcha' }}</a>
+						<button aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler shadow-none ms-2" data-bs-target="#navigation" data-bs-toggle="collapse" type="button">
+							<span class="navbar-toggler-icon mt-2"></span>
+						</button>
+						<div class="collapse navbar-collapse" id="navigation">
+							<ul class="navbar-nav mx-auto">
 
-                        {% set items = ['Users', 'Register', 'Login'] %}
-                        {% set pathItems = [path('app_users_index'),path('app_register'),path('app_login')] %}
-                        {% for i in range(0, items|length - 1) %}
-                            <li class="nav-item">
-                                <a class="nav-link me-2" href="{{ pathItems[i] }}">{{ items[i] }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <!-- End Navbar -->
-    </div>
-</div>
-<main class="main-content mt-0">
-    <section>
-        <div class="page-header min-vh-100">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
-                        <div class="card card-plain">
-                            <div class="card-header pb-0 text-start">
-                                <h4 class="font-weight-bolder">{{ 'Sign In' }}</h4>
-                                <p class="mb-0">
-                                    {{ 'Enter your email and password to sign in' }}
-                                </p>
-                            </div>
-                            <video id="video" width="600" height="450" autoplay></video>
+								{% set items = ['Users', 'Register', 'Login'] %}
+								{% set pathItems = [path('app_users_index'),path('app_register'),path('app_login')] %}
+								{% for i in range(0, items|length - 1) %}
+									<li class="nav-item">
+										<a class="nav-link me-2" href="{{ pathItems[i] }}">{{ items[i] }}</a>
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</nav>
+				<!-- End Navbar -->
+			</div>
+		</div>
+		<main class="main-content mt-0">
+			<section>
+				<div class="page-header min-vh-100">
+					<div class="container">
+						<div class="row">
+							<div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
+								<div class="card card-plain">
+									<div class="card-header pb-0 text-start">
+										<h4 class="font-weight-bolder">{{ 'Sign In' }}</h4>
+										<p class="mb-0">
+											{{ 'Enter your email and password to sign in' }}
+										</p>
+									</div>
+									<video id="video" width="600" height="450" autoplay></video>
 
-                            <div class="card-body">
-                                {% if error_message %}
-                                    <div class="alert alert-danger">
-                                        {{ error_message.messageKey|trans(error_message.messageData,'security') }}
-                                    </div>
-                                {% endif %}
-                                <form method="post" role="form">
-                                    <div class="mb-3">
-                                        <input id="email" aria-label="Email" autofocus=""
-                                               class="form-control form-control-lg" name="email" placeholder="Email"
-                                               required="" type="email" value="{{ last_username }}"/>
-                                    </div>
-                                    <div class="mb-3">
-                                        <input id="password" aria-label="Password" class="form-control form-control-lg"
-                                               name="password" placeholder="Password" required="" type="password"/>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <label for="rememberMe"></label><input class="form-check-input" id="rememberMe"
-                                                                               name="_remember_me" type="checkbox"/>
-                                        <label class="form-check-label" for=" rememberMe">Remember me</label>
-                                    </div>
-                                    <input name="_csrf_token" type="hidden" value="{{ csrf_token('authenticate') }}"/>
-                                    <div class="text-center">
-                                        <button class="btn btn-lg btn-danger btn-lg w-100 mt-4 mb-0" type="submit">Sign
-                                            in
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="card-footer text-center pt-0 px-lg-2 px-1">
-                                <p class="mb-4 text-sm mx-auto">
-                                    {{ 'Don\'t have an account? Sign up' }}
+									<div class="card-body">
+										{% if error_message %}
+											<div class="alert alert-danger">
+												{{ error_message.messageKey|trans(error_message.messageData,'security') }}
+											</div>
+										{% endif %}
+										<form method="post" role="form">
+											<div class="mb-3">
+												<input id="email" aria-label="Email" autofocus="" class="form-control form-control-lg" name="email" placeholder="Email" required="" type="email" value="{{ last_username }}"/>
+											</div>
+											<div class="mb-3">
+												<input id="password" aria-label="Password" class="form-control form-control-lg" name="password" placeholder="Password" required="" type="password"/>
+											</div>
+											<div class="form-check form-switch">
+												<label for="rememberMe"></label><input class="form-check-input" id="rememberMe" name="_remember_me" type="checkbox"/>
+												<label class="form-check-label" for=" rememberMe">Remember me</label>
+											</div>
+											<input name="_csrf_token" type="hidden" value="{{ csrf_token('authenticate') }}"/>
+											<div class="text-center">
+												<button class="btn btn-lg btn-danger btn-lg w-100 mt-4 mb-0" type="submit">Sign
+																																																																																																																																																																																																																																																																																																																																																																																									                                            in
+												</button>
+											</div>
+										</form>
+									</div>
+									<div class="card-footer text-center pt-0 px-lg-2 px-1">
+										<p class="mb-4 text-sm mx-auto">
+											{{ 'Don\'t have an account? Sign up' }}
                                 </p>
                             </div>
                         </div>
@@ -117,115 +110,154 @@
     </section>
 </main>
 <!--   Core JS Files   -->
-<script src="{{ asset('js/core/popper.min.js') }}"></script>
-<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
-<script src="{{ asset('js/face-api.min.js') }}"></script>
-<script>
+                             <script src="{{ asset('js/core/popper.min.js') }}"></script>
+                             <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+                             <script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
+                             <script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+                             <script src="{{ asset('js/face-api.min.js') }}"></script>
+                             <script>
 
     const video = document.getElementById("video");
     const email = document.getElementById("email");
     const password = document.getElementById("password");
-    Promise.all([
-        faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
-        faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
-        faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-    ]).then(startWebcam);
 
-    function startWebcam() {
-        navigator.mediaDevices
-            .getUserMedia({
-                video: true,
-                audio: false,
-            })
-            .then((stream) => {
-                video.srcObject = stream;
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
-    function getLabeledFaceDescriptions() {
-        let usersData = [];
-        {% for user in users %}
-        usersData.push({
-            photoDeProfil: "{{ user.photoDeProfil }}",
-            nom: "{{ user.nom }}",
-            prenom: "{{ user.prenom }}",
-            email: "{{ user.email }}",
-            password: "{{ user.password }}",
-        });
-        {% endfor %}
-        return Promise.all(
-            usersData.map(async (userData) => {
-                const descriptions = [];
-                const img = await faceapi.fetchImage(userData.photoDeProfil);
-                const detections = await faceapi
-                    .detectSingleFace(img)
-                    .withFaceLandmarks()
-                    .withFaceDescriptor();
-                descriptions.push(detections.descriptor);
-                return new faceapi.LabeledFaceDescriptors(userData.nom + " " + userData.prenom + " " + userData.email + " " + userData.password, descriptions);
-            })
-        );
-    }
-
-    video.addEventListener("play", async () => {
-        const labeledFaceDescriptors = await getLabeledFaceDescriptions();
-        const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
-
-        const canvas = faceapi.createCanvasFromMedia(video);
-        document.body.append(canvas);
-
-        const displaySize = {width: video.width, height: video.height};
-        faceapi.matchDimensions(canvas, displaySize);
-
-        let intervalId = setInterval(async () => {
-            const detections = await faceapi
-                .detectAllFaces(video)
-                .withFaceLandmarks()
-                .withFaceDescriptors();
-            const resizedDetections = faceapi.resizeResults(
-                detections,
-                displaySize
-            );
-
-            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-
-            const results = resizedDetections.map((d) => {
-                return faceMatcher.findBestMatch(d.descriptor);
-            });
-            results.forEach((result, i) => {
-                const box = resizedDetections[i].detection.box;
-                const drawBox = new faceapi.draw.DrawBox(box, {
-                    label: result.toString(),
-                });
-                const userData = result.label.split(" ");
-                if (result.distance < 0.6) {
-                    clearInterval(intervalId); // clear the interval
-                    window.location.href = "/login?email=" + encodeURIComponent(userData[2]) + "&password=" + encodeURIComponent(userData[3]);
-                }
-                email.value = userData[2];
-                password.value = userData[3];
-                drawBox.draw(canvas);
-            });
-        }, 100);
-    });
-</script>
-<script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-        var options = {
-            damping: '0.5'
-        }
-        Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
+	Promise.all([
+	  faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+	  faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+	  faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+	]).then(startWebcam);
+	
+	function startWebcam() {
+	  navigator.mediaDevices
+		.getUserMedia({
+		  video: true,
+		  audio: false,
+		})
+		.then((stream) => {
+		  video.srcObject = stream;
+		})
+		.catch((error) => {
+		  console.error(error);
+		});
+	}
+	
+	function getLabeledFaceDescriptions() {
+		const labels = [];
+		{% for user in users %}
+			labels.push("{{ user.photoDeProfil }}");
+		{% endfor %}
+	  return Promise.all(
+		labels.map(async (label) => {
+		  const descriptions = [];
+			const img = await faceapi.fetchImage(label);
+			let detections;
+			do {
+				 detections = await faceapi
+					.detectSingleFace(img)
+					.withFaceLandmarks()
+					.withFaceDescriptor();
+			} while (!detections);
+			descriptions.push(detections.descriptor);
+		  return new faceapi.LabeledFaceDescriptors(label, descriptions);
+		})
+	  );
+	}
+	
+	video.addEventListener("play", async () => {
+	  const labeledFaceDescriptors = await getLabeledFaceDescriptions();
+	  const faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors);
+	
+	  const canvas = faceapi.createCanvasFromMedia(video);
+	  document.body.append(canvas);
+	
+	  const displaySize = { width: video.width, height: video.height };
+	  faceapi.matchDimensions(canvas, displaySize);
+	
+	  setInterval(async () => {
+		const detections = await faceapi
+		  .detectAllFaces(video)
+		  .withFaceLandmarks()
+		  .withFaceDescriptors();
+	
+		const resizedDetections = faceapi.resizeResults(detections, displaySize);
+	
+		canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+	
+		const results = resizedDetections.map((d) => {
+		  return faceMatcher.findBestMatch(d.descriptor);
+		});
+		results.forEach((result, i) => {
+		  const box = resizedDetections[i].detection.box;
+		  const drawBox = new faceapi.draw.DrawBox(box, {
+			label: result,
+		  });
+		  drawBox.draw(canvas);
+		});
+	  }, 100);
+	});
+    
 </script>
 <!-- Github buttons -->
-<script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+                             <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
+                             <script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
 </body>
 </html>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
+ 
+										</p>
