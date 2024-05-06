@@ -15,11 +15,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/users')]
 class UsersController extends AbstractController
 {
 
-    #[Route('/', name: 'app_users_index', methods: ['GET', 'POST'])]
+    #[Route('/usersDash', name: 'app_users_index', methods: ['GET', 'POST'])]
     public function index(UsersRepository $usersRepository, EntityManagerInterface $em, PaginatorInterface $paginator, Request $request): Response
     {
         $form = $this->createForm(AdminFormType::class, new Users());
@@ -42,7 +41,7 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/{id}', name: 'app_profile_index', methods: ['GET', 'POST'])]
+    #[Route('/users/profile/{id}', name: 'app_profile_index', methods: ['GET', 'POST'])]
     public function userProfile($id, UsersRepository $usersRepository, FriendshipsRepository $friendshipsRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $usersRepository->find($id);
@@ -65,7 +64,7 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_users_new', methods: ['GET', 'POST'])]
+    #[Route('/users/new', name: 'app_users_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, UsersRepository $usersRepository, PaginatorInterface $paginator, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = new Users();
@@ -113,7 +112,7 @@ class UsersController extends AbstractController
                 case 'admin':
                     $user->setRoles(['ROLE_ADMIN']);
                     break;
-                case 'responsableDeCinema':
+                case 'responsable de cinema':
                     $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
                     break;
             }
@@ -132,13 +131,13 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_users_show', methods: ['GET'])]
+    #[Route('/users/{id}', name: 'app_users_show', methods: ['GET'])]
     public function show(Users $user): Response
     {
         return new Response("<h1>show</h1>");
     }
 
-    #[Route('/{id}/edit/{formUpdateNumber}/', name: 'app_users_edit', methods: ['GET', 'POST'])]
+    #[Route('/users/{id}/edit/{formUpdateNumber}/', name: 'app_users_edit', methods: ['GET', 'POST'])]
     public function edit($formUpdateNumber, Request $request, Users $user, EntityManagerInterface $entityManager, UsersRepository $usersRepository, PaginatorInterface $paginator, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $updateForms = array();
@@ -182,7 +181,7 @@ class UsersController extends AbstractController
                 $user->setRoles(['ROLE_CLIENT']);
             else if ($user->getRole() == 'admin')
                 $user->setRoles(['ROLE_ADMIN']);
-            else if ($user->getRole() == 'responsableDeCinema')
+            else if ($user->getRole() == 'responsable de cinema')
                 $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
 
             $entityManager->flush();
@@ -203,7 +202,7 @@ class UsersController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_users_delete', methods: ['POST'])]
+    #[Route('/users/{id}', name: 'app_users_delete', methods: ['POST'])]
     public function delete(Request $request, Users $user, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {

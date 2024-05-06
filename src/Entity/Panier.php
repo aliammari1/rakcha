@@ -16,7 +16,7 @@ class Panier
 {
     #[ORM\Column(name: 'idpanier', type: 'integer', nullable: false)]
     #[ORM\Id]
-    
+
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idpanier;
 
@@ -25,7 +25,7 @@ class Panier
     private ?Produit $idproduit;
 
     #[ORM\ManyToOne(targetEntity: Users::class)]
-    #[ORM\JoinColumn(name: 'idClient', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'idClient', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Users $idclient;
 
     #[ORM\Column(name: 'quantite', type: 'integer', nullable: true)]
@@ -35,7 +35,7 @@ class Panier
     {
         return $this->idpanier;
     }
-    
+
 
     public function getIdproduit(): ?Produit
     {

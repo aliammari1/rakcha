@@ -58,7 +58,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[ORM\Column(name: 'role', type: 'string', length: 50)]
     #[Assert\NotBlank(message: 'The role cannot be blank')]
     #[Assert\NotNull(message: 'The role cannot be null')]
-    #[Assert\Choice(choices: ['admin', 'client'], message: 'Invalid role. Choose either "admin" or "client".')]
+    #[Assert\Choice(choices: ['admin', 'client', 'responsable de cinema'], message: 'Invalid role. Choose either "admin" or "client" or "responsable de cinema".')]
     #[Assert\Type(type: 'string', message: 'The role must be a string')]
     private string $role;
 
@@ -90,6 +90,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[ORM\Column(name: 'photo_de_profil', type: 'string', length: 255, nullable: true)]
     private ?string $photoDeProfil = null;
 
+
+    #[ORM\OneToMany(mappedBy: 'idClient', targetEntity: CommentaireProduit::class)]
+    #[ORM\JoinColumn(name: 'id_client', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    private Collection $idComm;
+
+
+    
+
     /**
      * @var Collection<int, Cinema>
      */
@@ -105,11 +113,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[ORM\ManyToMany(targetEntity: Seance::class, inversedBy: 'idUser')]
     private Collection $idSeance;
 
-    /**
-     * @var Collection<int, Produit>
-     */
-    #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'idClient')]
-    private Collection $idProduit;
 
 
     #[ORM\Column(name: 'is_verified', type: 'boolean')]
@@ -146,14 +149,44 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
 
     public function __construct()
     {
+        $this->idComm = new ArrayCollection();
         $this->numTelephone = null;
         $this->adresse = null;
         $this->dateDeNaissance = null;
         $this->idCinema = new ArrayCollection();
         $this->idSeance = new ArrayCollection();
-        $this->idProduit = new ArrayCollection();
         $this->incomingFriendRequests = new ArrayCollection();
         $this->sentFriendRequests = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection<int, CommentaireProduit>
+     */
+    public function getIdComm(): Collection
+    {
+        return $this->idComm;
+    }
+
+    public function addIdComm(CommentaireProduit $idComm): static
+    {
+        if (!$this->idComm->contains($idComm)) {
+            $this->idComm->add($idComm);
+            $idComm->setIdClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdComm(CommentaireProduit $idComm): static
+    {
+        if ($this->idComm->removeElement($idComm)) {
+            // set the owning side to null (unless already changed)
+            if ($idComm->getIdClient() === $this) {
+                $idComm->setIdClient(null);
+            }
+        }
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -309,32 +342,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
         return $this;
     }
 
-    /**
-     * @return Collection<int, Produit>
-     */
-    public function getIdProduit(): Collection
-    {
-        return $this->idProduit;
-    }
-
-    public function addIdProduit(Produit $idProduit): static
-    {
-        if (!$this->idProduit->contains($idProduit)) {
-            $this->idProduit->add($idProduit);
-            $idProduit->addIdClient($this);
-        }
-
-        return $this;
-    }
-
-    public function removeIdProduit(Produit $idProduit): static
-    {
-        if ($this->idProduit->removeElement($idProduit)) {
-            $idProduit->removeIdClient($this);
-        }
-
-        return $this;
-    }
 
 
 
@@ -419,7 +426,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     {
         return $this->isVerified;
     }
-    
+
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $totpSecret;
 

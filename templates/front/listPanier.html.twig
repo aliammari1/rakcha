@@ -1,679 +1,664 @@
 {% extends 'baseFront.html.twig' %}
 
-    {% block pageStyle %}
-            <link href="" rel="stylesheet">
-    
-    <style>
-        .cardpanier {
-            position: relative; /* Ajoutez une position relative au parent */
-            width: 620px;
-            height: 150px;
-            background: #191a1d;
-            padding: 0.3em;
-            border-radius: 6px;
-            
-          }
-       
-    
-          
-          .cardpanier-image {
-            background-color: rgb(236, 236, 236);
-            width: 180px;
-            height: 140px;
-            border-radius: 6px 6px 0 0;
-          }
-          
-          .cardpanier-image:hover {
-            transform: scale(0.98);
-          }
-          
-          .categorypanier {
-            text-transform: uppercase;
-            font-size: 20px;
-            font-weight: 600;
-            color:  rgb(168, 7, 7);
-            padding: 10px 0px ;
-        
-           
-          }
-          
-          .categorypanier:hover {
-            cursor: pointer;
-          }
-          
-          .headingpanier {
-            font-weight: 600;
-            color: rgb(88, 87, 87);
-            padding: 0px 220px;
-          }
-          
-          .headingpanier:hover {
-            cursor: pointer;
-          }
-          
-          .authorpanier {
-            color: white;
-            font-weight: 400;
-            font-size: 18px;
-            padding-top: 0px 200px;
-            
-          }
-          
-          .namepanier {
-            font-weight: 600;
-          }
-          
-          .namepanier:hover {
-            cursor: pointer;
-          }   
-     /*delete button*/
-          
-     .btndelete {
-        background-color: transparent;
-        position: relative;
-        border: none;
-        left: 370px; /* Déplacé à droite */
-        top: -20px;
-    }
-    
-    .btndelete::after {
-        content: 'delete';
-        position: absolute;
-        top: -130%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: fit-content;
-        height: fit-content;
-        background-color: rgb(168, 7, 7);
-        padding: 4px 4px;
-        border-radius: 5px;
-        transition: .2s linear;
-        transition-delay: .2s;
-        color: white;
-        text-transform: uppercase;
-        font-size: 12px;
-        opacity: 0;
-        visibility: hidden;
-    }
-    
-    .icondelete {
-        transform: scale(1.2);
-        transition: .2s linear;
-    }
-    
-    .btndelete:hover::after { /* Changé .delete à .btndelete */
-        visibility: visible;
-        opacity: 1;
-        top: -160%;
-    }
-    
-    .btndelete:hover > .icondelete { /* Changé .icon à .icondelete */
-        transform: scale(1.5);
-    }
-    
-    .btndelete:hover > .icondelete path { /* Changé .icon à .icondelete */
-        fill: rgb(168, 7, 7);
-    }
-    
-    /*checknox*/
-    
-    .checkbox-wrapper-46 {
-        position: absolute;
-        top: 0px;
-        right:0px;
-        margin: 5px; /* Ajoute une marge pour l'esthétique */
-    }
-    
-    .checkbox-wrapper-46 input[type="checkbox"] {
-      display: none;
-      visibility: hidden;
-    }
-    
-    .checkbox-wrapper-46 .cbx {
-      margin: auto;
-      -webkit-user-select: none;
-      user-select: none;
-      cursor: pointer;
-    }
-    .checkbox-wrapper-46 .cbx span {
-      display: inline-block;
-      vertical-align: middle;
-      transform: translate3d(0, 0, 0);
-    }
-    .checkbox-wrapper-46 .cbx span:first-child {
-      position: relative;
-      width: 18px;
-      height: 18px;
-      border-radius: 3px;
-      transform: scale(1);
-      vertical-align: middle;
-      border: 1px solid #9098a9;
-      transition: all 0.2s ease;
-    }
-    .checkbox-wrapper-46 .cbx span:first-child svg {
-      position: absolute;
-      top: 3px;
-      left: 2px;
-      fill: none;
-      stroke: #ffffff;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 16px;
-      stroke-dashoffset: 16px;
-      transition: all 0.3s ease;
-      transition-delay: 0.1s;
-      transform: translate3d(0, 0, 0);
-    }
-    .checkbox-wrapper-46 .cbx span:first-child:before {
-      content: "";
-      width: 100%;
-      height: 100%;
-      background: #506eec;
-      display: block;
-      transform: scale(0);
-      opacity: 1;
-      border-radius: 50%;
-    }
-    .checkbox-wrapper-46 .cbx span:last-child {
-      padding-left: 8px;
-    }
-    .checkbox-wrapper-46 .cbx:hover span:first-child {
-        border-color: #ff0000; /* Changer la couleur en rouge */
-    }
-    
-    .checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child {
-        background: #ff0000; /* Changer la couleur en rouge */
-        border-color: #ff0000; /* Changer la couleur en rouge */
-      animation: wave-46 0.4s ease;
-    }
-    .checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child svg {
-      stroke-dashoffset: 0;
-    }
-    .checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child:before {
-      transform: scale(3.5);
-      opacity: 0;
-      transition: all 0.6s ease;
-    }
-    
-    @keyframes wave-46 {
-      50% {
-        transform: scale(0.9);
-      }
-    }
-    
-    /* commande*/
-    
-    .fancy {
-     background-color: transparent;
-     border: 2px solid #000;
-     border-radius: 0;
-     box-sizing: border-box;
-     color: red;
-     border-color: rgb(168, 7, 7);
-     cursor: pointer;
-     display: inline-block;
-     float: right;
-     font-weight: 700;
-     letter-spacing: 0.05em;
-     margin: 0;
-     outline: none;
-     overflow: visible;
-     padding: 1.25em 2em;
-     position: relative;
-     text-align: center;
-     text-decoration: none;
-     text-transform: none;
-     transition: all 0.3s ease-in-out;
-     user-select: none;
-     font-size: 13px;
-    }
-    
-    .fancy::before {
-     content: " ";
-     width: 1.5625rem;
-     height: 2px;
-     background: red;
-     top: 50%;
-     left: 1.5em;
-     position: absolute;
-     transform: translateY(-50%);
-     transform-origin: center;
-     transition: background 0.3s linear, width 0.3s linear;
-    }
-    
-    .fancy .text {
-     font-size: 1.125em;
-     line-height: 1.33333em;
-     padding-left: 2em;
-     display: block;
-     text-align: left;
-     transition: all 0.3s ease-in-out;
-     text-transform: uppercase;
-     text-decoration: none;
-     color: red;
-    }
-    
-    .fancy .top-key {
-     height: 2px;
-     width: 1.5625rem;
-     top: -2px;
-     left: 0.625rem;
-     position: absolute;
-     background: rgb(168, 7, 7);
-     transition: width 0.5s ease-out, left 0.3s ease-out;
-    }
-    
-    .fancy .bottom-key-1 {
-     height: 2px;
-     width: 1.5625rem;
-     right: 1.875rem;
-     bottom: -2px;
-     position: absolute;
-     background: red;
-     transition: width 0.5s ease-out, right 0.3s ease-out;
-    }
-    
-    .fancy .bottom-key-2 {
-     height: 2px;
-     width: 0.625rem;
-     right: 0.625rem;
-     bottom: -2px;
-     position: absolute;
-     background: red;
-     transition: width 0.5s ease-out, right 0.3s ease-out;
-    }
-    
-    .fancy:hover {
-     color: white;
-     background:rgb(168, 7, 7);
-    }
-    
-    .fancy:hover::before {
-     width: 0.9375rem;
-     background: white;
-    }
-    
-    .fancy:hover .text {
-     color: white;
-     padding-left: 1.5em;
-    }
-    
-    .fancy:hover .top-key {
-     left: -2px;
-     width: 0px;
-    }
-    
-    .fancy:hover .bottom-key-1,
-     .fancy:hover .bottom-key-2 {
-     right: 0;
-     width: 0;
-    }
-    
-    
-    
-    
-     </style>
-     {% endblock %}
-    
-    
-       
-    
-        {% block body %}
-            <body>
-        
-                {{ block("header") }}
-        
-                <section id="center" class="center_o pt-2 pb-2">
-                    <div class="container-xl">
-                        <div class="row center_o1">
-                            <div class="col-md-5">
-                                <div class="center_o1l">
-                                    <h2 class="mb-0">Panier</h2>
-                                </div>
-                            </div>
-                            <div class="col-md-7">
-                                <div class="center_o1r text-end">
-                                    <h6 class="mb-0 col_red">
-                                        <a href="{{ path('app_produit_liste')}}">Home</a>
-                                        <span class="me-2 ms-2 text-light">
-                                            <i class="fa fa-caret-right align-middle"></i>
-                                        </span>
-                                        Panier
-                                    </h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-    
-                <div id="liveAlertPlaceholder"></div>
-                
-    
-    
-    
-    <div class="row">
-        <div class="col-md-6" *>
-            <section>
-                {% if panierItems %}
-                    {% set i = 0  %}
-                    <div class="container">
-                        <div class="row justify-content-center mt-4">
-                            {% for item in panierItems %}
-                                <div class="col-md-8 mb-4" >
-                                    <div class="cardpanier position-relative">
-                                        <div class="row">
-                                            <div class="col-md-4"> <!-- Nouvelle colonne pour la case à cocher -->
-                                            <div class="checkbox-wrapper-46 ">
-                                                <input type="checkbox" id="cbx-{{i}}" class="inp-cbx checkbox-item" data-id="{{ item.idPanier }}"  onchange="calculateTotal(this)" />
-                                                <!-- Ajoutez onchange="calculateTotal(this)" pour appeler la fonction calculateTotal lorsque le checkbox est changé -->
-                                                <label for="cbx-{{i}}" class="cbx">
-                                                    <span>
-                                                        <svg viewBox="0 0 12 10" height="10px" width="12px">
-                                                            <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
-                                                        </svg>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                            
-                                                <img class="card-img-top cardpanier-image" src="{{ asset(item.idproduit.image) }}" alt="{{ item.idproduit.nom }}">
-                                            </div>
-                                            <div class="col-md-8">
-                                                <div class="card-text">              
-                                                    <h5 class="card-title categorypanier">{{ item.idproduit.nom }}</h5> 
-                                                    
-                                                    {% set i = i + 1 %}
-                                                    <div class="d-flex justify-content-between ">
-                                                        <!-- Utilisation de flexbox -->
-                                                        <div class="input-group mb-3">
-                                                            <button class="btn btn-outline-secondary btn-outline-danger" type="button"  onclick="decrementQuantity('quantity{{i}}')">-</button>
-                                                            <input min="1" max="100" value="{{ item.quantite }}" id="quantity{{ i }}" style="font-size: 20px;color: black;font-family: Arial; width: 50px; size: 1;"
-                                                             data-id="{{ item.idPanier }}"  data-stock="{{ item.idproduit.quantiteP }}" onchange="updateQuantity('quantity{{ i }}', '{{ item.idPanier }}')">
-    
-                                                            <button class="btn btn-outline-secondary btn-outline-danger" type="button" onclick="incrementQuantity('quantity{{i}}')">+</button>
-                                                        </div>
-                                                    </div> 
-                                                    
-                                                        <div class="authorpanier" > {{ item.idproduit.prix }} DT</div>
-                                                       
-                                                        <form method="post" action="{{ path('panier_delete', {'idPanier': item.idPanier}) }}">
-                                                            <button type="submit" class="btndelete">
-                                                                <svg viewBox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icondelete">
-                                                                    <path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path>
-                                                                </svg>
-                                                            </button>
-                                                        </form>
-                                                           
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% else %}
-                    <p>Votre panier est vide.</p>
-                {% endif %}
-            </section>    
-        </div>
-    
-    
-        <div class="col-md-4" style="margin-left: 100px;">
-        <div class="blog_1r">
-            <div class="blog_1r1 p-4">
-                <h5>Total : <span id="selected-total">0</span> DT</h5>
-                <form  action="{{ path('app_commande_form') }}" method="GET">
-                    <input type="hidden" name="selected-total" id="selected-total" value="selected-total">
-                    <input type="hidden" name="produits_selectionnes" value=""  id="selected_item">
-    
-                    {% for item in panierItems %}
-    
-                        <div class="checkbox-wrapper-46">
-                            <input type="checkbox" name="produits_selectionnes" id="selected_item_ids" class="inp-cbx checkbox-item" value="{{ item.idPanier }}" onchange="updateTotal()">
-                            
-                            <label class="cbx" for="cbx">
-                                <span></span>
-                            </label>
-                        </div>
-                    {% endfor %}
-                 
-                    <button type="submit" class="fancy" id="buy-products-btn">
-                        <span class="top-key"></span>
-                        <span class="text">Buy Products</span>
-                    </button>
-                </form>
-    
-            </div>
-        </div>
-    </div>
-    
-    
-    
-    
-    
-    
-           
-        
-     {{ block("footer") }}
-    
-    
-    
-    
-    
-     <script>
-    
-    
-    function showAlert(message) {
-        
-        var alertDiv = document.createElement('div');
-        alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
-        alertDiv.setAttribute('role', 'alert');
-    
-        
-        alertDiv.innerHTML = '<strong>Attention !</strong> ' + message;
-    
-       
-        var closeButton = document.createElement('button');
-        closeButton.setAttribute('type', 'button');
-        closeButton.classList.add('btn-close');
-        closeButton.setAttribute('data-bs-dismiss', 'alert');
-        closeButton.setAttribute('aria-label', 'Close');
-        
-       
-        alertDiv.appendChild(closeButton);
-    
-       
-        var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-        alertPlaceholder.innerHTML = ''; 
-        alertPlaceholder.appendChild(alertDiv);
-    }
-    
-    function incrementQuantity(inputId, itemId) {
-        var inputElement = document.getElementById(inputId);
-        var currentValue = parseInt(inputElement.value);
-        if (!isNaN(currentValue)) {
-            inputElement.value = currentValue + 1;
-            updateQuantity(inputId, itemId); 
-        } else {
-            inputElement.value = 1;
-        }
-    }
-    
-    function decrementQuantity(inputId, itemId) {
-        var inputElement = document.getElementById(inputId);
-        var currentValue = parseInt(inputElement.value);
-        if (!isNaN(currentValue) && currentValue > 1) {
-            inputElement.value = currentValue - 1;
-            updateQuantity(inputId, itemId); 
-        } else {
-            inputElement.value = 1;
-        }
-    }
-    
-    function updateQuantity(inputId) {
-        var inputElement = document.getElementById(inputId);
-        var newQuantity = parseInt(inputElement.value);
-        var itemId = inputElement.getAttribute('data-id');
-        var stockDisponible = parseInt(inputElement.getAttribute('data-stock'));
-    
-        console.log(newQuantity);
-        console.log(stockDisponible);
-        
-    
-       
-        if (!isNaN(newQuantity) && newQuantity <= stockDisponible) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "{{ path('panier_update_quantity') }}", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    
-                }
-            };
-            var data = JSON.stringify({ itemId: itemId, newQuantity: newQuantity });
-            xhr.send(data);
-        } else {
-          
-            showAlert('Stock insuffisant ! La quantité que vous avez choisie dépasse le stock disponible.');
-    
-           
-            inputElement.value = inputElement.defaultValue;
-        }
-    }
-    
-    
-    </script>
-    
-    <script>
-    
-    
-    
-    function calculateTotal(checkbox) {
-        var checkboxes = document.querySelectorAll('.checkbox-item:checked');
-       
-        
-        var itemIds = Array.from(checkboxes).map(function(checkbox) {
-            return parseInt(checkbox.getAttribute('data-id'));
-        });
-        console.log(checkboxes);
-        console.log(checkbox);
-        console.log(itemIds);
-        var hiddenField = document.querySelector('input[name="produits_selectionnes"]');
-        
-            hiddenField.value = itemIds.join(',');
-        
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "{{ path('panier_calculate_total') }}", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                console.log(xhr.responseText);
-                var total = JSON.parse(xhr.responseText).total;
-                // Mettre à jour l'élément HTML approprié avec le total calculé
-                document.getElementById("selected-total").innerText = total;
-            }
-        };
-    
-        var data = JSON.stringify({ itemIds: itemIds });
-        xhr.send(data);
-    }
-    
-    
-    
-    function showAlert(message) {
-        // Créer un nouvel élément div pour l'alerte
-        var alertDiv = document.createElement('div');
-        alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
-        alertDiv.setAttribute('role', 'alert');
-    
-        // Ajouter le message à l'alerte
-        alertDiv.innerHTML = '<strong>Attention !</strong> ' + message;
-    
-        // Créer le bouton de fermeture de l'alerte
-        var closeButton = document.createElement('button');
-        closeButton.setAttribute('type', 'button');
-        closeButton.classList.add('btn-close');
-        closeButton.setAttribute('data-bs-dismiss', 'alert');
-        closeButton.setAttribute('aria-label', 'Close');
-        
-        // Ajouter le bouton de fermeture à l'alerte
-        alertDiv.appendChild(closeButton);
-    
-        // Ajouter l'alerte au placeholder
-        var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-        alertPlaceholder.innerHTML = ''; // Nettoyer le placeholder avant d'ajouter une nouvelle alerte
-        alertPlaceholder.appendChild(alertDiv);
-    }
-    
-    // Sélectionner le formulaire
-    const buyProductsForm = document.getElementById('buyProductsForm');
-    
-    // Ajouter un écouteur d'événement pour la soumission du formulaire
-    buyProductsForm.addEventListener('submit', function(event) {
-        // Empêcher le comportement par défaut de la soumission du formulaire
-        event.preventDefault();
-    
-        // Vérifier si des produits sont sélectionnés
-        const checkboxes = document.querySelectorAll('.checkbox-item:checked');
-        if (checkboxes.length === 0) {
-            // Aucun produit sélectionné, afficher une alerte
-            showAlert('Veuillez sélectionner au moins un produit.');
-            return; // Arrêter l'exécution de la fonction
-        }
-    
-      
-    });
-    
-    
-    </script>
-    
-    
-    <script>
-        function updateTotal() {
-        
-        var checkboxes = document.querySelectorAll('.checkbox-item:checked');
-        
-    
-        var itemIds = Array.from(checkboxes).map(function(checkbox) {
-            return parseInt(checkbox.getAttribute('data-id'));
-        });
-    
-     
-        var hiddenField = document.getElementById('selected_item_ids');
-        hiddenField.value = itemIds.join(',');
-        var hiddenInput = document.getElementById('selected_item');
-    
-            // Récupérer la valeur de l'attribut name
-            var inputName = hiddenInput.name;
-    
-       
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "{{ path('app_commande_form') }}", true); 
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                // Mettre à jour l'élément HTML avec le total calculé
-                var total = JSON.parse(xhr.responseText).total;
-                document.getElementById("selected-total").innerText = total;
-            }
-        };
-    
-     
-        var data = JSON.stringify({ itemIds: itemIds }); 
-        xhr.send(data);
-    }
-    
-    </script>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-     </body>
-    {% endblock %}
-    
+{% block pageStyle %}
+	<link href="" rel="stylesheet">
+
+	<style>
+		.cardpanier {
+			position: relative; /* Ajoutez une position relative au parent */
+			width: 620px;
+			height: 150px;
+			background: #191a1d;
+			padding: 0.3em;
+			border-radius: 6px;
+
+		}
+
+
+		.cardpanier-image {
+			background-color: rgb(236, 236, 236);
+			width: 180px;
+			height: 140px;
+			border-radius: 6px 6px 0 0;
+		}
+
+		.cardpanier-image:hover {
+			transform: scale(0.98);
+		}
+
+		.categorypanier {
+			text-transform: uppercase;
+			font-size: 20px;
+			font-weight: 600;
+			color: rgb(168, 7, 7);
+			padding: 10px 0;
+
+
+		}
+
+		.categorypanier:hover {
+			cursor: pointer;
+		}
+
+		.headingpanier {
+			font-weight: 600;
+			color: rgb(88, 87, 87);
+			padding: 0 220px;
+		}
+
+		.headingpanier:hover {
+			cursor: pointer;
+		}
+
+		.authorpanier {
+			color: white;
+			font-weight: 400;
+			font-size: 18px;
+			padding-top: 0 200px;
+
+		}
+
+		.namepanier {
+			font-weight: 600;
+		}
+
+		.namepanier:hover {
+			cursor: pointer;
+		}
+		/*delete button*/
+
+		.btndelete {
+			background-color: transparent;
+			position: relative;
+			border: none;
+			left: 370px; /* Déplacé à droite */
+			top: -20px;
+		}
+
+		.btndelete::after {
+			content: 'delete';
+			position: absolute;
+			top: -130%;
+			left: 50%;
+			transform: translateX(-50%);
+			width: fit-content;
+			height: fit-content;
+			background-color: rgb(168, 7, 7);
+			padding: 4px;
+			border-radius: 5px;
+			transition: 0.2s linear;
+			transition-delay: 0.2s;
+			color: white;
+			text-transform: uppercase;
+			font-size: 12px;
+			opacity: 0;
+			visibility: hidden;
+		}
+
+		.icondelete {
+			transform: scale(1.2);
+			transition: 0.2s linear;
+		}
+
+		.btndelete:hover::after {
+			/* Changé .delete à .btndelete */
+			visibility: visible;
+			opacity: 1;
+			top: -160%;
+		}
+
+		.btndelete:hover > .icondelete {
+			/* Changé .icon à .icondelete */
+			transform: scale(1.5);
+		}
+
+		.btndelete:hover > .icondelete path {
+			/* Changé .icon à .icondelete */
+			fill: rgb(168, 7, 7);
+		}
+
+		/*checknox*/
+
+		.checkbox-wrapper-46 {
+			position: absolute;
+			top: 0;
+			right: 0;
+			margin: 5px; /* Ajoute une marge pour l'esthétique */
+		}
+
+		.checkbox-wrapper-46 input[type="checkbox"] {
+			display: none;
+			visibility: hidden;
+		}
+
+		.checkbox-wrapper-46 .cbx {
+			margin: auto;
+			-webkit-user-select: none;
+			user-select: none;
+			cursor: pointer;
+		}
+		.checkbox-wrapper-46 .cbx span {
+			display: inline-block;
+			vertical-align: middle;
+			transform: translate3d(0, 0, 0);
+		}
+		.checkbox-wrapper-46 .cbx span:first-child {
+			position: relative;
+			width: 18px;
+			height: 18px;
+			border-radius: 3px;
+			transform: scale(1);
+			vertical-align: middle;
+			border: 1px solid #9098a9;
+			transition: all 0.2s ease;
+		}
+		.checkbox-wrapper-46 .cbx span:first-child svg {
+			position: absolute;
+			top: 3px;
+			left: 2px;
+			fill: none;
+			stroke: #ffffff;
+			stroke-width: 2;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-dasharray: 16px;
+			stroke-dashoffset: 16px;
+			transition: all 0.3s ease;
+			transition-delay: 0.1s;
+			transform: translate3d(0, 0, 0);
+		}
+		.checkbox-wrapper-46 .cbx span:first-child:before {
+			content: "";
+			width: 100%;
+			height: 100%;
+			background: #506eec;
+			display: block;
+			transform: scale(0);
+			opacity: 1;
+			border-radius: 50%;
+		}
+		.checkbox-wrapper-46 .cbx span:last-child {
+			padding-left: 8px;
+		}
+		.checkbox-wrapper-46 .cbx:hover span:first-child {
+			border-color: #ff0000; /* Changer la couleur en rouge */
+		}
+
+		.checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child {
+			background: #ff0000; /* Changer la couleur en rouge */
+			border-color: #ff0000; /* Changer la couleur en rouge */
+			animation: wave-46 0.4s ease;
+		}
+		.checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child svg {
+			stroke-dashoffset: 0;
+		}
+		.checkbox-wrapper-46 .inp-cbx:checked + .cbx span:first-child:before {
+			transform: scale(3.5);
+			opacity: 0;
+			transition: all 0.6s ease;
+		}
+
+		@keyframes wave-46 {
+			50% {
+				transform: scale(0.9);
+			}
+		}
+
+		/* commande*/
+
+		.fancy {
+			background-color: transparent;
+			border: 2px solid #000;
+			border-radius: 0;
+			box-sizing: border-box;
+			color: red;
+			border-color: rgb(168, 7, 7);
+			cursor: pointer;
+			display: inline-block;
+			float: right;
+			font-weight: 700;
+			letter-spacing: 0.05em;
+			margin: 0;
+			outline: none;
+			overflow: visible;
+			padding: 1.25em 2em;
+			position: relative;
+			text-align: center;
+			text-decoration: none;
+			text-transform: none;
+			transition: all 0.3s ease-in-out;
+			user-select: none;
+			font-size: 13px;
+		}
+
+		.fancy::before {
+			content: " ";
+			width: 1.5625rem;
+			height: 2px;
+			background: red;
+			top: 50%;
+			left: 1.5em;
+			position: absolute;
+			transform: translateY(-50%);
+			transform-origin: center;
+			transition: background 0.3s linear, width 0.3s linear;
+		}
+
+		.fancy .text {
+			font-size: 1.125em;
+			line-height: 1.33333em;
+			padding-left: 2em;
+			display: block;
+			text-align: left;
+			transition: all 0.3s ease-in-out;
+			text-transform: uppercase;
+			text-decoration: none;
+			color: red;
+		}
+
+		.fancy .top-key {
+			height: 2px;
+			width: 1.5625rem;
+			top: -2px;
+			left: 0.625rem;
+			position: absolute;
+			background: rgb(168, 7, 7);
+			transition: width 0.5s ease-out, left 0.3s ease-out;
+		}
+
+		.fancy .bottom-key-1 {
+			height: 2px;
+			width: 1.5625rem;
+			right: 1.875rem;
+			bottom: -2px;
+			position: absolute;
+			background: red;
+			transition: width 0.5s ease-out, right 0.3s ease-out;
+		}
+
+		.fancy .bottom-key-2 {
+			height: 2px;
+			width: 0.625rem;
+			right: 0.625rem;
+			bottom: -2px;
+			position: absolute;
+			background: red;
+			transition: width 0.5s ease-out, right 0.3s ease-out;
+		}
+
+		.fancy:hover {
+			color: white;
+			background: rgb(168, 7, 7);
+		}
+
+		.fancy:hover::before {
+			width: 0.9375rem;
+			background: white;
+		}
+
+		.fancy:hover .text {
+			color: white;
+			padding-left: 1.5em;
+		}
+
+		.fancy:hover .top-key {
+			left: -2px;
+			width: 0;
+		}
+
+		.fancy:hover .bottom-key-1,
+		.fancy:hover .bottom-key-2 {
+			right: 0;
+			width: 0;
+		}
+	</style>
+{% endblock %}
+
+
+{% block body %}
+	<body>
+
+		{{ block("header") }}
+
+		<section id="center" class="center_o pt-2 pb-2">
+			<div class="container-xl">
+				<div class="row center_o1">
+					<div class="col-md-5">
+						<div class="center_o1l">
+							<h2 class="mb-0">Panier</h2>
+						</div>
+					</div>
+					<div class="col-md-7">
+						<div class="center_o1r text-end">
+							<h6 class="mb-0 col_red">
+								<a href="{{ path('app_produit_liste')}}">Home</a>
+								<span class="me-2 ms-2 text-light">
+									<i class="fa fa-caret-right align-middle"></i>
+								</span>
+								Panier
+							</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<div id="liveAlertPlaceholder"></div>
+
+
+		<div class="row">
+			<div class="col-md-6" *>
+				<section>
+					{% if panierItems %}
+						{% set i = 0  %}
+						<div class="container">
+							<div class="row justify-content-center mt-4">
+								{% for item in panierItems %}
+									<div class="col-md-8 mb-4">
+										<div class="cardpanier position-relative">
+											<div class="row">
+												<div
+													class="col-md-4">
+													<!-- Nouvelle colonne pour la case à cocher -->
+													<div class="checkbox-wrapper-46 ">
+														<input
+														type="checkbox" id="cbx-{{i}}" class="inp-cbx checkbox-item" data-id="{{ item.idPanier }}" onchange="calculateTotal(this)"/>
+														<!-- Ajoutez onchange="calculateTotal(this)" pour appeler la fonction calculateTotal lorsque le checkbox est changé -->
+														<label for="cbx-{{i}}" class="cbx">
+															<span>
+																<svg viewbox="0 0 12 10" height="10px" width="12px">
+																	<polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+																</svg>
+															</span>
+														</label>
+													</div>
+
+													<img class="card-img-top cardpanier-image" src="{{ asset(item.idproduit.image) }}" alt="{{ item.idproduit.nom }}">
+												</div>
+												<div class="col-md-8">
+													<div class="card-text">
+														<h5 class="card-title categorypanier">{{ item.idproduit.nom }}</h5>
+
+														{% set i = i + 1 %}
+														<div
+															class="d-flex justify-content-between ">
+															<!-- Utilisation de flexbox -->
+															<div class="input-group mb-3">
+																<button class="btn btn-outline-secondary btn-outline-danger" type="button" onclick="decrementQuantity('quantity{{i}}')">-</button>
+																<input min="1" max="100" value="{{ item.quantite }}" id="quantity{{ i }}" style="font-size: 20px;color: black;font-family: Arial; width: 50px; size: 1;" data-id="{{ item.idPanier }}" data-stock="{{ item.idproduit.quantiteP }}" onchange="updateQuantity('quantity{{ i }}', '{{ item.idPanier }}')">
+
+																<button class="btn btn-outline-secondary btn-outline-danger" type="button" onclick="incrementQuantity('quantity{{i}}')">+</button>
+															</div>
+														</div>
+
+														<div class="authorpanier">
+															{{ item.idproduit.prix }}
+															DT</div>
+
+														<form method="post" action="{{ path('panier_delete', {'idPanier': item.idPanier}) }}">
+															<button type="submit" class="btndelete">
+																<svg viewbox="0 0 15 17.5" height="17.5" width="15" xmlns="http://www.w3.org/2000/svg" class="icondelete">
+																	<path transform="translate(-2.5 -1.25)" d="M15,18.75H5A1.251,1.251,0,0,1,3.75,17.5V5H2.5V3.75h15V5H16.25V17.5A1.251,1.251,0,0,1,15,18.75ZM5,5V17.5H15V5Zm7.5,10H11.25V7.5H12.5V15ZM8.75,15H7.5V7.5H8.75V15ZM12.5,2.5h-5V1.25h5V2.5Z" id="Fill"></path>
+																</svg>
+															</button>
+														</form>
+
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						</div>
+					{% else %}
+						<p>Votre panier est vide.</p>
+					{% endif %}
+				</section>
+			</div>
+
+
+			<div class="col-md-4" style="margin-left: 100px;">
+				<div class="blog_1r">
+					<div class="blog_1r1 p-4">
+						<h5>Total :
+							<span id="selected-total">0</span>
+							DT</h5>
+						<form action="{{ path('app_commande_form') }}" method="GET">
+							<input type="hidden" name="selected-total" id="selected-total" value="selected-total">
+							<input type="hidden" name="produits_selectionnes" value="" id="selected_item">
+
+							{% for item in panierItems %}
+
+								<div class="checkbox-wrapper-46">
+									<input type="checkbox" name="produits_selectionnes" id="selected_item_ids" class="inp-cbx checkbox-item" value="{{ item.idPanier }}" onchange="updateTotal()">
+
+									<label class="cbx" for="cbx">
+										<span></span>
+									</label>
+								</div>
+							{% endfor %}
+
+							<button type="submit" class="fancy" id="buy-products-btn">
+								<span class="top-key"></span>
+								<span class="text">Buy Products</span>
+							</button>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+
+			{{ block("footer") }}
+
+
+		 <script>
+		    
+		    
+		    function showAlert(message) {
+		        
+		        var alertDiv = document.createElement('div');
+		        alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
+		        alertDiv.setAttribute('role', 'alert');
+		    
+		        
+		        alertDiv.innerHTML = '<strong>Attention !</strong> ' + message;
+		    
+		       
+		        var closeButton = document.createElement('button');
+		        closeButton.setAttribute('type', 'button');
+		        closeButton.classList.add('btn-close');
+		        closeButton.setAttribute('data-bs-dismiss', 'alert');
+		        closeButton.setAttribute('aria-label', 'Close');
+		        
+		       
+		        alertDiv.appendChild(closeButton);
+		    
+		       
+		        var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+		        alertPlaceholder.innerHTML = ''; 
+		        alertPlaceholder.appendChild(alertDiv);
+		    }
+		    
+		    function incrementQuantity(inputId, itemId) {
+		        var inputElement = document.getElementById(inputId);
+		        var currentValue = parseInt(inputElement.value);
+		        if (!isNaN(currentValue)) {
+		            inputElement.value = currentValue + 1;
+		            updateQuantity(inputId, itemId); 
+		        } else {
+		            inputElement.value = 1;
+		        }
+		    }
+		    
+		    function decrementQuantity(inputId, itemId) {
+		        var inputElement = document.getElementById(inputId);
+		        var currentValue = parseInt(inputElement.value);
+		        if (!isNaN(currentValue) && currentValue > 1) {
+		            inputElement.value = currentValue - 1;
+		            updateQuantity(inputId); 
+		        } else {
+		            inputElement.value = 1;
+		        }
+		    }
+		    
+		    function updateQuantity(inputId) {
+		        var inputElement = document.getElementById(inputId);
+		        var newQuantity = parseInt(inputElement.value);
+		        var itemId = inputElement.getAttribute('data-id');
+		        var stockDisponible = parseInt(inputElement.getAttribute('data-stock'));
+		    
+		        console.log(newQuantity);
+		        console.log(stockDisponible);
+		        
+		    
+		       
+		        if (!isNaN(newQuantity) && newQuantity <= stockDisponible) {
+		            var xhr = new XMLHttpRequest();
+		            xhr.open("POST", "{{ path('panier_update_quantity') }}", true);
+		            xhr.setRequestHeader("Content-Type", "application/json");
+		            xhr.onreadystatechange = function () {
+		                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+		                    
+		                }
+		            };
+		            var data = JSON.stringify({ itemId: itemId, newQuantity: newQuantity });
+		            xhr.send(data);
+		        } else {
+		          
+		            showAlert('Stock insuffisant ! La quantité que vous avez choisie dépasse le stock disponible.');
+		    
+		           
+		            inputElement.value = inputElement.defaultValue;
+		        }
+		    }
+		    
+		    
+		    </script>
+
+			 <script>
+			    
+			    
+			    
+			    function calculateTotal(checkbox) {
+			        var checkboxes = document.querySelectorAll('.checkbox-item:checked');
+			       
+			        
+			        var itemIds = Array.from(checkboxes).map(function(checkbox) {
+			            return parseInt(checkbox.getAttribute('data-id'));
+			        });
+			        console.log(checkboxes);
+			        console.log(checkbox);
+			        console.log(itemIds);
+			        var hiddenField = document.querySelector('input[name="produits_selectionnes"]');
+			        
+			            hiddenField.value = itemIds.join(',');
+			        
+			        var xhr = new XMLHttpRequest();
+			        xhr.open("POST", "{{ path('panier_calculate_total') }}", true);
+			        xhr.setRequestHeader("Content-Type", "application/json");
+			        xhr.onreadystatechange = function () {
+			            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+			                console.log(xhr.responseText);
+			                var total = JSON.parse(xhr.responseText).total;
+			                // Mettre à jour l'élément HTML approprié avec le total calculé
+			                document.getElementById("selected-total").innerText = total;
+			            }
+			        };
+			    
+			        var data = JSON.stringify({ itemIds: itemIds });
+			        xhr.send(data);
+			    }
+			    
+			    
+			    
+			    function showAlert(message) {
+			        // Créer un nouvel élément div pour l'alerte
+			        var alertDiv = document.createElement('div');
+			        alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
+			        alertDiv.setAttribute('role', 'alert');
+			    
+			        // Ajouter le message à l'alerte
+			        alertDiv.innerHTML = '<strong>Attention !</strong> ' + message;
+			    
+			        // Créer le bouton de fermeture de l'alerte
+			        var closeButton = document.createElement('button');
+			        closeButton.setAttribute('type', 'button');
+			        closeButton.classList.add('btn-close');
+			        closeButton.setAttribute('data-bs-dismiss', 'alert');
+			        closeButton.setAttribute('aria-label', 'Close');
+			        
+			        // Ajouter le bouton de fermeture à l'alerte
+			        alertDiv.appendChild(closeButton);
+			    
+			        // Ajouter l'alerte au placeholder
+			        var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+			        alertPlaceholder.innerHTML = ''; // Nettoyer le placeholder avant d'ajouter une nouvelle alerte
+			        alertPlaceholder.appendChild(alertDiv);
+			    }
+			    
+			    // Sélectionner le formulaire
+			    const buyProductsForm = document.getElementById('buyProductsForm');
+			    
+			    // Ajouter un écouteur d'événement pour la soumission du formulaire
+			    buyProductsForm.addEventListener('submit', function(event) {
+			        // Empêcher le comportement par défaut de la soumission du formulaire
+			        event.preventDefault();
+			    
+			        // Vérifier si des produits sont sélectionnés
+			        const checkboxes = document.querySelectorAll('.checkbox-item:checked');
+			        if (checkboxes.length === 0) {
+			            // Aucun produit sélectionné, afficher une alerte
+			            showAlert('Veuillez sélectionner au moins un produit.');
+			            return; // Arrêter l'exécution de la fonction
+			        }
+			    
+			      
+			    });
+			    
+			    
+			    </script>
+
+
+			 <script>
+			        function updateTotal() {
+			        
+			        var checkboxes = document.querySelectorAll('.checkbox-item:checked');
+			        
+			    
+			        var itemIds = Array.from(checkboxes).map(function(checkbox) {
+			            return parseInt(checkbox.getAttribute('data-id'));
+			        });
+			    
+			     
+			        var hiddenField = document.getElementById('selected_item_ids');
+			        hiddenField.value = itemIds.join(',');
+			        var hiddenInput = document.getElementById('selected_item');
+			    
+			            // Récupérer la valeur de l'attribut name
+			            var inputName = hiddenInput.name;
+			    
+			       
+			        var xhr = new XMLHttpRequest();
+			        xhr.open("POST", "{{ path('app_commande_form') }}", true); 
+			        xhr.setRequestHeader("Content-Type", "application/json");
+			        xhr.onreadystatechange = function () {
+			            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+			                // Mettre à jour l'élément HTML avec le total calculé
+			                var total = JSON.parse(xhr.responseText).total;
+			                document.getElementById("selected-total").innerText = total;
+			            }
+			        };
+			    
+			     
+			        var data = JSON.stringify({ itemIds: itemIds }); 
+			        xhr.send(data);
+			    }
+			    
+			    </script>
+
+
+		</body>
+	{% endblock %}
+

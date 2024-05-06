@@ -41,7 +41,7 @@ class ProduitController extends AbstractController
 
 
 
-    #[Route('/listeproduit', name: 'app_produit_liste', methods: ['GET','POST'])]
+    #[Route('/listeproduit', name: 'app_produit_liste', methods: ['GET', 'POST'])]
     public function liste(ProduitRepository $produitRepository, Request $request): Response
     {
         // Récupérer tous les produits
@@ -81,6 +81,8 @@ class ProduitController extends AbstractController
             'maxPrice' => $maxPrice,
         ]);
     }
+
+
 
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]

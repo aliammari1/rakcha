@@ -17,12 +17,28 @@ class CategorieEvenement
     private int $id;
 
 
-    #[ORM\Column(name: 'Nom_categorie', type: 'string', length: 500, nullable: false)]
+    #[ORM\Column(name: 'Nom_categorie', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: "The category's name is required.")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "The category's name must be at least {{ limit }} characters long.",
+        maxMessage: "The category's name cannot exceed {{ limit }} characters."
+    )]
     private string $nomCategorie;
 
 
     #[ORM\Column(name: 'Description', type: 'string', length: 500, nullable: false)]
+    #[Assert\NotBlank(message: "The category's description is required.")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "The category's description must be at least {{ limit }} characters long.",
+        maxMessage: "The category's description cannot exceed {{ limit }} characters."
+    )]
     private string $description;
+
+
 
     public function getId(): ?int
     {

@@ -1,9 +1,9 @@
 {% extends 'baseFront.html.twig' %}
 
 {% block pageStyle %}
-    <link
-            href="{{ asset('/css/about.css') }}" rel="stylesheet">
-    <script>
+	<link
+	href="{{ asset('/css/about.css') }}" rel="stylesheet">
+ <script>
         var BookMarkArray = [];
         var filmArray = [];
         {% for film in films %}
@@ -17,677 +17,642 @@
 {% endblock %}
 
 {% block body %}
-    <body>
-    {{ block("header") }}
-    <script src="https://js.stripe.com/v3/"></script>
-    <script>
-        var stripe = Stripe("{{ stripe_key }}");
-    </script>
-    <section id="center" class="center_o pt-2 pb-2" style="background-color:black;">
-        <div class="container-xl">
-            <div class="row center_o1">
-                <div class="col-md-5">
-                    <div class="center_o1l d-flex align-items-center">
-                        <h2 class="mb-0">
-                            <a href="{{ path('app_listfilms_index') }}">Films</a>
-                        </h2>
-                        <a class="mb-0 ms-3" href="{{ path('app_film_bookmarks_index') }}">bookmarks</a>
-                    </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="center_o1r text-end">
-                        <h6 class="mb-0 col_red">
-                            <a href="{{ path('app_film_index') }}">Home</a>
-                            <span class="me-2 ms-2 text-light">
-<i class="fa fa-caret-right align-middle"></i>
-</span>
-                            Films</h6>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <style>
-        .flip-card {
-            background-color: transparent;
-            height: 460px;
-            perspective: 1000px;
-            font-family: sans-serif;
-        }
+	<body>
+		{{ block("header") }}
+		 <script src="https://js.stripe.com/v3/"></script>
+		 <script>
+		        var stripe = Stripe("{{ stripe_key }}");
+		    </script>
+			<section id="center" class="center_o pt-2 pb-2" style="background-color:black;"> <div class="container-xl">
+				<div class="row center_o1">
+					<div class="col-md-5">
+						<div class="center_o1l d-flex align-items-center">
+							<h2 class="mb-0">
+								<a href="{{ path('app_listfilms_index') }}">Films</a>
+							</h2>
+							<a class="mb-0 ms-3" href="{{ path('app_film_bookmarks_index') }}">bookmarks</a>
+						</div>
+					</div>
+					<div class="col-md-7">
+						<div class="center_o1r text-end">
+							<h6 class="mb-0 col_red">
+								<a href="{{ path('app_film_index') }}">Home</a>
+								<span class="me-2 ms-2 text-light">
+									<i class="fa fa-caret-right align-middle"></i>
+								</span>
+								Films</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		<style>
+			.flip-card {
+				background-color: transparent;
+				height: 460px;
+				perspective: 1000px;
+				font-family: sans-serif;
+			}
 
-        .title {
-            font-size: 1.5em;
-            font-weight: 900;
-            text-align: center;
-            margin: 0;
-        }
+			.title {
+				font-size: 1.5em;
+				font-weight: 900;
+				text-align: center;
+				margin: 0;
+			}
 
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-        }
+			.flip-card-inner {
+				position: relative;
+				width: 100%;
+				height: 100%;
+				text-align: center;
+				transition: transform 0.8s;
+				transform-style: preserve-3d;
+			}
 
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
+			.flip-card:hover .flip-card-inner {
+				transform: rotateY(180deg);
+			}
 
-        .flip-card-front,
-        .flip-card-back {
-            box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.2);
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border: 1px solid #f90532;
-            border-radius: 1rem;
-        }
+			.flip-card-front,
+			.flip-card-back {
+				box-shadow: 0 8px 14px 0 rgba(0, 0, 0, 0.2);
+				position: absolute;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				width: 100%;
+				height: 100%;
+				-webkit-backface-visibility: hidden;
+				backface-visibility: hidden;
+				border: 1px solid #f90532;
+				border-radius: 1rem;
+			}
 
-        .flip-card-front {
-            background: linear-gradient(120deg, bisque 60%, rgb(255, 231, 222) 88%, rgb(255, 211, 195) 40%, rgba(255, 127, 80, 0.603) 48%);
-            color: coral;
-        }
+			.flip-card-front {
+				background: linear-gradient(120deg, bisque 60%, rgb(255, 231, 222) 88%, rgb(255, 211, 195) 40%, rgba(255, 127, 80, 0.603) 48%);
+				color: coral;
+			}
 
-        .flip-card-back {
-            background: linear-gradient(120deg, rgb(255, 174, 145) 30%, coral 88%, bisque 40%, rgb(255, 185, 160) 78%);
-            color: white;
-            transform: rotateY(180deg);
-        }
+			.flip-card-back {
+				background: linear-gradient(120deg, rgb(255, 174, 145) 30%, coral 88%, bisque 40%, rgb(255, 185, 160) 78%);
+				color: white;
+				transform: rotateY(180deg);
+			}
 
-        .form-check-input[type="checkbox"] {
-            background-color: black;
-        }
+			.form-check-input[type="checkbox"] {
+				background-color: black;
+			}
 
-        /* Styling the checkbox container */
-        .form-check {
-            background-color: black; /* Black background */
-            color: white; /* Text color */
-            padding: 10px; /* Adjust padding as needed */
-            border-radius: 5px; /* Rounded corners */
-            margin-bottom: 5px; /* Adjust margin as needed */
-            transition: border-color 0.3s; /* Adding transition for border color */
-        }
+			/* Styling the checkbox container */
+			.form-check {
+				background-color: black; /* Black background */
+				color: white; /* Text color */
+				padding: 10px; /* Adjust padding as needed */
+				border-radius: 5px; /* Rounded corners */
+				margin-bottom: 5px; /* Adjust margin as needed */
+				transition: border-color 0.3s; /* Adding transition for border color */
+			}
 
-        /* Styling the checkbox container */
-        .form-check {
-            background-color: black; /* Black background */
-            color: white; /* Text color */
-            padding: 10px; /* Adjust padding as needed */
-            border-radius: 5px; /* Rounded corners */
-            margin-bottom: 5px; /* Adjust margin as needed */
-            transition: border-color 0.3s; /* Adding transition for border color */
-        }
+			/* Styling the checkbox container */
+			.form-check {
+				background-color: black; /* Black background */
+				color: white; /* Text color */
+				padding: 10px; /* Adjust padding as needed */
+				border-radius: 5px; /* Rounded corners */
+				margin-bottom: 5px; /* Adjust margin as needed */
+				transition: border-color 0.3s; /* Adding transition for border color */
+			}
 
-        /* Styling the checkmark */
-        .form-check-input[type="checkbox"] {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid red; /* White border */
-            border-radius: 5px; /* Rounded corners */
-            background-color: black; /* Black background for checkbox */
-        }
+			/* Styling the checkmark */
+			.form-check-input[type="checkbox"] {
+				-webkit-appearance: none;
+				-moz-appearance: none;
+				appearance: none;
+				width: 20px;
+				height: 20px;
+				border: 2px solid red; /* White border */
+				border-radius: 5px; /* Rounded corners */
+				background-color: black; /* Black background for checkbox */
+			}
 
-        /* Styling when checkbox is checked */
-        .form-check-input[type="checkbox"]:checked + .form-check-label::before {
-            background-color: red; /* Red checkmark background */
-            border-color: red; /* Red border for checked checkbox */
-        }
+			/* Styling when checkbox is checked */
+			.form-check-input[type="checkbox"]:checked + .form-check-label::before {
+				background-color: red; /* Red checkmark background */
+				border-color: red; /* Red border for checked checkbox */
+			}
 
-        /* Animation when checkbox is checked */
-        .form-check-input[type="checkbox"]:checked + .form-check-label::before {
-            animation: pulse 0.5s linear infinite alternate; /* Animation */
-        }
+			/* Animation when checkbox is checked */
+			.form-check-input[type="checkbox"]:checked + .form-check-label::before {
+				animation: pulse 0.5s linear infinite alternate; /* Animation */
+			}
 
-        @keyframes pulse {
-            0% {
-                transform: scale(1); /* Initial scale */
-            }
-            100% {
-                transform: scale(1.2); /* Scaled up */
-            }
-        }
-    </style>
-    </body>
-    <body id="team" class="pt-4 pb-4 bg_grey">
-    <div class="d-flex justify-content-center mb-3">
-        <input type="search" class="form-control bg-black" placeholder="Search Site..." id="filmSearchBar"
-               style="width: 413px;">
-    </div>
-    <div class="d-flex justify-content-center">
-        <div class="d-flex justify-content-center flex-wrap mb-3" style="width: 80vw;">
-            {% for category in categorys %}
-                <div class="btn me-2 mb-2" style="background-color: #C0C0C0;">
-                    <div class="form-check" style="color: white;">
-                        <input class="form-check-input form-check-input-category" type="checkbox"
-                               value="{{ category.nom }}" id="flexCheckChecked{{ category.nom }}">
-                        <label class="form-check-label" for="flexCheckChecked{{ category.nom }}">
-                            {{ category.nom }}
-                        </label>
-                    </div>
-                </div>
+			@keyframes pulse {
+				0% {
+					transform: scale(1); /* Initial scale */
+				}
+				100% {
+					transform: scale(1.2); /* Scaled up */
+				}
+			}
+		</style>
+	</body>
+	<body id="team" class="pt-4 pb-4 bg_grey">
+		<div class="d-flex justify-content-center mb-3">
+			<input type="search" class="form-control bg-black" placeholder="Search Site..." id="filmSearchBar" style="width: 413px;">
+		</div>
+		<div class="d-flex justify-content-center">
+			<div class="d-flex justify-content-center flex-wrap mb-3" style="width: 80vw;">
+				{% for category in categorys %}
+					<div class="btn me-2 mb-2" style="background-color: #C0C0C0;">
+						<div class="form-check" style="color: white;">
+							<input class="form-check-input form-check-input-category" type="checkbox" value="{{ category.nom }}" id="flexCheckChecked{{ category.nom }}">
+							<label class="form-check-label" for="flexCheckChecked{{ category.nom }}">
+								{{ category.nom }}
+							</label>
+						</div>
+					</div>
 
-            {% endfor %}
-            <script>
+				{% endfor %}
+				 <script>
+				
+				                // Add event listener to checkboxes
+				                document.querySelectorAll('.form-check-input-category').forEach(function (checkbox) {
+				                    checkbox.addEventListener('change', function () {
+				// Get checked checkboxes
+				                        let checkedCheckboxes = document.querySelectorAll('.form-check-input-category:checked');
+				
+				// Extract values of checked checkboxes
+				                        let checkedValues = Array.from(checkedCheckboxes).map(function (checkbox) {
+				                            return checkbox.value;
+				                        });
+				
+				// Send fetch request with checked checkboxes
+				                        fetch("{{ path('app_filter_category_film') }}", {
+				                            method: 'POST', // or 'GET', 'PUT', 'DELETE', etc.
+				                            headers: {
+				                                'Content-Type': 'application/json',
+				                                'X-Requested-With': 'XMLHttpRequest'
+				                            },
+				                            body: JSON.stringify({checkboxes: checkedValues}),
+				                        })
+				                            .then(response => response.json())
+				                            .then(data => {
+				                                console.log('Fetch response:', data);
+				                                if (data.success) {
+				                                    let filmIds = data.filmsCategorized.map(film => `film-card-${film}`);
+				                                    console.log(filmIds);
+				                                    let filteredFilms = Array.from(filmArray).filter(film => {
+				// Check if the film element has a child element with the specified ID
+				                                        return filmIds.some(filmId => film.id === filmId);
+				                                    });
+				                                    console.log({'filterscategories': filteredFilms});
+				// Get the container element where you want to set the filtered elements
+				                                    let container = document.getElementById('filmContainer'); // Replace 'your-container-id' with the ID of your container element
+				
+				// Clear previous content of the container
+				                                    container.innerHTML = '';
+				
+				// Add the filtered elements to the container
+				                                    filteredFilms.forEach(film => {
+				                                        container.appendChild(film);
+				                                    });
+				
+				
+				                                }
+				                            })
+				                    });
+				                });
+				
+				            </script>
 
-                // Add event listener to checkboxes
-                document.querySelectorAll('.form-check-input-category').forEach(function (checkbox) {
-                    checkbox.addEventListener('change', function () {
-// Get checked checkboxes
-                        let checkedCheckboxes = document.querySelectorAll('.form-check-input-category:checked');
+			</div>
+		</div>
+		 <script>
+		        document.getElementById("filmSearchBar").addEventListener("input", () => {
+		            fetch("{{ path('app_search_film') }}", {
+		                method: "POST",
+		                headers: {
+		                    'Content-Type': 'application/json',
+		                    'X-Requested-With': 'XMLHttpRequest'
+		                },
+		                body: JSON.stringify({'search': document.getElementById("filmSearchBar").value})
+		            }).then(response => response.json()).then(data => {
+		                console.log(data);
+		                if (data.success) {
+		                    let filmIds = data.films.map(film => `film-card-${film}`);
+		                    console.log(filmIds);
+		                    let filteredFilms = Array.from(filmArray).filter(film => {
+		// Check if the film element has a child element with the specified ID
+		                        return filmIds.some(filmId => film.id === filmId);
+		                    });
+		                    console.log({'filters': filteredFilms});
+		// Get the container element where you want to set the filtered elements
+		                    let container = document.getElementById('filmContainer'); // Replace 'your-container-id' with the ID of your container element
+		
+		// Clear previous content of the container
+		                    container.innerHTML = '';
+		
+		// Add the filtered elements to the container
+		                    filteredFilms.forEach(film => {
+		                        container.appendChild(film);
+		                    });
+		
+		
+		                }
+		            });
+		        });
+		    </script>
+		<div class="d-flex justify-content-center container-xl">
+			{% set j = 0 %}
 
-// Extract values of checked checkboxes
-                        let checkedValues = Array.from(checkedCheckboxes).map(function (checkbox) {
-                            return checkbox.value;
-                        });
+			<div id="filmContainer" class="team_1i d-flex flex-wrap justify-content-center" style="width: 90vw;">
+				{% for film in films %}
+					 <script>
+					                    var seatIds{{ j }} = [];
+					                </script>
+					<div id="film-card-{{ film.id }}" class="film-card">
+						<div id="flip-card-{{ film.id }}" class="flip-card col-md-4 " style="width:330px;margin-bottom: 20px;margin-right: 20px;">
+							<div class="flip-card-inner ">
+								<div
+									class="flip-card-front">
+									{# <p class="title">FLIP CARD</p> #}
+									<img src="{{ asset(film.image) }}" alt="" style="border-radius: 15px;" class="w-100 h-100">
+									<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0" style="border-radius: 0 0 15px 15px; height: 30%;">
+										<button id="bookmarkFront{{ j }}" class="btn position-absolute" style="background-color: transparent;top: -309px;right: 10px;">
+											<i id="bookmarkIconFront{{ j }}" style="{% if film.isBookmarked %} color: red; {% endif %} font-size: 30px;" class="fa fa-bookmark"></i>
+										</button>
 
-// Send fetch request with checked checkboxes
-                        fetch("{{ path('app_filter_category_film') }}", {
-                            method: 'POST', // or 'GET', 'PUT', 'DELETE', etc.
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            },
-                            body: JSON.stringify({checkboxes: checkedValues}),
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                console.log('Fetch response:', data);
-                                if (data.success) {
-                                    let filmIds = data.filmsCategorized.map(film => `film-card-${film}`);
-                                    console.log(filmIds);
-                                    let filteredFilms = Array.from(filmArray).filter(film => {
-// Check if the film element has a child element with the specified ID
-                                        return filmIds.some(filmId => film.id === filmId);
-                                    });
-                                    console.log({'filterscategories': filteredFilms});
-// Get the container element where you want to set the filtered elements
-                                    let container = document.getElementById('filmContainer'); // Replace 'your-container-id' with the ID of your container element
+										<h4 class="col_red">{{ film.nom }}</h4>
+										<h6>categorys:
+											{% for category in film.categorys %}
+												<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
+												{% if not loop.last %},
+												{% endif %}
 
-// Clear previous content of the container
-                                    container.innerHTML = '';
+											{% endfor %}
+										</h6>
+										<h4 style="color: white;">
+											{{ averageRatings[j][0]['rate_avg']|default('0')|number_format(1) }}
+											<i class="fa fa-star" style="color: red;margin-left: 6px;"></i>
+										</h4>
 
-// Add the filtered elements to the container
-                                    filteredFilms.forEach(film => {
-                                        container.appendChild(film);
-                                    });
+									</div>
+								</div>
+								<div class="flip-card-back">
+									<div class="team_1i1i1 clearfix position-absolute w-100 bottom-0" style="height: 100%;border-radius:15px;">
+										<button id="bookmark{{ j }}" class="btn position-absolute" style="background-color: transparent;top: 10px;right: 10px;">
+											<i id="bookmarkIcon{{ j }}" style="{% if film.isBookmarked %} color: red; {% endif %} font-size: 30px;" class="fa fa-bookmark"></i>
+										</button>
+										 <script>
+										                                        document.getElementById("bookmark{{ j }}").addEventListener("click", () => {
+										                                            BookMarkArray[{{ j }}] = !BookMarkArray[{{ j }}];
+										                                            let isBookmarked = BookMarkArray[{{ j }}];
+										                                            fetch("{{ path('app_bookmark_film') }}", {
+										                                                method: "POST",
+										                                                headers: {
+										                                                    'Content-Type': 'application/json',
+										                                                    'X-Requested-With': 'XMLHttpRequest'
+										                                                },
+										                                                body: JSON.stringify({
+										                                                    'id': {{ film.id }},
+										                                                    'isBookmarked': isBookmarked
+										                                                })
+										                                            })
+										                                                .then(response => response.json())
+										                                                .then(data => {
+										                                                    console.log(data);
+										                                                    if (data.success) {
+										                                                        document.getElementById('bookmarkIcon{{ j }}').style.color = isBookmarked ? "red" : "black";
+										                                                        document.getElementById('bookmarkIconFront{{ j }}').style.color = isBookmarked ? "red" : "black";
+										                                                        new Noty({
+										                                                            type: isBookmarked ? 'success' : 'error',
+										                                                            layout: 'topRight',
+										                                                            text: `{{ film.nom }} is ${isBookmarked ? 'bookmarked' : 'unbookmarked'}`,
+										                                                            theme: 'sunset',
+										                                                            timeout: 5000
+										                                                        }).show();
+										                                                    }
+										                                                });
+										                                        });
+										                                    </script>
+										<h4 class="col_red">{{ film.nom }}</h4>
+										<h6>categorys:
+											{% for category in film.categorys %}
+												<a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
+												{% if not loop.last %},
+												{% endif %}
 
+											{% endfor %}
+										</h6>
 
-                                }
-                            })
-                    });
-                });
+										<h6>Actors:
+											{% for actor in film.actors %}
+												<a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
+												{% if not loop.last %},
+												{% endif %}
+											{% endfor %}
+										</h6>
+										<h6>Description:
+											{{ film.description }}
+										</h6>
+										<form id="rateForm{{ j }}">
+											<input id="input-{{ j }}-sm" value="{{ ratings[j].rate|default('0') }}" class="rating rating-loading" name="rate" data-min="0" data-max="5" data-step="0.5" data-size="sm" data-show-clear="false" data-show-caption="false">
+										</form>
+										 <script>
+										                                        $("#input-{{ j }}-sm").rating().on("rating:change", function (event, value) {
+										                                            fetch("{{ path('app_rate_film_index') }}", {
+										                                                method: "POST",
+										                                                headers: {
+										                                                    'Content-Type': 'application/json',
+										                                                    'X-Requested-With': 'XMLHttpRequest'
+										                                                },
+										                                                body: JSON.stringify({'filmId': {{ film.id }}, 'rate': value})
+										                                            }).then(response => response.json()).then(data => {
+										                                                console.log(data);
+										                                                if (data.success) {
+										                                                    new Noty({
+										                                                        type: 'info',
+										                                                        layout: 'topRight',
+										                                                        text: `{{ film.nom }} is rated ${value}<i style='background-color: yellow;' class='fa fa-star'></i>`,
+										                                                        theme: 'sunset',
+										                                                        timeout: 5000
+										                                                    }).show();
+										                                                }
+										                                            });
+										                                        });
+										                                    </script>
 
-            </script>
+										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#Youtubewatch{{ j }}" data-thevideo="{{ videoUrl[j] }}">
+											<i class="fa fa-play-circle align-middle me-1"></i>
+											Watch Trailer
+										</button>
+										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#reserve{{ j }}">
+											<i class="fa fa-play-circle align-middle me-1"></i>
+											reserve
+										</button>
+										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#qrcode{{ j }}">
+											<i class="fa fa-play-circle align-middle me-1"></i>
+											qrcode
+										</button>
+										<div>
+											<!-- Display QR Code -->
+										</div>
 
-        </div>
-    </div>
-    <script>
-        document.getElementById("filmSearchBar").addEventListener("input", () => {
-            fetch("{{ path('app_search_film') }}", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({'search': document.getElementById("filmSearchBar").value})
-            }).then(response => response.json()).then(data => {
-                console.log(data);
-                if (data.success) {
-                    let filmIds = data.films.map(film => `film-card-${film}`);
-                    console.log(filmIds);
-                    let filteredFilms = Array.from(filmArray).filter(film => {
-// Check if the film element has a child element with the specified ID
-                        return filmIds.some(filmId => film.id === filmId);
-                    });
-                    console.log({'filters': filteredFilms});
-// Get the container element where you want to set the filtered elements
-                    let container = document.getElementById('filmContainer'); // Replace 'your-container-id' with the ID of your container element
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal fade" id="Youtubewatch{{ j }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+							<div class="modal-dialog" style="max-width: 594px;">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+										<button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<iframe width="560" height="315" src="{{ videoUrl[j] }}" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+										<div class="modal-footer"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal fade" id="qrcode{{ j }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+							<div class="modal-dialog" style="max-width: 594px;">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+										<button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body m-auto">
+										{% set qrCode = qr_code_result(urls[j]) %}
+										<a href="{{ urls[j] }}" target="_blank" rel="noopener noreferrer">
+											<img src="{{ qrCode.dataUri }}" width="{{ qrCode.matrix.outerSize }}" alt=""/>
+										</a>
+									</div>
+									<div class="modal-footer"></div>
+								</div>
+							</div>
+						</div>
+						<div class="modal fade" id="reserve{{ j }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden=" true">
+							<div class="modal-dialog" style="max-width: 594px;">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+										<button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body d-flex flex-wrap justify-content-center">
+										{% if seances[j] is not empty %}
+											<h4 class="btn btn-danger" id="reserveStripePrix{{ j }}">prix: 0dt</h4>
+											<select id="cinemaSeanceSelect{{ j }}" class="form-select form-select-lg mb-3">
+												<option value="0" selected>select the cinema</option>
+												{% set cinemaIds = [] %}
+												{% for seance in seances[j] %}
+													{% if seance.idCinema.idCinema not in cinemaIds %}
+														{% set cinemaIds = cinemaIds|merge([seance.idCinema.idCinema]) %}
+														<option value="{{ seance.idCinema.idCinema }}">{{ seance.idCinema.nom }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+											<select id="dateSeanceSelect{{ j }}" class="form-select form-select-lg mb-3" disabled>
+												<option value="0" selected>select the date</option>
+											</select>
+											<div id="seatContainer{{j}}"></div>
+										{% else %}
+											<h1 class="no-seances">no seances available</h1>
+										{% endif %}
 
-// Clear previous content of the container
-                    container.innerHTML = '';
+										{% if seances[j] is not empty %}
+											 <script>
+											                                            document.getElementById('cinemaSeanceSelect{{ j }}').addEventListener('change', function () {
+											                                                const cinemaSeanceSelect = document.getElementById('cinemaSeanceSelect{{ j }}');
+											                                                const dateSeanceSelect = document.getElementById('dateSeanceSelect{{ j }}');
+											                                                if (cinemaSeanceSelect.value == 0) {
+											                                                    dateSeanceSelect.disabled = true;
+											                                                    dateSeanceSelect.textContent = 'select the date';
+											                                                    return;
+											                                                } else {
+											                                                    dateSeanceSelect.disabled = false;
+											                                                }
+											                                                let options = "<option value='0' selected>select the date</option>";
+											                                                {% for seance in seances[j] %}
+											                                                if (cinemaSeanceSelect.value == {{ seance.idCinema.idCinema }}) {
+											                                                    options += "<option value='{{ seance.idSeance }}'>{{ seance.date|date('d/m/y') }} : {{ seance.hd|date('H:i') }} - {{ seance.hf|date('H:i') }}</option>";
+											                                                }
+											                                                {% endfor %}
+											                                                dateSeanceSelect.innerHTML = options;
+											                                                dateSeanceSelect.disabled = false;
+											                                            });
+											
+																						document.getElementById('dateSeanceSelect{{ j }}').addEventListener('change', function () {
+											                                                document.getElementById("seatContainer{{j}}").innerHTML = "";
+																							let seanceID{{j}} = document.getElementById('dateSeanceSelect{{ j }}').value;
+																							fetch("{{ path('app_seance_seats_film') }}", {
+											                                                method: "POST",
+											                                                headers: {
+											                                                    'Content-Type': 'application/json',
+											                                                    'X-Requested-With': 'XMLHttpRequest'
+											                                                },
+											                                                body: JSON.stringify({'seanceId': seanceID{{j}}})
+																							}).then(response => response.json()).then(data => {
+																								console.log(data);
+																								if(data.success) {
+																									for (let i = 0; i < data.seatsArray.length; i++) {
+																										const seat = data.seatsArray[i];
+																										if (seat.status == 'vide') {
+																											document.getElementById("seatContainer{{j}}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/armchair.png") }}" width="100" />';
+																										} else if (seat.status == 'reserve') {
+																											document.getElementById("seatContainer{{j}}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/couch.png") }}" width="100" />';
+																										} else {
+																											document.getElementById("seatContainer{{j}}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/sofa.png") }}" width="100" />';
+																										}
+																									}
+																									for (let i = 0; i < data.seatsArray.length; i++) {
+																										const seat = data.seatsArray[i];
+																										if (seat.status != 'reserve') {
+																												let click = 0;
+																												document.getElementById('seat-' + seat.id).addEventListener("click", function() {
+																													this.src = !click ? "{{ asset('img/seats/sofa.png') }}" : "{{ asset('img/seats/armchair.png') }}";
+																													if (!click) {
+																														seatIds{{j}}.push(seat.id);
+																													} else {
+																														seatIds{{j}} = seatIds{{j}}.filter(id => id !== seat.id);
+																													}
+																													click++;
+																													click = click % 2;
+																													console.log(seatIds{{j}});
+																													document.getElementById('reserveStripePrix{{ j }}').textContent = `prix: ${seatIds{{j}}.length * seat.prix}dt`;
+																												});
+																										}
+																									}
+																								}
+																							});
+											                                            });
+											                                        </script>
+										{% endif %}
+										<button class="button mt-4" data-bs-toggle="modal" data-bs-target="#reserveStripeModal{{ j }}">
+											<i class="fa fa-play-circle align-middle me-1"></i>
+											reserve Stripe
+										</button>
+									</div>
+									<div class="modal-footer"></div>
+								</div>
+							</div>
+						</div>
 
-// Add the filtered elements to the container
-                    filteredFilms.forEach(film => {
-                        container.appendChild(film);
-                    });
+						<div class="modal fade" id="reserveStripeModal{{ j }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+							<div class="modal-dialog" style="max-width: 594px;">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+										<button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<div class="card">
+											<div class="card-body">
+												<input type='hidden' name='stripeToken' id='stripe-token-id{{ j }}'>
+												<label for="card-element{{ j }}" class="mb-5">Checkout Forms</label>
+												<br>
+												<div id="card-element{{ j }}" class="form-control"></div>
+												<button id='pay-btn{{ j }}' class="btn btn-success mt-3" type="button" style="margin-top: 20px; width: 100%;padding: 7px;" onclick="createToken{{ j }}()">PAY
+												</button>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer"></div>
+								</div>
+							</div>
+						</div>
 
+						 <script>
+						                        var elements{{ j }} = stripe.elements();
+						                        var cardElement{{ j }} = elements{{ j }}.create('card');
+						                        cardElement{{ j }}.mount('#card-element{{ j }}');
+						
+						                        function createToken{{ j }}() {
+						                            stripe.createToken(cardElement{{ j }}).then(function (result) {
+						                                console.log(result);
+						                                if (typeof result.error != 'undefined') {
+						                                    alert(result.error.message);
+						                                }
+						
+						// creating token success
+						                                if (typeof result.token != 'undefined') {
+						                                    document.getElementById("stripe-token-id{{ j }}").value = result.token.id;
+						                                }
+						                                console.log(document.getElementById("stripe-token-id{{ j }}").value);
+						                                console.log(document.querySelectorAll('img[src="/img/seats/sofa.png"]'));
+						                                fetch("{{ path('app_stripe_charge') }}", {
+						                                    method: "POST",
+						                                    headers: {
+						                                        'Content-Type': 'application/json',
+						                                        'X-Requested-With': 'XMLHttpRequest'
+						                                    },
+						                                    body: JSON.stringify({
+						                                        'prix': document.querySelectorAll('img[src="/img/seats/sofa.png"]').length * 10,
+						                                        'stripeToken': document.getElementById("stripe-token-id{{ j }}").value,
+						                                        'seatIds': seatIds{{ j }}
+						                                    })
+						                                }).then(response => response.json()).then(data => {
+						                                    console.log(data);
+						                                    if (data.success) {
+						                                        new Noty({
+						                                            type: 'info',
+						                                            layout: 'topRight',
+						                                            text: `you reserved for
+						{{ film.nom }}`,
+						                                            theme: 'sunset',
+						                                            timeout: 5000
+						                                        }).show();
+						                                    }
+						                                });
+						                            });
+						                        }
+						                    </script>
+					</div>
 
-                }
-            });
-        });
-    </script>
-    <div class="d-flex justify-content-center container-xl">
-        {% set j = 0 %}
-
-        <div id="filmContainer" class="team_1i d-flex flex-wrap justify-content-center" style="width: 90vw;">
-            {% for film in films %}
-                <script>
-                    var seatIds{{ j }} = [];
-                </script>
-                <div id="film-card-{{ film.id }}" class="film-card">
-                    <div id="flip-card-{{ film.id }}" class="flip-card col-md-4 "
-                         style="width:330px;margin-bottom: 20px;margin-right: 20px;">
-                        <div class="flip-card-inner ">
-                            <div
-                                    class="flip-card-front">
-
-                                {# <p class="title">FLIP CARD</p> #}
-                                <img src="{{ asset(film.image) }}" alt="" style="border-radius: 15px;"
-                                     class="w-100 h-100">
-                                <div class="team_1i1i1 clearfix position-absolute w-100 bottom-0"
-                                     style="border-radius: 0 0 15px 15px; height: 30%;">
-                                    <button id="bookmarkFront{{ j }}" class="btn position-absolute"
-                                            style="background-color: transparent;top: -309px;right: 10px;">
-                                        <i id="bookmarkIconFront{{ j }}"
-                                           style="{% if film.isBookmarked %} color: red; {% endif %} font-size: 30px;"
-                                           class="fa fa-bookmark"></i>
-                                    </button>
-
-                                    <h4 class="col_red">{{ film.nom }}</h4>
-                                    <h6>categorys:
-                                        {% for category in film.categorys %}
-                                            <a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
-                                            {% if not loop.last %},
-                                            {% endif %}
-
-                                        {% endfor %}
-                                    </h6>
-                                    <h4 style="color: white;">
-                                        {{ averageRatings[j][0]['rate_avg']|default('0')|number_format(1) }}
-                                        <i class="fa fa-star" style="color: red;margin-left: 6px;"></i>
-                                    </h4>
-
-                                </div>
-                            </div>
-                            <div class="flip-card-back">
-                                <div class="team_1i1i1 clearfix position-absolute w-100 bottom-0"
-                                     style="height: 100%;border-radius:15px;">
-                                    <button id="bookmark{{ j }}" class="btn position-absolute"
-                                            style="background-color: transparent;top: 10px;right: 10px;">
-                                        <i id="bookmarkIcon{{ j }}"
-                                           style="{% if film.isBookmarked %} color: red; {% endif %} font-size: 30px;"
-                                           class="fa fa-bookmark"></i>
-                                    </button>
-                                    <script>
-                                        document.getElementById("bookmark{{ j }}").addEventListener("click", () => {
-                                            BookMarkArray[{{ j }}] = !BookMarkArray[{{ j }}];
-                                            let isBookmarked = BookMarkArray[{{ j }}];
-                                            fetch("{{ path('app_bookmark_film') }}", {
-                                                method: "POST",
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-Requested-With': 'XMLHttpRequest'
-                                                },
-                                                body: JSON.stringify({
-                                                    'id': {{ film.id }},
-                                                    'isBookmarked': isBookmarked
-                                                })
-                                            })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    console.log(data);
-                                                    if (data.success) {
-                                                        document.getElementById('bookmarkIcon{{ j }}').style.color = isBookmarked ? "red" : "black";
-                                                        document.getElementById('bookmarkIconFront{{ j }}').style.color = isBookmarked ? "red" : "black";
-                                                        new Noty({
-                                                            type: isBookmarked ? 'success' : 'error',
-                                                            layout: 'topRight',
-                                                            text: `{{ film.nom }} is ${isBookmarked ? 'bookmarked' : 'unbookmarked'}`,
-                                                            theme: 'sunset',
-                                                            timeout: 5000
-                                                        }).show();
-                                                    }
-                                                });
-                                        });
-                                    </script>
-                                    <h4 class="col_red">{{ film.nom }}</h4>
-                                    <h6>categorys:
-                                        {% for category in film.categorys %}
-                                            <a href="{{ path('app_category_show', {'id': category.id}) }}">{{ category.nom }}</a>
-                                            {% if not loop.last %},
-                                            {% endif %}
-
-                                        {% endfor %}
-                                    </h6>
-
-                                    <h6>Actors:
-                                        {% for actor in film.actors %}
-                                            <a href="{{ path('app_actor_show', {'id': actor.id}) }}">{{ actor.nom }}</a>
-                                            {% if not loop.last %},
-                                            {% endif %}
-                                        {% endfor %}
-                                    </h6>
-                                    <h6>Description:
-                                        {{ film.description }}
-                                    </h6>
-                                    <form id="rateForm{{ j }}">
-                                        <input id="input-{{ j }}-sm" value="{{ ratings[j].rate|default('0') }}"
-                                               class="rating rating-loading" name="rate" data-min="0" data-max="5"
-                                               data-step="0.5" data-size="sm" data-show-clear="false"
-                                               data-show-caption="false">
-                                    </form>
-                                    <script>
-                                        $("#input-{{ j }}-sm").rating().on("rating:change", function (event, value) {
-                                            fetch("{{ path('app_rate_film_index') }}", {
-                                                method: "POST",
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-Requested-With': 'XMLHttpRequest'
-                                                },
-                                                body: JSON.stringify({'filmId': {{ film.id }}, 'rate': value})
-                                            }).then(response => response.json()).then(data => {
-                                                console.log(data);
-                                                if (data.success) {
-                                                    new Noty({
-                                                        type: 'info',
-                                                        layout: 'topRight',
-                                                        text: `{{ film.nom }} is rated ${value}<i style='background-color: yellow;' class='fa fa-star'></i>`,
-                                                        theme: 'sunset',
-                                                        timeout: 5000
-                                                    }).show();
-                                                }
-                                            });
-                                        });
-                                    </script>
-
-                                    <button class="button mt-4" data-bs-toggle="modal"
-                                            data-bs-target="#Youtubewatch{{ j }}" data-thevideo="{{ videoUrl[j] }}">
-                                        <i class="fa fa-play-circle align-middle me-1"></i>
-                                        Watch Trailer
-                                    </button>
-                                    <button class="button mt-4" data-bs-toggle="modal" data-bs-target="#reserve{{ j }}">
-                                        <i class="fa fa-play-circle align-middle me-1"></i>
-                                        reserve
-                                    </button>
-                                    <button class="button mt-4" data-bs-toggle="modal" data-bs-target="#qrcode{{ j }}">
-                                        <i class="fa fa-play-circle align-middle me-1"></i>
-                                        qrcode
-                                    </button>
-                                    <div>
-                                        <!-- Display QR Code -->
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="Youtubewatch{{ j }}" data-bs-backdrop="static" data-bs-keyboard="false"
-                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog" style="max-width: 594px;">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                                    <button type="button" class="btn-close close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <iframe width="560" height="315" src="{{ videoUrl[j] }}"
-                                            allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                                    <div class="modal-footer"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="qrcode{{ j }}" data-bs-backdrop="static" data-bs-keyboard="false"
-                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog" style="max-width: 594px;">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                                    <button type="button" class="btn-close close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body m-auto">
-                                    {% set qrCode = qr_code_result(urls[j]) %}
-                                    <a href="{{ urls[j] }}" target="_blank" rel="noopener noreferrer">
-                                        <img src="{{ qrCode.dataUri }}" width="{{ qrCode.matrix.outerSize }}" alt=""/>
-                                    </a>
-                                </div>
-                                <div class="modal-footer"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="reserve{{ j }}" data-bs-backdrop="static" data-bs-keyboard="false"
-                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden=" true">
-                        <div class="modal-dialog" style="max-width: 594px;">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                                    <button type="button" class="btn-close close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body d-flex flex-wrap justify-content-center">
-                                    {% if seances[j] is not empty %}
-                                        <h4 class="btn btn-danger" id="reserveStripePrix{{ j }}">prix: 0dt</h4>
-                                        <select id="cinemaSeanceSelect{{ j }}" class="form-select form-select-lg mb-3">
-                                            <option value="0" selected>select the cinema</option>
-                                            {% set cinemaIds = [] %}
-                                            {% for seance in seances[j] %}
-                                                {% if seance.idCinema.idCinema not in cinemaIds %}
-                                                    {% set cinemaIds = cinemaIds|merge([seance.idCinema.idCinema]) %}
-                                                    <option value="{{ seance.idCinema.idCinema }}">{{ seance.idCinema.nom }}</option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                        <select id="dateSeanceSelect{{ j }}" class="form-select form-select-lg mb-3"
-                                                disabled>
-                                            <option value="0" selected>select the date</option>
-                                        </select>
-                                        <div id="seatContainer"></div>
-                                    {% else %}
-                                        <h1 class="no-seances">no seances available</h1>
-                                    {% endif %}
-
-                                    {% if seances[j] is not empty %}
-                                        <script>
-                                            document.getElementById('cinemaSeanceSelect{{ j }}').addEventListener('change', function () {
-                                                const cinemaSeanceSelect = document.getElementById('cinemaSeanceSelect{{ j }}');
-                                                const dateSeanceSelect = document.getElementById('dateSeanceSelect{{ j }}');
-                                                if (cinemaSeanceSelect.value == 0) {
-                                                    dateSeanceSelect.disabled = true;
-                                                    dateSeanceSelect.textContent = 'select the date';
-                                                    return;
-                                                } else {
-                                                    dateSeanceSelect.disabled = false;
-                                                }
-                                                let options = "<option value='0' selected>select the date</option>";
-                                                {% for seance in seances[j] %}
-                                                if (cinemaSeanceSelect.value == {{ seance.idCinema.idCinema }}) {
-                                                    options += "<option value='{{ seance.idSeance }}'>{{ seance.date|date('d/m/y') }} : {{ seance.hd|date('H:i') }} - {{ seance.hf|date('H:i') }}</option>";
-                                                }
-                                                {% endfor %}
-                                                dateSeanceSelect.innerHTML = options;
-                                                dateSeanceSelect.disabled = false;
-                                            });
-
-											document.getElementById('dateSeanceSelect{{ j }}').addEventListener('change', function () {
-                                                document.getElementById("seatContainer").innerHTML = "";
-												let seanceID{{j}} = document.getElementById('dateSeanceSelect{{ j }}').value;
-												fetch("{{ path('app_seance_seats_film') }}", {
-                                                method: "POST",
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'X-Requested-With': 'XMLHttpRequest'
-                                                },
-                                                body: JSON.stringify({'seanceId': seanceID{{j}}})
-												}).then(response => response.json()).then(data => {
-													console.log(data);
-													if(data.success) {
-														let seatIds{{j}} = [];
-														for (let i = 0; i < data.seatsArray.length; i++) {
-															const seat = data.seatsArray[i];
-															if (seat.status == 'vide') {
-																document.getElementById("seatContainer").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/armchair.png") }}" width="100" />';
-															} else if (seat.status == 'reserve') {
-																document.getElementById("seatContainer").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/couch.png") }}" width="100" />';
-															} else {
-																document.getElementById("seatContainer").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/sofa.png") }}" width="100" />';
-															}
-														}
-														for (let i = 0; i < data.seatsArray.length; i++) {
-															const seat = data.seatsArray[i];
-															if (seat.status != 'reserve') {
-																	let click = 0;
-																	document.getElementById('seat-' + seat.id).addEventListener("click", function() {
-																		this.src = !click ? "{{ asset('img/seats/sofa.png') }}" : "{{ asset('img/seats/armchair.png') }}";
-																		if (!click) {
-																			seatIds{{j}}.push(seat.id);
-																		} else {
-																			seatIds{{j}} = seatIds{{j}}.filter(id => id !== seat.id);
-																		}
-																		click++;
-																		click = click % 2;
-																		console.log(seatIds{{j}});
-																		document.getElementById('reserveStripePrix{{ j }}').textContent = `prix: ${seatIds{{j}}.length * seat.prix}dt`;
-																	});
-															}
-														}
-													}
-												});
-                                            });
-                                        </script>
-                                    {% endif %}
-                                    <button class="button mt-4" data-bs-toggle="modal"
-                                            data-bs-target="#reserveStripeModal{{ j }}">
-                                        <i class="fa fa-play-circle align-middle me-1"></i>
-                                        reserve Stripe
-                                    </button>
-                                </div>
-                                <div class="modal-footer"></div>
-                            </div>
-                        </div>
-                    </div>
+					{% set j = j + 1 %}
+				{% endfor %}
+			</div>
+		</body>
+	</body>
+</div></section>{{ block("footer") }} <script>
+	        function autoPlayYouTubeModal() {
+	            var triggers = document.querySelectorAll('[data-bs-target^="#YoutubeWatch"]');
+	            triggers.forEach(function (trigger) {
+	                trigger.addEventListener('click', function () {
+	                    var theModal = this.getAttribute('data-bs-target');
+	                    var videoSRC = this.getAttribute('data-theVideo');
+	                    var videoSRCauto = videoSRC + "?autoplay=1";
+	                    document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
 	
-                    <div class="modal fade" id="reserveStripeModal{{ j }}" data-bs-backdrop="static"
-                         data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog" style="max-width: 594px;">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                                    <button type="button" class="btn-close close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <input type='hidden' name='stripeToken' id='stripe-token-id{{ j }}'>
-                                            <label for="card-element{{ j }}" class="mb-5">Checkout Forms</label>
-                                            <br>
-                                            <div id="card-element{{ j }}" class="form-control"></div>
-                                            <button id='pay-btn{{ j }}' class="btn btn-success mt-3" type="button"
-                                                    style="margin-top: 20px; width: 100%;padding: 7px;"
-                                                    onclick="createToken{{ j }}()">PAY
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <script>
-                        var elements{{ j }} = stripe.elements();
-                        var cardElement{{ j }} = elements{{ j }}.create('card');
-                        cardElement{{ j }}.mount('#card-element{{ j }}');
-
-                        function createToken{{ j }}() {
-                            stripe.createToken(cardElement{{ j }}).then(function (result) {
-                                console.log(result);
-                                if (typeof result.error != 'undefined') {
-                                    alert(result.error.message);
-                                }
-
-// creating token success
-                                if (typeof result.token != 'undefined') {
-                                    document.getElementById("stripe-token-id{{ j }}").value = result.token.id;
-                                }
-                                console.log(document.getElementById("stripe-token-id{{ j }}").value);
-                                console.log(document.querySelectorAll('img[src="/img/seats/sofa.png"]'));
-                                fetch("{{ path('app_stripe_charge') }}", {
-                                    method: "POST",
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    body: JSON.stringify({
-                                        'prix': document.querySelectorAll('img[src="/img/seats/sofa.png"]').length * 10,
-                                        'stripeToken': document.getElementById("stripe-token-id{{ j }}").value,
-                                        'seatIds': seatIds{{ j }}
-                                    })
-                                }).then(response => response.json()).then(data => {
-                                    console.log(data);
-                                    if (data.success) {
-                                        new Noty({
-                                            type: 'info',
-                                            layout: 'topRight',
-                                            text: `you reserved for
-{{ film.nom }}`,
-                                            theme: 'sunset',
-                                            timeout: 5000
-                                        }).show();
-                                    }
-                                });
-                            });
-                        }
-                    </script>
-                </div>
-
-                {% set j = j + 1 %}
-            {% endfor %}
-        </div>
-    </body>
-    </body>
-    </div></section>{{ block("footer") }}
-    <script>
-        function autoPlayYouTubeModal() {
-            var triggers = document.querySelectorAll('[data-bs-target^="#YoutubeWatch"]');
-            triggers.forEach(function (trigger) {
-                trigger.addEventListener('click', function () {
-                    var theModal = this.getAttribute('data-bs-target');
-                    var videoSRC = this.getAttribute('data-theVideo');
-                    var videoSRCauto = videoSRC + "?autoplay=1";
-                    document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
-
-                    var closeButton = document.querySelector(theModal + ' button.close');
-                    closeButton.addEventListener('click', function () {
-                        document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
-                    });
-                });
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            autoPlayYouTubeModal();
-        });
-    </script>
-    <script>
-        window.onscroll = () => {
-            myFunction()
-        };
-
-        var navbar_sticky = document.getElementById("navbar_sticky");
-        var sticky = navbar_sticky.offsetTop;
-        var navbar_height = document.querySelector('.navbar').offsetHeight;
-
-        function myFunction() {
-            if (window.pageYOffset >= sticky + navbar_height) {
-                navbar_sticky.classList.add("sticky")
-                document.body.style.paddingTop = navbar_height + 'px';
-            } else {
-                navbar_sticky.classList.remove("sticky");
-                document.body.style.paddingTop = '0'
-            }
-        }
-    </script>{% endblock %}
+	                    var closeButton = document.querySelector(theModal + ' button.close');
+	                    closeButton.addEventListener('click', function () {
+	                        document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
+	                    });
+	                });
+	            });
+	        }
+	
+	        document.addEventListener('DOMContentLoaded', function () {
+	            autoPlayYouTubeModal();
+	        });
+	    </script> <script>
+	        window.onscroll = () => {
+	            myFunction()
+	        };
+	
+	        var navbar_sticky = document.getElementById("navbar_sticky");
+	        var sticky = navbar_sticky.offsetTop;
+	        var navbar_height = document.querySelector('.navbar').offsetHeight;
+	
+	        function myFunction() {
+	            if (window.pageYOffset >= sticky + navbar_height) {
+	                navbar_sticky.classList.add("sticky")
+	                document.body.style.paddingTop = navbar_height + 'px';
+	            } else {
+	                navbar_sticky.classList.remove("sticky");
+	                document.body.style.paddingTop = '0'
+	            }
+	        }
+	    </script>{% endblock %}

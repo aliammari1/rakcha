@@ -30,7 +30,6 @@ class EpisodesController extends AbstractController
     #[Route('/', name: 'app_episodes_index', methods: ['GET'])]
     public function index(EpisodesRepository $episodesRepository): Response
     {
-        flash()->addSuccess("successfully added category");
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
         for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
@@ -233,9 +232,15 @@ class EpisodesController extends AbstractController
         // Récupérer un utilisateur spécifique de la base de données
 
         $photoDeProfil = $this->getUser()->getPhotoDeProfil();
-
+        
         // Récupérer les feedbacks associés à l'épisode depuis la base de données
         $feedbacks = $this->getDoctrine()->getRepository(Feedback::class)->findBy(['idEpisode' => $idEpisode]);
+        $users = [];
+        foreach ($feedbacks as $feedback) {
+            $userId = $feedback->getIdUser();
+            $user = $this->getDoctrine()->getRepository(Users::class)->find($userId);
+            $users[] = $user;
+        }
 
         // Récupérer l'utilisateur actuellement connecté
         /*
@@ -306,7 +311,7 @@ class EpisodesController extends AbstractController
                         $phoneNumber,
                         [
                             'from' => $twilioPhoneNumber,
-                            'body' => 'Bonjour, nous avons remarqué que vous avez donné un feedback négatif pour l\'épisode. Pourriez-vous nous dire pourquoi ?'
+                            'body' => 'Hello, we noticed that you provided negative feedback for the episode. Could you please tell us why?'
                         ]
                     );
                 } catch (\Exception $e) {
@@ -326,6 +331,7 @@ class EpisodesController extends AbstractController
         return $this->render('front/watchepisode.html.twig', [
             'episode' => $episode,
             'feedbacks' => $feedbacks,
+            'users' => $users,
             'photoDeProfil' => $photoDeProfil, // Ajoutez cette ligne pour passer l'URL de la photo de profil au modèle Twig
             'feedbackForm' => $feedbackForm->createView(),
         ]);

@@ -38,8 +38,6 @@ public function addToPanier(Request $request, Produit $produit, PanierRepository
     $quantite = (int) $request->request->get('quantite');
 
     // Récupérer l'utilisateur client à associer au panier (remplacez par la logique appropriée)
-    $userId = 1; // ID de l'utilisateur que vous souhaitez attribuer
-    $user = $usersRepository->findOneBy(['id' => $userId]);
 
 
     
@@ -47,7 +45,7 @@ public function addToPanier(Request $request, Produit $produit, PanierRepository
      $quantiteEnStock = $produit->getQuantitep();
 
     // Récupérer les quantités de produits dans le panier pour l'utilisateur actuel
-      $quantitesDansPanier = $panierRepository->getQuantitesDansPanierParProduit($user);
+      $quantitesDansPanier = $panierRepository->getQuantitesDansPanierParProduit($this->getUser());
 
 
     // Vérifier si la clé existe dans $quantitesDansPanier
@@ -69,7 +67,7 @@ if ($quantiteEnStock < $quantite + $quantitesDansPanier[$produit->getIdproduit()
     // Récupérer le panier de l'utilisateur pour le produit donné
     $panier = $panierRepository->findOneBy([
         'idproduit' => $produit,
-        'idclient' => $user,
+        'idclient' => $this->getUser(),
     ]);
 
     if ($panier) {
@@ -79,7 +77,7 @@ if ($quantiteEnStock < $quantite + $quantitesDansPanier[$produit->getIdproduit()
         // Si le produit n'existe pas dans le panier, créer une nouvelle entrée dans le panier
         $panier = new Panier();
         $panier->setIdproduit($produit);
-        $panier->setClient($user);
+        $panier->setClient($this->getUser());
         $panier->setQuantite($quantite);
     }
 

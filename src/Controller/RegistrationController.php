@@ -58,7 +58,7 @@ class RegistrationController extends AbstractController
 
             if ($user->getRole() == 'client')
                 $user->setRoles(['ROLE_CLIENT']);
-            else if ($user->getRole() == 'responsableDeCinema')
+            else if ($user->getRole() == 'responsable de cinema')
                 $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
 
             $user->setIsVerified(false);
@@ -115,8 +115,7 @@ class RegistrationController extends AbstractController
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
-
-        return $this->redirectToRoute('app_profile_index');
+        return $this->redirectToRoute('app_profile_index', ['id' => $user->getId()]);
     }
 
     #[Route("/verify/resend", name: "app_verify_resend_email")]

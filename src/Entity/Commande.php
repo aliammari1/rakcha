@@ -39,12 +39,11 @@ class Commande
     private string $adresse;
 
     #[ORM\ManyToOne(targetEntity: Users::class)]
-    #[ORM\JoinColumn(name: 'idClient', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'idClient', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Users $idclient = null;
 
     public function __construct()
     {
-        
     }
 
     public function getIdcommande(): ?int
@@ -111,6 +110,4 @@ class Commande
 
         return $this;
     }
-
-
 }

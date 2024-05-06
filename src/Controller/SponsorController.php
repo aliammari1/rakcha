@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Sponsor;
 use App\Form\SponsorType;
-use App\Repository\SponsorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,13 +14,27 @@ use Symfony\Component\Routing\Annotation\Route;
 class SponsorController extends AbstractController
 {
     #[Route('/', name: 'app_sponsor_index', methods: ['GET'])]
-    public function index(SponsorRepository $sponsorRepository): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $sponsors = $entityManager
+            ->getRepository(Sponsor::class)
+            ->findAll();
+
         return $this->render('sponsor/index.html.twig', [
-            'sponsors' => $sponsorRepository->findAll(),
+            'sponsors' => $sponsors,
         ]);
     }
+ #[Route('/backaffich', name: 'app_sponsor_backaffich', methods: ['GET'])]
+    public function backaffich(EntityManagerInterface $entityManager): Response
+    {
+        $sponsors = $entityManager
+            ->getRepository(Sponsor::class)
+            ->findAll();
 
+        return $this->render('sponsor/backaffich.html.twig', [
+            'sponsors' => $sponsors,
+        ]);
+    }
     #[Route('/new', name: 'app_sponsor_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

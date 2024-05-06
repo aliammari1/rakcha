@@ -84,7 +84,7 @@ class SeriesController extends AbstractController
         }
 
         // Renvoyer les données à la vue
-        return $this->render('series/listSeries.html.twig', [
+        return $this->render('front/listSeries.html.twig', [
             'series' => $allSeries,
             'form' => $this->createForm(SeriesType::class, new Series())->createView(),
             'updateForms' => $updateForms,
@@ -111,7 +111,7 @@ class SeriesController extends AbstractController
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('APP_IMAGE_DIRECTORY'),
+                        $this->getParameter('kernel.project_dir') . '/public/img/series/',
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -180,7 +180,7 @@ class SeriesController extends AbstractController
 
                 try {
                     $imageFile->move(
-                        $this->getParameter('APP_IMAGE_DIRECTORY'),
+                        $this->getParameter('kernel.project_dir') . '/public/img/series/',
                         $newFilename
                     );
                 } catch (FileException $e) {

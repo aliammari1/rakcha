@@ -37,10 +37,7 @@ class CommentaireProduitController extends AbstractController
         $commentaireProduit = new CommentaireProduit();
         $commentaireProduit->setIdproduit($produit);
 
-        $userId = 1;
-        $user = $usersRepository->findOneBy(['id' => $userId]);
-
-        $commentaireProduit->setIdClient($user);
+        $commentaireProduit->setIdClient($this->getUser());
 
         $form = $this->createForm(CommentaireProduitType::class, $commentaireProduit);
         $form->handleRequest($request);

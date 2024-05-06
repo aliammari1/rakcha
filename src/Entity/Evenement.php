@@ -20,8 +20,17 @@ class Evenement
     private int $id;
 
 
-    #[ORM\Column(name: 'nom', type: 'string', length: 500, nullable: false)]
+
+    #[ORM\Column(name: 'nom', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: "Event's name is required.")]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "The event's name must be at least {{ limit }} characters long.",
+        maxMessage: "The event's name cannot exceed {{ limit }} characters."
+    )]
     private string $nom;
+
 
     /**
      * @var DateTime
@@ -38,19 +47,39 @@ class Evenement
     private DateTimeInterface $datefin;
 
 
-    #[ORM\Column(name: 'lieu', type: 'string', length: 500, nullable: false)]
+    #[ORM\Column(name: 'lieu', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: 'Location is required.')]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "The event's location must be at least {{ limit }} characters long.",
+        maxMessage: "The event's location cannot exceed {{ limit }} characters."
+    )]
     private string $lieu;
 
 
-    #[ORM\Column(name: 'etat', type: 'string', length: 500, nullable: false)]
+    #[ORM\Column(name: 'etat', type: 'string', length: 50, nullable: false)]
+    #[Assert\NotBlank(message: 'Events status is required.')]
+    #[Assert\Length(
+        min: 2,
+        max: 50,
+        minMessage: "The event's status must be at least {{ limit }} characters long.",
+        maxMessage: "The event's status cannot exceed {{ limit }} characters."
+    )]
     private string $etat;
 
-
     #[ORM\Column(name: 'description', type: 'string', length: 500, nullable: false)]
-    private string $description;
+    #[Assert\NotBlank(message: "Event's description is required.")]
+    #[Assert\Length(
+        min: 2,
+        max: 500,
+        minMessage: "The event's description must be at least {{ limit }} characters long.",
+        maxMessage: "The event's description cannot exceed {{ limit }} characters."
+    )]
+    private string $description;    
 
 
-    #[ORM\Column(name: 'affiche_event', type: 'string', length: 255, nullable: false)]
+    #[ORM\Column(name: 'affiche_event', type: 'string', length: 500, nullable: false)]
     private string $afficheEvent;
 
     #[ORM\ManyToOne(targetEntity: CategorieEvenement::class)]

@@ -88,8 +88,8 @@
 							</div>
 							<div class="col-md-10 col-10">
 								<div class="contact_1ir">
-									<h5 class="col_red">Company Address</h5>
-									<p class="mb-0">5311 Ceaver Sidge Td. Pakland, DE 13507</p>
+									<h5 class="col_red">Cinema Address</h5>
+									<p class="mb-0">{{ cinema.adresse }}</p>
 								</div>
 							</div>
 						</div>
@@ -225,48 +225,48 @@
 
 
 		 <script>
-						        window.onscroll = function () {
-						            myFunction()
-						        };
-						
-						        var navbar_sticky = document.getElementById("navbar_sticky");
-						        var sticky = navbar_sticky.offsetTop;
-						        var navbar_height = document.querySelector('.navbar').offsetHeight;
-						
-						        function myFunction() {
-						            if (window.pageYOffset >= sticky + navbar_height) {
-						                navbar_sticky.classList.add("sticky")
-						                document.body.style.paddingTop = navbar_height + 'px';
-						            } else {
-						                navbar_sticky.classList.remove("sticky");
-						                document.body.style.paddingTop = '0'
-						            }
-						        }
-						
-						    </script>
+												        window.onscroll = function () {
+												            myFunction()
+												        };
+												
+												        var navbar_sticky = document.getElementById("navbar_sticky");
+												        var sticky = navbar_sticky.offsetTop;
+												        var navbar_height = document.querySelector('.navbar').offsetHeight;
+												
+												        function myFunction() {
+												            if (window.pageYOffset >= sticky + navbar_height) {
+												                navbar_sticky.classList.add("sticky")
+												                document.body.style.paddingTop = navbar_height + 'px';
+												            } else {
+												                navbar_sticky.classList.remove("sticky");
+												                document.body.style.paddingTop = '0'
+												            }
+												        }
+												
+												    </script>
 
 		{{ encore_entry_link_tags('app')}}
 	 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		 <script>
-						    window.onload = () => {
-						        const chartData = {{ chart.getData() | json_encode | raw }};
-						        const chart = new Chart(
-						            document.getElementById('my-chart'),
-						            {
-						                type: 'doughnut',
-						                data: chartData,
-						                options: {
-						                    scales: {
-						                        y: {
-						                            suggestedMin: 0,
-						                            suggestedMax: 100,
-						                        },
-						                    },
-						                },
-						            }
-						        );
-						    }
-						</script>
+												    window.onload = () => {
+												        const chartData = {{ chart.getData() | json_encode | raw }};
+												        const chart = new Chart(
+												            document.getElementById('my-chart'),
+												            {
+												                type: 'doughnut',
+												                data: chartData,
+												                options: {
+												                    scales: {
+												                        y: {
+												                            suggestedMin: 0,
+												                            suggestedMax: 100,
+												                        },
+												                    },
+												                },
+												            }
+												        );
+												    }
+												</script>
 
 
 	</body>

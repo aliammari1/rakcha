@@ -217,7 +217,7 @@ class CinemaController extends AbstractController
     }
 
 
-    #[Route('Accept/{idCinema}', name: 'app_cinema_accept', methods: ['POST'])]
+    #[Route('/Accept/{idCinema}', name: 'app_cinema_accept', methods: ['POST'])]
     public function Accept(Request $request, Cinema $cinema, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('accept' . $cinema->getIdCinema(), $request->request->get('_token'))) {
@@ -229,7 +229,7 @@ class CinemaController extends AbstractController
         return $this->redirectToRoute('app_cinemaAdmin_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('reject/{idCinema}', name: 'app_cinema_reject', methods: ['POST'])]
+    #[Route('/reject/{idCinema}', name: 'app_cinema_reject', methods: ['POST'])]
     public function reject(Request $request, Cinema $cinema, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('reject' . $cinema->getIdCinema(), $request->request->get('_token'))) {

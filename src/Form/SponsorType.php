@@ -24,3 +24,4 @@ class SponsorType extends AbstractType
         ]);
     }
 }
+

@@ -1,0 +1,45 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Sponsor index{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4"><i class="fas fa-users text-primary mr-2"></i>Sponsor index</h1>
+
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nomsociete</th>
+                    <th>Logo</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sponsor in sponsors %}
+                    <tr>
+                        <td>{{ sponsor.id }}</td>
+                        <td>{{ sponsor.nomsociete }}</td>
+                        <td>{{ sponsor.logo }}</td>
+                        <td>
+                            <a href="{{ path('app_sponsor_show', {'id': sponsor.id}) }}" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> Show
+                            </a>
+                            <a href="{{ path('app_sponsor_edit', {'id': sponsor.id}) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">No records found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('app_sponsor_new') }}" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Create New
+        </a>
+    </div>
+{% endblock %}

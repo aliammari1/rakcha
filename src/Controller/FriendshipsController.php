@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Friendships;
 use App\Form\FriendshipsType;
 use App\Repository\FriendshipsRepository;
+use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,14 +27,18 @@ class FriendshipsController extends AbstractController
     #[Route('/sentfriendRequest', name: 'send_friend_request', methods: ['POST'])]
     public function send(Request $request, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $data = json_decode($request->getContent(), true);
-        $friendship = new Friendships();
-        $friendship->setSender($this->getUser());
-        $friendship->setReceiver($usersRepository->findOneById($data['receiver']));
-        $friendship->setStatut('pending friend request');
-        $entityManager->persist($friendship);
-        $entityManager->flush();
+        try {
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+            $data = json_decode($request->getContent(), true);
+            $friendship = new Friendships();
+            $friendship->setSender($this->getUser());
+            $friendship->setReceiver($usersRepository->findOneById($data['receiver']));
+            $friendship->setStatut('pending friend request');
+            $entityManager->persist($friendship);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            return new JsonResponse(['success' => false, 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         return new JsonResponse(['success' => true], Response::HTTP_OK);
     }
 

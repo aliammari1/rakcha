@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Users;
 use App\Repository\UsersRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,7 +54,16 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-        return new RedirectResponse($this->router->generate('app_users_index'));
+        $user = $token->getUser();
+        if ($user instanceof Users) {
+            if ($user->getRole() == 'client')
+                return new RedirectResponse($this->router->generate('app_home_index'));
+            else if ($user->getRole() == 'responsable de cinema')
+                return new RedirectResponse($this->router->generate('app_cinema_index'));
+            else if ($user->getRole() == 'admin')
+                return new RedirectResponse($this->router->generate('app_users_index'));
+        }
+        return new RedirectResponse($this->router->generate('app_home_index'));
     }
 
 

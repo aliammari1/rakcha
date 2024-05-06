@@ -130,19 +130,50 @@
 			background: red;
 			color: white;
 		}
+		#search-input {
+			background-color: #19191a;
+			margin-left: 600px;
+			width: 600px;
+			margin-bottom: 70px;
+		}
 	</style>
 {% endblock %}
 
 {% block body %}
 	<body>
 		{{ block("header") }}
+		<section id="center" class="center_o pt-2 pb-2" style="background-color:black;">
+			<div class="container-xl">
+				<div class="row center_o1">
+					<div class="col-md-5">
+						<div class="center_o1l d-flex align-items-center">
+							<h2 class="mb-0">
+								<a href="{{ path('app_listfilms_index') }}">Films</a>
+							</h2>
+						</div>
+					</div>
+					<div class="col-md-7">
+						<div class="center_o1r text-end">
+							<h6 class="mb-0 col_red">
+								<a href="{{ path('app_home_index') }}">Home</a>
+								<span class="me-2 ms-2 text-light">
+									<i class="fa fa-caret-right align-middle"></i>
+								</span>
+								Cinemas</h6>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-		<!-- Champ de recherche -->
-		<input
-		type="text" id="search-input" placeholder="Search Cinema">
 
 		<!-- Section des cartes de cinéma -->
 		<section id="team" class="pt-4 pb-4 bg_grey">
+			<div>
+				<!-- Champ de recherche -->
+				<input type="text" id="search-input" placeholder="Search Cinema">
+			</div>
+
 			<div class="container-xl">
 				{% for i in range(0, cinemas|length // 3) %}
 					<div class="team_1i row {% if not loop.first %} mt-4{% endif %}">
@@ -153,9 +184,9 @@
 									<div class="content">
 										<div class="h3">{{ cinema.nom }}</div>
 										<p>{{ cinema.adresse }}</p>
-                                        <form method="post" action="{{ path('app_planning_post', {'idCinema': cinema.idCinema}) }}">
-                                            <button class="planning" type="submit">Show Planning</button>
-                                        </form>
+										<form method="post" action="{{ path('app_planning_post', {'idCinema': cinema.idCinema}) }}">
+											<button class="planning" type="submit">Show Planning</button>
+										</form>
 										<form method="post" action="{{ path('app_cinema_location', {'idCinema': cinema.idCinema}) }}">
 											<div>
 												<button type="submit" class="map-button">
@@ -196,20 +227,20 @@
 		{{ block("footer") }}
 
 		 <script>
-		        // Fonction de recherche
-		        document.getElementById('search-input').addEventListener('input', function () {
-		            var searchText = this.value.toLowerCase();
-		            var cards = document.querySelectorAll('.cardBox');
-		
-		            cards.forEach(function (card) {
-		                var cinemaName = card.dataset.name;
-		                if (cinemaName.includes(searchText)) {
-		                    card.style.display = 'block';
-		                } else {
-		                    card.style.display = 'none';
-		                }
-		            });
-		        });
-		    </script>
+																																																																																					  				      // Fonction de recherche
+																																																																																									        document.getElementById('search-input').addEventListener('input', function () {
+																																																																																					  				          var searchText = this.value.toLowerCase();
+																																																																																									            var cards = document.querySelectorAll('.cardBox');
+																																																																																									
+																																																																																									            cards.forEach(function (card) {
+																																																																																					  				              var cinemaName = card.dataset.name;
+																																																																																							  		              if (cinemaName.includes(searchText)) {
+																																																																																							  		                  card.style.display = 'block';
+																																																																																							  		              } else {
+																																																																																							  		                  card.style.display = 'none';
+																																																																																							  		              }
+																																																																																							  		          });
+																																																																																							  		      });
+																																																																																									    </script>
 	</body>
 {% endblock %}

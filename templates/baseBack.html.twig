@@ -37,8 +37,7 @@
 		<link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css"/>
 
 	</head>
-	<body class="g-sidenav-show bg-gray-100"> 
-		{% block backContent %}{% endblock %}
+	<body class="g-sidenav-show bg-gray-100"> {% block backContent %}{% endblock %}
 		<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4" data-color="danger" id="sidenav-main">
 			<div class="sidenav-header">
 				<i aria-hidden="true" class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" id="iconSidenav"></i>
@@ -50,38 +49,38 @@
 			<hr class="horizontal dark mt-0"/>
 			<div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
 				<ul class="navbar-nav">
-					{% set paths = [path('app_users_index'),path('app_profile_index',{'id':app.user.id}),path('app_logout_index'),path('app_cinema_index'), path('app_seance_index'), path('app_produit_index'), path('app_categorie_produit_index')] %}
-					{% for item in ['users', 'profile', 'logout', 'cinema', 'Seances','produit','categorie Produit'] %}
+					{% set items = [] %}
+					{% set paths = [] %}
+					{% if app.user.role == 'responsable de cinema' %}
+						{% set items = ['cinema', 'Seances', 'film','category','actor','logout'] %}
+						{% set paths = [path('app_cinema_index'), path('app_seance_index'),path('app_film_index'),path('app_category_index'),path('app_actor_index'),path('app_logout_index')] %}
+					{% elseif app.user.role == 'admin' %}
+						{% set items = ['users','Cinema','produit','categorie Produit', 'series','episodes','categories','events','logout'] %}
+						{% set paths = [path('app_users_index'),path('app_cinemaAdmin_index'), path('app_produit_index'), path('app_categorie_produit_index'),path('app_series_index'),path('app_episodes_index'),path('app_categories_index'),path('app_evenement_affichback'),path('app_logout_index')] %}
+					{% endif %}
+					{% for item in items %}
 						<li class="nav-item ms-4 my-1">
 							<a class="nav-link {% if item == 'billing' %}active{% endif %}" href="{{ paths[loop.index0] }}">
 								<div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
 									{% set iconClass %}
-									{% if item == 'dashboard' %}
-										ni-tv-2 text-danger
-									{% elseif item == 'tables' %}
-										ni-calendar-grid-58 text-warning
-									{% elseif item == 'billing' %}
-										ni-credit-card text-success
-									{% elseif item == 'film' %}
+									{% if item == 'film' %}
 										fa fa-film text-primary
 									{% elseif item == 'actor' %}
-										ni-user-run text-danger
+										ni-user-run text-primary
 									{% elseif item == 'category' %}
-										ni-credit-card text-success
+										fa fa-shapes text-primary
 									{% elseif item == 'cinema' %}
-										ni-credit-card text-success
+										fa fa-video text-primary
 									{% elseif item == 'Seances' %}
+										fa fa-calendar text-primary
+									{% elseif item == 'Cinema' %}
 										ni-credit-card text-success
 									{% elseif item == 'produit' %}
 										ni-credit-card text-success
 									{% elseif item == 'categorie Produit' %}
 										ni-credit-card text-success
-									{% elseif item == 'virtual-reality' %}
-										ni-app text-info
-									{% elseif item == 'rtl' %}
-										ni-world-2 text-danger
-									{% elseif item == 'profile' %}
-										ni-single-02 text-dark
+									{% elseif item == 'logout' %}
+										fa fa-arrow-left text-primary
 									{% endif %}
 									{% endset %}
 									<i class="ni {{ iconClass }} text-sm opacity-10"></i>
@@ -99,18 +98,13 @@
 					<div class="container-fluid">
 						<div class="row align-items-center justify-content-lg-between">
 							<div class="col-lg-6 mb-lg-0 mb-4">
-								<div class="copyright text-center text-sm text-muted text-lg-start">
-									©
+								<div class="copyright text-center text-sm text-muted text-lg-start">©
 									 <script>
-																																																																																	                                document.write(new Date().getFullYear())
-																																																																																	                            </script>
+																																																																																																																																																																																																																																																																																																																																																															                                document.write(new Date().getFullYear())
+																																																																																																																																																																																																																																																																																																																																																															                            </script>
 									,
-																																																																																	                            made with
-									<i class="fa fa-heart"></i>
-									by
-									<a class="font-weight-bold" href="https://www.creative-tim.com" target="_blank">Creative
-																																																																																										                                Tim</a>
-									for a better web.
+																																																																																																																																																																																																																																																																																																																																																															                            made with<i class="fa fa-heart"></i>by<a class="font-weight-bold" href="https://www.creative-tim.com" target="_blank">Creative
+																																																																																																																																																																																																																																																																																																																																																																																																						                                Tim</a>for a better web.
 								</div>
 							</div>
 							<div class="col-lg-6">
