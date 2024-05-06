@@ -57,7 +57,7 @@ class paymentStripeController extends AbstractController
         // $em = $doct->getManager();
         // $em->flush();
 
-        return $this->json(['success' => true]);
+        return $this->json(['success' => true,'data' => $data]);
     }
 
 

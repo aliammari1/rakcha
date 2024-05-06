@@ -10,14 +10,67 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b29a8b6d-65d0-4488-b220-c4e205dabeac" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/rakcha-web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/rakcha-web.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/actors/3033.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/actors/40317.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/actors/97434.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/123961_1_m.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/Fraiser.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/Riverdale.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/abc.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/agora.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/batlman.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/charlo.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/cinema.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/comedy.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/dachra.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/dossier/leColiser.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/dossier/palace.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/dossier/veo.jfif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/friend.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/kingKong.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/lord.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/lucifer.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/pathe.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/queen.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/skam.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/tab1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/tab2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/tab3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/tableau-sur-toile-Joker-pop-art.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/template/you.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/img/users/2743.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/packages/security.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/security.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/CommandeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CommandeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/CategorieEvenementController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/CategorieEvenementController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EpisodesController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EpisodesController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/EvenementController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/EvenementController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/HomeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/HomeController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/ListfilmsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ListfilmsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/ProduitController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ProduitController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RegistrationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RegistrationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SeriesController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SeriesController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SponsorController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SponsorController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/UsersController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/UsersController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/paymentStripeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/paymentStripeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/CategorieEvenement.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/CategorieEvenement.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Evenement.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Evenement.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Sponsor.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Sponsor.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Users.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Users.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/EvenementType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/EvenementType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/ParticipationEvenementType.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/RegistrationFormType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/RegistrationFormType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Form/SponsorType.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Form/SponsorType.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Security/LoginFormAuthenticator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Security/LoginFormAuthenticator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/back/profile.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/profile.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/back/seriesTables.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/seriesTables.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/baseBack.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/baseBack.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/baseFront.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/baseFront.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/front/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/front/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/front/listSeries.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/front/listSeries.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/front/listeFavoris.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/front/listeFavoris.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/front/listfilms.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/front/listfilms.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/front/listproduct.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/front/listproduct.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/front/watchepisode.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/front/watchepisode.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -294,7 +347,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "code.cleanup.on.save": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/AliAMMARI/OneDrive - ESPRIT (1)/Desktop/integration/rakcha-web",
+    "last_opened_file_path": "C:/xampp/htdocs/integration/rakcha-web",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -358,7 +411,8 @@
       <workItem from="1711389915526" duration="3604000" />
       <workItem from="1712158639846" duration="62000" />
       <workItem from="1712189866200" duration="27000" />
-      <workItem from="1714752357035" duration="3557000" />
+      <workItem from="1714752357035" duration="4181000" />
+      <workItem from="1714947932745" duration="5450000" />
     </task>
     <servers />
   </component>

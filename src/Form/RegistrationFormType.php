@@ -49,7 +49,7 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Role',
                 'choices' => [
                     'Client' => 'client',
-                    'Responsable de cinema' => 'responsableDeCinema',
+                    'Responsable de cinema' => 'responsable de cinema',
                 ],
                 'attr' => [
                     'placeholder' => 'Select your role',

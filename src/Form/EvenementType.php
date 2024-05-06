@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Evenement;
+use App\Entity\CategorieEvenement; // Add this line
+use Symfony\Bridge\Doctrine\Form\Type\EntityType; // Add this line
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,7 +21,11 @@ class EvenementType extends AbstractType
             ->add('etat')
             ->add('description')
             ->add('afficheEvent')
-            ->add('idCategorie')
+            ->add('idCategorie', EntityType::class, [
+                'class' => CategorieEvenement::class,
+                'choice_label' => 'nomCategorie',
+                'attr' => ['class' => 'form-control'],
+            ])
         ;
     }
 

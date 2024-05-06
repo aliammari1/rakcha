@@ -20,18 +20,18 @@ class Commandeitem
     #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
     private int $quantity;
 
-    
-    #[ORM\ManyToOne(targetEntity: Commande::class,cascade: ['persist'])]
-    #[ORM\JoinColumn(name: 'idCommande', referencedColumnName: 'idCommande')]
+
+    #[ORM\ManyToOne(targetEntity: Commande::class)]
+    #[ORM\JoinColumn(name: 'idCommande', referencedColumnName: 'idCommande', onDelete: 'CASCADE')]
     private ?Commande $idcommande = null;
 
     #[ORM\ManyToOne(targetEntity: Produit::class)]
     #[ORM\JoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
     private ?Produit $idProduit = null;
 
-    
-   
-   
+
+
+
 
 
     public function getIdcommandeitem(): ?int
@@ -74,6 +74,4 @@ class Commandeitem
 
         return $this;
     }
-
-
 }

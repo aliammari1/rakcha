@@ -31,6 +31,56 @@ class CommandeController extends AbstractController
             'controller_name' => 'CommandeController',
         ]);
     }
+    //Page d'accueil
+
+    #[Route('/payment', name: 'app_payment', methods: ['POST'])]
+    public function payment(Request $request): Response
+    {
+        $token = $request->request->get('token');
+        $commandeId = $request->query->get('commandeId');
+        if (!$this->isCsrfTokenValid('form', $token)) {
+            return new Response(
+                'Operation non autorisée',
+                Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'text/plain']
+            );
+        }
+
+        $response = $this->passerelle->purchase([
+            'amount' => $request->request->get('amount'),
+            'currency' => $_ENV['PAYPAL_CURRENCY'],
+            'returnUrl' => 'https://127.0.0.1:8001/commande/success?commandeId=' . $commandeId,
+            'cancelUrl' => 'https://127.0.0.1:8001/commande/error'
+        ])->send();
+
+        var_dump($response->getData());
+
+        if ($response->isRedirect()) {
+
+            $responseData = $response->getData();
+
+
+            if (isset($responseData['links'])) {
+                foreach ($responseData['links'] as $link) {
+
+                    if ($link['rel'] === 'approval_url') {
+
+                        $redirectUrl = $link['href'];
+
+
+                        return $this->redirect($redirectUrl);
+                    }
+                }
+            }
+
+            return new Response('L\'URL de redirection est introuvable dans les données de réponse.', Response::HTTP_INTERNAL_SERVER_ERROR);
+        } else {
+
+            return $this->render('front/error.html.twig', [
+                'message' => 'Une erreur est survenue lors du traitement du paiement.'
+            ]);
+        }
+    }
     #[Route('/success', name: 'app_success')]
     public function success(Request $request, CommandeRepository $commandeRepository, EntityManagerInterface $em): Response
     {
@@ -81,7 +131,7 @@ class CommandeController extends AbstractController
     public function paymentSuccess(Request $request): Response
     {
         // Afficher la page de succès avec les détails de la transaction
-        return $this->render('commande/payment_success.html.twig');
+        return $this->render('front/payment_success.html.twig');
     }
 
     #[Route('/new', name: 'app_commande_new', methods: ['POST'])]
@@ -214,56 +264,5 @@ class CommandeController extends AbstractController
             'testMode' => true,
         ]);
         $this->manager = $manager;
-    }
-
-    //Page d'accueil
-
-    #[Route('/payment', name: 'app_payment', methods: ['POST'])]
-    public function payment(Request $request): Response
-    {
-        $token = $request->request->get('token');
-        $commandeId = $request->query->get('commandeId');
-        if (!$this->isCsrfTokenValid('form', $token)) {
-            return new Response(
-                'Operation non autorisée',
-                Response::HTTP_BAD_REQUEST,
-                ['content-type' => 'text/plain']
-            );
-        }
-
-        $response = $this->passerelle->purchase([
-            'amount' => $request->request->get('amount'),
-            'currency' => $_ENV['PAYPAL_CURRENCY'],
-            'returnUrl' => 'http://127.0.0.1:8001/commande/success?commandeId=' . $commandeId,
-            'cancelUrl' => 'http://127.0.0.1:8001/commande/error'
-        ])->send();
-
-        var_dump($response->getData());
-
-        if ($response->isRedirect()) {
-
-            $responseData = $response->getData();
-
-
-            if (isset($responseData['links'])) {
-                foreach ($responseData['links'] as $link) {
-
-                    if ($link['rel'] === 'approval_url') {
-
-                        $redirectUrl = $link['href'];
-
-
-                        return $this->redirect($redirectUrl);
-                    }
-                }
-            }
-
-            return new Response('L\'URL de redirection est introuvable dans les données de réponse.', Response::HTTP_INTERNAL_SERVER_ERROR);
-        } else {
-
-            return $this->render('front/error.html.twig', [
-                'message' => 'Une erreur est survenue lors du traitement du paiement.'
-            ]);
-        }
     }
 }
