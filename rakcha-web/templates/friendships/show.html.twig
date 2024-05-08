@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Friendships{% endblock %}
+
+{% block body %}
+    <h1>Friendships</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ friendship.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_friendships_index') }}">back to list</a>
+
+    <a href="{{ path('app_friendships_edit', {'id': friendship.id}) }}">edit</a>
+
+    {{ include('friendships/_delete_form.html.twig') }}
+{% endblock %}

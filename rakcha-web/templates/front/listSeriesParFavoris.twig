@@ -1,0 +1,61 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block pageStyle %}
+    <link href="{{ asset('/css/about.css') }}" rel="stylesheet">
+    <style>
+        /* Vos styles CSS ici */
+    </style>
+{% endblock %}
+
+{% block body %}
+    {{ parent() }} <!-- Appeler le contenu du bloc parent (header, footer, etc.) -->
+
+    <section id="center" class="center_o pt-2 pb-2">
+        <div class="container-xl">
+            <div class="row center_o1">
+                <div class="col-md-5">
+                    <div class="center_o1l">
+                        <h2 class="mb-0">Favoris</h2>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="center_o1r text-end">
+                        <h6 class="mb-0 col_red">
+                            <a href="{{ path('app_series_index') }}">Home</a>
+                            <span class="me-2 ms-2 text-light">
+                                <i class="fa fa-caret-right align-middle"></i>
+                            </span>
+                            Favoris
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="favorites" class="pt-4 pb-4 bg_light_grey">
+        <div class="container-xl">
+            <h2 class="netflix-title">Vos favoris :</h2>
+            <div class="row">
+                {% for favori in favoris %}
+                    <div class="col-md-3">
+                        <div class="series-item">
+                            <a href="{{ path('app_episodes_showw', {'idserie': favori.series.idSerie}) }}">
+                                <img src="{{ asset(favori.series.image) }}" alt="{{ favori.series.nom }}">
+                            </a>
+                            <div class="series-item-details">
+                                <h4>{{ favori.series.nom }}</h4>
+                                <p>{{ favori.series.resume }}</p>
+                                <!-- Ajoutez d'autres détails du favori selon vos besoins -->
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {{ block("footer") }}
+{% endblock %}
+
+
