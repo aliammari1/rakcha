@@ -1,0 +1,136 @@
+{% extends 'baseFront.html.twig' %}
+
+{% block pageStyle %}
+    <link href="{{ asset('css/index.css') }}" rel="stylesheet">
+    <style>
+        .event-card {
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-card img {
+            width: 100%;
+            height: auto;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .event-card:hover img {
+            opacity: 0.7;
+        }
+
+        .card-text-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 15px;
+            transition: bottom 0.3s ease-in-out;
+        }
+
+        .event-card:hover .card-text-content {
+            bottom: -70px;
+        }
+
+        .card-footer {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .card-footer a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .card-footer a:hover {
+            color: #f8f9fa;
+        }
+
+        .event-title {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .event-details {
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Event{% endblock %}
+
+{% block body %}
+    <body>
+        {{ block("header") }}
+
+        <div class="container mt-5">
+            <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Events</h1>
+
+           
+        <form action="{{ path('app_evenement_index') }}" method="get" class="mb-4">
+            <div class="input-group">
+                <select name="sort_by" class="form-control">
+                    <option value="nom">Name</option>
+                    <option value="datedebut">Date Debut</option>
+                    <option value="datefin">Date Fin</option>
+                    <option value="lieu">Lieu</option>
+                    <option value="etat">Etat</option>
+                </select>
+                <select name="sort_order" class="form-control">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fas fa-sort"></i> Sort
+                    </button>
+                </div>
+            </div>
+        </form>
+
+ <!-- Search Form -->
+        <form action="{{ path('app_evenement_index') }}" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search...">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </form>
+          
+
+            <div class="row">
+                {% for evenement in evenements %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card event-card">
+                            <a href="{{ path('app_evenement_showback', {'id': evenement.id}) }}">
+                                <img class="img-fluid" src="{{ evenement.afficheEvent }}" alt="{{ evenement.nom }}">
+                            </a>
+                            <div class="card-text-content">
+                                <p><strong>Event Name :</strong> {{ evenement.nom }}</p>
+                                <div class="event-details">
+                                   <p><strong>Category :</strong> {{ evenement.idCategorie.nomCategorie ? evenement.idCategorie.nomCategorie : 'Non spécifié' }}</p>
+                                    <p><strong>Status :</strong> {{ evenement.etat ? evenement.etat : 'Non spécifié' }}</p>
+                                    
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col">
+                        <p>No events found !</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </body>
+{% endblock %}

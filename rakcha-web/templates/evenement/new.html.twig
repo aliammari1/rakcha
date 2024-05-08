@@ -1,0 +1,78 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}New Evenement{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4"><i class="fas fa-calendar-plus text-primary mr-2"></i>Create new Evenement</h1>
+
+        <div class="card shadow">
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="nom"><i class="fas fa-tag text-primary mr-2"></i>Nom:</label>
+                                {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Enter event name'}}) }}
+                                {{ form_errors(form.nom) }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="datedebut"><i class="far fa-calendar-alt text-primary mr-2"></i>Date Debut:</label>
+                                {{ form_widget(form.datedebut) }}
+                                {{ form_errors(form.datedebut) }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="datefin"><i class="far fa-calendar-alt text-primary mr-2"></i>Date Fin:</label>
+                                {{ form_widget(form.datefin) }}
+                                {{ form_errors(form.datefin) }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lieu"><i class="fas fa-map-marker-alt text-primary mr-2"></i>Lieu:</label>
+                                {{ form_widget(form.lieu, {'attr': {'class': 'form-control', 'placeholder': 'Enter location'}}) }}
+                                {{ form_errors(form.lieu) }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="etat"><i class="fas fa-info-circle text-primary mr-2"></i>Etat:</label>
+                                {{ form_widget(form.etat, {'attr': {'class': 'form-control', 'placeholder': 'Enter event status'}}) }}
+                                {{ form_errors(form.etat) }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description"><i class="fas fa-align-left text-primary mr-2"></i>Description:</label>
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Enter event description'}}) }}
+                                {{ form_errors(form.description) }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="afficheEvent"><i class="fas fa-image text-primary mr-2"></i>Affiche Event:</label>
+                                {{ form_widget(form.afficheEvent, {'attr': {'class': 'form-control', 'placeholder': 'Select event poster'}}) }}
+                                {{ form_errors(form.afficheEvent) }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="idCategorie"><i class="fas fa-list-alt text-primary mr-2"></i>Categorie:</label>
+                                {{ form_widget(form.idCategorie, {'attr': {'class': 'form-control'}, 'choice_label': 'nomCategorie'}) }}
+                                {{ form_errors(form.idCategorie) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary">
+                        <i class="fas fa-save mr-2"></i>{{ button_label|default('Save') }}
+                    </button>
+                {{ form_end(form) }}
+
+                <a href="{{ path('app_evenement_index') }}" class="btn btn-secondary mt-3">
+                    <i class="fas fa-arrow-left mr-2"></i>back to list
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
