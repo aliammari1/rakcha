@@ -1,0 +1,580 @@
+{% extends 'baseFront.html.twig' %}
+
+    {% block pageStyle %}
+        <link href="" rel="stylesheet">
+        <style>
+            .login {
+                width: 340px;
+                height: 440px;
+                background: #2c2c2c;
+                padding: 47px;
+                padding-bottom: 57px;
+                color: #fff;
+                border-radius: 17px;
+                padding-bottom: 50px;
+                font-size: 1.3em;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+              }
+              
+              .login input[type="text"],
+              .login input[type="password"] {
+                opacity: 1;
+                display: block;
+                border: none;
+                outline: none;
+                width: 100%;
+                padding: 13px 18px;
+                margin: 20px 0 0 0;
+                font-size: 0.8em;
+                border-radius: 100px;
+                background: #3c3c3c;
+                color: #fff;
+              }
+              
+              .login input:focus {
+                animation: bounce 1s;
+                -webkit-appearance: none;
+              }
+              
+              .login input[type=submit],
+              .login input[type=button],
+              .h1 {
+                border: 0;
+                outline: 0;
+                width: 100%;
+                padding: 13px;
+                margin: 40px 0 0 0;
+                border-radius: 500px;
+                font-weight: 600;
+                animation: bounce2 1.6s;
+              }
+              
+              .h1 {
+                padding: 0;
+                position: relative;
+                top: -35px;
+                display: block;
+                margin-bottom: -0px;
+                font-size: 1.3em;
+              }
+              
+              .btnorder {
+                background: linear-gradient(144deg, #A7001E, black 50%,#A7001E);
+                color: #fff;
+                padding: 16px !important;
+              }
+              
+              .btnorder:hover {
+                background: linear-gradient(144deg,black , 20%,#A7001E 50%,black);
+                color: rgb(255, 255, 255);
+                padding: 16px !important;
+                cursor: pointer;
+                transition: all 0.4s ease;
+              }
+              
+              .login input[type=text] {
+                animation: bounce 1s;
+                -webkit-appearance: none;
+              }
+              
+              .login input[type=password] {
+                animation: bounce1 1.3s;
+              }
+              
+              .ui {
+                font-weight: bolder;
+                background: -webkit-linear-gradient(#B563FF, #535EFC, #0EC8EE);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                border-bottom: 4px solid transparent;
+                border-image: linear-gradient(0.25turn, #535EFC, #0EC8EE, #0EC8EE);
+                border-image-slice: 1;
+                display: inline;
+              }
+              
+              @media only screen and (max-width: 600px) {
+                .login {
+                  width: 70%;
+                  padding: 3em;
+                }
+              }
+              
+              @keyframes bounce {
+                0% {
+                  transform: translateY(-250px);
+                  opacity: 0;
+                }
+              }
+              
+              @keyframes bounce1 {
+                0% {
+                  opacity: 0;
+                }
+              
+                40% {
+                  transform: translateY(-100px);
+                  opacity: 0;
+                }
+              }
+              
+              @keyframes bounce2 {
+                0% {
+                  opacity: 0;
+                }
+              
+                70% {
+                  transform: translateY(-20px);
+                  opacity: 0;
+                }
+              }
+
+             /* Hide the default checkbox */
+                .containerbox input {
+                    position: absolute;
+                    opacity: 0;
+                    cursor: pointer;
+                    height: 0;
+                    width: 0;
+                }
+                
+                .containerbox {
+                    display: inline-flex; /* Afficher les éléments en ligne */
+                    align-items: center; /* Aligner les éléments verticalement au centre */
+                    margin-bottom: 20px; /* Ajouter un espace en bas */
+                }
+                
+                /* Create a custom checkbox */
+                .checkmark {
+                    --clr: #A7001E;
+                    position: relative;
+                    top: 0;
+                    left: 0;
+                    height: 1.3em;
+                    width: 1.3em;
+                    background-color: #ccc;
+                    border-radius: 50%;
+                    transition: 300ms;
+                }
+                
+                /* When the checkbox is checked, add a blue background */
+                .containerbox input:checked ~ .checkmark {
+                    background-color: var(--clr);
+                    border-radius: .5rem;
+                    animation: pulse 500ms ease-in-out;
+                }
+                
+                /* Create the checkmark/indicator (hidden when not checked) */
+                .checkmark:after {
+                    content: "";
+                    position: absolute;
+                    display: none;
+                }
+                
+                /* Show the checkmark when checked */
+                .containerbox input:checked ~ .checkmark:after {
+                    display: block;
+                }
+                
+                /* Style the checkmark/indicator */
+                .containerbox .checkmark:after {
+                    left: 0.45em;
+                    top: 0.25em;
+                    width: 0.25em;
+                    height: 0.5em;
+                    border: solid #E0E0E2;
+                    border-width: 0 0.15em 0.15em 0;
+                    transform: rotate(45deg);
+                }
+                
+                @keyframes pulse {
+                    0% {
+                    box-shadow: 0 0 0 #0B6E4F90;
+                    rotate: 20deg;
+                    }
+                
+                    50% {
+                    rotate: -20deg;
+                    }
+                
+                    75% {
+                    box-shadow: 0 0 0 10px #0B6E4F60;
+                    }
+                
+                    100% {
+                    box-shadow: 0 0 0 13px #0B6E4F30;
+                    rotate: 0;
+                    }
+                }
+                /* Style the containerpayment */
+                .containerpayment {
+                  background-color: #ffffff;
+                  display: flex;
+                  width: 270px;
+                  height: 120px;
+                  position: relative;
+                  border-radius: 6px;
+                  transition: 0.3s ease-in-out;
+                }
+
+                .containerpayment:hover {
+                  transform: scale(1.03);
+                }
+
+                .containerpayment:hover .left-side {
+                  width: 100%;
+                }
+
+                .left-side {
+                  background-color: #5de2a3;
+                  width: 130px;
+                  height: 120px;
+                  border-radius: 4px;
+                  position: relative;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  cursor: pointer;
+                  transition: 0.3s;
+                  flex-shrink: 0;
+                  overflow: hidden;
+                }
+
+                .right-side {
+                  display: flex;
+                  align-items: center;
+                  overflow: hidden;
+                  cursor: pointer;
+                  justify-content: space-between;
+                  white-space: nowrap;
+                  transition: 0.3s;
+                }
+
+                .right-side:hover {
+                  background-color: #f9f7f9;
+                }
+
+                .arrow {
+                  width: 20px;
+                  height: 20px;
+                  margin-right: 20px;
+                }
+
+                .new {
+                  font-size: 23px;
+                  font-family: "Lexend Deca", sans-serif;
+                  margin-left: 20px;
+                }
+
+                .cardpayment {
+                  width: 70px;
+                  height: 46px;
+                  background-color: #c7ffbc;
+                  border-radius: 6px;
+                  position: absolute;
+                  display: flex;
+                  z-index: 10;
+                  flex-direction: column;
+                  align-items: center;
+                  -webkit-box-shadow: 9px 9px 9px -2px rgba(77, 200, 143, 0.72);
+                  -moz-box-shadow: 9px 9px 9px -2px rgba(77, 200, 143, 0.72);
+                  -webkit-box-shadow: 9px 9px 9px -2px rgba(77, 200, 143, 0.72);
+                }
+
+                .cardpayment-line {
+                  width: 65px;
+                  height: 13px;
+                  background-color: #80ea69;
+                  border-radius: 2px;
+                  margin-top: 7px;
+                }
+
+                @media only screen and (max-width: 480px) {
+                  .containerpayment {
+                    transform: scale(0.7);
+                  }
+
+                  .containerpayment:hover {
+                    transform: scale(0.74);
+                  }
+
+                  .new {
+                    font-size: 18px;
+                  }
+                }
+
+                .buttonspayment {
+                  width: 8px;
+                  height: 8px;
+                  background-color: #379e1f;
+                  box-shadow: 0 -10px 0 0 #26850e, 0 10px 0 0 #56be3e;
+                  border-radius: 50%;
+                  margin-top: 5px;
+                  transform: rotate(90deg);
+                  margin: 10px 0 0 -30px;
+                }
+
+                .containerpayment:hover .card {
+                  animation: slide-top 1.2s cubic-bezier(0.645, 0.045, 0.355, 1) both;
+                }
+
+                .containerpayment:hover .post {
+                  animation: slide-post 1s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+                }
+
+                @keyframes slide-top {
+                  0% {
+                    -webkit-transform: translateY(0);
+                    transform: translateY(0);
+                  }
+
+                  50% {
+                    -webkit-transform: translateY(-70px) rotate(90deg);
+                    transform: translateY(-70px) rotate(90deg);
+                  }
+
+                  60% {
+                    -webkit-transform: translateY(-70px) rotate(90deg);
+                    transform: translateY(-70px) rotate(90deg);
+                  }
+
+                  100% {
+                    -webkit-transform: translateY(-8px) rotate(90deg);
+                    transform: translateY(-8px) rotate(90deg);
+                  }
+                }
+
+                .post {
+                  width: 63px;
+                  height: 75px;
+                  background-color: #dddde0;
+                  position: absolute;
+                  z-index: 11;
+                  bottom: 10px;
+                  top: 120px;
+                  border-radius: 6px;
+                  overflow: hidden;
+                }
+
+                .post-line {
+                  width: 47px;
+                  height: 9px;
+                  background-color: #545354;
+                  position: absolute;
+                  border-radius: 0px 0px 3px 3px;
+                  right: 8px;
+                  top: 8px;
+                }
+
+                .post-line:before {
+                  content: "";
+                  position: absolute;
+                  width: 47px;
+                  height: 9px;
+                  background-color: #757375;
+                  top: -8px;
+                }
+
+                .screen {
+                  width: 47px;
+                  height: 23px;
+                  background-color: #ffffff;
+                  position: absolute;
+                  top: 22px;
+                  right: 8px;
+                  border-radius: 3px;
+                }
+
+                .numbers {
+                  width: 12px;
+                  height: 12px;
+                  background-color: #838183;
+                  box-shadow: 0 -18px 0 0 #838183, 0 18px 0 0 #838183;
+                  border-radius: 2px;
+                  position: absolute;
+                  transform: rotate(90deg);
+                  left: 25px;
+                  top: 52px;
+                }
+
+                .numbers-line2 {
+                  width: 12px;
+                  height: 12px;
+                  background-color: #aaa9ab;
+                  box-shadow: 0 -18px 0 0 #aaa9ab, 0 18px 0 0 #aaa9ab;
+                  border-radius: 2px;
+                  position: absolute;
+                  transform: rotate(90deg);
+                  left: 25px;
+                  top: 68px;
+                }
+
+                @keyframes slide-post {
+                  50% {
+                    -webkit-transform: translateY(0);
+                    transform: translateY(0);
+                  }
+
+                  100% {
+                    -webkit-transform: translateY(-70px);
+                    transform: translateY(-70px);
+                  }
+                }
+
+                .dollar {
+                  position: absolute;
+                  font-size: 16px;
+                  font-family: "Lexend Deca", sans-serif;
+                  width: 100%;
+                  left: 0;
+                  top: 0;
+                  color: #4b953b;
+                  text-align: center;
+                }
+
+                .container:hover .dollar {
+                  animation: fade-in-fwd 0.3s 1s backwards;
+                }
+
+                @keyframes fade-in-fwd {
+                  0% {
+                    opacity: 0;
+                    transform: translateY(-5px);
+                  }
+
+                  100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+                }
+
+
+             
+
+              
+
+ </style>
+    {% endblock %}
+    
+    {% block body %}
+        <body>
+            {{ block("header") }}
+    
+            <section id="center" class="center_o pt-2 pb-2">
+                <div class="container-xl">
+                    <div class="row center_o1">
+                        <div class="col-md-5">
+                            <div class="center_o1l">
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="center_o1r text-end">
+                                <h6 class="mb-0 col_red">
+                                    <a href="#">Home</a>
+                                    <span class="me-2 ms-2 text-light">
+                                        <i class="fa fa-caret-right align-middle"></i>
+                                    </span>
+                                    Order
+                                </h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+    
+            <section id="order-form" class="pt-4 pb-4">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-4">
+                            <div class="login wrap">
+                                {{ form_start(form, {'attr': {'class': 'form'}, 'action': path('app_commande_new',{'selectedItemIds': produitSelectionnes}) }) }}
+                              
+
+                                <div class="">Order</div>
+                                <div class="form-group">
+                                    {{ form_widget(form.numTelephone, {'attr': {'placeholder': 'Phone Number'}}) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_widget(form.adresse, {'attr': {'placeholder': 'Address'}}) }}
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <label class="containerbox"> 
+                                        <span style="margin-right: 10px;">Paypal</span>
+                                        <input checked="checked" type="checkbox">
+                                        <div class="checkmark"></div>
+                                    </label>
+                                </div>
+                              
+                                <input type="submit" class="btnorder" name="buy_products" value="Buy Products"></input>
+                            {{ form_end(form) }}
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-4"> 
+                        <form action="{{ path('app_payment',{'commandeId':commandeId}) }}" method="POST">
+                           <input type="hidden" name="token"  value="{{csrf_token('form')}}">
+
+                                <input type="hidden" name="amount"  value="1120.6"> 
+                            <div class="containerpayment">
+                                <div class="left-side">
+                                  <div class="cardpayment">
+                                    <div class="cardpayment-line"></div>
+                                    <div class="buttonspayment"></div>
+                                  </div>
+                                  
+                                    <button type="submit" class="post">
+                                    <div class="post-line"></div>
+                                    <div class="screen">
+                                      <div class="dollar">$</div>
+                                    </div>
+                                    <div class="numbers"></div>
+                                    <div class="numbers-line2"></div>
+                                    
+                                  </div>
+                                  
+                                
+                                <div class="right-side">
+                                  <div class="new">Checkout</div>
+                            </div>
+                            </button>
+                            
+                           </form> 
+                        </div>
+                       
+                    </di>
+                    </div>
+                </div>
+            </section>
+
+          
+                            
+          
+            
+         
+
+    
+            {{ block("footer") }}
+     
+        </body>
+
+
+        {% if hasErrorsCreate is defined  %}
+            <script>
+            const myModal = new bootstrap.Modal('#staticBackdrop', {keyboard: false});
+            const modalToggle = document.getElementById('staticBackdrop');
+            myModal.show(modalToggle);
+            </script>
+        {% endif %}
+
+
+        <script>
+           
+    
+
+        </script>
+        
+        
+
+    {% endblock %}
+    

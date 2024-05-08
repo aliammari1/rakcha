@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sponsor{% endblock %}
+
+{% block body %}
+<div class="mt-4">
+            <a href="{{ path('app_sponsor_index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> 
+            </a>
+    <div class="container mt-5">
+        <h1 class="mb-4"><i class="fas fa-user-tie text-primary mr-2"></i>Sponsor Details</h1>
+
+        <div class="card shadow">
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th class="bg-info text-white">ID</th>
+                            <td>{{ sponsor.id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-info text-white">Nomsociete</th>
+                            <td>{{ sponsor.nomsociete }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-info text-white">Logo</th>
+                            <td>{{ sponsor.logo }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        
+
+            <a href="{{ path('app_sponsor_edit', {'id': sponsor.id}) }}" class="btn btn-primary ml-2">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+
+            {{ include('sponsor/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

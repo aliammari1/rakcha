@@ -1,0 +1,93 @@
+{% extends 'baseBack.html.twig' %}
+
+
+{% block pageStyle %}<link href="{{ asset('css/index.css') }}" rel="stylesheet">
+{% endblock %}
+
+
+{% block title %}Evenement index{% endblock %}
+
+{% block body %}
+
+
+    <div class="container mt-5 " style="overflow-x: scroll !important;">
+
+        <h1 class="mb-4"><i class="fas fa-calendar-alt text-primary mr-2"></i>Events </h1>
+
+        <!-- Sort Form -->
+        <form action="{{ path('app_evenement_affichback') }}" method="get" class="mb-4">
+            <div class="input-group">
+                <select name="sort_by" class="form-control">
+                    <option value="nom">Name</option>
+                    <option value="datedebut">Date Debut</option>
+                    <option value="datefin">Date Fin</option>
+                    <option value="lieu">Lieu</option>
+                    <option value="etat">Etat</option>
+                </select>
+                <select name="sort_order" class="form-control">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="fas fa-sort"></i> Sort
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Search Form -->
+        <form action="{{ path('app_evenement_affichback') }}" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search...">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            {% for evenement in evenements %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-dark text-white">
+                            <i class="fas fa-id-card-alt"></i> {{ evenement.nom }}
+                        </div>
+                        <div style="color:black !important;" class="card-body ">
+                            <p style="color:black !important;"><strong>Category:</strong> {{ evenement.idCategorie.nomCategorie }}</p>
+                            <p style="color:black !important;"><strong>Start Date :</strong> {{ evenement.datedebut ? evenement.datedebut|date('Y-m-d') : '' }}</p>
+                            <p style="color:black !important;"><strong>End Date :</strong> {{ evenement.datefin ? evenement.datefin|date('Y-m-d') : '' }}</p>
+                            <p style="color:black !important;"><strong>Location :</strong> {{ evenement.lieu }}</p>
+                            <p style="color:black !important;"><strong>Status :</strong> {{ evenement.etat }}</p>
+                            <p style="color:black !important;"><strong>Description :</strong> {{ evenement.description }}</p>
+                            <p style="color:black !important;"><strong style="margin-right: 10px;">Poster :</strong><a  href="{{ path('app_evenement_show', {'id': evenement.id}) }}"><img width="70" height="70" src="{{ evenement.afficheEvent}}"></a></p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{{ path('app_evenement_showback', {'id': evenement.id}) }}" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> Show
+                            </a>
+                            <a href="{{ path('app_evenement_edit', {'id': evenement.id}) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{{ path('app_evenement_pdf', {'id': evenement.id}) }}" class="btn btn-secondary btn-sm" target="_blank">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <p>No records found</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ path('app_evenement_new') }}" class="btn btn-success">
+            <i class="fas fa-plus-circle"></i> Create New
+        </a>
+
+    </div>
+    </body>
+{% endblock %}
