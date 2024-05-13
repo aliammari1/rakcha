@@ -6,11 +6,14 @@ import com.esprit.models.cinemas.Seance;
 import com.esprit.models.films.Film;
 import com.esprit.models.films.Filmcinema;
 import com.esprit.models.users.Responsable_de_cinema;
+import com.esprit.models.users.User;
 import com.esprit.services.cinemas.CinemaService;
+import com.esprit.services.cinemas.RatingCinemaService;
 import com.esprit.services.cinemas.SalleService;
 import com.esprit.services.cinemas.SeanceService;
 import com.esprit.services.films.FilmService;
 import com.esprit.services.films.FilmcinemaService;
+import com.esprit.services.users.UserService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -55,13 +58,10 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class DashboardResponsableController implements Initializable {
+public class  DashboardResponsableController implements Initializable {
 
     Responsable_de_cinema responsableDeCinema;
     @FXML
@@ -134,18 +134,21 @@ public class DashboardResponsableController implements Initializable {
     private AnchorPane StatisticsAnchor;
 
     @FXML
-    private Button showStat;
+    private FontAwesomeIconView backButton;
+
+    @FXML
+    private Button sessionButton;
+
     @FXML
     private PieChart pieChart;
 
     @FXML
-    public void showSeance(ActionEvent event) {
-        sessionFormPane.setVisible(true);
-        SessionTableView.setVisible(true);
-        cinemaFormPane.setVisible(false);
-        cinemaFlowPane.setVisible(false);
-        cinemaListPane.setVisible(false);
-    }
+    private FontAwesomeIconView backSession;
+
+
+
+
+
 
     public void setData(Responsable_de_cinema resp) {
         this.responsableDeCinema = resp;
@@ -163,19 +166,45 @@ public class DashboardResponsableController implements Initializable {
     @FXML
     void addCinema(ActionEvent event) {
         if (tfNom.getText().isEmpty() || tfAdresse.getText().isEmpty()) {
-            showAlert("please complete all fields!");
+            showAlert("Please complete all fields!");
             return;
         }
 
+        // Check if a responsible cinema ID is selected
+        int selectedResponsableCinemaId = 1; // Set the selected responsible cinema ID to 1
+
         String defaultStatut = "En_Attente";
 
+        // Fetch the responsible cinema by its ID
+        Responsable_de_cinema responsableDeCinema = fetchResponsableCinemaById(selectedResponsableCinemaId);
+
+        // Create the cinema object
         Cinema cinema = new Cinema(tfNom.getText(), tfAdresse.getText(), responsableDeCinema, image.getImage().getUrl(), defaultStatut);
 
+        // Call the CinemaService to create the cinema
         CinemaService cs = new CinemaService();
         cs.create(cinema);
-        showAlert("Cinema added successfully !");
-
+        showAlert("Cinema added successfully!");
     }
+
+    private Responsable_de_cinema fetchResponsableCinemaById(int id) {
+        // Instancier le service responsableDeCinemaService
+        UserService userService = new UserService();
+
+        // Appeler la méthode du service pour récupérer le responsable de cinéma par son ID
+        User user = userService.getUserById(id);
+
+        // Vérifier si l'utilisateur récupéré est bien un responsable de cinéma
+        if (user instanceof Responsable_de_cinema) {
+            return (Responsable_de_cinema) user;
+        } else {
+            System.out.println("User is not a responsible cinema!");
+            return null;
+        }
+    }
+
+
+
 
     @FXML
     void selectImage(MouseEvent event) {
@@ -192,7 +221,7 @@ public class DashboardResponsableController implements Initializable {
                 Image selectedImage = new Image(destinationFilePath.toUri().toString());
                 image.setImage(selectedImage);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -208,7 +237,10 @@ public class DashboardResponsableController implements Initializable {
         SessionTableView.setVisible(false);
         addRoomForm.setVisible(false);
         RoomTableView.setVisible(false);
-        //showStat.setVisible(true);
+        sessionButton.setVisible(true);
+        backSession.setVisible(false);
+        backButton.setVisible(false);
+
 
 
         for (Cinema c : acceptedCinemas) {
@@ -228,6 +260,7 @@ public class DashboardResponsableController implements Initializable {
                 }
             }
         });
+
     }
 
 
@@ -256,7 +289,7 @@ public class DashboardResponsableController implements Initializable {
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Accepted"))
+                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {
@@ -278,7 +311,7 @@ public class DashboardResponsableController implements Initializable {
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Accepted"))
+                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {
@@ -306,16 +339,10 @@ public class DashboardResponsableController implements Initializable {
         logoImageView.setStyle("-fx-border-color: #000000 ; -fx-border-width: 2px; -fx-border-radius: 5px;");
 
         Image image = null;
-        try {
-            if (!cinema.getLogo().isEmpty())
-                image = new Image(cinema.getLogo());
-            else
-                image = new Image("Logo.png");
-        } catch(Exception e) {
-            System.out.println("line 315 " + e.getMessage());
+        if (!cinema.getLogo().isEmpty())
+            image = new Image(cinema.getLogo());
+        else
             image = new Image("Logo.png");
-        }
-
         logoImageView.setImage(image);
         card.getChildren().add(logoImageView);
 
@@ -416,7 +443,7 @@ public class DashboardResponsableController implements Initializable {
         verticalLine.setStartX(240);
         verticalLine.setStartY(10);
         verticalLine.setEndX(240);
-        verticalLine.setEndY(90);
+        verticalLine.setEndY(110);
         verticalLine.setStroke(Color.BLACK);
         verticalLine.setStrokeWidth(3);
 
@@ -474,6 +501,8 @@ public class DashboardResponsableController implements Initializable {
             cinemaListPane.setVisible(false);
             addRoomForm.setVisible(true);
             RoomTableView.setVisible(true);
+            backButton.setVisible(true);
+            sessionButton.setVisible(false);
             colNameRoom.setCellValueFactory(new PropertyValueFactory<>("nom_salle"));
             colNbrPlaces.setCellValueFactory(new PropertyValueFactory<>("nb_places"));
             colActionRoom.setCellFactory(new Callback<TableColumn<Salle, Void>, TableCell<Salle, Void>>() {
@@ -595,22 +624,30 @@ public class DashboardResponsableController implements Initializable {
             loadsalles();
         });
 
+        Circle circlefacebook = new Circle();
+        circlefacebook.setRadius(30);
+        circlefacebook.setLayoutX(320);
+        circlefacebook.setLayoutY(100);
+        circlefacebook.setFill(Color.web("#ae2d3c"));
+
         FontAwesomeIconView facebookIcon = new FontAwesomeIconView();
         facebookIcon.setGlyphName("FACEBOOK");
         facebookIcon.setSize("3.5em");
-        facebookIcon.setLayoutX(270);
-        facebookIcon.setLayoutY(100);
+        facebookIcon.setLayoutX(310);
+        facebookIcon.setLayoutY(120);
         facebookIcon.setFill(Color.WHITE);
         facebookIcon.setOnMouseClicked(event -> {
             facebookAnchor.setVisible(true);
         });
 
-        card.getChildren().addAll(facebookIcon);
+        card.getChildren().addAll(circlefacebook, facebookIcon);
 
         card.getChildren().addAll(SalleCircle, salleIcon);
         cardContainer.getChildren().add(card);
         return cardContainer;
     }
+
+
 
     @FXML
     private void showCinemaList() {
@@ -1077,16 +1114,18 @@ public class DashboardResponsableController implements Initializable {
 
         showAlert("Session added successfully!");
         loadSeances();
+        showSessionForm();
     }
 
 
-    private void loadSeances() {
+    private List<Seance> loadSeances() {
         SeanceService seanceService = new SeanceService();
         List<Seance> seances = seanceService.read();
 
         ObservableList<Seance> seanceObservableList = FXCollections.observableArrayList(seances);
 
         SessionTableView.setItems(seanceObservableList);
+        return seances;
     }
 
     @FXML
@@ -1182,6 +1221,48 @@ public class DashboardResponsableController implements Initializable {
         stage.show();
         currentStage.close();
     }
+
+
+    @FXML
+    void back(MouseEvent event) {
+
+        addRoomForm.setVisible(false);
+        backButton.setVisible(false);
+        RoomTableView.setVisible(false);
+        cinemaFormPane.setVisible(true);
+        cinemaListPane.setVisible(true);
+        sessionButton.setVisible(true);
+
+    }
+
+    @FXML
+    void showSessions(ActionEvent event) {
+
+        cinemaFormPane.setVisible(false);
+        cinemaListPane.setVisible(false);
+        sessionFormPane.setVisible(true);
+        SessionTableView.setVisible(true);
+        sessionButton.setVisible(false);
+        backSession.setVisible(true);
+        loadSeances();
+        showSessionForm();
+        System.out.println(loadSeances());
+
+
+    }
+
+    @FXML
+    void back2(MouseEvent event) {
+
+        cinemaFormPane.setVisible(true);
+        cinemaListPane.setVisible(true);
+        sessionFormPane.setVisible(false);
+        SessionTableView.setVisible(false);
+        sessionButton.setVisible(true);
+
+    }
+
+
 
 
 }

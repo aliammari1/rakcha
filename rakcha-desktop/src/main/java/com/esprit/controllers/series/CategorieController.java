@@ -258,7 +258,7 @@ public class CategorieController {
                 Scene scene = new Scene(root);
 
                 // Obtenez la scène actuelle à partir de l'événement
-                Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                Stage stage = new Stage();
 
                 // Remplacez la scène actuelle par la nouvelle scène
                 stage.setScene(scene);

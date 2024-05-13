@@ -3,6 +3,8 @@ package com.esprit.controllers.series;
 import com.esprit.models.series.Episode;
 import com.esprit.models.series.Feedback;
 import com.esprit.models.series.Serie;
+import com.esprit.models.users.Client;
+import com.esprit.models.users.User;
 import com.esprit.services.series.IServiceEpisode;
 import com.esprit.services.series.IServiceEpisodeImpl;
 import com.esprit.services.series.IServiceFeedbackImpl;
@@ -138,7 +140,6 @@ public class EpisodeClientController implements Initializable {
 
     @FXML
     void ajouterFeedBack(ActionEvent event) {
-        int userId = 1;
         String description = txtDescriptionFeedBack.getText();
         Date date = null;
         try {
@@ -150,7 +151,8 @@ public class EpisodeClientController implements Initializable {
             e.printStackTrace();
         }
         IServiceFeedbackImpl sf = new IServiceFeedbackImpl();
-        sf.ajouter(new Feedback(userId, description, date, idep));
+        Client client = (Client) txtDescriptionFeedBack.getScene().getWindow().getUserData();
+        sf.ajouter(new Feedback(client.getId(), description, date, idep));
         txtDescriptionFeedBack.clear();
     }
 

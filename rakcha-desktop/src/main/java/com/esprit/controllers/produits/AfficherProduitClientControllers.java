@@ -281,6 +281,8 @@ public class AfficherProduitClientControllers implements Initializable {
         addToCartButton.getStyleClass().add("sale");
 
         addToCartButton.setOnAction(event -> {
+            Stage stage = (Stage) panierFlowPane.getScene().getWindow();
+            System.out.println(stage.getUserData());
 
             int produitId = Produit.getId_produit();
             int quantity = 1; // Vous pouvez ajuster la quantité en fonction de vos besoins
@@ -351,7 +353,8 @@ public class AfficherProduitClientControllers implements Initializable {
             Panier panier = new Panier();
             panier.setProduit(produit);
             panier.setQuantity(quantity);
-            panier.setUser(usersService.getUserById(4));
+            Client client = (Client) panierFlowPane.getScene().getWindow().getUserData();
+            panier.setUser(client);
             panierService.create(panier);
             afficherPanier(produit); // Utilisez le produit ajouté pour afficher dans le panier
         } else {
@@ -457,13 +460,12 @@ public class AfficherProduitClientControllers implements Initializable {
                         // Scene scene = new Scene(rootNode);
 
                         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                        Stage newStage = new Stage();
-                        newStage.setScene(new Scene(root, 1280, 700));
-                        newStage.setTitle("my cart");
-                        newStage.show();
+                        currentStage.setScene(new Scene(root, 1280, 700));
+                        currentStage.setTitle("my cart");
+                        currentStage.show();
 
                         // Fermer la fenêtre actuelle
-                        currentStage.close();
+
                     } catch (IOException e) {
                         e.printStackTrace(); // Affiche l'erreur dans la console (vous pourriez le
                                              // remplacer par une boîte de dialogue)
@@ -492,7 +494,7 @@ public class AfficherProduitClientControllers implements Initializable {
 
         // Icône de fermeture (close)
         FontIcon closeIcon = new FontIcon();
-        closeIcon.setIconLiteral("fab-times-circle");
+        closeIcon.setIconLiteral("fa-times-circle");
         closeIcon.setIconSize(20);
         closeIcon.setLayoutX(230);
         closeIcon.setLayoutY(10);
@@ -813,8 +815,8 @@ public class AfficherProduitClientControllers implements Initializable {
             alert.showAndWait();
         } else {
             // Créez un objet Commentaire
-            Commentaire commentaire = new Commentaire((Client) new UserService().getUserById(4), userMessage,
-                    produitService.getProduitById(produitId), Date.valueOf(LocalDate.now()));
+            Client client = (Client) txtAreaComments.getScene().getWindow().getUserData();
+            Commentaire commentaire = new Commentaire(client, userMessage,produitService.getProduitById(produitId));
             CommentaireService commentaireService = new CommentaireService();
             // Ajoutez le commentaire à la base de données
             commentaireService.create(commentaire);

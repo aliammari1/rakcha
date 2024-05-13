@@ -2,11 +2,13 @@ package com.esprit.controllers.produits;
 
 import com.esprit.models.produits.*;
 
+import com.esprit.models.users.Client;
 import com.esprit.services.produits.CommandeItemService;
 import com.esprit.services.produits.PanierService;
 import com.esprit.services.produits.ProduitService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.application.Platform;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.event.ActionEvent;
@@ -66,9 +68,12 @@ public class PanierProduitControllers implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        loadAcceptedPanier();
-
+        Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadAcceptedPanier();
+                    }
+                });
     }
 
     private void loadAcceptedPanier() {
@@ -76,7 +81,8 @@ public class PanierProduitControllers implements Initializable {
         PanierService panierService = new PanierService();
         List<Panier> items = null;
         try {
-            items = panierService.readUserPanier(4);
+            Client client = (Client) cartFlowPane.getScene().getWindow().getUserData();
+            items = panierService.readUserPanier(client.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -194,7 +200,7 @@ public class PanierProduitControllers implements Initializable {
             }
         });
         // Icône de diminution de quantité
-        FontIcon decreaseIcon = new FontIcon("fab-minus");
+        FontIcon decreaseIcon = new FontIcon("fa-minus");
         decreaseIcon.setIconSize(15);
         decreaseIcon.setLayoutX(350);
         decreaseIcon.setLayoutY(95);
@@ -225,7 +231,7 @@ public class PanierProduitControllers implements Initializable {
             }
         });
 
-        FontIcon deleteIcon = new FontIcon("fab-trash");
+        FontIcon deleteIcon = new FontIcon("fa-trash");
         deleteIcon.setIconSize(25);
         deleteIcon.setLayoutX(700); // Définissez la position X selon vos besoins
         deleteIcon.setLayoutY(30); // Définissez la position Y selon vos besoins
@@ -340,7 +346,7 @@ public class PanierProduitControllers implements Initializable {
     void order(ActionEvent event) {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/CommandeClient.fxml"));
-        Stage stage = new Stage();
+        Stage stage = (Stage) cartFlowPane.getScene().getWindow();
         try {
             Parent root = fxmlLoader.load();
             CommandeClientController controller = fxmlLoader.getController();
