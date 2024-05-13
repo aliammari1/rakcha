@@ -184,13 +184,12 @@ public class DetailsProduitClientController implements Initializable {
         addToCartButton.setLayoutX(435);
         addToCartButton.setLayoutY(300);
         // addToCartButton.getStyleClass().add("sale"); // Style du bouton
-        addToCartButton.setStyle("-fx-background-color: #dd4f4d;\n" +
-                "    -fx-text-fill: #FFFFFF;\n" +
-                "    -fx-font-size: 12px;\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-padding: 10px 10px;");
+        addToCartButton.setStyle("-fx-background-color: #dd4f4d;\n"
+                + "    -fx-text-fill: #FFFFFF;\n"
+                + "    -fx-font-size: 12px;\n"
+                + "    -fx-font-weight: bold;\n"
+                + "    -fx-padding: 10px 10px;");
         addToCartButton.setOnAction(
-
                 event -> {
 
                     int produitId = produit.getId_produit();
@@ -230,14 +229,15 @@ public class DetailsProduitClientController implements Initializable {
         iconeetoile.setLayoutX(465);
         iconeetoile.setLayoutY(250);
 
-        Avis avi = new AvisService().ratingExiste(produit.getId_produit(), /* (Client) stage.getUserData() */4);
+        Avis avi = new AvisService().ratingExiste(produit.getId_produit(), /* (Client) stage.getUserData() */ 4);
         rating.setRating(avi != null ? avi.getNote() : 0);
         // Stage stage = (Stage) hyperlink.getScene().getWindow();
         rating.ratingProperty().addListener((observableValue, number, t1) -> {
             AvisService avisService = new AvisService();
             Avis avi1 = avisService.ratingExiste(produit.getId_produit(), 4 /* (Client) stage.getUserData() */);
-            if (avi != null)
+            if (avi != null) {
                 avisService.delete(avi1);
+            }
             avisService.create(new Avis(/* (Client) stage.getUserData() */(Client) new UserService().getUserById(4),
                     t1.intValue(), produit));
             double rate1 = new AvisService().getavergerating(produit.getId_produit());
@@ -313,7 +313,6 @@ public class DetailsProduitClientController implements Initializable {
     private void afficherpanier() {
 
         // Initialiser la visibilité des AnchorPane
-
         panierFlowPane.setVisible(true);
         detailFlowPane.setVisible(true);
         detailFlowPane.setOpacity(0.2);
@@ -393,11 +392,11 @@ public class DetailsProduitClientController implements Initializable {
         commandebutton.setLayoutY(350);
         commandebutton.setPrefWidth(120);
         commandebutton.setPrefHeight(35);
-        commandebutton.setStyle("-fx-background-color: #624970;\n" +
-                " -fx-text-fill: #FCE19A;" +
-                "   -fx-font-size: 12px;\n" +
-                "     -fx-font-weight: bold;\n" +
-                " -fx-background-color: #6f7b94"); // Style du bouton
+        commandebutton.setStyle("-fx-background-color: #624970;\n"
+                + " -fx-text-fill: #FCE19A;"
+                + "   -fx-font-size: 12px;\n"
+                + "     -fx-font-weight: bold;\n"
+                + " -fx-background-color: #6f7b94"); // Style du bouton
         commandebutton.setOnAction(
                 event -> {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/DesignProduitAdmin.fxml"));
@@ -419,7 +418,7 @@ public class DetailsProduitClientController implements Initializable {
                         currentStage.close();
                     } catch (IOException e) {
                         e.printStackTrace(); // Affiche l'erreur dans la console (vous pourriez le
-                                             // remplacer par une boîte de dialogue)
+                        // remplacer par une boîte de dialogue)
                         System.out.println("Erreur lors du chargement du fichier FXML : " + e.getMessage());
                     }
 
@@ -430,11 +429,11 @@ public class DetailsProduitClientController implements Initializable {
         achatbutton.setLayoutX(50);
         achatbutton.setLayoutY(400);
         achatbutton.setPrefHeight(30);
-        achatbutton.setStyle(" -fx-background-color: #466288;\n" +
-                "    -fx-text-fill: #FCE19A;\n" +
-                "    -fx-font-size: 12px;\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-padding: 10px 10px;");
+        achatbutton.setStyle(" -fx-background-color: #466288;\n"
+                + "    -fx-text-fill: #FCE19A;\n"
+                + "    -fx-font-size: 12px;\n"
+                + "    -fx-font-weight: bold;\n"
+                + "    -fx-padding: 10px 10px;");
         achatbutton.setOnAction(
                 event -> {
                     fermerPanierCard(panierContainer);
@@ -443,7 +442,7 @@ public class DetailsProduitClientController implements Initializable {
 
         // Icône de fermeture (close)
         FontIcon closeIcon = new FontIcon();
-        closeIcon.setIconLiteral("fab-times-circle");
+        closeIcon.setIconLiteral("fa-times-circle");
         closeIcon.setIconSize(20);
         closeIcon.setLayoutX(220);
         closeIcon.setLayoutY(20);

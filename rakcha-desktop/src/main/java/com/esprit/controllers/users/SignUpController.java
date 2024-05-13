@@ -108,8 +108,9 @@ public class SignUpController {
                             String userName = c.get("firstName");
                             if (userName != null && !userName.toLowerCase().equals(userName)) {
                                 c.error("Please use only lowercase letters.");
-                            } else if (userName.isEmpty())
+                            } else if (userName.isEmpty()) {
                                 c.error("the string is empty");
+                            }
 
                         })
                         .decorates(nomTextField)
@@ -139,8 +140,9 @@ public class SignUpController {
                     @Override
                     public void handle(KeyEvent event) {
                         if (event.getCode().equals(KeyCode.ENTER)) {
-                            if (validator.containsErrors())
+                            if (validator.containsErrors()) {
                                 event.consume();
+                            }
                         }
                     }
                 });
@@ -157,8 +159,9 @@ public class SignUpController {
                             String userName = c.get("firstName");
                             if (userName != null && !userName.toLowerCase().equals(userName)) {
                                 c.error("Please use only lowercase letters.");
-                            } else if (userName.isEmpty())
+                            } else if (userName.isEmpty()) {
                                 c.error("the string is empty");
+                            }
 
                         })
                         .decorates(prenomTextField)
@@ -187,8 +190,9 @@ public class SignUpController {
                     @Override
                     public void handle(KeyEvent event) {
                         if (event.getCode().equals(KeyCode.ENTER)) {
-                            if (validator.containsErrors())
+                            if (validator.containsErrors()) {
                                 event.consume();
+                            }
                         }
                     }
                 });
@@ -205,8 +209,9 @@ public class SignUpController {
                             String userName = c.get("firstName");
                             if (userName != null && !userName.toLowerCase().equals(userName)) {
                                 c.error("Please use only lowercase letters.");
-                            } else if (userName.isEmpty())
+                            } else if (userName.isEmpty()) {
                                 c.error("the string is empty");
+                            }
 
                         })
                         .decorates(adresseTextField)
@@ -236,8 +241,9 @@ public class SignUpController {
                     @Override
                     public void handle(KeyEvent event) {
                         if (event.getCode().equals(KeyCode.ENTER)) {
-                            if (validator.containsErrors())
+                            if (validator.containsErrors()) {
                                 event.consume();
+                            }
                         }
                     }
                 });
@@ -286,8 +292,9 @@ public class SignUpController {
                     @Override
                     public void handle(KeyEvent event) {
                         if (event.getCode().equals(KeyCode.ENTER)) {
-                            if (validator.containsErrors())
+                            if (validator.containsErrors()) {
                                 event.consume();
+                            }
                         }
                     }
                 });
@@ -304,8 +311,9 @@ public class SignUpController {
                             String userName = c.get("firstName");
                             if (userName != null && !userName.toLowerCase().equals(userName)) {
                                 c.error("Please use only lowercase letters.");
-                            } else if (userName.isEmpty())
+                            } else if (userName.isEmpty()) {
                                 c.error("the string is empty");
+                            }
 
                         })
                         .decorates(passwordTextField)
@@ -335,8 +343,9 @@ public class SignUpController {
                     @Override
                     public void handle(KeyEvent event) {
                         if (event.getCode().equals(KeyCode.ENTER)) {
-                            if (validator.containsErrors())
+                            if (validator.containsErrors()) {
                                 event.consume();
+                            }
                         }
                     }
                 });
@@ -386,8 +395,9 @@ public class SignUpController {
                     @Override
                     public void handle(KeyEvent event) {
                         if (event.getCode().equals(KeyCode.ENTER)) {
-                            if (validator.containsErrors())
+                            if (validator.containsErrors()) {
                                 event.consume();
+                            }
                         }
                     }
                 });
@@ -396,30 +406,40 @@ public class SignUpController {
 
         List<String> roleList = Arrays.asList("client", "responsable de cinema");
 
-        for (String role : roleList)
+        for (String role : roleList) {
             roleComboBox.getItems().add(role);
+        }
     }
 
     @FXML
     void importImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
         fileChooser.setTitle("Sélectionner une image");
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             try {
-                String destinationDirectory = "./src/main/resources/img/films/";
-                Path destinationPath = Paths.get(destinationDirectory);
+                String destinationDirectory1 = "./src/main/resources/img/users/";
+                String destinationDirectory2 = "C:\\xampp\\htdocs\\Rakcha\\rakcha-web\\public\\img\\users\\";
+                Path destinationPath1 = Paths.get(destinationDirectory1);
+                Path destinationPath2 = Paths.get(destinationDirectory2);
                 String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
-                Path destinationFilePath = destinationPath.resolve(uniqueFileName);
-                Files.copy(selectedFile.toPath(), destinationFilePath);
-                Image selectedImage = new Image(destinationFilePath.toUri().toString());
+                Path destinationFilePath1 = destinationPath1.resolve(uniqueFileName);
+                Path destinationFilePath2 = destinationPath2.resolve(uniqueFileName);
+                Files.copy(selectedFile.toPath(), destinationFilePath1);
+                Files.copy(selectedFile.toPath(), destinationFilePath2);
+                Image selectedImage = new Image(destinationFilePath1.toUri().toString());
                 photoDeProfilImageView.setImage(selectedImage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
+
+
 
     @FXML
     void signup(ActionEvent event) throws IOException {

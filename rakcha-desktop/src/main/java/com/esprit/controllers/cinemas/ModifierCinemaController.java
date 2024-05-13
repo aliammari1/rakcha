@@ -115,5 +115,3 @@ public class ModifierCinemaController implements Initializable {
         alert.show();
     }
 }
-
-

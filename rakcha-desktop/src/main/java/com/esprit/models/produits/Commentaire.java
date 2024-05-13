@@ -14,7 +14,7 @@ public class Commentaire {
     private String commentaire;
 
     private Produit produit;
-    private Date datecommantaire;
+
 
 
     public Commentaire() {
@@ -29,20 +29,15 @@ public class Commentaire {
     }
 
 
-    public Commentaire(int idcommentaire, Client client, String commentaire, Produit produit, Date datecommantaire) {
+    public Commentaire(int idcommentaire, Client client, String commentaire, Produit produit) {
         this.idcommentaire = idcommentaire;
         this.client = client;
         this.commentaire = commentaire;
         this.produit = produit;
-        this.datecommantaire = datecommantaire;
+
     }
 
-    public Commentaire(Client client, String commentaire, Produit produit, Date datecommantaire) {
-        this.client = client;
-        this.commentaire = commentaire;
-        this.produit = produit;
-        this.datecommantaire = datecommantaire;
-    }
+
 
     public int getIdCommentaire() {
         return idcommentaire;
@@ -76,13 +71,9 @@ public class Commentaire {
         this.produit = produit;
     }
 
-    public Date getDatecommentaire() {
-        return datecommantaire;
-    }
 
-    public void setDatecommentaire(Date datecommantaire) {
-        this.datecommantaire = datecommantaire;
-    }
+
+
 
     @Override
     public String toString() {
@@ -91,7 +82,7 @@ public class Commentaire {
                 ", client=" + client +
                 ", commentaire='" + commentaire + '\'' +
                 ", produit=" + produit +
-                ", datecommantaire=" + datecommantaire +
+
                 '}';
     }
 }

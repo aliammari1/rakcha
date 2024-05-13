@@ -1,8 +1,6 @@
 package com.esprit.controllers.cinemas;
 
-import com.esprit.controllers.ClientSideBarController;
 import com.esprit.models.cinemas.Cinema;
-import com.esprit.models.users.Client;
 import com.esprit.services.cinemas.CinemaService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -55,7 +53,7 @@ public class DashboardAdminController {
 
 
     @FXML
-    void afficherCinemas(ActionEvent event) {
+    void afficherCinemas() {
         cinemasList.setVisible(true);
         // Appelée lorsque le fichier FXML est chargé
         // Configurer les cellules des colonnes pour afficher les données
@@ -99,7 +97,7 @@ public class DashboardAdminController {
                         acceptButton.setOnAction(event -> {
                             Cinema cinema = getTableView().getItems().get(getIndex());
                             // Mettre à jour le statut du cinéma en "Acceptée"
-                            cinema.setStatut("Accepted");
+                            cinema.setStatut("Acceptée");
                             // Mettre à jour le statut dans la base de données
                             CinemaService cinemaService = new CinemaService();
                             cinemaService.update(cinema);
@@ -128,7 +126,7 @@ public class DashboardAdminController {
                         } else {
                             // Récupérer le cinéma associé à cette ligne
                             Cinema cinema = getTableView().getItems().get(getIndex());
-                            if (cinema.getStatut().equals("Accepted")) {
+                            if (cinema.getStatut().equals("Acceptée")) {
                                 // Afficher le bouton "Show Movies" si le statut est "Acceptée"
                                 setGraphic(showMoviesButton);
                             } else {
@@ -170,6 +168,7 @@ public class DashboardAdminController {
 
         // Charger tous les cinémas initialement
         loadCinemas();
+        afficherCinemas();
     }
 
     private void filterCinemas(String searchText) {
@@ -250,8 +249,8 @@ public class DashboardAdminController {
     public List<String> getCinemaStatuses() {
         // Créer une liste de statuts pré-définis
         List<String> statuses = new ArrayList<>();
-        statuses.add("Pending");
-        statuses.add("Accepted");
+        statuses.add("En_Attente");
+        statuses.add("Acceptée");
 
         return statuses;
     }
@@ -355,4 +354,3 @@ public class DashboardAdminController {
     }
 
 }
-

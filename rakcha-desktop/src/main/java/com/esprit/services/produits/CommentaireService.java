@@ -20,13 +20,13 @@ public class CommentaireService implements IService<Commentaire> {
 
     @Override
     public void create(Commentaire commentaire) {
-        String req = "INSERT into commentaireproduit(idClient, commentaire, idProduit, datecommantaire) values (?, ?, ?, ?);";
+        String req = "INSERT into commentaire_produit (id_client_id, commentaire, id_produit) values (?, ?, ?);";
 
         try (PreparedStatement pst = connection.prepareStatement(req)) {
             pst.setInt(1, commentaire.getClient().getId());
             pst.setString(2, commentaire.getCommentaire());
             pst.setInt(3, commentaire.getProduit().getId_produit());
-            pst.setDate(4, (Date) commentaire.getDatecommentaire());
+
 
             pst.executeUpdate();
             System.out.println("Commentaire ajouté !");
@@ -39,16 +39,16 @@ public class CommentaireService implements IService<Commentaire> {
     public List<Commentaire> read() {
         List<Commentaire> commentaire = new ArrayList<>();
 
-        String req = "SELECT * from commentaireproduit";
+        String req = "SELECT * from commentaire_produit";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             ProduitService produitsevice = new ProduitService();
 
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                commentaire.add(new Commentaire(rs.getInt("idcommentaire"),
-                        (Client) new UserService().getUserById(rs.getInt("idClient")), rs.getString("commentaire"),
-                        produitsevice.getProduitById(rs.getInt("idProduit")), rs.getDate("datecommantaire")));
+                commentaire.add(new Commentaire(rs.getInt("id"),
+                        (Client) new UserService().getUserById(rs.getInt("id_client_id")), rs.getString("commentaire"),
+                        produitsevice.getProduitById(rs.getInt("id_produit"))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,7 +70,7 @@ public class CommentaireService implements IService<Commentaire> {
     public Commentaire readByClientId(int clientId) {
         Commentaire commentaire = null;
 
-        String req = "SELECT * FROM commentaireproduit WHERE idClient = ? LIMIT 1";
+        String req = "SELECT * FROM commentaire_produit WHERE id_client_id = ? LIMIT 1";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setInt(1, clientId);
@@ -83,8 +83,7 @@ public class CommentaireService implements IService<Commentaire> {
                         rs.getInt("idcommentaire"),
                         (Client) new UserService().getUserById(rs.getInt("idClient")),
                         rs.getString("commentaire"),
-                        produitsevice.getProduitById(rs.getInt("idProduit")),
-                        rs.getDate("datecommantaire"));
+                        produitsevice.getProduitById(rs.getInt("idProduit")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -96,7 +95,7 @@ public class CommentaireService implements IService<Commentaire> {
     public List<Commentaire> getCommentsByProduitId(int produitId) {
         List<Commentaire> commentaires = new ArrayList<>();
 
-        String req = "SELECT * FROM commentaireproduit join produit WHERE commentaireproduit.idProduit = produit.id_produit AND idProduit = ?";
+        String req = "SELECT * FROM commentaire_produit join produit WHERE commentaire_produit.id_produit = produit.id_produit AND id_produit = ?";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setInt(1, produitId);
@@ -109,8 +108,7 @@ public class CommentaireService implements IService<Commentaire> {
                         rs.getInt("idcommentaire"),
                         (Client) new UserService().getUserById(rs.getInt("idClient")),
                         rs.getString("commentaire"),
-                        produitService.getProduitById(rs.getInt("idProduit")),
-                        rs.getDate("datecommantaire"));
+                        produitService.getProduitById(rs.getInt("idProduit")));
                 commentaires.add(commentaire);
             }
         } catch (SQLException e) {

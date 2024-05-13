@@ -418,7 +418,7 @@ public class SerieController {
 
     ////////////
     boolean nomcheck() {
-        if (nomF.getText() != "") {
+        if (!Objects.equals(nomF.getText(), "")) {
 
             return true;
         } else {

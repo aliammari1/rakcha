@@ -35,6 +35,9 @@ import net.synedra.validatorfx.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
@@ -126,8 +129,9 @@ public class AdminDashboardController {
 
             List<String> roleList = List.of("admin");
 
-            for (String role : roleList)
+            for (String role : roleList) {
                 roleComboBox.getItems().add(role);
+            }
 
             readUserTable();
         } catch (Exception e) {
@@ -219,65 +223,65 @@ public class AdminDashboardController {
         adresseTableColumn.setCellValueFactory(new PropertyValueFactory<User, String>("address"));
         dateDeNaissanceTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<User, DatePicker>, ObservableValue<DatePicker>>() {
-                    @Override
-                    public ObservableValue<DatePicker> call(TableColumn.CellDataFeatures<User, DatePicker> param) {
-                        DatePicker datePicker = new DatePicker();
-                        datePicker.setValue(param.getValue().getBirthDate().toLocalDate());
-                        return new SimpleObjectProperty<DatePicker>(datePicker);
-                    }
-                });
+            @Override
+            public ObservableValue<DatePicker> call(TableColumn.CellDataFeatures<User, DatePicker> param) {
+                DatePicker datePicker = new DatePicker();
+                datePicker.setValue(param.getValue().getBirthDate().toLocalDate());
+                return new SimpleObjectProperty<DatePicker>(datePicker);
+            }
+        });
         emailTableColumn.setCellValueFactory(new PropertyValueFactory<User, String>("email"));
 
         photoDeProfilTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<User, HBox>, ObservableValue<HBox>>() {
-                    @Override
-                    public ObservableValue<HBox> call(TableColumn.CellDataFeatures<User, HBox> param) {
-                        HBox hBox = new HBox();
-                        try {
-                            ImageView imageView = new ImageView(new Image(param.getValue().getPhoto_de_profil()));
-                            hBox.getChildren().add(imageView);
-                            hBox.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                                @Override
-                                public void handle(MouseEvent event) {
-                                    try {
-                                        FileChooser fileChooser = new FileChooser();
-                                        fileChooser.getExtensionFilters().addAll(
-                                                new FileChooser.ExtensionFilter("PNG", "*.png"),
-                                                new FileChooser.ExtensionFilter("JPG", "*.jpg"));
-                                        File file = fileChooser.showOpenDialog(new Stage());
-                                        if (file != null) {
-                                            Image image = new Image(file.toURI().toURL().toString());
-                                            imageView.setImage(image);
-                                            hBox.getChildren().clear();
-                                            hBox.getChildren().add(imageView);
-                                            photoDeProfilImageView.setImage(image);
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
+            @Override
+            public ObservableValue<HBox> call(TableColumn.CellDataFeatures<User, HBox> param) {
+                HBox hBox = new HBox();
+                try {
+                    ImageView imageView = new ImageView(new Image(param.getValue().getPhoto_de_profil()));
+                    hBox.getChildren().add(imageView);
+                    hBox.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                        @Override
+                        public void handle(MouseEvent event) {
+                            try {
+                                FileChooser fileChooser = new FileChooser();
+                                fileChooser.getExtensionFilters().addAll(
+                                        new FileChooser.ExtensionFilter("PNG", "*.png"),
+                                        new FileChooser.ExtensionFilter("JPG", "*.jpg"));
+                                File file = fileChooser.showOpenDialog(new Stage());
+                                if (file != null) {
+                                    Image image = new Image(file.toURI().toURL().toString());
+                                    imageView.setImage(image);
+                                    hBox.getChildren().clear();
+                                    hBox.getChildren().add(imageView);
+                                    photoDeProfilImageView.setImage(image);
                                 }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                        return new SimpleObjectProperty<HBox>(hBox);
-                    }
-                });
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return new SimpleObjectProperty<HBox>(hBox);
+            }
+        });
         deleteTableColumn.setCellValueFactory(
                 new Callback<TableColumn.CellDataFeatures<User, Button>, ObservableValue<Button>>() {
+            @Override
+            public ObservableValue<Button> call(TableColumn.CellDataFeatures<User, Button> param) {
+                Button button = new Button("delete");
+                button.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
-                    public ObservableValue<Button> call(TableColumn.CellDataFeatures<User, Button> param) {
-                        Button button = new Button("delete");
-                        button.setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                delete(param.getValue().getId());
-                                readUserTable();
-                            }
-                        });
-                        return new SimpleObjectProperty<Button>(button);
+                    public void handle(ActionEvent event) {
+                        delete(param.getValue().getId());
+                        readUserTable();
                     }
                 });
+                return new SimpleObjectProperty<Button>(button);
+            }
+        });
     }
 
     private void setupCellFactories() {
@@ -328,8 +332,9 @@ public class AdminDashboardController {
                                 @Override
                                 public void handle(KeyEvent event) {
                                     if (event.getCode().equals(KeyCode.ENTER)) {
-                                        if (validator.containsErrors())
+                                        if (validator.containsErrors()) {
                                             event.consume();
+                                        }
                                     }
                                 }
                             });
@@ -387,8 +392,9 @@ public class AdminDashboardController {
                                 @Override
                                 public void handle(KeyEvent event) {
                                     if (event.getCode().equals(KeyCode.ENTER)) {
-                                        if (validator.containsErrors())
+                                        if (validator.containsErrors()) {
                                             event.consume();
+                                        }
                                     }
                                 }
                             });
@@ -446,8 +452,9 @@ public class AdminDashboardController {
                                 @Override
                                 public void handle(KeyEvent event) {
                                     if (event.getCode().equals(KeyCode.ENTER)) {
-                                        if (validator.containsErrors())
+                                        if (validator.containsErrors()) {
                                             event.consume();
+                                        }
                                     }
                                 }
                             });
@@ -505,8 +512,9 @@ public class AdminDashboardController {
                                 @Override
                                 public void handle(KeyEvent event) {
                                     if (event.getCode().equals(KeyCode.ENTER)) {
-                                        if (validator.containsErrors())
+                                        if (validator.containsErrors()) {
                                             event.consume();
+                                        }
                                     }
                                 }
                             });
@@ -566,8 +574,9 @@ public class AdminDashboardController {
                                 @Override
                                 public void handle(KeyEvent event) {
                                     if (event.getCode().equals(KeyCode.ENTER)) {
-                                        if (validator.containsErrors())
+                                        if (validator.containsErrors()) {
                                             event.consume();
+                                        }
                                     }
                                 }
                             });
@@ -625,8 +634,9 @@ public class AdminDashboardController {
                                 @Override
                                 public void handle(KeyEvent event) {
                                     if (event.getCode().equals(KeyCode.ENTER)) {
-                                        if (validator.containsErrors())
+                                        if (validator.containsErrors()) {
                                             event.consume();
+                                        }
                                     }
                                 }
                             });
@@ -790,18 +800,29 @@ public class AdminDashboardController {
 
     @FXML
     void importImage(ActionEvent event) {
-        try {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("PNG", "*.png"),
-                    new FileChooser.ExtensionFilter("JPG", "*.jpg"));
-            File file = fileChooser.showOpenDialog(new Stage());
-            if (file != null) {
-                Image image = new Image(file.toURI().toURL().toString());
-                photoDeProfilImageView.setImage(image);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        fileChooser.setTitle("Sélectionner une image");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                String destinationDirectory1 = "./src/main/resources/img/users/";
+                String destinationDirectory2 = "C:\\xampp\\htdocs\\Rakcha\\rakcha-web\\public\\img\\users\\";
+                Path destinationPath1 = Paths.get(destinationDirectory1);
+                Path destinationPath2 = Paths.get(destinationDirectory2);
+                String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destinationFilePath1 = destinationPath1.resolve(uniqueFileName);
+                Path destinationFilePath2 = destinationPath2.resolve(uniqueFileName);
+                Files.copy(selectedFile.toPath(), destinationFilePath1);
+                Files.copy(selectedFile.toPath(), destinationFilePath2);
+                Image selectedImage = new Image(destinationFilePath1.toUri().toString());
+                photoDeProfilImageView.setImage(selectedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

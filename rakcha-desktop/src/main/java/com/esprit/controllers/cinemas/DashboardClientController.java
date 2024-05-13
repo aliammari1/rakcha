@@ -83,6 +83,11 @@ public class DashboardClientController {
     private List<Cinema> l1 = new ArrayList<>();
     @FXML
     private ComboBox<String> tricomboBox;
+    private LocalDate lastSelectedDate;
+
+    @FXML
+    private AnchorPane Anchortop3;
+
 
     @FXML
     public static List<Cinema> rechercher(List<Cinema> liste, String recherche) {
@@ -125,7 +130,7 @@ public class DashboardClientController {
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Accepted"))
+                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {
@@ -223,7 +228,7 @@ public class DashboardClientController {
         planningButton.setUserData(cinema);
         planningButton.setOnAction(event -> showPlanning(cinema));
         card.getChildren().add(planningButton);
-        cardContainer.setOnMouseClicked(event -> geocodeAddress(cinema.getAdresse()));
+        logoImageView.setOnMouseClicked(event -> geocodeAddress(cinema.getAdresse()));
 
         FontAwesomeIconView CommentIcon = new FontAwesomeIconView();
         CommentIcon.setGlyphName("COMMENTING");
@@ -238,6 +243,7 @@ public class DashboardClientController {
             listCinemaClient.setOpacity(0.5);
             AnchorComments.setVisible(true);
             displayAllComments(cinemaId);
+            System.out.println(cinemaId);
         });
 
         // Ajout du composant de notation (Rating)
@@ -247,22 +253,19 @@ public class DashboardClientController {
         rating.setLayoutY(100);
         rating.setMax(5);
 
-        // Obtenez la note moyenne depuis le service de notation
-        double averageRating = ratingService.getAverageRating(cinema.getId_cinema());
+        // Obtenez le taux spécifique pour ce client et ce cinéma
+        int specificRating = ratingService.getRatingForClientAndCinema(2, cinema.getId_cinema());
 
-        // Si la note moyenne est disponible, définissez la note affichée
-        if (averageRating > 0) {
-            rating.setRating(averageRating);
+        // Si le taux spécifique est disponible, définissez le taux affiché
+        if (specificRating >= 0) {
+            rating.setRating(specificRating);
         }
 
         // Ajout d'un écouteur pour la notation
         rating.ratingProperty().addListener((observable, oldValue, newValue) -> {
-            int userId = 1; // Supposons que l'ID de l'utilisateur est 1 (variable fixe)
-            RatingCinemaService ratingCinemaService = new RatingCinemaService(); // Instanciation du service
-            UserService userService = new UserService(); // Instanciation du service UserService
-            Client client = (Client) userService.getUserById(userId); // Récupérer le client par son ID à partir du service UserService
-            RatingCinema ratingCinema = new RatingCinema(cinema, client, newValue.intValue()); // Création de l'objet RatingCinema avec les valeurs appropriées
-            ratingCinemaService.create(ratingCinema); // Enregistrement de la note dans la base de données
+            // Enregistrez le nouveau taux dans la base de données
+            RatingCinema ratingCinema = new RatingCinema(cinema, new Client(111) , newValue.intValue());
+            ratingService.create(ratingCinema);
         });
 
         card.getChildren().add(rating);
@@ -270,6 +273,60 @@ public class DashboardClientController {
         cardContainer.getChildren().add(card);
         return cardContainer;
     }
+
+    // Méthode pour créer les cartes des top 3 cinémas les mieux notés
+    public void createTopRatedCinemaCards(AnchorPane Anchortop3) {
+        RatingCinemaService ratingCinemaService = new RatingCinemaService();
+        List<Cinema> topRatedCinemas = ratingCinemaService.getTopRatedCinemas();
+        double cardHeight = 100; // Hauteur de chaque carte
+        double cardSpacing = 50; // Espacement entre chaque carte
+        double currentY = 10; // Position Y de la première carte
+        for (Cinema cinema : topRatedCinemas) {
+            // Création de la carte pour le cinéma
+            AnchorPane card = new AnchorPane();
+            card.setStyle("-fx-background-color: #ffffff; -fx-border-radius: 10px; -fx-border-color: #000000; -fx-background-radius: 10px; -fx-border-width: 2px;");
+            card.setPrefWidth(350);
+            card.setPrefHeight(cardHeight);
+
+            // Création et positionnement des éléments de la carte (nom, adresse, logo, etc.)
+            ImageView logoImageView = new ImageView();
+            logoImageView.setFitWidth(140);
+            logoImageView.setFitHeight(100);
+            logoImageView.setLayoutX(15);
+            logoImageView.setLayoutY(15);
+            logoImageView.setStyle("-fx-border-color: #000000 ; -fx-border-width: 2px; -fx-border-radius: 5px;");
+
+            try {
+                String logoString = cinema.getLogo();
+                Image logoImage = new Image(logoString);
+                logoImageView.setImage(logoImage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            card.getChildren().add(logoImageView);
+
+            Label nomLabel = new Label("Nom: " + cinema.getNom());
+            nomLabel.setLayoutX(200);
+            nomLabel.setLayoutY(10);
+            card.getChildren().add(nomLabel);
+
+            Label adresseLabel = new Label("Adresse: " + cinema.getAdresse());
+            adresseLabel.setLayoutX(200);
+            adresseLabel.setLayoutY(40);
+            card.getChildren().add(adresseLabel);
+
+            // Vous pouvez ajouter d'autres éléments comme le logo, le bouton de réservation, etc.
+
+            // Positionnement de la carte dans Anchortop3
+            AnchorPane.setTopAnchor(card, currentY);
+            AnchorPane.setLeftAnchor(card, 30.0);
+            Anchortop3.getChildren().add(card);
+
+            // Mise à jour de la position Y pour la prochaine carte
+            currentY += cardHeight + cardSpacing;
+        }
+    }
+
 
     private void geocodeAddress(String address) {
         new Thread(() -> {
@@ -334,45 +391,39 @@ public class DashboardClientController {
         dialog.showAndWait();
     }
 
-    public void showPlanning(Cinema cinema) {
-        listCinemaClient.setVisible(false); // Rendre l'AnchorPane listCinemaClient invisible
-        PlanningPane.setVisible(true); // Rendre l'AnchorPane PlanningPane visible
+    private List<VBox> seancesVBoxList = new ArrayList<>(); // Liste pour stocker les conteneurs de séances
 
-        // Créer un VBox pour contenir à la fois le TilePane du calendrier et les séances correspondantes
+    public void showPlanning(Cinema cinema) {
+        listCinemaClient.setVisible(false);
+        PlanningPane.setVisible(true);
+
         VBox planningContent = new VBox();
         planningContent.setSpacing(10);
 
-        // Créer un TilePane pour afficher les jours de la semaine
         tilePane = new TilePane();
         tilePane.setPrefColumns(7);
         tilePane.setPrefRows(1);
         tilePane.setHgap(5);
         tilePane.setVgap(5);
 
-        // Ajouter chaque jour de la semaine courante au TilePane
         LocalDate startDateOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
         for (int i = 0; i < 7; i++) {
             LocalDate date = startDateOfWeek.plusDays(i);
             Label dayLabel = new Label(date.format(DateTimeFormatter.ofPattern("EEE dd/MM")));
-            dayLabel.setStyle("-fx-background-color: #ae2d3c; -fx-padding: 10px; -fx-text-fill: white;"); // Rouge avec texte blanc
+            dayLabel.setStyle("-fx-background-color: #ae2d3c; -fx-padding: 10px; -fx-text-fill: white;");
             dayLabel.setOnMouseClicked(event -> displaySeancesForDate(date, cinema));
-            dayLabel.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 14)); // Changer la police en Arial, en gras, taille 14
+            dayLabel.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 14));
             tilePane.getChildren().add(dayLabel);
         }
 
-
         VBox.setMargin(tilePane, new Insets(0, 0, 0, 50));
         planningContent.getChildren().add(tilePane);
-
 
         Separator separator = new Separator(Orientation.HORIZONTAL);
         separator.setPrefWidth(200);
         planningContent.getChildren().add(separator);
 
-
         planningFlowPane.getChildren().clear();
-
-
         planningFlowPane.getChildren().add(planningContent);
         AnchorPane.setTopAnchor(planningContent, 50.0);
     }
@@ -391,7 +442,35 @@ public class DashboardClientController {
         Map<LocalDate, List<Seance>> weekSeancesMap = loadCurrentWeekPlanning(date, cinema);
         List<Seance> seancesForDate = weekSeancesMap.getOrDefault(date, Collections.emptyList());
 
-        // Vérifier que la liste de séances n'est pas vide avant de la traiter
+        // Créer un VBox pour contenir les éléments du calendrier
+        VBox planningContent = new VBox();
+        planningContent.setSpacing(10);
+
+        // Ajouter le calendrier au VBox
+        TilePane tilePane = new TilePane();
+        tilePane.setPrefColumns(7);
+        tilePane.setPrefRows(1);
+        tilePane.setHgap(5);
+        tilePane.setVgap(5);
+
+        LocalDate startDateOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
+        for (int i = 0; i < 7; i++) {
+            LocalDate currentDate = startDateOfWeek.plusDays(i);
+            Label dayLabel = new Label(currentDate.format(DateTimeFormatter.ofPattern("EEE dd/MM")));
+            dayLabel.setStyle("-fx-background-color: #ae2d3c; -fx-padding: 10px; -fx-text-fill: white;");
+            dayLabel.setOnMouseClicked(event -> displaySeancesForDate(currentDate, cinema));
+            dayLabel.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 14));
+            tilePane.getChildren().add(dayLabel);
+        }
+
+        VBox.setMargin(tilePane, new Insets(0, 0, 0, 50));
+        planningContent.getChildren().add(tilePane);
+
+        Separator separator = new Separator(Orientation.HORIZONTAL);
+        separator.setPrefWidth(200);
+        planningContent.getChildren().add(separator);
+
+        // Vérifier si des séances sont disponibles pour la date spécifiée
         if (!seancesForDate.isEmpty()) {
             // Créer un VBox pour contenir les cartes de séance correspondant à la date sélectionnée
             VBox seancesForDateVBox = new VBox();
@@ -403,18 +482,21 @@ public class DashboardClientController {
                 seancesForDateVBox.getChildren().add(seanceCard);
             }
 
-            // Nettoyer le deuxième enfant de PlanningPane s'il s'agit d'un VBox
-            if (PlanningPane.getChildren().size() > 1 && PlanningPane.getChildren().get(1) instanceof VBox existingSeancesVBox) {
-                existingSeancesVBox.getChildren().clear(); // Nettoyer le VBox existant
-            }
-
-            planningFlowPane.getChildren().add(seancesForDateVBox);
-            AnchorPane.setTopAnchor(seancesForDateVBox, 30.0);
+            // Ajouter le VBox des séances au conteneur principal
+            planningContent.getChildren().add(seancesForDateVBox);
         } else {
-
-            System.out.println("Aucune séance disponible pour la date spécifiée.");
+            // Afficher un message lorsque aucune séance n'est disponible pour la date spécifiée
+            Label noSeanceLabel = new Label("Aucune séance prévue pour cette journée.");
+            noSeanceLabel.setStyle("-fx-font-size: 16px;");
+            planningContent.getChildren().add(noSeanceLabel); // Ajouter le message au conteneur principal
         }
+
+        // Effacer tout contenu précédent et ajouter le contenu actuel au conteneur principal
+        planningFlowPane.getChildren().clear();
+        planningFlowPane.getChildren().add(planningContent);
     }
+
+
 
     private StackPane createSeanceCard(Seance seance) {
         StackPane cardContainer = new StackPane();
@@ -489,6 +571,7 @@ public class DashboardClientController {
             }
 
         });
+        createTopRatedCinemaCards(Anchortop3);
 
     }
 
@@ -683,8 +766,9 @@ public class DashboardClientController {
         } else {
             SentimentAnalysisController sentimentAnalysisController = new SentimentAnalysisController();
             String sentimentResult = sentimentAnalysisController.analyzeSentiment(message);
-            CommentaireCinema commentaire = new CommentaireCinema(new CinemaService().getCinema(cinemaId), (Client) new UserService().getUserById(3), message, sentimentResult);
-            System.out.println(commentaire + " " + new UserService().getUserById(3));
+            System.out.println(cinemaId + " "+new CinemaService().getCinema(cinemaId));
+            CommentaireCinema commentaire = new CommentaireCinema(new CinemaService().getCinema(cinemaId), (Client) new UserService().getUserById(2), message, sentimentResult);
+            System.out.println(commentaire + " " + new UserService().getUserById(2));
             CommentaireCinemaService commentaireCinemaService = new CommentaireCinemaService();
             commentaireCinemaService.create(commentaire);
             txtAreaComments.clear();
