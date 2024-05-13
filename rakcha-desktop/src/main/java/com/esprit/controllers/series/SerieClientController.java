@@ -3,6 +3,7 @@ package com.esprit.controllers.series;
 import com.esprit.models.series.Categorie;
 import com.esprit.models.series.Favoris;
 import com.esprit.models.series.Serie;
+import com.esprit.models.users.Client;
 import com.esprit.services.series.IServiceCategorieImpl;
 import com.esprit.services.series.IServiceFavorisImpl;
 import com.esprit.services.series.IServiceSerie;
@@ -345,17 +346,17 @@ public class SerieClientController {
                     favButton.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent event) {
-                            int id_user = 1;
+                            Client client = (Client) favButton.getScene().getWindow().getUserData();
                             int id_serie = item.getIdserie();
                             IServiceFavorisImpl sf = new IServiceFavorisImpl();
-                            Favoris f = new Favoris(id_user, id_serie);
+                            Favoris f = new Favoris(client.getId(), id_serie);
                             item.setClickFavoris(item.getClickFavoris() + 1);
                             System.out.println(item.getClickFavoris());
                             try {
                                 if ((item.getClickFavoris() == 0) || (item.getClickFavoris() % 2 != 0)) {
                                     sf.ajouter(f);
                                 } else {
-                                    Favoris fav = sf.getByIdUserAndIdSerie(id_user, id_serie);
+                                    Favoris fav = sf.getByIdUserAndIdSerie(client.getId(), id_serie);
                                     sf.supprimer(fav.getId());
                                     System.out.println(fav.getId());
                                 }
@@ -403,7 +404,7 @@ public class SerieClientController {
                     setGraphic(anchorPane);
                     watchButton.setOnAction(event -> {
                         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/EpisodeClient.fxml"));
-                        Stage stage = new Stage();
+                        Stage stage = (Stage) watchButton.getScene().getWindow();
                         try {
                             Parent root = fxmlLoader.load();
                             EpisodeClientController controller = fxmlLoader.getController();
@@ -490,7 +491,8 @@ public class SerieClientController {
             if (newValue.intValue() >= 0) {
                 Serie selectedSerie = listeSerie.getItems().get(newValue.intValue());
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/EpisodeClient.fxml"));
-                Stage stage = new Stage();
+                System.out.println("serieee " +listeSerie.getScene().getWindow().getUserData());
+                Stage stage = (Stage) listeSerie.getScene().getWindow();
                 try {
                     Parent root = fxmlLoader.load();
                     EpisodeClientController controller = fxmlLoader.getController();

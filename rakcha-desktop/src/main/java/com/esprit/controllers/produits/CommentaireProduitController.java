@@ -85,8 +85,8 @@ public class CommentaireProduitController implements Initializable {
                 alert.showAndWait();
             } else {
                 // Créez un objet Commentaire
-                Commentaire commentaire = new Commentaire((Client) new UserService().getUserById(4), userMessage,
-                        produitService.getProduitById(produit.getId_produit()), datecommantaire);
+                Commentaire commentaire = new Commentaire((Client) new UserService().getUserById(111), userMessage,
+                        produitService.getProduitById(produit.getId_produit()));
 
                 CommentaireService commentaireService = new CommentaireService();
                 // Ajoutez le commentaire à la base de données

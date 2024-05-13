@@ -74,7 +74,16 @@ public class CommandeClientController implements Initializable {
     @FXML
     void initialize(Commande commandeselectionner) {
         commande = commandeselectionner;
-        connectedUser = usersService.getUserById(4);
+        Platform.runLater(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        connectedUser = (Client)  prixtotaleFlowPane.getScene().getWindow().getUserData();
+                        System.out.println("produits:    user:  " + connectedUser);
+                    }
+                }
+        );
+
 
         // Récupérer le prix total depuis SharedData et créer le Label correspondant
 
