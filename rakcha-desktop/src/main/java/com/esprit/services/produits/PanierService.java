@@ -12,12 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PanierService implements IService<Panier> {
 
-
     private final Connection connection;
-
 
     public PanierService() {
         connection = DataSource.getInstance().getConnection();
@@ -45,7 +42,6 @@ public class PanierService implements IService<Panier> {
     public List<Panier> read() {
         return null;
     }
-
 
     public List<Panier> readUserPanier(int iduser) throws SQLException {
         UserService usersService = new UserService();
@@ -99,7 +95,6 @@ public class PanierService implements IService<Panier> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
 
     }
 }

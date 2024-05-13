@@ -16,7 +16,6 @@ public class CommandeService implements IService<Commande> {
 
     private final Connection connection;
 
-
     public CommandeService() {
         connection = DataSource.getInstance().getConnection();
     }
@@ -27,20 +26,18 @@ public class CommandeService implements IService<Commande> {
         try {
             PreparedStatement pst = connection.prepareStatement(req);
 
-            //pst.setInt(1, commande.getCommandeItem().());
+            // pst.setInt(1, commande.getCommandeItem().());
             pst.setDate(1, (Date) commande.getDateCommande());
             pst.setString(2, commande.getStatu() != null ? commande.getStatu() : "En_Cours");
             pst.setInt(3, commande.getIdClient().getId());
             pst.setInt(4, commande.getNum_telephone());
             pst.setString(5, commande.getAdresse());
 
-
             pst.executeUpdate();
             System.out.println("commande remplit !");
         } catch (SQLException e) {
             System.out.println("commande nom remplit ");
         }
-
 
     }
 
@@ -54,7 +51,6 @@ public class CommandeService implements IService<Commande> {
         pst.setInt(4, commande.getNum_telephone());
         pst.setString(5, commande.getAdresse());
 
-
         pst.executeUpdate();
         ResultSet rs = pst.getGeneratedKeys();
 
@@ -63,9 +59,7 @@ public class CommandeService implements IService<Commande> {
         }
         return commandeId;
 
-
     }
-
 
     @Override
     public List<Commande> read() {
@@ -78,9 +72,10 @@ public class CommandeService implements IService<Commande> {
             CommandeItemService cs = new CommandeItemService();
             UserService us = new UserService();
 
-
             while (rs.next()) {
-                Commande c1 = new Commande(rs.getInt("idCommande"), rs.getDate("dateCommande"), rs.getString("statu"), (Client) us.getUserById(rs.getInt("idClient")), rs.getInt("num_telephone"), rs.getString("adresse"));
+                Commande c1 = new Commande(rs.getInt("idCommande"), rs.getDate("dateCommande"), rs.getString("statu"),
+                        (Client) us.getUserById(rs.getInt("idClient")), rs.getInt("num_telephone"),
+                        rs.getString("adresse"));
                 c1.setCommandeItem(commandeItemService.readCommandeItem(c1.getIdCommande()));
                 commande.add(c1);
             }
@@ -90,7 +85,6 @@ public class CommandeService implements IService<Commande> {
 
         return commande;
     }
-
 
     public List<Commande> readClient() {
         CommandeItemService commandeItemService = new CommandeItemService();
@@ -102,9 +96,10 @@ public class CommandeService implements IService<Commande> {
             CommandeItemService cs = new CommandeItemService();
             UserService us = new UserService();
 
-
             while (rs.next()) {
-                Commande c1 = new Commande(rs.getInt("idCommande"), rs.getDate("dateCommande"), rs.getString("statuCommande"), (Client) us.getUserById(rs.getInt("idClient")), rs.getInt("num_telephone"), rs.getString("adresse"));
+                Commande c1 = new Commande(rs.getInt("idCommande"), rs.getDate("dateCommande"),
+                        rs.getString("statuCommande"), (Client) us.getUserById(rs.getInt("idClient")),
+                        rs.getInt("num_telephone"), rs.getString("adresse"));
                 c1.setCommandeItem(commandeItemService.readCommandeItem(c1.getIdCommande()));
                 commande.add(c1);
             }
@@ -114,7 +109,6 @@ public class CommandeService implements IService<Commande> {
 
         return commande;
     }
-
 
     @Override
     public void update(Commande commande) {
@@ -155,7 +149,6 @@ public class CommandeService implements IService<Commande> {
 
     }
 
-
     public Commande getCommandeByID(int idCommande) throws SQLException {
         UserService usersService = new UserService();
         Commande commande = new Commande();
@@ -190,8 +183,7 @@ public class CommandeService implements IService<Commande> {
                         rs.getString("statu"),
                         (Client) usersService.getUserById(rs.getInt("idClient")),
                         rs.getInt("num_telephone"),
-                        rs.getString("adresse")
-                );
+                        rs.getString("adresse"));
                 commande.setCommandeItem(commandeItemService.readCommandeItem(commande.getIdCommande()));
                 commandesPayees.add(commande);
             }
@@ -201,7 +193,6 @@ public class CommandeService implements IService<Commande> {
         }
         return commandesPayees;
     }
-
 
     // Compter le nombre d'achats d'un produit donné
     public Map<Integer, Integer> getTop3ProduitsAchetes() {
@@ -220,6 +211,5 @@ public class CommandeService implements IService<Commande> {
         }
         return produitsAchats;
     }
-
 
 }

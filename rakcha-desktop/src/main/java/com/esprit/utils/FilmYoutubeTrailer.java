@@ -5,12 +5,9 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchResult;
 
-import java.util.Collections;
-
 public class FilmYoutubeTrailer {
 
     private final String API_KEY = "AIzaSyABEi2834N8l6Cty8yFCEiGRisZjyXonEM";
-
 
     public String watchTrailer(String filmNom) {
         System.out.println("watch the trailer");
@@ -24,12 +21,12 @@ public class FilmYoutubeTrailer {
                     .build();
             System.out.println("the trailer is not watched");
 
-            YouTube.Search.List search = youtube.search().list(Collections.singletonList("id,snippet"));
+            YouTube.Search.List search = youtube.search().list("id,snippet");
 
             search.setKey(API_KEY);
             search.setQ(filmNom);
 
-            search.setType(Collections.singletonList("video"));
+            search.setType("video");
 
             search.setFields("items(id/videoId)");
             search.setMaxResults(1L);

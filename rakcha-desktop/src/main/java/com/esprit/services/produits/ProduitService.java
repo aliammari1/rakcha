@@ -16,11 +16,9 @@ public class ProduitService implements IService<Produit> {
 
     private final Connection connection;
 
-
     public ProduitService() {
         connection = DataSource.getInstance().getConnection();
     }
-
 
     @Override
     public void create(Produit produit) {
@@ -53,7 +51,9 @@ public class ProduitService implements IService<Produit> {
             int i = 0;
             while (rs.next()) {
 
-                produits.add(new Produit(rs.getInt("id_produit"), rs.getString("nom"), rs.getInt("prix"), rs.getBlob("image"), rs.getString("description"), cs.getCategorie(rs.getInt("id_categorieProduit")), rs.getInt("quantiteP")));
+                produits.add(new Produit(rs.getInt("id_produit"), rs.getString("nom"), rs.getInt("prix"),
+                        rs.getBlob("image"), rs.getString("description"),
+                        cs.getCategorie(rs.getInt("id_categorieProduit")), rs.getInt("quantiteP")));
                 System.out.println(produits.get(i));
                 i++;
             }
@@ -66,7 +66,8 @@ public class ProduitService implements IService<Produit> {
 
     public List<Produit> sort(String sortBy) {
         // A list of valid column names to prevent SQL injection
-        List<String> validColumns = Arrays.asList("id_produit", "nom", "prix", "description", "categorieProduit", "quantiteP");
+        List<String> validColumns = Arrays.asList("id_produit", "nom", "prix", "description", "categorieProduit",
+                "quantiteP");
         List<Produit> produits = new ArrayList<>();
 
         // Check if sortBy is a valid column name
@@ -87,8 +88,7 @@ public class ProduitService implements IService<Produit> {
                         rs.getBlob("image"),
                         rs.getString("description"),
                         cs.getCategorie(rs.getInt("id_categorieProduit")),
-                        rs.getInt("quantiteP")
-                ));
+                        rs.getInt("quantiteP")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,7 +102,8 @@ public class ProduitService implements IService<Produit> {
 
         String req = "UPDATE produit p " +
                 "INNER JOIN categorie_produit c ON p.id_categorieProduit = c.id_categorie " +
-                "SET p.id_categorieProduit = ?, p.nom = ?, p.prix = ?, p.description = ?, p.image = ?, p.quantiteP = ? " +
+                "SET p.id_categorieProduit = ?, p.nom = ?, p.prix = ?, p.description = ?, p.image = ?, p.quantiteP = ? "
+                +
                 "WHERE p.id_produit = ?;";
 
         try {
@@ -137,7 +138,6 @@ public class ProduitService implements IService<Produit> {
 
     }
 
-
     public Produit getProduitById(int produitId) {
         Produit produit = null;
 
@@ -157,8 +157,7 @@ public class ProduitService implements IService<Produit> {
                         rs.getBlob("image"),
                         rs.getString("description"),
                         cs.getCategorie(rs.getInt("id_categorieProduit")),
-                        rs.getInt("quantiteP")
-                );
+                        rs.getInt("quantiteP"));
             }
 
         } catch (SQLException e) {
@@ -167,7 +166,6 @@ public class ProduitService implements IService<Produit> {
 
         return produit;
     }
-
 
     // Vérifier le stock disponible pour un produit donné
     public boolean verifierStockDisponible(int produitId, int quantiteDemandee) {
@@ -198,13 +196,12 @@ public class ProduitService implements IService<Produit> {
         return prixProduit;
     }
 
-
     public List<Produit> getProduitsOrderByQuantityAndStatus() {
         List<Produit> produits = new ArrayList<>();
         String req = "SELECT p.*, ci.*, c.*, SUM(ci.quantity) AS total_quantity FROM produit p JOIN commandeitem ci ON p.id_produit = ci.id_produit JOIN commande c ON ci.idCommande = c.idCommande WHERE c.statu = 'payee' GROUP BY p.id_produit ORDER BY total_quantity DESC;";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(req);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
                 CategorieService cs = new CategorieService();
@@ -216,8 +213,7 @@ public class ProduitService implements IService<Produit> {
                         resultSet.getBlob("image"),
                         resultSet.getString("description"),
                         cs.getCategorie(resultSet.getInt("id_categorieProduit")),
-                        resultSet.getInt("quantiteP")
-                );
+                        resultSet.getInt("quantiteP"));
                 produits.add(produit);
             }
         } catch (SQLException e) {
@@ -227,10 +223,4 @@ public class ProduitService implements IService<Produit> {
         return produits;
     }
 
-
 }
-
-
-
-
-

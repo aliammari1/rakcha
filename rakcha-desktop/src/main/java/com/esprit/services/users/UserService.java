@@ -18,6 +18,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 public class UserService implements IService<User> {
     Connection con;
 
@@ -31,6 +33,19 @@ public class UserService implements IService<User> {
         try {
             PreparedStatement preparedStatement = con.prepareStatement(req);
             preparedStatement.setInt(1, id);
+            user = getUserRow(preparedStatement);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    private User getUserByEmail(String email) {
+        String req = "select * from users where email = ?";
+        User user = null;
+        try {
+            PreparedStatement preparedStatement = con.prepareStatement(req);
+            preparedStatement.setString(1, email);
             user = getUserRow(preparedStatement);
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,6 +237,7 @@ public class UserService implements IService<User> {
 
     private User getUserRow(PreparedStatement preparedStatement) throws SQLException {
         ResultSet resultSet = preparedStatement.executeQuery();
+        System.out.println(resultSet);
         if (resultSet.next()) {
             String role = resultSet.getString("role");
             System.out.println(role);
@@ -271,13 +287,30 @@ public class UserService implements IService<User> {
     }
 
     public User login(String email, String password) {
-        String query = "select * from users where (email LIKE ?) AND (password LIKE ?)";
-        User user = null;
+
+        User user = getUserByEmail(email);
+        if (user == null)
+            return null;
+
         try {
+            String query = "select * from users where (email LIKE ?) and (password LIKE ?)";
             PreparedStatement statement = this.con.prepareStatement(query);
             statement.setString(1, email);
-            statement.setString(2, password);
+            statement.setString(2, user.getPassword());
             user = getUserRow(statement);
+            String storedHash = user.getPassword();
+            storedHash = storedHash.replaceFirst("\\$2y\\$", "\\$2a\\$");
+            if (storedHash == null || !storedHash.startsWith("$2a$")) {
+                System.out.println("Invalid stored hash");
+                return null;
+            }
+
+            if (BCrypt.checkpw(password, storedHash)) {
+                System.out.println("Password matches");
+            } else {
+                System.out.println("Password does not match");
+                return null;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -57,7 +57,6 @@ public class RatingCinemaService implements IService<RatingCinema> {
             e.printStackTrace();
         }
 
-
     }
 
     public double getAverageRating(int cinemaId) {
@@ -75,6 +74,4 @@ public class RatingCinemaService implements IService<RatingCinema> {
         return 0; // Retourne 0 si aucun résultat n'est trouvé ou s'il y a une exception
     }
 
-
 }
-

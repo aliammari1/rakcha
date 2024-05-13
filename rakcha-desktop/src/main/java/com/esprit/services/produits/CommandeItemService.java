@@ -17,7 +17,6 @@ public class CommandeItemService implements IService<CommandeItem> {
 
     private final Connection connection;
 
-
     public CommandeItemService() {
         connection = DataSource.getInstance().getConnection();
     }
@@ -51,7 +50,8 @@ public class CommandeItemService implements IService<CommandeItem> {
             CommandeService cs = new CommandeService();
 
             while (rs.next()) {
-                commandeitem.add(new CommandeItem(rs.getInt("idCommandeItem"), rs.getInt("quantity"), ps.getProduitById(rs.getInt("id_produit")), cs.getCommandeByID(rs.getInt("idCommande"))));
+                commandeitem.add(new CommandeItem(rs.getInt("idCommandeItem"), rs.getInt("quantity"),
+                        ps.getProduitById(rs.getInt("id_produit")), cs.getCommandeByID(rs.getInt("idCommande"))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,7 +69,8 @@ public class CommandeItemService implements IService<CommandeItem> {
             ProduitService ps = new ProduitService();
             CommandeService cs = new CommandeService();
             while (rs.next()) {
-                commandeitem.add(new CommandeItem(rs.getInt("idCommandeItem"), rs.getInt("quantity"), ps.getProduitById(rs.getInt("id_produit")), cs.getCommandeByID(rs.getInt("idCommande"))));
+                commandeitem.add(new CommandeItem(rs.getInt("idCommandeItem"), rs.getInt("quantity"),
+                        ps.getProduitById(rs.getInt("id_produit")), cs.getCommandeByID(rs.getInt("idCommande"))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -77,17 +78,13 @@ public class CommandeItemService implements IService<CommandeItem> {
         return commandeitem;
     }
 
-
     @Override
     public void update(CommandeItem commandeItem) {
 
-
     }
-
 
     @Override
     public void delete(CommandeItem commandeItem) {
-
 
     }
 
@@ -106,15 +103,13 @@ public class CommandeItemService implements IService<CommandeItem> {
                         rs.getInt("idCommandeItem"),
                         rs.getInt("quantity"),
                         ps.getProduitById(rs.getInt("id_produit")),
-                        cs.getCommandeByID(rs.getInt("idCommande"))
-                ));
+                        cs.getCommandeByID(rs.getInt("idCommande"))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return commandeItems;
     }
-
 
     public int getTotalQuantityByCategoryAndDate(String nomCategorie, String formattedDate) {
         int totalQuantity = 0;
@@ -159,8 +154,7 @@ public class CommandeItemService implements IService<CommandeItem> {
                         rs.getInt("idCommandeItem"),
                         rs.getInt("quantity"),
                         produit,
-                        commande
-                );
+                        commande);
                 commandeItems.add(commandeItem);
             }
         } catch (SQLException e) {
@@ -180,7 +174,8 @@ public class CommandeItemService implements IService<CommandeItem> {
             CommandeService cs = new CommandeService();
 
             while (rs.next()) {
-                aver.add(new CommandeItem(rs.getInt("idCommandeItem"), rs.getInt("quantity"), ps.getProduitById(rs.getInt("id_produit")), cs.getCommandeByID(rs.getInt("idCommande"))));
+                aver.add(new CommandeItem(rs.getInt("idCommandeItem"), rs.getInt("quantity"),
+                        ps.getProduitById(rs.getInt("id_produit")), cs.getCommandeByID(rs.getInt("idCommande"))));
             }
         } catch (Exception e) {
             e.printStackTrace();

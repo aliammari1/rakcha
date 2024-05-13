@@ -65,7 +65,6 @@ public class ActorController {
     @FXML
     private TextField recherche_textField;
 
-
     @FXML
     void initialize() {
         readActorTable();
@@ -88,7 +87,8 @@ public class ActorController {
                 return true;
             }
 
-            // Vérifier si le nom de l'acteur contient le texte de recherche (en ignorant la casse)
+            // Vérifier si le nom de l'acteur contient le texte de recherche (en ignorant la
+            // casse)
             String lowerCaseFilter = searchText.toLowerCase();
             return actor.getNom().toLowerCase().contains(lowerCaseFilter);
         });
@@ -101,7 +101,7 @@ public class ActorController {
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             try {
-                String destinationDirectory = "./src/main/resources/pictures/films/";
+                String destinationDirectory = "./src/main/resources/img/films/";
                 Path destinationPath = Paths.get(destinationDirectory);
                 String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
                 Path destinationFilePath = destinationPath.resolve(uniqueFileName);
@@ -127,7 +127,8 @@ public class ActorController {
     @FXML
     void insertActor(ActionEvent event) {
         ActorService actorService = new ActorService();
-        Actor actor = new Actor(nomAcotr_textArea1.getText(), imageAcotr_ImageView1.getImage().getUrl(), bioAcotr_textArea.getText());
+        Actor actor = new Actor(nomAcotr_textArea1.getText(), imageAcotr_ImageView1.getImage().getUrl(),
+                bioAcotr_textArea.getText());
         actorService.create(actor);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Actor ajoutée");
@@ -172,7 +173,7 @@ public class ActorController {
 
             connection = DataSource.getInstance().getConnection();
             ActorService actorService = new ActorService();
-// Assign value to imageString
+            // Assign value to imageString
             /* assign the String value here */
             actorService.update(actor);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -185,7 +186,6 @@ public class ActorController {
         }
         readActorTable();
 
-
     }
 
     @FXML
@@ -195,81 +195,89 @@ public class ActorController {
             filmActor_tableView11.setEditable(true);
             idActor_tableColumn1.setVisible(false);
             idActor_tableColumn1.setCellValueFactory(new PropertyValueFactory<Actor, Integer>("id"));
-            nomAcotr_tableColumn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Actor, String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<Actor, String> actorStringCellDataFeatures) {
-                    return new SimpleStringProperty(actorStringCellDataFeatures.getValue().getNom());
-                }
-            });
-            nomAcotr_tableColumn1.setCellFactory(TextFieldTableCell.forTableColumn());
-            DeleteActor_Column1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Actor, Button>, ObservableValue<Button>>() {
-                @Override
-                public ObservableValue<Button> call(TableColumn.CellDataFeatures<Actor, Button> filmcategoryButtonCellDataFeatures) {
-                    Button button = new Button("delete");
-                    button.setOnAction(new EventHandler<ActionEvent>() {
+            nomAcotr_tableColumn1.setCellValueFactory(
+                    new Callback<TableColumn.CellDataFeatures<Actor, String>, ObservableValue<String>>() {
                         @Override
-                        public void handle(ActionEvent event) {
-                            deleteFilm(filmcategoryButtonCellDataFeatures.getValue().getId());
+                        public ObservableValue<String> call(
+                                TableColumn.CellDataFeatures<Actor, String> actorStringCellDataFeatures) {
+                            return new SimpleStringProperty(actorStringCellDataFeatures.getValue().getNom());
                         }
                     });
-                    return new SimpleObjectProperty<Button>(button);
-                }
-            });
-            bioActor_tableColumn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Actor, String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<Actor, String> actorStringCellDataFeatures) {
-                    return new SimpleStringProperty(actorStringCellDataFeatures.getValue().getBiographie());
-                }
-            });
-            bioActor_tableColumn1.setCellFactory(TextFieldTableCell.forTableColumn());
-            imageAcotr_tableColumn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Actor, HBox>, ObservableValue<HBox>>() {
-                @Override
-                public ObservableValue<HBox> call(TableColumn.CellDataFeatures<Actor, HBox> param) {
-
-                    HBox hBox = new HBox();
-                    try {
-                        ImageView imageView = new ImageView();
-                        imageView.setFitWidth(120); // Réglez la largeur de l'image selon vos préférences
-                        imageView.setFitHeight(100); // Réglez la hauteur de l'image selon vos préférences
-                        try {
-                            imageView.setImage(new Image(param.getValue().getImage()));
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        hBox.getChildren().add(imageView);
-                        hBox.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-                                try {
-                                    FileChooser fileChooser = new FileChooser();
-                                    fileChooser.getExtensionFilters().addAll(
-                                            new FileChooser.ExtensionFilter("PNG", "*.png"),
-                                            new FileChooser.ExtensionFilter("JPG", "*.jpg")
-                                    );
-                                    File file = fileChooser.showOpenDialog(null);
-                                    if (file != null) {
-                                        String destinationDirectory = "./src/main/resources/pictures/films/";
-                                        Path destinationPath = Paths.get(destinationDirectory);
-                                        String uniqueFileName = System.currentTimeMillis() + "_" + file.getName();
-                                        Path destinationFilePath = destinationPath.resolve(uniqueFileName);
-                                        Files.copy(file.toPath(), destinationFilePath);
-                                        Image image = new Image(destinationFilePath.toUri().toString());
-                                        imageView.setImage(image);
-                                        hBox.getChildren().clear();
-                                        hBox.getChildren().add(imageView);
-                                        new ActorService().update(new Actor(null, destinationFilePath.toUri().toString(), null));
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+            nomAcotr_tableColumn1.setCellFactory(TextFieldTableCell.forTableColumn());
+            DeleteActor_Column1.setCellValueFactory(
+                    new Callback<TableColumn.CellDataFeatures<Actor, Button>, ObservableValue<Button>>() {
+                        @Override
+                        public ObservableValue<Button> call(
+                                TableColumn.CellDataFeatures<Actor, Button> filmcategoryButtonCellDataFeatures) {
+                            Button button = new Button("delete");
+                            button.setOnAction(new EventHandler<ActionEvent>() {
+                                @Override
+                                public void handle(ActionEvent event) {
+                                    deleteFilm(filmcategoryButtonCellDataFeatures.getValue().getId());
                                 }
+                            });
+                            return new SimpleObjectProperty<Button>(button);
+                        }
+                    });
+            bioActor_tableColumn1.setCellValueFactory(
+                    new Callback<TableColumn.CellDataFeatures<Actor, String>, ObservableValue<String>>() {
+                        @Override
+                        public ObservableValue<String> call(
+                                TableColumn.CellDataFeatures<Actor, String> actorStringCellDataFeatures) {
+                            return new SimpleStringProperty(actorStringCellDataFeatures.getValue().getBiographie());
+                        }
+                    });
+            bioActor_tableColumn1.setCellFactory(TextFieldTableCell.forTableColumn());
+            imageAcotr_tableColumn1.setCellValueFactory(
+                    new Callback<TableColumn.CellDataFeatures<Actor, HBox>, ObservableValue<HBox>>() {
+                        @Override
+                        public ObservableValue<HBox> call(TableColumn.CellDataFeatures<Actor, HBox> param) {
+
+                            HBox hBox = new HBox();
+                            try {
+                                ImageView imageView = new ImageView();
+                                imageView.setFitWidth(120); // Réglez la largeur de l'image selon vos préférences
+                                imageView.setFitHeight(100); // Réglez la hauteur de l'image selon vos préférences
+                                try {
+                                    imageView.setImage(new Image(param.getValue().getImage()));
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                                hBox.getChildren().add(imageView);
+                                hBox.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                                    @Override
+                                    public void handle(MouseEvent event) {
+                                        try {
+                                            FileChooser fileChooser = new FileChooser();
+                                            fileChooser.getExtensionFilters().addAll(
+                                                    new FileChooser.ExtensionFilter("PNG", "*.png"),
+                                                    new FileChooser.ExtensionFilter("JPG", "*.jpg"));
+                                            File file = fileChooser.showOpenDialog(null);
+                                            if (file != null) {
+                                                String destinationDirectory = "./src/main/resources/img/films/";
+                                                Path destinationPath = Paths.get(destinationDirectory);
+                                                String uniqueFileName = System.currentTimeMillis() + "_"
+                                                        + file.getName();
+                                                Path destinationFilePath = destinationPath.resolve(uniqueFileName);
+                                                Files.copy(file.toPath(), destinationFilePath);
+                                                Image image = new Image(destinationFilePath.toUri().toString());
+                                                imageView.setImage(image);
+                                                hBox.getChildren().clear();
+                                                hBox.getChildren().add(imageView);
+                                                new ActorService().update(
+                                                        new Actor(null, destinationFilePath.toUri().toString(), null));
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        });
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return new SimpleObjectProperty<HBox>(hBox);
-                }
-            });
+                            return new SimpleObjectProperty<HBox>(hBox);
+                        }
+                    });
             ActorService categoryService = new ActorService();
             ObservableList<Actor> obC = FXCollections.observableArrayList(categoryService.read());
             filmActor_tableView11.setItems(obC);
@@ -277,7 +285,6 @@ public class ActorController {
             e.printStackTrace();
         }
     }
-
 
     void deleteFilm(int id) {
         ActorService actorService = new ActorService();

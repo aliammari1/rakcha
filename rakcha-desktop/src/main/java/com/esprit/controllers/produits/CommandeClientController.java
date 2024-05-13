@@ -46,13 +46,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
 public class CommandeClientController implements Initializable {
 
     private static final String CLIENT_ID = "Ac_87vQSawIKlwhFFCBiYH0VYygxg5MWi0xakK3w0FyJirTITgf5CqfaE65WLUlia16-D5deHq6XKWo8";
     private static final String CLIENT_SECRET = "EKDa_P0DqelT1SNHMbfbVS6Pqp25dvz3fVlf_nwPMRAnqMwe2c6vX6yV2iW8lBFdMr_aXG8FD8cDCMt7";
-    private static final String SUCCESS_URL = CommandeClientController.class.getResource("/success.html").toExternalForm();
-    private static final String CANCEL_URL = CommandeClientController.class.getResource("/cancel.html").toExternalForm();
+    private static final String SUCCESS_URL = CommandeClientController.class.getResource("/success.html")
+            .toExternalForm();
+    private static final String CANCEL_URL = CommandeClientController.class.getResource("/cancel.html")
+            .toExternalForm();
     private final CommandeService commandeService = new CommandeService();
     private final UserService usersService = new UserService();
     Commande commande = new Commande();
@@ -67,25 +68,20 @@ public class CommandeClientController implements Initializable {
     @FXML
     private FlowPane prixtotaleFlowPane;
 
-
     @FXML
     private Button idpaymentenligne;
-
 
     @FXML
     void initialize(Commande commandeselectionner) {
         commande = commandeselectionner;
         connectedUser = usersService.getUserById(4);
 
-
         // Récupérer le prix total depuis SharedData et créer le Label correspondant
 
         Label prixTotalLabel = createPrixTotalLabel(totalPrix);
 
-
         // Ajouter le Label au FlowPane
         prixtotaleFlowPane.getChildren().add(prixTotalLabel);
-
 
     }
 
@@ -120,7 +116,6 @@ public class CommandeClientController implements Initializable {
             return; // Arrêter le traitement de la commande
         }
 
-
         commande.setAdresse(adresseTextField.getText());
         commande.setNum_telephone(Integer.parseInt(numTelephoneTextField.getText()));
         commande.setIdClient((Client) connectedUser);
@@ -132,15 +127,13 @@ public class CommandeClientController implements Initializable {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        for (CommandeItem commandeItem : commande.getCommandeItem()
-        ) {
+        for (CommandeItem commandeItem : commande.getCommandeItem()) {
             System.out.println(commande.getIdCommande());
             commandeItem.setCommande(commande);
 
             commandeItemService.create(commandeItem);
             decrementStock(commandeItem.getProduit(), commandeItem.getQuantity());
             idpaymentenligne.setVisible(true);
-
 
         }
     }
@@ -153,9 +146,9 @@ public class CommandeClientController implements Initializable {
         alert.showAndWait();
     }
 
-
     private boolean isValidPhoneNumber(String phoneNumber) {
-        // Vérifier si le numéro de téléphone a exactement 8 chiffres et ne contient que des chiffres
+        // Vérifier si le numéro de téléphone a exactement 8 chiffres et ne contient que
+        // des chiffres
         return phoneNumber.matches("\\d{8}");
     }
 
@@ -163,9 +156,9 @@ public class CommandeClientController implements Initializable {
         // Décrémenter le stock dans la base de données
         produit.setQuantiteP(produit.getQuantiteP() - quantity);
         ProduitService produitService = new ProduitService();
-        produitService.update(produit); // Assurez-vous que votre service de produit dispose d'une méthode de mise à jour
+        produitService.update(produit); // Assurez-vous que votre service de produit dispose d'une méthode de mise à
+                                        // jour
     }
-
 
     @FXML
     void panier(MouseEvent event) {
@@ -192,7 +185,6 @@ public class CommandeClientController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
-
 
     }
 
@@ -225,7 +217,6 @@ public class CommandeClientController implements Initializable {
         payment.setRedirectUrls(redirectUrls);
         payment.setRedirectUrls(redirectUrls);
 
-
         try {
             Payment createdPayment = payment.create(apiContext);
             for (Links link : createdPayment.getLinks()) {
@@ -240,7 +231,6 @@ public class CommandeClientController implements Initializable {
             showAlert("Error", "Could not initiate PayPal payment.");
         }
     }
-
 
     private void redirectToPayPal(String approvalLink) {
         Platform.runLater(() -> {
@@ -313,9 +303,7 @@ public class CommandeClientController implements Initializable {
 
                 commande.setStatu("Payee");
 
-
                 commandeService.update(commande);
-
 
             }
         } catch (PayPalRESTException e) {
@@ -349,7 +337,6 @@ public class CommandeClientController implements Initializable {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
@@ -376,7 +363,6 @@ public class CommandeClientController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
-
 
     }
 
@@ -405,24 +391,20 @@ public class CommandeClientController implements Initializable {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
     void profilclient(ActionEvent event) {
-
 
     }
 
     @FXML
     void showcinema(ActionEvent event) {
 
-
     }
 
     @FXML
     void showevenement(ActionEvent event) {
-
 
     }
 
@@ -450,7 +432,6 @@ public class CommandeClientController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
-
 
     }
 
@@ -485,7 +466,6 @@ public class CommandeClientController implements Initializable {
         }
 
     }
-
 
     @FXML
     void MovieClient(ActionEvent event) {
@@ -539,7 +519,5 @@ public class CommandeClientController implements Initializable {
         }
 
     }
-
-
 
 }

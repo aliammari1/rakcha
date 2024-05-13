@@ -23,14 +23,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-
 import java.io.IOException;
 import java.util.Date;
 
 public class ListCommandeController {
-
-
-
 
     @FXML
     private TableColumn<Commande, String> idStatu;
@@ -54,21 +50,13 @@ public class ListCommandeController {
     @FXML
     private TextField SearchBar;
     @FXML
-    private TableColumn<Commande,Void> deleteColumn;
-
-
-
-
-
-
+    private TableColumn<Commande, Void> deleteColumn;
 
     @FXML
     void initialize() {
         SearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             search(newValue);
         });
-
-
 
         afficheCommande();
         initDeleteColumn();
@@ -95,8 +83,6 @@ public class ListCommandeController {
         iddate.setCellValueFactory(new PropertyValueFactory<Commande, Date>("dateCommande"));
         idStatu.setCellValueFactory(new PropertyValueFactory<Commande, String>("statu"));
 
-
-
         // Utiliser une ObservableList pour stocker les éléments
         ObservableList<Commande> list = FXCollections.observableArrayList();
         CommandeService ps = new CommandeService();
@@ -107,27 +93,24 @@ public class ListCommandeController {
         commandeTableView.getSelectionModel().setCellSelectionEnabled(true);
     }
 
-
-        @FXML
-        private void search(String keyword) {
-            CommandeService commandeservice = new CommandeService();
-            ObservableList<Commande> filteredList = FXCollections.observableArrayList();
-            if (keyword == null || keyword.trim().isEmpty()) {
-                filteredList.addAll(commandeservice.read());
-            } else {
-                for (Commande commande : commandeservice.read()) {
-                    if (
-                            commande.getAdresse().toLowerCase().contains(keyword.toLowerCase())||
-                            commande.getIdClient().getLastName().toLowerCase().contains(keyword.toLowerCase())||
-                            commande.getIdClient().getFirstName().toLowerCase().contains(keyword.toLowerCase())||
-                            commande.getStatu().toLowerCase().contains(keyword.toLowerCase())) {
-                        filteredList.add(commande);
-                    }
+    @FXML
+    private void search(String keyword) {
+        CommandeService commandeservice = new CommandeService();
+        ObservableList<Commande> filteredList = FXCollections.observableArrayList();
+        if (keyword == null || keyword.trim().isEmpty()) {
+            filteredList.addAll(commandeservice.read());
+        } else {
+            for (Commande commande : commandeservice.read()) {
+                if (commande.getAdresse().toLowerCase().contains(keyword.toLowerCase()) ||
+                        commande.getIdClient().getLastName().toLowerCase().contains(keyword.toLowerCase()) ||
+                        commande.getIdClient().getFirstName().toLowerCase().contains(keyword.toLowerCase()) ||
+                        commande.getStatu().toLowerCase().contains(keyword.toLowerCase())) {
+                    filteredList.add(commande);
                 }
             }
-            commandeTableView.setItems(filteredList);
         }
-
+        commandeTableView.setItems(filteredList);
+    }
 
     private void initDeleteColumn() {
         Callback<TableColumn<Commande, Void>, TableCell<Commande, Void>> cellFactory = new Callback<>() {
@@ -167,8 +150,6 @@ public class ListCommandeController {
 
     }
 
-
-
     @FXML
     void statCommande(ActionEvent event) {
 
@@ -194,19 +175,6 @@ public class ListCommandeController {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
-
-
     }
 
-
-    }
-
-
-
-
-
-
-
-
-
+}

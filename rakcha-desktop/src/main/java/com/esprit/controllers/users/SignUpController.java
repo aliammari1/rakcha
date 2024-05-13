@@ -5,6 +5,9 @@ import com.esprit.models.users.Client;
 import com.esprit.models.users.Responsable_de_cinema;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
+
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -12,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,6 +23,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -33,9 +39,12 @@ import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class SignUpController {
 
+    @FXML
+    AnchorPane anchorPane;
     @FXML
     private TextField adresseTextField;
     @FXML
@@ -55,7 +64,6 @@ public class SignUpController {
     @FXML
     private ComboBox<String> roleComboBox;
 
-
     @FXML
     void initialize() {
         Tooltip tooltip = new Tooltip();
@@ -64,27 +72,27 @@ public class SignUpController {
             String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
             if (!emailTextField.getText().matches(emailRegex)) {
                 emailTextField.getStyleClass().removeAll("checked");
-                //emailErrorLabel.setText("this mail format is wrong");
+                // emailErrorLabel.setText("this mail format is wrong");
                 emailTextField.getStyleClass().add("notChecked");
             } else if (userService.checkEmailFound(newValue)) {
                 emailTextField.getStyleClass().removeAll("checked");
                 // emailErrorLabel.setText("this mail address is used");
                 emailTextField.getStyleClass().add("notChecked");
             } else {
-                //emailErrorLabel.setText("");
+                // emailErrorLabel.setText("");
                 emailTextField.getStyleClass().removeAll("notChecked");
                 emailTextField.getStyleClass().add("checked");
             }
         });
 
-        passwordTextField.textProperty().addListener((observable, oldValue, newValue) ->
-        {
+        passwordTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (passwordTextField.getLength() < 8) {
                 passwordTextField.getStyleClass().removeAll("checked");
-                //passwordErrorLabel.setText("the password must contain at least 8 characters");
+                // passwordErrorLabel.setText("the password must contain at least 8
+                // characters");
                 emailTextField.getStyleClass().add("notChecked");
             } else {
-                //passwordErrorLabel.setText("");
+                // passwordErrorLabel.setText("");
                 passwordTextField.getStyleClass().removeAll("notChecked");
                 passwordTextField.getStyleClass().add("checked");
             }
@@ -111,7 +119,7 @@ public class SignUpController {
                 nomTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                            String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -160,7 +168,7 @@ public class SignUpController {
                 prenomTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                            String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -208,7 +216,7 @@ public class SignUpController {
                 adresseTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                            String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -260,7 +268,7 @@ public class SignUpController {
                 emailTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                            String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -307,7 +315,7 @@ public class SignUpController {
                 passwordTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                            String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -359,7 +367,7 @@ public class SignUpController {
                 num_telephoneTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                            String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -399,7 +407,7 @@ public class SignUpController {
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             try {
-                String destinationDirectory = "./src/main/resources/pictures/films/";
+                String destinationDirectory = "./src/main/resources/img/films/";
                 Path destinationPath = Paths.get(destinationDirectory);
                 String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
                 Path destinationFilePath = destinationPath.resolve(uniqueFileName);

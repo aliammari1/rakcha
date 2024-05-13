@@ -5,7 +5,8 @@ import com.esprit.models.evenements.Sponsor;
 import com.esprit.models.users.Client;
 import com.esprit.services.evenements.SponsorService;
 import com.esprit.utils.DataSource;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -47,7 +48,7 @@ public class DesignSponsorAdminController {
     @FXML
     private Button bAddS;
     @FXML
-    private FontAwesomeIconView iconLogoS;
+    private FontIcon iconLogoS;
     @FXML
     private ImageView image;
     @FXML
@@ -80,7 +81,6 @@ public class DesignSponsorAdminController {
 
         return resultats;
     }
-
 
     @FXML
     void initialize() {
@@ -182,14 +182,14 @@ public class DesignSponsorAdminController {
         Blob img = sponsor.getLogo();
         int id = sponsor.getId();
 
-        // Enregistrez les modifications dans la base de données en utilisant un service approprié
+        // Enregistrez les modifications dans la base de données en utilisant un service
+        // approprié
         SponsorService ss = new SponsorService();
         ss.update(sponsor);
     }
 
     @FXML
     void gestionSeries(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Serie-view.fxml"));
@@ -214,7 +214,6 @@ public class DesignSponsorAdminController {
     @FXML
     void gestionProduits(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignProduitAdmin.fxml"));
         Parent root = loader.load();
@@ -237,7 +236,6 @@ public class DesignSponsorAdminController {
 
     @FXML
     void gestionFilms(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceFilm.fxml"));
@@ -262,7 +260,6 @@ public class DesignSponsorAdminController {
     @FXML
     void gestionCinemas(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DashboardAdminCinema.fxml"));
         Parent root = loader.load();
@@ -286,7 +283,6 @@ public class DesignSponsorAdminController {
     @FXML
     void gestionEvenements(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignEvenementAdmin.fxml"));
         Parent root = loader.load();
@@ -309,7 +305,7 @@ public class DesignSponsorAdminController {
 
     void afficher_sponsor() {
 
-        //tvSponsor.getItems().clear();
+        // tvSponsor.getItems().clear();
         ImageView imageView = new ImageView();
 
         tcNomS.setCellValueFactory(new PropertyValueFactory<Sponsor, String>("nomSociete"));
@@ -319,7 +315,6 @@ public class DesignSponsorAdminController {
             sponsor.setNomSociete(event.getNewValue());
             modifier_sponsor(sponsor);
         });
-
 
         // Configurer la colonne Logo pour afficher et changer l'image
         tcLogo.setCellValueFactory(cellData -> {
@@ -334,7 +329,8 @@ public class DesignSponsorAdminController {
                     imageView.setImage(image);
                 } else {
                     // Afficher une image par défaut si le logo est null
-                    Image defaultImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("default_image.png")));
+                    Image defaultImage = new Image(
+                            Objects.requireNonNull(getClass().getResourceAsStream("default_image.png")));
                     imageView.setImage(defaultImage);
                 }
             } catch (SQLException e) {
@@ -378,11 +374,11 @@ public class DesignSponsorAdminController {
             }
         });
 
-
         // Activer l'édition en cliquant sur une ligne
         tvSponsor.setEditable(true);
 
-        // Gérer la modification du texte dans une cellule et le valider en appuyant sur Enter
+        // Gérer la modification du texte dans une cellule et le valider en appuyant sur
+        // Enter
         tvSponsor.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 Sponsor selectedSponsor = tvSponsor.getSelectionModel().getSelectedItem();
@@ -436,25 +432,27 @@ public class DesignSponsorAdminController {
             }
         };
 
-        //tcDeleteS.setCellFactory(cellFactory);
+        // tcDeleteS.setCellFactory(cellFactory);
 
-        //tvSponsor.getColumns().add(tcDeleteS);
-        tcDeleteS.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Sponsor, Button>, ObservableValue<Button>>() {
-            @Override
-            public ObservableValue<Button> call(TableColumn.CellDataFeatures<Sponsor, Button> sponsorButtonCellDataFeatures) {
-                final Button btnDelete = new Button("Delete");
-                btnDelete.getStyleClass().add("delete-button");
-                btnDelete.setOnAction((ActionEvent event) -> {
-                    //Evenement evenement = getTableView().getItems().get(getIndex());
-                    SponsorService ss = new SponsorService();
-                    ss.delete(sponsorButtonCellDataFeatures.getValue());
-                    // Mise à jour de la TableView après la suppression de la base de données
-                    tvSponsor.setItems(FXCollections.observableArrayList(ss.read()));
-                    tvSponsor.refresh();
+        // tvSponsor.getColumns().add(tcDeleteS);
+        tcDeleteS.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Sponsor, Button>, ObservableValue<Button>>() {
+                    @Override
+                    public ObservableValue<Button> call(
+                            TableColumn.CellDataFeatures<Sponsor, Button> sponsorButtonCellDataFeatures) {
+                        final Button btnDelete = new Button("Delete");
+                        btnDelete.getStyleClass().add("delete-button");
+                        btnDelete.setOnAction((ActionEvent event) -> {
+                            // Evenement evenement = getTableView().getItems().get(getIndex());
+                            SponsorService ss = new SponsorService();
+                            ss.delete(sponsorButtonCellDataFeatures.getValue());
+                            // Mise à jour de la TableView après la suppression de la base de données
+                            tvSponsor.setItems(FXCollections.observableArrayList(ss.read()));
+                            tvSponsor.refresh();
+                        });
+                        return new SimpleObjectProperty<Button>(btnDelete);
+                    }
                 });
-                return new SimpleObjectProperty<Button>(btnDelete);
-            }
-        });
     }
 
     private void setupSearchFilter() {
@@ -467,7 +465,8 @@ public class DesignSponsorAdminController {
                     return true;
                 }
 
-                // Compare event name, category, and description of every event with filter text.
+                // Compare event name, category, and description of every event with filter
+                // text.
                 String lowerCaseFilter = newValue.toLowerCase();
 
                 return sponsor.getNomSociete().toLowerCase().contains(lowerCaseFilter); // Filter matches category name.
@@ -515,6 +514,5 @@ public class DesignSponsorAdminController {
             }
         }
     }
-
 
 }

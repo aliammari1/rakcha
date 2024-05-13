@@ -92,14 +92,13 @@ public class AffichageEvenementClientController {
         }
         tfRechercheEc.textProperty().addListener((observable, oldValue, newValue) -> {
             search(newValue);
-            //filterCategorieEvenements(newValue.trim());
+            // filterCategorieEvenements(newValue.trim());
         });
 
         afficherliste();
         // setupSearchFilter();
         listeEvents.setVisible(true);
         anchplanning.setVisible(false);
-
 
     }
 
@@ -111,7 +110,8 @@ public class AffichageEvenementClientController {
             filteredList.addAll(es.read());
         } else {
             for (Evenement evenement : es.read()) {
-                if (evenement.getNom().toLowerCase().contains(keyword.toLowerCase()) || evenement.getLieu().toLowerCase().contains(keyword.toLowerCase()) ||
+                if (evenement.getNom().toLowerCase().contains(keyword.toLowerCase())
+                        || evenement.getLieu().toLowerCase().contains(keyword.toLowerCase()) ||
                         evenement.getEtat().toLowerCase().contains(keyword.toLowerCase()) ||
                         evenement.getDescription().toLowerCase().contains(keyword.toLowerCase()) ||
                         evenement.getNom_categorieEvenement().toLowerCase().contains(keyword.toLowerCase())) {
@@ -121,7 +121,6 @@ public class AffichageEvenementClientController {
         }
         listeEvents.setItems(filteredList);
     }
-
 
     public void afficherliste() {
         EvenementService es = new EvenementService();
@@ -165,7 +164,8 @@ public class AffichageEvenementClientController {
 
                         while (true) {
                             try {
-                                if ((bytesRead = inputStream.read(buffer)) == -1) break;
+                                if ((bytesRead = inputStream.read(buffer)) == -1)
+                                    break;
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -251,7 +251,6 @@ public class AffichageEvenementClientController {
                         );
                         Button joinButton = new Button("Join Event");
 
-
                         joinButton.setStyle("-fx-background-color: #800000;\n" +
                                 " -fx-text-fill: #FCE19A;" +
                                 "   -fx-font-size: 17.5px;\n" +
@@ -279,14 +278,16 @@ public class AffichageEvenementClientController {
                                                 ParticipationService ps = new ParticipationService();
                                                 UserService us = new UserService();
                                                 Stage stage = (Stage) confirmButton.getScene().getWindow();
-                                                ps.create(new Participation(item, (Client) stage.getUserData(), Integer.parseInt(personstf.getText())));
-                                                SmsService.sendSms("+21622757828", String.format("   Thank you for your reservation : your '%s' tickets for the event : '%s' have been confirmed !", personstf.getText(), item.getNom()));
+                                                ps.create(new Participation(item, (Client) stage.getUserData(),
+                                                        Integer.parseInt(personstf.getText())));
+                                                SmsService.sendSms("+21622757828", String.format(
+                                                        "   Thank you for your reservation : your '%s' tickets for the event : '%s' have been confirmed !",
+                                                        personstf.getText(), item.getNom()));
 
                                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                                 alert.setTitle("Reservation Complete !");
                                                 alert.setContentText("Reservation Complete !");
                                                 alert.show();
-
 
                                             });
                                     AnchorPane.setTopAnchor(personsLabel, 119.0);
@@ -298,32 +299,33 @@ public class AffichageEvenementClientController {
                                     anchorPane.getChildren().addAll(personsLabel, personstf, confirmButton);
                                     setGraphic(anchorPane);
 
-
-                                    //FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/DesignEvenementAdmin.fxml"));
+                                    // FXMLLoader fxmlLoader = new
+                                    // FXMLLoader(getClass().getResource("/DesignEvenementAdmin.fxml"));
 
                                     // try {
 
-                                    //   Parent root = null;
-                                    //   root = fxmlLoader.load();
-                                    //  //Parent rootNode = fxmlLoader.load();
-                                    //Scene scene = new Scene(rootNode);
+                                    // Parent root = null;
+                                    // root = fxmlLoader.load();
+                                    // //Parent rootNode = fxmlLoader.load();
+                                    // Scene scene = new Scene(rootNode);
 
-                                    //   Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                                    //   Stage newStage = new Stage();
-                                    //   newStage.setScene(new Scene(root, 1280, 700));
-                                    //   newStage.setTitle("event");
-                                    //   newStage.show();
+                                    // Stage currentStage = (Stage) ((Node)
+                                    // event.getSource()).getScene().getWindow();
+                                    // Stage newStage = new Stage();
+                                    // newStage.setScene(new Scene(root, 1280, 700));
+                                    // newStage.setTitle("event");
+                                    // newStage.show();
 
-                                    //    // Fermer la fenêtre actuelle
-                                    //    currentStage.close();
-                                    //  } catch (IOException e) {
-                                    //     e.printStackTrace(); // Affiche l'erreur dans la console (vous pourriez le remplacer par une boîte de dialogue)
-                                    //    System.out.println("Erreur lors du chargement du fichier FXML : " + e.getMessage());
+                                    // // Fermer la fenêtre actuelle
+                                    // currentStage.close();
+                                    // } catch (IOException e) {
+                                    // e.printStackTrace(); // Affiche l'erreur dans la console (vous
+                                    // pourriez le remplacer par une boîte de dialogue)
+                                    // System.out.println("Erreur lors du chargement du fichier FXML : " +
+                                    // e.getMessage());
                                     // }
 
-
                                 });
-
 
                         // Ajoutez d'autres composants selon vos besoins
 
@@ -350,13 +352,12 @@ public class AffichageEvenementClientController {
                         // Positionnez d'autres composants selon vos besoins
 
                         // Ajoutez les composants à l'AnchorPane
-                        anchorPane.getChildren().addAll(imageView, nameLabel, ddLabel, dfLabel, lieuLabel, categorieLabel, etatLabel, descriptionLabel, joinButton);
+                        anchorPane.getChildren().addAll(imageView, nameLabel, ddLabel, dfLabel, lieuLabel,
+                                categorieLabel, etatLabel, descriptionLabel, joinButton);
                         // Ajoutez d'autres composants selon vos besoins
-
 
                         // Définissez l'AnchorPane en tant que graphique pour la cellule
                         setGraphic(anchorPane);
-
 
                     }
                 }
@@ -366,38 +367,46 @@ public class AffichageEvenementClientController {
         listeEvents.getItems().addAll(masterData2);
     }
 
-
-
-
-
-
-
-  /*  private void afficher_evenements() {
-        // Initialiser les cellules de la TableView
-        tcNomE.setCellValueFactory(new PropertyValueFactory<Evenement, String>("nom"));
-        //tcCategorieE.setCellValueFactory(new PropertyValueFactory<Evenement, String>("nomCategorie"));
-
-        tcCategorieE.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Evenement, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Evenement, String> evenementStringCellDataFeatures) {
-                return new SimpleStringProperty(evenementStringCellDataFeatures.getValue().getNom_categorieEvenement());
-            }
-        });
-
-        tcDDE.setCellValueFactory(new PropertyValueFactory<Evenement, Date>("dateDebut"));
-        tcDFE.setCellValueFactory(new PropertyValueFactory<Evenement, Date>("dateFin"));
-        tcLieuE.setCellValueFactory(new PropertyValueFactory<Evenement, String>("lieu"));
-        tcEtatE.setCellValueFactory(new PropertyValueFactory<Evenement, String>("etat"));
-        tcDescriptionE.setCellValueFactory(new PropertyValueFactory<Evenement, String>("description"));
-
-
-        // Utiliser une ObservableList pour stocker les éléments
-        EvenementService es = new EvenementService();
-        masterData.addAll(es.read());
-        tvEvenement.setItems(masterData);
-
-
-    }*/
+    /*
+     * private void afficher_evenements() {
+     * // Initialiser les cellules de la TableView
+     * tcNomE.setCellValueFactory(new PropertyValueFactory<Evenement,
+     * String>("nom"));
+     * //tcCategorieE.setCellValueFactory(new PropertyValueFactory<Evenement,
+     * String>("nomCategorie"));
+     * 
+     * tcCategorieE.setCellValueFactory(new
+     * Callback<TableColumn.CellDataFeatures<Evenement, String>,
+     * ObservableValue<String>>() {
+     * 
+     * @Override
+     * public ObservableValue<String> call(TableColumn.CellDataFeatures<Evenement,
+     * String> evenementStringCellDataFeatures) {
+     * return new SimpleStringProperty(evenementStringCellDataFeatures.getValue().
+     * getNom_categorieEvenement());
+     * }
+     * });
+     * 
+     * tcDDE.setCellValueFactory(new PropertyValueFactory<Evenement,
+     * Date>("dateDebut"));
+     * tcDFE.setCellValueFactory(new PropertyValueFactory<Evenement,
+     * Date>("dateFin"));
+     * tcLieuE.setCellValueFactory(new PropertyValueFactory<Evenement,
+     * String>("lieu"));
+     * tcEtatE.setCellValueFactory(new PropertyValueFactory<Evenement,
+     * String>("etat"));
+     * tcDescriptionE.setCellValueFactory(new PropertyValueFactory<Evenement,
+     * String>("description"));
+     * 
+     * 
+     * // Utiliser une ObservableList pour stocker les éléments
+     * EvenementService es = new EvenementService();
+     * masterData.addAll(es.read());
+     * tvEvenement.setItems(masterData);
+     * 
+     * 
+     * }
+     */
 
     private void setupSearchFilter() {
         EvenementService es = new EvenementService();
@@ -411,7 +420,8 @@ public class AffichageEvenementClientController {
                     return true;
                 }
 
-                // Compare event name, category, and description of every event with filter text.
+                // Compare event name, category, and description of every event with filter
+                // text.
                 String lowerCaseFilter = newValue.toLowerCase();
 
                 if (evenement.getNom().toLowerCase().contains(lowerCaseFilter)) {
@@ -421,19 +431,18 @@ public class AffichageEvenementClientController {
                 } else if (evenement.getLieu().toLowerCase().contains(lowerCaseFilter)) {
                     return true; // Filter matches description.
                 } else // Filter matches description.
-                    if (evenement.getEtat().toLowerCase().contains(lowerCaseFilter)) {
-                        return true; // Filter matches description.
-                    } else return evenement.getDescription().toLowerCase().contains(lowerCaseFilter);// Does not match.
+                if (evenement.getEtat().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches description.
+                } else
+                    return evenement.getDescription().toLowerCase().contains(lowerCaseFilter);// Does not match.
             });
         });
-
 
         // Wrap the FilteredList in a SortedList.
         SortedList<Evenement> sortedData = new SortedList<>(filteredData);
 
         // Add sorted (and filtered) data to the table.
         listeEvents.setItems(sortedData);
-
 
     }
 
@@ -452,16 +461,16 @@ public class AffichageEvenementClientController {
             alert.show();
         }
 
-
         // Créer l'objet Feedback
         FeedbackEvenementService fs = new FeedbackEvenementService();
         EvenementService es = new EvenementService();
         UserService us = new UserService();
         Stage stage = (Stage) taComment.getScene().getWindow();
-        Feedback nouveauFeedback = new Feedback(es.getEvenementByNom(nomEvenement), (Client) stage.getUserData(), comment);
+        Feedback nouveauFeedback = new Feedback(es.getEvenementByNom(nomEvenement), (Client) stage.getUserData(),
+                comment);
         fs.create(nouveauFeedback);
-        SmsService.sendSms("+21622757828", "Thank You ! We appreciate your feedback, may this be the starting point for a better RAKCHA :) ");
-
+        SmsService.sendSms("+21622757828",
+                "Thank You ! We appreciate your feedback, may this be the starting point for a better RAKCHA :) ");
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Feedback Sent");
@@ -472,110 +481,118 @@ public class AffichageEvenementClientController {
 
     }
 
-   /* public void showMonthlyCalendar(User user) {
-        // Hide other elements and show the monthly calendar pane
-        listeEvents.setVisible(false);
-        anchplanning.setVisible(true);
-
-        // Create a VBox to contain the monthly calendar
-        VBox monthlyCalendarContent = new VBox();
-        monthlyCalendarContent.setSpacing(10);
-
-        // Create a GridPane to display the days of the month
-        GridPane monthGrid = new GridPane();
-        monthGrid.setHgap(10);
-        monthGrid.setVgap(10);
-
-        // Get the current date and first day of the month
-        LocalDate currentDate = LocalDate.now();
-        LocalDate startDateOfMonth = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
-
-        // Add each day of the month to the GridPane
-        int row = 0;
-        int col = 0;
-        while (startDateOfMonth.getMonth().equals(currentDate.getMonth())) {
-            Label dayLabel = new Label(String.valueOf(startDateOfMonth.getDayOfMonth()));
-            dayLabel.setStyle("-fx-background-color: #ae2d3c; -fx-padding: 10px; -fx-text-fill: white;"); // Red background with white text
-            dayLabel.setOnMouseClicked(event -> displayEventsForDate(startDateOfMonth, user));
-            dayLabel.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 14)); // Arial, bold, size 14
-            monthGrid.add(dayLabel, col, row);
-            startDateOfMonth = startDateOfMonth.plusDays(1);
-            col++;
-            if (col == 7) {
-                col = 0;
-                row++;
-            }
-        }
-
-        VBox.setMargin(monthGrid, new Insets(0, 0, 0, 50));
-        monthlyCalendarContent.getChildren().add(monthGrid);
-
-        Separator separator = new Separator(Orientation.HORIZONTAL);
-        separator.setPrefWidth(200);
-        monthlyCalendarContent.getChildren().add(separator);
-
-        // Clear any existing content in the monthly calendar pane
-        anchplanning.getChildren().clear();
-
-        // Add the monthly calendar content to the pane
-        anchplanning.getChildren().add(monthlyCalendarContent);
-        AnchorPane.setTopAnchor(monthlyCalendarContent, 50.0);
-    }
-
-    private void displayEventsForDate(LocalDate date, User user) {
-        // Load events for the specified date and client
-        List<Evenement> eventsForDate = loadEventsForDate(date, user+);
-
-        // Check if there are any events for the date
-        if (!eventsForDate.isEmpty()) {
-            // Create a VBox to contain the event cards for the date
-            VBox eventsForDateVBox = new VBox();
-            eventsForDateVBox.setSpacing(10);
-
-            // Add event cards to the VBox
-            for (Evenement event : eventsForDate) {
-                StackPane eventCard = createEventCard(event);
-                eventsForDateVBox.getChildren().add(eventCard);
-            }
-
-            // Clear existing content in the monthly calendar pane if it's a VBox
-            if (monthlyCalendarPane.getChildren().size() > 1 && monthlyCalendarPane.getChildren().get(1) instanceof VBox) {
-                VBox existingEventsVBox = (VBox) monthlyCalendarPane.getChildren().get(1);
-                existingEventsVBox.getChildren().clear();
-            }
-
-            // Add the event VBox to the monthly calendar pane
-            monthlyCalendarPane.getChildren().add(eventsForDateVBox);
-            AnchorPane.setTopAnchor(eventsForDateVBox, 30.0);
-        } else {
-            System.out.println("No events available for the specified date.");
-        }
-    }
-
-    private List<Evenement> loadEventsForDate(LocalDate date, User user) {
-        // Implement this method to load events for the specified date and client from the database or any other data source
-        // Return a list of events for the date
-        // Example:
-        // EventService eventService = new EventService();
-        // return eventService.getEventsForDateAndClient(date, client);
-        return Collections.emptyList(); // Placeholder implementation
-    }
-
-    private StackPane createEventCard(Evenement event) {
-        // Implement this method to create a UI card for displaying an event
-        // Example:
-        // StackPane eventCard = new StackPane();
-        // eventCard.setStyle("-fx-background-color: #ffffff; -fx-padding: 10px;"); // White background with padding
-        // Label eventNameLabel = new Label(event.getName());
-        // eventCard.getChildren().add(eventNameLabel);
-        // return eventCard;
-        return null; // Placeholder implementation
-    }
-*/
+    /*
+     * public void showMonthlyCalendar(User user) {
+     * // Hide other elements and show the monthly calendar pane
+     * listeEvents.setVisible(false);
+     * anchplanning.setVisible(true);
+     * 
+     * // Create a VBox to contain the monthly calendar
+     * VBox monthlyCalendarContent = new VBox();
+     * monthlyCalendarContent.setSpacing(10);
+     * 
+     * // Create a GridPane to display the days of the month
+     * GridPane monthGrid = new GridPane();
+     * monthGrid.setHgap(10);
+     * monthGrid.setVgap(10);
+     * 
+     * // Get the current date and first day of the month
+     * LocalDate currentDate = LocalDate.now();
+     * LocalDate startDateOfMonth =
+     * LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
+     * 
+     * // Add each day of the month to the GridPane
+     * int row = 0;
+     * int col = 0;
+     * while (startDateOfMonth.getMonth().equals(currentDate.getMonth())) {
+     * Label dayLabel = new Label(String.valueOf(startDateOfMonth.getDayOfMonth()));
+     * dayLabel.
+     * setStyle("-fx-background-color: #ae2d3c; -fx-padding: 10px; -fx-text-fill: white;"
+     * ); // Red background with white text
+     * dayLabel.setOnMouseClicked(event -> displayEventsForDate(startDateOfMonth,
+     * user));
+     * dayLabel.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 14)); //
+     * Arial, bold, size 14
+     * monthGrid.add(dayLabel, col, row);
+     * startDateOfMonth = startDateOfMonth.plusDays(1);
+     * col++;
+     * if (col == 7) {
+     * col = 0;
+     * row++;
+     * }
+     * }
+     * 
+     * VBox.setMargin(monthGrid, new Insets(0, 0, 0, 50));
+     * monthlyCalendarContent.getChildren().add(monthGrid);
+     * 
+     * Separator separator = new Separator(Orientation.HORIZONTAL);
+     * separator.setPrefWidth(200);
+     * monthlyCalendarContent.getChildren().add(separator);
+     * 
+     * // Clear any existing content in the monthly calendar pane
+     * anchplanning.getChildren().clear();
+     * 
+     * // Add the monthly calendar content to the pane
+     * anchplanning.getChildren().add(monthlyCalendarContent);
+     * AnchorPane.setTopAnchor(monthlyCalendarContent, 50.0);
+     * }
+     * 
+     * private void displayEventsForDate(LocalDate date, User user) {
+     * // Load events for the specified date and client
+     * List<Evenement> eventsForDate = loadEventsForDate(date, user+);
+     * 
+     * // Check if there are any events for the date
+     * if (!eventsForDate.isEmpty()) {
+     * // Create a VBox to contain the event cards for the date
+     * VBox eventsForDateVBox = new VBox();
+     * eventsForDateVBox.setSpacing(10);
+     * 
+     * // Add event cards to the VBox
+     * for (Evenement event : eventsForDate) {
+     * StackPane eventCard = createEventCard(event);
+     * eventsForDateVBox.getChildren().add(eventCard);
+     * }
+     * 
+     * // Clear existing content in the monthly calendar pane if it's a VBox
+     * if (monthlyCalendarPane.getChildren().size() > 1 &&
+     * monthlyCalendarPane.getChildren().get(1) instanceof VBox) {
+     * VBox existingEventsVBox = (VBox) monthlyCalendarPane.getChildren().get(1);
+     * existingEventsVBox.getChildren().clear();
+     * }
+     * 
+     * // Add the event VBox to the monthly calendar pane
+     * monthlyCalendarPane.getChildren().add(eventsForDateVBox);
+     * AnchorPane.setTopAnchor(eventsForDateVBox, 30.0);
+     * } else {
+     * System.out.println("No events available for the specified date.");
+     * }
+     * }
+     * 
+     * private List<Evenement> loadEventsForDate(LocalDate date, User user) {
+     * // Implement this method to load events for the specified date and client
+     * from the database or any other data source
+     * // Return a list of events for the date
+     * // Example:
+     * // EventService eventService = new EventService();
+     * // return eventService.getEventsForDateAndClient(date, client);
+     * return Collections.emptyList(); // Placeholder implementation
+     * }
+     * 
+     * private StackPane createEventCard(Evenement event) {
+     * // Implement this method to create a UI card for displaying an event
+     * // Example:
+     * // StackPane eventCard = new StackPane();
+     * // eventCard.setStyle("-fx-background-color: #ffffff; -fx-padding: 10px;");
+     * // White background with padding
+     * // Label eventNameLabel = new Label(event.getName());
+     * // eventCard.getChildren().add(eventNameLabel);
+     * // return eventCard;
+     * return null; // Placeholder implementation
+     * }
+     */
 
     @FXML
     void showHistory(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/EventHistory.fxml"));
@@ -595,10 +612,8 @@ public class AffichageEvenementClientController {
 
     }
 
-
     @FXML
     void showFilms(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/filmuser.fxml"));
@@ -623,7 +638,6 @@ public class AffichageEvenementClientController {
     @FXML
     void showProduits(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherProduitClient.fxml"));
         Parent root = loader.load();
@@ -646,7 +660,6 @@ public class AffichageEvenementClientController {
 
     @FXML
     void showSeries(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Seriesclient.fxml"));
@@ -671,7 +684,6 @@ public class AffichageEvenementClientController {
     @FXML
     void showCinemas(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Seriesclient.fxml"));
         Parent root = loader.load();
@@ -694,7 +706,6 @@ public class AffichageEvenementClientController {
 
     @FXML
     void showEvents(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEvenementClient.fxml"));
@@ -719,7 +730,6 @@ public class AffichageEvenementClientController {
     @FXML
     void showWeather(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/MeteoEvent.fxml"));
         Parent root = loader.load();
@@ -741,7 +751,8 @@ public class AffichageEvenementClientController {
     private void filterCategorieEvenements(String searchText) {
         // Vérifier si le champ de recherche n'est pas vide
         if (!searchText.isEmpty()) {
-            // Filtrer la liste des cinémas pour ne garder que ceux dont le nom contient le texte saisi
+            // Filtrer la liste des cinémas pour ne garder que ceux dont le nom contient le
+            // texte saisi
             ObservableList<Evenement> filteredList = FXCollections.observableArrayList();
             for (Evenement categorie : listeEvents.getItems()) {
                 if (categorie.getCategorie().getNom_categorie().toLowerCase().contains(searchText.toLowerCase())) {
@@ -755,7 +766,6 @@ public class AffichageEvenementClientController {
             afficherliste();
         }
     }
-
 
     private List<Evenement> getAllCategories() {
         EvenementService evenementService = new EvenementService();
@@ -775,7 +785,6 @@ public class AffichageEvenementClientController {
         // Récupérer les adresses uniques depuis la base de données
         List<String> categorie = getCategorie_Evenement();
 
-
         // Créer des VBox pour les adresses
         VBox addressCheckBoxesVBox = new VBox();
         Label addressLabel = new Label("Category");
@@ -789,12 +798,10 @@ public class AffichageEvenementClientController {
         addressCheckBoxesVBox.setLayoutX(25);
         addressCheckBoxesVBox.setLayoutY(70);
 
-
         // Ajouter les VBox dans le FilterAnchor
         FilterAnchor.getChildren().addAll(addressCheckBoxesVBox);
         FilterAnchor.setVisible(true);
     }
-
 
     public List<String> getCategorie_Evenement() {
         // Récupérer tous les cinémas depuis la base de données
@@ -814,7 +821,6 @@ public class AffichageEvenementClientController {
 
         listeEvents.setOpacity(1);
 
-
         FilterAnchor.setVisible(false);
 
         listeEvents.setVisible(true);
@@ -833,7 +839,6 @@ public class AffichageEvenementClientController {
         ObservableList<Evenement> filteredList = FXCollections.observableArrayList(filteredCategories);
         listeEvents.setItems(filteredList);
 
-
     }
 
     private List<String> getSelectedCategories() {
@@ -844,11 +849,4 @@ public class AffichageEvenementClientController {
                 .collect(Collectors.toList());
     }
 
-
 }
-
-
-
-
-
-

@@ -1,6 +1,5 @@
 package com.esprit.services.produits;
 
-
 import com.esprit.models.produits.Avis;
 import com.esprit.models.produits.Produit;
 import com.esprit.models.users.Client;
@@ -31,7 +30,6 @@ public class AvisService implements IService<Avis> {
             pst.setInt(1, avis.getUser().getId());
             pst.setInt(2, avis.getNote());
             pst.setInt(3, avis.getProduit().getId_produit());
-
 
             pst.executeUpdate();
             System.out.println("avis ajoutée !");
@@ -65,7 +63,6 @@ public class AvisService implements IService<Avis> {
         return avisList;
     }
 
-
     @Override
     public void update(Avis avis) {
 
@@ -73,7 +70,6 @@ public class AvisService implements IService<Avis> {
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setInt(1, avis.getNote());
-
 
             pst.executeUpdate();
             System.out.println("avis modifiée !");
@@ -121,7 +117,8 @@ public class AvisService implements IService<Avis> {
             PreparedStatement preparedStatement = connection.prepareStatement(req);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next())
-                avis.add(new Avis(null, (int) resultSet.getDouble("averageRate"), new ProduitService().getProduitById(resultSet.getInt("id_ptoduit"))));
+                avis.add(new Avis(null, (int) resultSet.getDouble("averageRate"),
+                        new ProduitService().getProduitById(resultSet.getInt("id_ptoduit"))));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,7 +134,9 @@ public class AvisService implements IService<Avis> {
             preparedStatement.setInt(2, iduseres);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next())
-                rate = new Avis((Client) new UserService().getUserById(iduseres), (int) resultSet.getDouble("averageRate"), new ProduitService().getProduitById(resultSet.getInt("id_ptoduit")));
+                rate = new Avis((Client) new UserService().getUserById(iduseres),
+                        (int) resultSet.getDouble("averageRate"),
+                        new ProduitService().getProduitById(resultSet.getInt("id_ptoduit")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -145,4 +144,3 @@ public class AvisService implements IService<Avis> {
     }
 
 }
-

@@ -24,7 +24,7 @@ public class ResetPasswordController {
     void resetPassword(ActionEvent event) {
         if (newPass.getText().equals(pass.getText())) {
             try {
-                //new UserService().forgetPassword();
+                // new UserService().forgetPassword();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
                 Parent root = loader.load();
                 Stage stage = (Stage) newPass.getScene().getWindow();

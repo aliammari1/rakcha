@@ -21,7 +21,6 @@ public class CommentaireCinemaService implements IService<CommentaireCinema> {
         connection = DataSource.getInstance().getConnection();
     }
 
-
     @Override
     public void create(CommentaireCinema commentaire) {
 
@@ -32,7 +31,6 @@ public class CommentaireCinemaService implements IService<CommentaireCinema> {
             pst.setInt(2, commentaire.getClient().getId());
             pst.setString(3, commentaire.getCommentaire());
             pst.setString(4, commentaire.getSentiment());
-
 
             pst.executeUpdate();
             System.out.println("commentaire ajoutée !");
@@ -55,8 +53,7 @@ public class CommentaireCinemaService implements IService<CommentaireCinema> {
                         rs.getInt("id"),
                         new CinemaService().getCinema(rs.getInt("idcinema")),
                         (Client) new UserService().getUserById(rs.getInt("idclient")),
-                        rs.getString("commentaire"), rs.getString("Sentiment")
-                ));
+                        rs.getString("commentaire"), rs.getString("Sentiment")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,10 +62,8 @@ public class CommentaireCinemaService implements IService<CommentaireCinema> {
         return commentaire;
     }
 
-
     @Override
     public void update(CommentaireCinema commentaire) {
-
 
     }
 
@@ -77,28 +72,27 @@ public class CommentaireCinemaService implements IService<CommentaireCinema> {
 
     }
 
-
-//    public Commentaire readByClientId(int clientId) {
-//        Commentaire commentaire = null;
-//
-//        String req = "SELECT * FROM commentairecinema WHERE idClient = ? LIMIT 1";
-//        try {
-//            PreparedStatement pst = connection.prepareStatement(req);
-//            pst.setInt(1, clientId);
-//
-//            ResultSet rs = pst.executeQuery();
-//            if (rs.next()) {
-//                commentaire = new Commentaire(
-//                        rs.getInt("idcommentaire"),
-//                        (Client) new UserService().getUserById(rs.getInt("idClient")),
-//                        rs.getString("commentaire")
-//                );
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return commentaire;
-//    }
+    // public Commentaire readByClientId(int clientId) {
+    // Commentaire commentaire = null;
+    //
+    // String req = "SELECT * FROM commentairecinema WHERE idClient = ? LIMIT 1";
+    // try {
+    // PreparedStatement pst = connection.prepareStatement(req);
+    // pst.setInt(1, clientId);
+    //
+    // ResultSet rs = pst.executeQuery();
+    // if (rs.next()) {
+    // commentaire = new Commentaire(
+    // rs.getInt("idcommentaire"),
+    // (Client) new UserService().getUserById(rs.getInt("idClient")),
+    // rs.getString("commentaire")
+    // );
+    // }
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    //
+    // return commentaire;
+    // }
 
 }

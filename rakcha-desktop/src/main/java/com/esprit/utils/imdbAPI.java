@@ -15,7 +15,8 @@ public class imdbAPI {
         String query = "spiderwoman";
         try {
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
-            String scriptUrl = "https://script.google.com/macros/s/AKfycbyeuvvPJ2jljewXKStVhiOrzvhMPkAEj5xT_cun3IRWc9XEF4F64d-jimDvK198haZk/exec?query=" + encodedQuery;
+            String scriptUrl = "https://script.google.com/macros/s/AKfycbyeuvvPJ2jljewXKStVhiOrzvhMPkAEj5xT_cun3IRWc9XEF4F64d-jimDvK198haZk/exec?query="
+                    + encodedQuery;
             System.out.println(scriptUrl);
 
             // Send the request

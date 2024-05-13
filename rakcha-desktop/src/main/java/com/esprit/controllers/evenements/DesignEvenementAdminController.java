@@ -110,14 +110,13 @@ public class DesignEvenementAdminController {
         }
         SearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             search(newValue);
-            //filterCategorieEvenements(newValue.trim());
+            // filterCategorieEvenements(newValue.trim());
 
         });
 
         afficher_evenement();
         initDeleteColumn();
-//        setupSearchFilter();
-
+        // setupSearchFilter();
 
     }
 
@@ -129,7 +128,8 @@ public class DesignEvenementAdminController {
             filteredList.addAll(es.read());
         } else {
             for (Evenement evenement : es.read()) {
-                if (evenement.getNom().toLowerCase().contains(keyword.toLowerCase()) || evenement.getLieu().toLowerCase().contains(keyword.toLowerCase()) ||
+                if (evenement.getNom().toLowerCase().contains(keyword.toLowerCase())
+                        || evenement.getLieu().toLowerCase().contains(keyword.toLowerCase()) ||
                         evenement.getEtat().toLowerCase().contains(keyword.toLowerCase()) ||
                         evenement.getDescription().toLowerCase().contains(keyword.toLowerCase()) ||
                         evenement.getNom_categorieEvenement().toLowerCase().contains(keyword.toLowerCase())) {
@@ -173,27 +173,28 @@ public class DesignEvenementAdminController {
             }
         };
 
-        //tcDeleteE.setCellFactory(cellFactory);
+        // tcDeleteE.setCellFactory(cellFactory);
 
-        tcDeleteE.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Evenement, Button>, ObservableValue<Button>>() {
-            @Override
-            public ObservableValue<Button> call(TableColumn.CellDataFeatures<Evenement, Button> evenementButtonCellDataFeatures) {
-                final Button btnDelete = new Button("Delete");
-                btnDelete.getStyleClass().add("delete-button");
-                btnDelete.setOnAction((ActionEvent event) -> {
-                    //Evenement evenement = getTableView().getItems().get(getIndex());
-                    EvenementService es = new EvenementService();
-                    es.delete(evenementButtonCellDataFeatures.getValue());
-                    // Mise à jour de la TableView après la suppression de la base de données
-                    tvEvenement.setItems(FXCollections.observableArrayList(es.read()));
-                    tvEvenement.refresh();
+        tcDeleteE.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Evenement, Button>, ObservableValue<Button>>() {
+                    @Override
+                    public ObservableValue<Button> call(
+                            TableColumn.CellDataFeatures<Evenement, Button> evenementButtonCellDataFeatures) {
+                        final Button btnDelete = new Button("Delete");
+                        btnDelete.getStyleClass().add("delete-button");
+                        btnDelete.setOnAction((ActionEvent event) -> {
+                            // Evenement evenement = getTableView().getItems().get(getIndex());
+                            EvenementService es = new EvenementService();
+                            es.delete(evenementButtonCellDataFeatures.getValue());
+                            // Mise à jour de la TableView après la suppression de la base de données
+                            tvEvenement.setItems(FXCollections.observableArrayList(es.read()));
+                            tvEvenement.refresh();
+                        });
+                        return new SimpleObjectProperty<Button>(btnDelete);
+                    }
                 });
-                return new SimpleObjectProperty<Button>(btnDelete);
-            }
-        });
-        //tvEvenement.getColumns().add(tcDeleteE);
+        // tvEvenement.getColumns().add(tcDeleteE);
     }
-
 
     @FXML
     private void showAlert(String message) {
@@ -203,7 +204,6 @@ public class DesignEvenementAdminController {
         alert.setContentText(message);
         alert.show();
     }
-
 
     @FXML
     void selectImage(MouseEvent event) {
@@ -232,7 +232,8 @@ public class DesignEvenementAdminController {
             String description = taDescription.getText().trim();
 
             // Vérifier si les champs sont vides
-            if (nomEvenement.isEmpty() || lieu.isEmpty() || nomCategorie.isEmpty() || etat.isEmpty() || description.isEmpty()) {
+            if (nomEvenement.isEmpty() || lieu.isEmpty() || nomCategorie.isEmpty() || etat.isEmpty()
+                    || description.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Typing Error");
                 alert.setContentText("Please fill out the form.");
@@ -264,13 +265,15 @@ public class DesignEvenementAdminController {
                 // Créer l'objet Evenement
                 EvenementService es = new EvenementService();
                 CategorieService cs = new CategorieService();
-                Evenement nouvelEvenement = new Evenement(nomEvenement, Date.valueOf(dateDebut), Date.valueOf(dateFin), lieu, cs.getCategorieByNom(nomCategorie), etat, description, imageBlob);
+                Evenement nouvelEvenement = new Evenement(nomEvenement, Date.valueOf(dateDebut), Date.valueOf(dateFin),
+                        lieu, cs.getCategorieByNom(nomCategorie), etat, description, imageBlob);
                 es.create(nouvelEvenement);
 
                 // Ajouter le nouvel evenement à la liste existante
                 tvEvenement.setItems(FXCollections.observableArrayList(es.read()));
 
-                SmsService.sendSms("+21622757828", "   A new adventure is here ! RAKCHA just added an event, feel free to know the details in the events list !");
+                SmsService.sendSms("+21622757828",
+                        "   A new adventure is here ! RAKCHA just added an event, feel free to know the details in the events list !");
 
                 // Rafraîchir la TableView
                 tvEvenement.refresh();
@@ -293,12 +296,15 @@ public class DesignEvenementAdminController {
 
         ImageView imageView = new ImageView();
 
-        tcCategorieE.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Evenement, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Evenement, String> evenementStringCellDataFeatures) {
-                return new SimpleStringProperty(evenementStringCellDataFeatures.getValue().getNom_categorieEvenement());
-            }
-        });
+        tcCategorieE.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Evenement, String>, ObservableValue<String>>() {
+                    @Override
+                    public ObservableValue<String> call(
+                            TableColumn.CellDataFeatures<Evenement, String> evenementStringCellDataFeatures) {
+                        return new SimpleStringProperty(
+                                evenementStringCellDataFeatures.getValue().getNom_categorieEvenement());
+                    }
+                });
         // Définissez le rendu de la cellule en utilisant le ComboBox
         tcCategorieE.setCellFactory(column -> {
             return new TableCell<Evenement, String>() {
@@ -340,7 +346,6 @@ public class DesignEvenementAdminController {
             modifier_evenement(evenement);
         });
 
-
         tcDDE.setCellValueFactory(cellData -> {
             SimpleObjectProperty<Date> property = new SimpleObjectProperty<>(cellData.getValue().getDateDebut());
             return property;
@@ -360,7 +365,6 @@ public class DesignEvenementAdminController {
                 }
             }
         });
-
 
         tcDFE.setCellValueFactory(cellData -> {
             SimpleObjectProperty<Date> property = new SimpleObjectProperty<>(cellData.getValue().getDateFin());
@@ -419,7 +423,8 @@ public class DesignEvenementAdminController {
                     imageView.setImage(image);
                 } else {
                     // Afficher une image par défaut si le logo est null
-                    Image defaultImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("default_image.png")));
+                    Image defaultImage = new Image(
+                            Objects.requireNonNull(getClass().getResourceAsStream("default_image.png")));
                     imageView.setImage(defaultImage);
                 }
             } catch (SQLException e) {
@@ -462,11 +467,11 @@ public class DesignEvenementAdminController {
             }
         });
 
-
         // Activer l'édition en cliquant sur une ligne
         tvEvenement.setEditable(true);
 
-        // Gérer la modification du texte dans une cellule et le valider en appuyant sur Enter
+        // Gérer la modification du texte dans une cellule et le valider en appuyant sur
+        // Enter
         tvEvenement.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 Evenement selectedEvent = tvEvenement.getSelectionModel().getSelectedItem();
@@ -496,7 +501,8 @@ public class DesignEvenementAdminController {
                     return true;
                 }
 
-                // Compare event name, category, and description of every event with filter text.
+                // Compare event name, category, and description of every event with filter
+                // text.
                 String lowerCaseFilter = newValue.toLowerCase();
 
                 if (evenement.getNom().toLowerCase().contains(lowerCaseFilter)) {
@@ -506,9 +512,10 @@ public class DesignEvenementAdminController {
                 } else if (evenement.getLieu().toLowerCase().contains(lowerCaseFilter)) {
                     return true; // Filter matches description.
                 } else // Filter matches description.
-                    if (evenement.getEtat().toLowerCase().contains(lowerCaseFilter)) {
-                        return true; // Filter matches description.
-                    } else return evenement.getDescription().toLowerCase().contains(lowerCaseFilter);// Does not match.
+                if (evenement.getEtat().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches description.
+                } else
+                    return evenement.getDescription().toLowerCase().contains(lowerCaseFilter);// Does not match.
             });
         });
 
@@ -536,21 +543,25 @@ public class DesignEvenementAdminController {
         Blob img = evenement.getAffiche_event();
         int id = evenement.getId();
 
-        // Enregistrez les modifications dans la base de données en utilisant un service approprié
+        // Enregistrez les modifications dans la base de données en utilisant un service
+        // approprié
         EvenementService es = new EvenementService();
         es.update(evenement);
         if (Objects.equals(evenement.getEtat().toLowerCase(), "postponed")) {
-            SmsService.sendSms("+21622757828", String.format("We're sorry, The event : %s has been postponed to a later date", evenement.getNom()));
+            SmsService.sendSms("+21622757828", String
+                    .format("We're sorry, The event : %s has been postponed to a later date", evenement.getNom()));
 
         } else if (Objects.equals(evenement.getEtat().toLowerCase(), "ongoing")) {
-            SmsService.sendSms("+21622757828", String.format("Hurry up ! The event '%s' has just started, Feel free to Join us as soon as possible ", evenement.getNom()));
+            SmsService.sendSms("+21622757828",
+                    String.format(
+                            "Hurry up ! The event '%s' has just started, Feel free to Join us as soon as possible ",
+                            evenement.getNom()));
 
         }
     }
 
     @FXML
     void gestionCategorie(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListproduitAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignCategorieEventAdmin.fxml"));
@@ -575,7 +586,6 @@ public class DesignEvenementAdminController {
     @FXML
     void gestionSeries(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Serie-view.fxml"));
         Parent root = loader.load();
@@ -598,7 +608,6 @@ public class DesignEvenementAdminController {
 
     @FXML
     void gestionProduits(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignProduitAdmin.fxml"));
@@ -623,7 +632,6 @@ public class DesignEvenementAdminController {
     @FXML
     void gestionFilms(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceFilm.fxml"));
         Parent root = loader.load();
@@ -646,7 +654,6 @@ public class DesignEvenementAdminController {
 
     @FXML
     void gestionCinemas(ActionEvent event) throws IOException {
-
 
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DashboardAdminCinema.fxml"));
@@ -671,7 +678,6 @@ public class DesignEvenementAdminController {
     @FXML
     void gestionEvenements(ActionEvent event) throws IOException {
 
-
         // Charger la nouvelle interface ListevenementAdmin.fxml
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignEvenementAdmin.fxml"));
         Parent root = loader.load();
@@ -691,7 +697,6 @@ public class DesignEvenementAdminController {
         // Fermer la fenêtre actuelle
         currentStage.close();
     }
-
 
     @FXML
     void gestionSponsor(ActionEvent event) throws IOException {
@@ -716,7 +721,6 @@ public class DesignEvenementAdminController {
         currentStage.close();
 
     }
-
 
     @FXML
     void generatePDF() {
@@ -764,7 +768,8 @@ public class DesignEvenementAdminController {
     private void filterCategorieEvenements(String searchText) {
         // Vérifier si le champ de recherche n'est pas vide
         if (!searchText.isEmpty()) {
-            // Filtrer la liste des cinémas pour ne garder que ceux dont le nom contient le texte saisi
+            // Filtrer la liste des cinémas pour ne garder que ceux dont le nom contient le
+            // texte saisi
             ObservableList<Evenement> filteredList = FXCollections.observableArrayList();
             for (Evenement categorie : tvEvenement.getItems()) {
                 if (categorie.getCategorie().getNom_categorie().toLowerCase().contains(searchText.toLowerCase())) {
@@ -779,7 +784,6 @@ public class DesignEvenementAdminController {
             afficher_evenement();
         }
     }
-
 
     private List<Evenement> getAllCategories() {
         EvenementService evenementService = new EvenementService();
@@ -799,7 +803,6 @@ public class DesignEvenementAdminController {
         // Récupérer les adresses uniques depuis la base de données
         List<String> categorie = getCategorie_Evenement();
 
-
         // Créer des VBox pour les adresses
         VBox addressCheckBoxesVBox = new VBox();
         Label addressLabel = new Label("Category");
@@ -813,12 +816,10 @@ public class DesignEvenementAdminController {
         addressCheckBoxesVBox.setLayoutX(25);
         addressCheckBoxesVBox.setLayoutY(70);
 
-
         // Ajouter les VBox dans le FilterAnchor
         FilterAnchor.getChildren().addAll(addressCheckBoxesVBox);
         FilterAnchor.setVisible(true);
     }
-
 
     public List<String> getCategorie_Evenement() {
         // Récupérer tous les cinémas depuis la base de données
@@ -838,7 +839,6 @@ public class DesignEvenementAdminController {
 
         tvEvenement.setOpacity(1);
 
-
         FilterAnchor.setVisible(false);
 
         tvEvenement.setVisible(true);
@@ -857,7 +857,6 @@ public class DesignEvenementAdminController {
         ObservableList<Evenement> filteredList = FXCollections.observableArrayList(filteredCategories);
         tvEvenement.setItems(filteredList);
 
-
     }
 
     private List<String> getSelectedCategories() {
@@ -868,8 +867,4 @@ public class DesignEvenementAdminController {
                 .collect(Collectors.toList());
     }
 
-
 }
-
-
-

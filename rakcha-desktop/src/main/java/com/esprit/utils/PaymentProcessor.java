@@ -13,7 +13,8 @@ public class PaymentProcessor {
 
     private static final String STRIPE_API_KEY = "sk_test_51M9YqwA2tc9VjbDkLO3AcupMJW2tJquATnN2jize1vg7O2VZkqDssPzeSEjFviA1rQ076mRxqbKbhsWVZtwUOkjA00y3GKCfsy";
 
-    public static boolean processPayment(String name, String email, float amount, String cardNumber, int cardExpMonth, int cardExpYear, String cardCvc) {
+    public static boolean processPayment(String name, String email, float amount, String cardNumber, int cardExpMonth,
+            int cardExpYear, String cardCvc) {
         boolean result = false;
         try {
             Stripe.apiKey = STRIPE_API_KEY;

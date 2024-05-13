@@ -57,7 +57,6 @@ public class RatingFilmService implements IService<RatingFilm> {
             e.printStackTrace();
         }
 
-
     }
 
     public double getavergerating(int id_film) {
@@ -82,7 +81,8 @@ public class RatingFilmService implements IService<RatingFilm> {
             PreparedStatement preparedStatement = connection.prepareStatement(req);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next())
-                aver.add(new RatingFilm(new FilmService().getFilm(resultSet.getInt("id_film")), null, (int) resultSet.getDouble("averageRate")));
+                aver.add(new RatingFilm(new FilmService().getFilm(resultSet.getInt("id_film")), null,
+                        (int) resultSet.getDouble("averageRate")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -98,7 +98,8 @@ public class RatingFilmService implements IService<RatingFilm> {
             preparedStatement.setInt(2, id_user);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next())
-                rate = new RatingFilm(new FilmService().getFilm(id_film), (Client) new UserService().getUserById(id_user), resultSet.getInt("rate"));
+                rate = new RatingFilm(new FilmService().getFilm(id_film),
+                        (Client) new UserService().getUserById(id_user), resultSet.getInt("rate"));
         } catch (Exception e) {
             e.printStackTrace();
         }

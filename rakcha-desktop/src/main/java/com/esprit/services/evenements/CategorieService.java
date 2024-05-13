@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CategorieService implements IService<Categorie_evenement> {
 
     private final Connection connection;
@@ -19,7 +18,6 @@ public class CategorieService implements IService<Categorie_evenement> {
     public CategorieService() {
         connection = DataSource.getInstance().getConnection();
     }
-
 
     @Override
     public void create(Categorie_evenement categorie) {
@@ -75,7 +73,8 @@ public class CategorieService implements IService<Categorie_evenement> {
             PreparedStatement pst = connection.prepareStatement(req);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                categories.add(new Categorie_evenement(rs.getInt("ID"), rs.getString("Nom_Categorie"), rs.getString("Description")));
+                categories.add(new Categorie_evenement(rs.getInt("ID"), rs.getString("Nom_Categorie"),
+                        rs.getString("Description")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -94,7 +93,8 @@ public class CategorieService implements IService<Categorie_evenement> {
             pst.setInt(1, categorie_id);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            category = new Categorie_evenement(rs.getInt("ID"), rs.getString("Nom_Categorie"), rs.getString("Description"));
+            category = new Categorie_evenement(rs.getInt("ID"), rs.getString("Nom_Categorie"),
+                    rs.getString("Description"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,7 +113,8 @@ public class CategorieService implements IService<Categorie_evenement> {
             pst.setString(1, categorie_nom);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            category = new Categorie_evenement(rs.getInt("id"), rs.getString("nom_categorie"), rs.getString("description"));
+            category = new Categorie_evenement(rs.getInt("id"), rs.getString("nom_categorie"),
+                    rs.getString("description"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -126,7 +127,8 @@ public class CategorieService implements IService<Categorie_evenement> {
     public List<String> getAllCategoriesNames() {
         List<String> categorieNames = new ArrayList<>();
 
-        // Remplacez "getAllCategories()" par la méthode réelle qui récupère toutes les catégories
+        // Remplacez "getAllCategories()" par la méthode réelle qui récupère toutes les
+        // catégories
         List<Categorie_evenement> categories = read();
 
         // Ajoutez les noms de catégories à la liste

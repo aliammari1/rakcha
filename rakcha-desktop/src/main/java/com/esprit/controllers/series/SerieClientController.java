@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-
 public class SerieClientController {
     private final ObservableList<String> selectedCategories = FXCollections.observableArrayList();
     @FXML
@@ -50,56 +49,57 @@ public class SerieClientController {
     @FXML
     private TextField recherchefld;
     /*
-    public void afficherliste(List<Serie> series){
-        listeSerie.getItems().clear();
-
-        listeSerie.getItems().addAll(series);
-        listeSerie.setCellFactory(param -> new ListCell<Serie>() {
-            @Override
-            protected void updateItem(Serie item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    double imageWidth = 200; // Largeur fixe souhaitée
-                    double imageHeight = 200; // Hauteur fixe souhaitée
-                    String img =item.getImage();
-                    File file = new File(img);
-                    Image image = new Image(file.toURI().toString());
-                    ImageView imageView = new ImageView(image);
-                    imageView.setFitWidth(imageWidth);
-                    imageView.setFitHeight(imageHeight);
-                    imageView.setPreserveRatio(true);
-                    setText("\n   Name :"+item.getNom()+"\n  Summary: "+item.getResume()+ "\n   Director : "+item.getDirecteur()+"\n   Country: " +item.getPays() );
-                    setGraphic(imageView);
-                }
-            }
-        });
-    }
-    */
+     * public void afficherliste(List<Serie> series){
+     * listeSerie.getItems().clear();
+     * 
+     * listeSerie.getItems().addAll(series);
+     * listeSerie.setCellFactory(param -> new ListCell<Serie>() {
+     * 
+     * @Override
+     * protected void updateItem(Serie item, boolean empty) {
+     * super.updateItem(item, empty);
+     * if (empty || item == null) {
+     * setText(null);
+     * } else {
+     * double imageWidth = 200; // Largeur fixe souhaitée
+     * double imageHeight = 200; // Hauteur fixe souhaitée
+     * String img =item.getImage();
+     * File file = new File(img);
+     * Image image = new Image(file.toURI().toString());
+     * ImageView imageView = new ImageView(image);
+     * imageView.setFitWidth(imageWidth);
+     * imageView.setFitHeight(imageHeight);
+     * imageView.setPreserveRatio(true);
+     * setText("\n   Name :"+item.getNom()+"\n  Summary: "+item.getResume()+
+     * "\n   Director : "+item.getDirecteur()+"\n   Country: " +item.getPays() );
+     * setGraphic(imageView);
+     * }
+     * }
+     * });
+     * }
+     */
     /*
-        @Override
-        public void initialize(URL url, ResourceBundle resourceBundle) {
-            IServiceSerieImpl ss = new IServiceSerieImpl();
-
-
-            hboxTop3.setSpacing(20); // Set the spacing between VBox instances
-            hboxTop3.setPadding(new Insets(10));
-            List<Serie> listeTop3 = ss.findMostLiked();
-
-            for (Serie serie : listeTop3) {
-                VBox vbox = createSeriesVBox(serie);
-                hboxTop3.getChildren().add(vbox);
-            }
-
-        }
-
+     * @Override
+     * public void initialize(URL url, ResourceBundle resourceBundle) {
+     * IServiceSerieImpl ss = new IServiceSerieImpl();
+     * 
+     * 
+     * hboxTop3.setSpacing(20); // Set the spacing between VBox instances
+     * hboxTop3.setPadding(new Insets(10));
+     * List<Serie> listeTop3 = ss.findMostLiked();
+     * 
+     * for (Serie serie : listeTop3) {
+     * VBox vbox = createSeriesVBox(serie);
+     * hboxTop3.getChildren().add(vbox);
+     * }
+     * 
+     * }
+     * 
      */
     @FXML
     private HBox hboxTop3;
 
-
-    //FOCTION RECHERCHE
+    // FOCTION RECHERCHE
     public static List<Serie> rechercher(List<Serie> liste, String recherche) {
         List<Serie> resultats = new ArrayList<>();
 
@@ -129,9 +129,9 @@ public class SerieClientController {
 
         // Créez d'abord le Label avec le nom
         Label titleLabel = new Label(serie.getNom());
-        titleLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 18.0px; -fx-font-weight: bold; -fx-text-fill: #FCE19A;");
+        titleLabel.setStyle(
+                "-fx-font-family: 'Helvetica'; -fx-font-size: 18.0px; -fx-font-weight: bold; -fx-text-fill: #FCE19A;");
         titleLabel.setAlignment(Pos.CENTER);
-
 
         // Ensuite, ajoutez l'ImageView avec l'image
         ImageView imageView = new ImageView();
@@ -147,7 +147,7 @@ public class SerieClientController {
         likesLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-text-fill: #FCE19A;");
         likesLabel.setAlignment(Pos.CENTER);
         // Ajoutez d'abord le Label, puis l'ImageView à la liste des enfants
-        //vbox.getChildren().addAll(titleLabel, imageView);
+        // vbox.getChildren().addAll(titleLabel, imageView);
         vbox.getChildren().addAll(imageView, titleLabel, likesLabel);
 
         vbox.setStyle("-fx-background-color: linear-gradient(to top right, #ae2d3c, black);");
@@ -180,8 +180,8 @@ public class SerieClientController {
 
                     // Ajoutez une ImageView pour afficher l'image
                     ImageView imageView = new ImageView();
-                    //imageView.setFitWidth(150);
-                    //imageView.setFitHeight(150);
+                    // imageView.setFitWidth(150);
+                    // imageView.setFitHeight(150);
                     imageView.setFitWidth(150);
                     imageView.setFitWidth(150);
 
@@ -194,26 +194,45 @@ public class SerieClientController {
 
                     // Ajoutez des composants à l'AnchorPane (toutes les informations de la série)
                     Label nameLabel = new Label("Name: " + item.getNom());
-                    nameLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 18.0px; -fx-font-weight: bold; -fx-text-fill: #333333;"); // Couleur de texte sombre
+                    nameLabel.setStyle(
+                            "-fx-font-family: 'Helvetica'; -fx-font-size: 18.0px; -fx-font-weight: bold; -fx-text-fill: #333333;"); // Couleur
+                                                                                                                                    // de
+                                                                                                                                    // texte
+                                                                                                                                    // sombre
                     Label directorLabel = new Label("Director: " + item.getDirecteur());
-                    directorLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur de texte sombre plus claire
+                    directorLabel.setStyle(
+                            "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
+                                                                                                                                      // de
+                                                                                                                                      // texte
+                                                                                                                                      // sombre
+                                                                                                                                      // plus
+                                                                                                                                      // claire
                     Label countryLabel = new Label("Country: " + item.getPays());
-                    countryLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur de texte sombre plus claire
+                    countryLabel.setStyle(
+                            "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
+                                                                                                                                      // de
+                                                                                                                                      // texte
+                                                                                                                                      // sombre
+                                                                                                                                      // plus
+                                                                                                                                      // claire
 
-
-                    //Label summaryLabel = new Label("Summary: " + item.getResume());
-                    //Label directorLabel = new Label("Director: " + item.getDirecteur());
+                    // Label summaryLabel = new Label("Summary: " + item.getResume());
+                    // Label directorLabel = new Label("Director: " + item.getDirecteur());
                     // Label countryLabel = new Label("Country: " + item.getPays());
 
-
-                    Image iconHeart = new Image("pictures/films/heart.png");
+                    Image iconHeart = new Image("img/films/heart.png");
                     ImageView HeartImageView = new ImageView(iconHeart);
                     HeartImageView.setFitWidth(10.0);
                     HeartImageView.setFitHeight(10.0);
 
                     Label likesLabel = new Label("Likes: " + item.getNbLikes());
-                    likesLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur de texte sombre plus claire
-
+                    likesLabel.setStyle(
+                            "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
+                                                                                                                                      // de
+                                                                                                                                      // texte
+                                                                                                                                      // sombre
+                                                                                                                                      // plus
+                                                                                                                                      // claire
 
                     // Ajoutez d'autres composants selon vos besoins
 
@@ -231,53 +250,40 @@ public class SerieClientController {
                     AnchorPane.setTopAnchor(HeartImageView, 105.0);
                     AnchorPane.setLeftAnchor(HeartImageView, 230.0);
 
-
                     // Positionnez d'autres composants selon vos besoins
 
-
-                    /*Button Like + Dislike Declaration */
-                    Image iconImage2 = new Image("pictures/films/dislike.png");
+                    /* Button Like + Dislike Declaration */
+                    Image iconImage2 = new Image("img/films/dislike.png");
                     ImageView iconImageView2 = new ImageView(iconImage2);
                     iconImageView2.setFitWidth(20.0);
                     iconImageView2.setFitHeight(20.0);
                     Button dislikeButton = new Button("", iconImageView2);
 
-
                     // Set the layout constraints for the Button in the AnchorPane
                     AnchorPane.setTopAnchor(dislikeButton, 10.0);
                     AnchorPane.setRightAnchor(dislikeButton, 50.0);
 
-
-                    Image iconImage = new Image("pictures/films/like.png");
+                    Image iconImage = new Image("img/films/like.png");
                     ImageView iconImageView = new ImageView(iconImage);
                     iconImageView.setFitWidth(20.0);
                     iconImageView.setFitHeight(20.0);
                     Button likeButton = new Button("", iconImageView);
 
-
                     // Set the layout constraints for the Button in the AnchorPane
                     AnchorPane.setTopAnchor(likeButton, 10.0);
                     AnchorPane.setRightAnchor(likeButton, 10.0);
 
-
-                    Image iconFav = new Image("pictures/films/favoris.png");
+                    Image iconFav = new Image("img/films/favoris.png");
                     ImageView iconImageViewFav = new ImageView(iconFav);
                     iconImageViewFav.setFitWidth(20.0);
                     iconImageViewFav.setFitHeight(20.0);
                     Button favButton = new Button("", iconImageViewFav);
 
-
                     // Set the layout constraints for the Button in the AnchorPane
                     AnchorPane.setTopAnchor(favButton, 10.0);
                     AnchorPane.setRightAnchor(favButton, 90.0);
 
-
-
-
-
-
-
-                    /*Button Like + Dislike's Functions */
+                    /* Button Like + Dislike's Functions */
                     likeButton.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent event) {
@@ -306,7 +312,6 @@ public class SerieClientController {
                         }
 
                     });
-
 
                     dislikeButton.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
@@ -361,13 +366,8 @@ public class SerieClientController {
 
                     });
 
-
-
-
-
-
-                    /*Button Watch Episode Declaration */
-                    Image iconImageWatch = new Image("pictures/films/watch.png");
+                    /* Button Watch Episode Declaration */
+                    Image iconImageWatch = new Image("img/films/watch.png");
                     ImageView iconImageViewWatch = new ImageView(iconImageWatch);
                     iconImageViewWatch.setFitWidth(10.0);
                     iconImageViewWatch.setFitHeight(10.0);
@@ -377,18 +377,26 @@ public class SerieClientController {
                             "-fx-text-fill: #FCE19A; " +
                             "-fx-font-size: 16px; " +
                             "-fx-font-family: 'Arial Rounded MT Bold'; " +
-                            "-fx-cursor: hand;");                    // Set the layout constraints for the Watch Button in the AnchorPane
+                            "-fx-cursor: hand;"); // Set the layout constraints for the Watch Button in the AnchorPane
                     AnchorPane.setTopAnchor(watchButton, 150.0);
                     AnchorPane.setLeftAnchor(watchButton, 180.0);
                     Label dislikesLabel = new Label("DisLikes: " + item.getNbDislikes());
-                    dislikesLabel.setStyle("-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur de texte sombre plus claire
+                    dislikesLabel.setStyle(
+                            "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
+                                                                                                                                      // de
+                                                                                                                                      // texte
+                                                                                                                                      // sombre
+                                                                                                                                      // plus
+                                                                                                                                      // claire
                     AnchorPane.setTopAnchor(dislikesLabel, 120.0);
                     AnchorPane.setLeftAnchor(dislikesLabel, 180.0);
 
-
                     // Ajoutez les composants à l'AnchorPane
-                    //anchorPane.getChildren().addAll(imageView, nameLabel, summaryLabel, directorLabel, countryLabel, likesLabel, HeartImageView, likeButton, dislikeButton);
-                    anchorPane.getChildren().addAll(imageView, nameLabel, directorLabel, countryLabel, likesLabel, HeartImageView, likeButton, dislikeButton, favButton, watchButton, dislikesLabel);
+                    // anchorPane.getChildren().addAll(imageView, nameLabel, summaryLabel,
+                    // directorLabel, countryLabel, likesLabel, HeartImageView, likeButton,
+                    // dislikeButton);
+                    anchorPane.getChildren().addAll(imageView, nameLabel, directorLabel, countryLabel, likesLabel,
+                            HeartImageView, likeButton, dislikeButton, favButton, watchButton, dislikesLabel);
                     // Ajoutez d'autres composants selon vos besoins
 
                     // Définissez l'AnchorPane en tant que graphique pour la cellule
@@ -416,7 +424,6 @@ public class SerieClientController {
                         setGraphic(vBoxWithSeparator);
                     });
 
-
                 }
             }
         });
@@ -438,7 +445,6 @@ public class SerieClientController {
             throw new RuntimeException(e);
         }
 
-
     }
 
     @FXML
@@ -457,8 +463,7 @@ public class SerieClientController {
         CamboxCategorie.setOnAction(event -> {
             String selectedCategorie = CamboxCategorie.getValue();
             if (!selectedCategories.contains(selectedCategorie)) {
-                for (Categorie c : categorieList
-                ) {
+                for (Categorie c : categorieList) {
                     if (c.getNom() == selectedCategorie) {
 
                         try {
@@ -474,13 +479,12 @@ public class SerieClientController {
 
         });
 
-        ///fonction recherche sur textfiled
+        /// fonction recherche sur textfiled
         recherchefld.textProperty().addListener((observable, oldValue, newValue) -> {
             List<Serie> series;
             series = rechercher(listerecherche, newValue);
             afficherliste(series);
         });
-
 
         listeSerie.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.intValue() >= 0) {
@@ -500,11 +504,9 @@ public class SerieClientController {
                 }
             }
         });
-
-
     }
 
-    ///gestion de menu
+    /// gestion de menu
     @FXML
     void Ocategories(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/CategorieClient.fxml")));
@@ -548,7 +550,6 @@ public class SerieClientController {
             hboxTop3.getChildren().add(vbox);
         }
     }
-
 
     // Function to display a list of series in the JavaFX ListView
 

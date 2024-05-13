@@ -35,7 +35,8 @@ public class FilmService implements IService<Film> {
     public static String getIMDBUrlbyNom(String query) {
         try {
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
-            String scriptUrl = "https://script.google.com/macros/s/AKfycbyeuvvPJ2jljewXKStVhiOrzvhMPkAEj5xT_cun3IRWc9XEF4F64d-jimDvK198haZk/exec?query=" + encodedQuery;
+            String scriptUrl = "https://script.google.com/macros/s/AKfycbyeuvvPJ2jljewXKStVhiOrzvhMPkAEj5xT_cun3IRWc9XEF4F64d-jimDvK198haZk/exec?query="
+                    + encodedQuery;
             System.out.println(scriptUrl);
 
             // Send the request
@@ -119,9 +120,10 @@ public class FilmService implements IService<Film> {
             ResultSet rs = pst.executeQuery();
             // int i = 0;
             while (rs.next()) {
-                filmArrayList.add(new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"), rs.getString("description"), rs.getInt("annederalisation")));
-                //     System.out.println(filmArrayList.get(i));
-                //       i++;
+                filmArrayList.add(new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"),
+                        rs.getTime("duree"), rs.getString("description"), rs.getInt("annederalisation")));
+                // System.out.println(filmArrayList.get(i));
+                // i++;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -138,9 +140,10 @@ public class FilmService implements IService<Film> {
             ResultSet rs = pst.executeQuery();
             // int i = 0;
             while (rs.next()) {
-                filmArrayList.add(new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"), rs.getString("description"), rs.getInt("annederalisation")));
-                //     System.out.println(filmArrayList.get(i));
-                //       i++;
+                filmArrayList.add(new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"),
+                        rs.getTime("duree"), rs.getString("description"), rs.getInt("annederalisation")));
+                // System.out.println(filmArrayList.get(i));
+                // i++;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -159,7 +162,8 @@ public class FilmService implements IService<Film> {
             pst.setInt(1, id);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            film = new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"), rs.getString("description"), rs.getInt("annederalisation"));
+            film = new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"),
+                    rs.getString("description"), rs.getInt("annederalisation"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -186,7 +190,6 @@ public class FilmService implements IService<Film> {
             throw new RuntimeException(e);
         }
 
-
     }
 
     @Override
@@ -211,7 +214,8 @@ public class FilmService implements IService<Film> {
             pst.setInt(1, film_id);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            film = new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"), rs.getString("description"), rs.getInt("annederalisation"));
+            film = new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"),
+                    rs.getString("description"), rs.getInt("annederalisation"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -230,7 +234,8 @@ public class FilmService implements IService<Film> {
             pst.setString(1, nom_film);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            film = new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"), rs.getString("description"), rs.getInt("annederalisation"));
+            film = new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"),
+                    rs.getString("description"), rs.getInt("annederalisation"));
 
         } catch (SQLException e) {
             e.printStackTrace();

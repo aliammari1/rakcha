@@ -21,7 +21,6 @@ public class FeedbackEvenementService implements IService<Feedback> {
         connection = DataSource.getInstance().getConnection();
     }
 
-
     @Override
     public void create(Feedback feedback) {
         String req = "INSERT into feedback_evenement(id_evenement,id_user, commentaire) values (?, ?, ?);";
@@ -81,7 +80,8 @@ public class FeedbackEvenementService implements IService<Feedback> {
             UserService us = new UserService();
             EvenementService es = new EvenementService();
             while (rs.next()) {
-                feedbacks.add(new Feedback(rs.getInt("ID"), es.getEvenement(rs.getInt("id_evenement")), (Client) new UserService().getUserById(rs.getInt("id_user")), rs.getString("Commentaire")));
+                feedbacks.add(new Feedback(rs.getInt("ID"), es.getEvenement(rs.getInt("id_evenement")),
+                        (Client) new UserService().getUserById(rs.getInt("id_user")), rs.getString("Commentaire")));
 
             }
         } catch (SQLException e) {

@@ -1,6 +1,5 @@
 package com.esprit.controllers.series;
 
-
 import com.esprit.controllers.ClientSideBarController;
 import com.esprit.models.series.Categorie;
 import com.esprit.models.series.Feedback;
@@ -71,7 +70,6 @@ public class SerieController {
     @FXML
     private TableView<SerieDto> tableView;
 
-
     private void ref() {
         tableView.getItems().clear();
         tableView.getColumns().clear();
@@ -85,8 +83,7 @@ public class SerieController {
         IServiceSerieImpl iServiceSerie = new IServiceSerieImpl();
         try {
             categorieList = categorieserv.recuperer();
-            for (Categorie c : categorieList
-            ) {
+            for (Categorie c : categorieList) {
                 categorieF.getItems().add(c.getNom());
             }
         } catch (SQLException e) {
@@ -95,7 +92,7 @@ public class SerieController {
         ///// affichage du tableau
         IServiceSerieImpl serviceSerie = new IServiceSerieImpl();
         // TableColumn<SerieDto, Integer> idCol = new TableColumn<>("ID");
-        //idCol.setCellValueFactory(new PropertyValueFactory<>("idserie"));
+        // idCol.setCellValueFactory(new PropertyValueFactory<>("idserie"));
 
         TableColumn<SerieDto, String> nomCol = new TableColumn<>("Name");
         nomCol.setCellValueFactory(new PropertyValueFactory<>("nom"));
@@ -169,9 +166,10 @@ public class SerieController {
             }
         });
 
-
-        //tableView.getColumns().addAll(idCol,nomCol, resumeCol,directeurCol,paysCol,categorieCol,supprimerCol,modifierCol);
-        tableView.getColumns().addAll(nomCol, resumeCol, directeurCol, paysCol, categorieCol, supprimerCol, modifierCol);
+        // tableView.getColumns().addAll(idCol,nomCol,
+        // resumeCol,directeurCol,paysCol,categorieCol,supprimerCol,modifierCol);
+        tableView.getColumns().addAll(nomCol, resumeCol, directeurCol, paysCol, categorieCol, supprimerCol,
+                modifierCol);
 
         // Récupérer les catégories et les ajouter à la TableView
         try {
@@ -181,7 +179,6 @@ public class SerieController {
             e.printStackTrace();
         }
     }
-
 
     @FXML
     private void exportPdf(ActionEvent event) {
@@ -234,7 +231,6 @@ public class SerieController {
                 title.setSpacingBefore(50); // Ajouter une marge avant le titre pour l'éloigner de l'image
                 title.setSpacingAfter(20);
                 document.add(title);
-
 
                 PdfPTable table = new PdfPTable(3);
                 table.setWidthPercentage(100);
@@ -298,7 +294,6 @@ public class SerieController {
                     table.addCell(cellR3);
                 }
 
-
                 table.setSpacingBefore(20);
                 document.add(table);
                 document.close();
@@ -310,7 +305,6 @@ public class SerieController {
         }
     }
 
-
     private void modifierSerie(SerieDto serieDto) {
         IServiceSerieImpl iServiceSerie = new IServiceSerieImpl();
         Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -321,8 +315,7 @@ public class SerieController {
         TextField directeurFild = new TextField(serieDto.getDirecteur());
         TextField paysFild = new TextField(serieDto.getPays());
         ComboBox<String> categorieComboBox = new ComboBox<>();
-        for (Categorie c : categorieList
-        ) {
+        for (Categorie c : categorieList) {
             categorieComboBox.getItems().add(c.getNom());
         }
         categorieComboBox.setValue(serieDto.getNomCategories());
@@ -334,8 +327,10 @@ public class SerieController {
             });
         }
 
-
-        dialog.getDialogPane().setContent(new VBox(8, new Label("Name:"), nomFild, new Label("Summary:"), resumeFild, new Label("Director :"), directeurFild, new Label("Country :"), paysFild, new Label("Add picture :"), Ajouterimage, categorieComboBox));
+        dialog.getDialogPane()
+                .setContent(new VBox(8, new Label("Name:"), nomFild, new Label("Summary:"), resumeFild,
+                        new Label("Director :"), directeurFild, new Label("Country :"), paysFild,
+                        new Label("Add picture :"), Ajouterimage, categorieComboBox));
 
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -355,8 +350,7 @@ public class SerieController {
             serie.setDirecteur(directeurFild.getText());
             serie.setPays(paysFild.getText());
             serie.setImage(imgpath);
-            for (Categorie c : categorieList
-            ) {
+            for (Categorie c : categorieList) {
                 if (c.getNom() == categorieComboBox.getValue()) {
                     serie.setIdcategorie(c.getIdcategorie());
                 }
@@ -391,8 +385,8 @@ public class SerieController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose an Image");
         // Set file extension filter to only allow image files
-        FileChooser.ExtensionFilter imageFilter =
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif");
+        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg",
+                "*.gif");
         fileChooser.getExtensionFilters().add(imageFilter);
 
         File selectedFile = fileChooser.showOpenDialog(new Stage());
@@ -483,7 +477,7 @@ public class SerieController {
         }
     }
 
-//////////////////////
+    //////////////////////
 
     public void sendEmail(String recipientEmail, String subject, String message) {
         try {
@@ -493,7 +487,7 @@ public class SerieController {
             email.setSmtpPort(587); // Port SMTP
             email.setStartTLSEnabled(true); // Utiliser STARTTLS
             email.setAuthenticator(new DefaultAuthenticator("nourhene.ftaymia@esprit.tn", "211JFT2451"));
-            //email.setSSLOnConnect(true); // Utiliser SSL
+            // email.setSSLOnConnect(true); // Utiliser SSL
             email.setFrom("nourhene.ftaymia@esprit.tn");
             email.setSubject(subject);
             email.setMsg(message);
@@ -505,7 +499,6 @@ public class SerieController {
             e.printStackTrace();
         }
     }
-
 
     @FXML
     void ajouterSerie(ActionEvent event) {
@@ -525,8 +518,7 @@ public class SerieController {
                 serie.setPays(paysF.getText());
                 serie.setImage(imgpath);
 
-                for (Categorie c : categorieList
-                ) {
+                for (Categorie c : categorieList) {
                     if (c.getNom() == categorieF.getValue()) {
                         serie.setIdcategorie(c.getIdcategorie());
                     }
@@ -540,7 +532,8 @@ public class SerieController {
                 resumecheck.setText("");
                 imagechek.setText("");
                 // Envoyer un e-mail de notification
-                String recipientEmail = "nourhene.ftaymia@esprit.tn"; // Remplacez par l'adresse e-mail réelle du destinataire
+                String recipientEmail = "nourhene.ftaymia@esprit.tn"; // Remplacez par l'adresse e-mail réelle du
+                                                                      // destinataire
                 String subject = "Exciting News! New Series Alert 🚀";
                 String message = "Dear Viewer,\n\nWe are thrilled to announce a new series on our platform!\n\n" +
                         "Title: " + serie.getNom() + "\n" +
@@ -552,32 +545,31 @@ public class SerieController {
                 sendEmail(recipientEmail, newSerieTitle, message);
                 ref();
 
-
             } catch (Exception e) {
                 showAlert("Error", "An error occurred while saving the serie: " + e.getMessage());
                 e.printStackTrace();
 
             }
         }
-///
+        ///
         /*
-        private void showStatistics() {
-            IServiceSerieImpl serviceSerie = new IServiceSerieImpl();
-
-            try {
-                Map<String, Long> statistics = serviceSerie.getSeriesStatisticsByCategory();
-                // Handle or display the statistics as needed
-                System.out.println(statistics);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                // Handle the exception
-            }
-        }
-        */
+         * private void showStatistics() {
+         * IServiceSerieImpl serviceSerie = new IServiceSerieImpl();
+         * 
+         * try {
+         * Map<String, Long> statistics = serviceSerie.getSeriesStatisticsByCategory();
+         * // Handle or display the statistics as needed
+         * System.out.println(statistics);
+         * } catch (SQLException e) {
+         * e.printStackTrace();
+         * // Handle the exception
+         * }
+         * }
+         */
         ///
     }
 
-    //Gestion du menu
+    // Gestion du menu
     @FXML
     void Oepisodes(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Episode-view.fxml")));
@@ -623,16 +615,10 @@ public class SerieController {
     public void showseries(ActionEvent actionEvent) {
     }
 }
-   /*
-    @FXML
-    public void showStatistics(ActionEvent actionEvent) {
-        statstiqueController.handleShowPieChart();
-
-    }
-    */
-
-
-
-
-
-
+/*
+ * @FXML
+ * public void showStatistics(ActionEvent actionEvent) {
+ * statstiqueController.handleShowPieChart();
+ * 
+ * }
+ */

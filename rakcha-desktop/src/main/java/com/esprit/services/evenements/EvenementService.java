@@ -85,7 +85,9 @@ public class EvenementService implements IService<Evenement> {
             ResultSet rs = pst.executeQuery();
             CategorieService cs = new CategorieService();
             while (rs.next()) {
-                evenements.add(new Evenement(rs.getInt("ID"), rs.getString("nom"), rs.getDate("dateDebut"), rs.getDate("dateFin"), rs.getString("lieu"), cs.getCategorie(rs.getInt("id_categorie")), rs.getString("etat"), rs.getString("description"), rs.getBlob("affiche_event")));
+                evenements.add(new Evenement(rs.getInt("ID"), rs.getString("nom"), rs.getDate("dateDebut"),
+                        rs.getDate("dateFin"), rs.getString("lieu"), cs.getCategorie(rs.getInt("id_categorie")),
+                        rs.getString("etat"), rs.getString("description"), rs.getBlob("affiche_event")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,7 +107,9 @@ public class EvenementService implements IService<Evenement> {
             ResultSet rs = pst.executeQuery();
             rs.next();
             CategorieService cs = new CategorieService();
-            evenement = new Evenement((rs.getInt("ID")), rs.getString("nom"), rs.getDate("dateDebut"), rs.getDate("dateFin"), rs.getString("lieu"), cs.getCategorie(rs.getInt("id_categorie")), rs.getString("etat"), rs.getString("description"), rs.getBlob("affiche_event"));
+            evenement = new Evenement((rs.getInt("ID")), rs.getString("nom"), rs.getDate("dateDebut"),
+                    rs.getDate("dateFin"), rs.getString("lieu"), cs.getCategorie(rs.getInt("id_categorie")),
+                    rs.getString("etat"), rs.getString("description"), rs.getBlob("affiche_event"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -125,7 +129,9 @@ public class EvenementService implements IService<Evenement> {
             ResultSet rs = pst.executeQuery();
             rs.next();
             CategorieService cs = new CategorieService();
-            evenement = new Evenement((rs.getInt("ID")), rs.getString("nom"), rs.getDate("dateDebut"), rs.getDate("dateFin"), rs.getString("lieu"), cs.getCategorie(rs.getInt("id_categorie")), rs.getString("etat"), rs.getString("description"), rs.getBlob("affiche_event"));
+            evenement = new Evenement((rs.getInt("ID")), rs.getString("nom"), rs.getDate("dateDebut"),
+                    rs.getDate("dateFin"), rs.getString("lieu"), cs.getCategorie(rs.getInt("id_categorie")),
+                    rs.getString("etat"), rs.getString("description"), rs.getBlob("affiche_event"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -133,7 +139,6 @@ public class EvenementService implements IService<Evenement> {
 
         return evenement;
     }
-
 
     public Evenement getEvenementById(int eventId) {
         Evenement evenement = null;
@@ -147,7 +152,9 @@ public class EvenementService implements IService<Evenement> {
             if (rs.next()) {
                 com.esprit.services.evenements.CategorieService cs = new com.esprit.services.evenements.CategorieService();
 
-                evenement = new Evenement((rs.getInt("ID")), rs.getString("nom"), rs.getDate("dateDebut"), rs.getDate("dateFin"), rs.getString("lieu"), cs.getCategorie(rs.getInt("id_categorie")), rs.getString("etat"), rs.getString("description"), rs.getBlob("affiche_event"));
+                evenement = new Evenement((rs.getInt("ID")), rs.getString("nom"), rs.getDate("dateDebut"),
+                        rs.getDate("dateFin"), rs.getString("lieu"), cs.getCategorie(rs.getInt("id_categorie")),
+                        rs.getString("etat"), rs.getString("description"), rs.getBlob("affiche_event"));
 
             }
 
@@ -157,7 +164,6 @@ public class EvenementService implements IService<Evenement> {
 
         return evenement;
     }
-
 
     public void generateEventPDF() {
         EventPDF eventPDF = new EventPDF();
@@ -180,6 +186,5 @@ public class EvenementService implements IService<Evenement> {
         }
         return null;
     }
-
 
 }
