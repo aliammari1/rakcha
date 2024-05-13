@@ -34,8 +34,8 @@ public class AdminSideBarController implements Initializable {
     void switchToEvent(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignEvenementAdmin.fxml"));
-            //    DesignCategorieAdminController seanceController = loader.getController();
-            //seanceController.setData(admin);
+            // DesignCategorieAdminController seanceController = loader.getController();
+            // seanceController.setData(admin);
             Parent root = loader.load();
             Stage stage = (Stage) eventButton.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -76,7 +76,7 @@ public class AdminSideBarController implements Initializable {
     void switchToSeries(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Categorie-view.fxml"));
-            //SerieClientController seanceController = loader.getController();
+            // SerieClientController seanceController = loader.getController();
             // seanceController.setData(admin);
             Parent root = loader.load();
             Stage stage = (Stage) serieButton.getScene().getWindow();
@@ -86,13 +86,10 @@ public class AdminSideBarController implements Initializable {
         }
     }
 
-
     @FXML
     void switchtcinema(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DashboardAdminCinema.fxml"));
-            //DashboardAdminController seanceController = loader.getController();
-            //  seanceController.setData(admin);
             Parent root = loader.load();
             Stage stage = (Stage) cinemaButton.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -103,6 +100,5 @@ public class AdminSideBarController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        webView.getEngine().load("https://particles.js.org/samples/presets/fire.html");
     }
 }

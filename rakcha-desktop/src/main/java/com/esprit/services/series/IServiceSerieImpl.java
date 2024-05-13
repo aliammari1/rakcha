@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class IServiceSerieImpl implements IServiceSerie<Serie> {
     private final Connection connection;
-    private List<Serie> seriesList;  // Assurez-vous d'initialiser cette liste
+    private List<Serie> seriesList; // Assurez-vous d'initialiser cette liste
 
     public IServiceSerieImpl() {
         connection = mydatabase.getInstance().getConnection();
@@ -35,7 +35,6 @@ public class IServiceSerieImpl implements IServiceSerie<Serie> {
         ps.executeUpdate();
         ps.close();
     }
-
 
     @Override
     public void modifier(Serie serie) throws SQLException {
@@ -213,8 +212,7 @@ public class IServiceSerieImpl implements IServiceSerie<Serie> {
         }
         return series;
     }
-///
-
+    ///
 
     public Map<Serie, Integer> getLikesStatistics() {
         Map<Serie, Integer> likesStatistics = new HashMap<>();
@@ -236,7 +234,6 @@ public class IServiceSerieImpl implements IServiceSerie<Serie> {
 
         return likesStatistics;
     }
-
 
     public Serie getByIdSerie(int serieId) throws SQLException {
         Serie serie = null;
@@ -264,8 +261,4 @@ public class IServiceSerieImpl implements IServiceSerie<Serie> {
         return serie;
     }
 
-
 }
-
-
-

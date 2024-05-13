@@ -29,13 +29,11 @@ public class FilmcomentService implements IService<Filmcoment> {
             pst.setInt(2, filmcoment.getUser_id().getId());
             pst.setInt(3, filmcoment.getFilm_id().getId());
 
-
             pst.executeUpdate();
             System.out.println("commentaire ajoutée !");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
 
     }
 
@@ -54,7 +52,6 @@ public class FilmcomentService implements IService<Filmcoment> {
                         rs.getString("comment"),
                         (Client) new UserService().getUserById(rs.getInt("user_id")),
                         new FilmService().getFilm(rs.getInt("film_id"))
-
 
                 ));
             }

@@ -38,7 +38,6 @@ public class CinemaService implements IService<Cinema> {
         }
     }
 
-
     public void update(Cinema cinema) {
         String req = "UPDATE cinema set nom = ?, adresse = ?, logo = ?, Statut = ? where id_cinema = ?;";
         try {
@@ -75,7 +74,9 @@ public class CinemaService implements IService<Cinema> {
             PreparedStatement pst = connection.prepareStatement(req);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                cinemas.add(new Cinema(rs.getInt("id_cinema"), rs.getString("nom"), rs.getString("adresse"), (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")), rs.getString("logo"), rs.getString("Statut")));
+                cinemas.add(new Cinema(rs.getInt("id_cinema"), rs.getString("nom"), rs.getString("adresse"),
+                        (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")),
+                        rs.getString("logo"), rs.getString("Statut")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -92,7 +93,9 @@ public class CinemaService implements IService<Cinema> {
             PreparedStatement pst = connection.prepareStatement(req);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                cinemas.add(new Cinema(rs.getInt("id_cinema"), rs.getString("nom"), rs.getString("adresse"), (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")), rs.getString("logo"), rs.getString("Statut")));
+                cinemas.add(new Cinema(rs.getInt("id_cinema"), rs.getString("nom"), rs.getString("adresse"),
+                        (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")),
+                        rs.getString("logo"), rs.getString("Statut")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,7 +103,6 @@ public class CinemaService implements IService<Cinema> {
 
         return cinemas;
     }
-
 
     public Cinema getCinema(int cinema_id) {
 
@@ -112,7 +114,9 @@ public class CinemaService implements IService<Cinema> {
             pst.setInt(1, cinema_id);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            cinema = new Cinema(rs.getInt("id_cinema"), rs.getString("nom"), rs.getString("adresse"), (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")), rs.getString("logo"), rs.getString("Statut"));
+            cinema = new Cinema(rs.getInt("id_cinema"), rs.getString("nom"), rs.getString("adresse"),
+                    (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")),
+                    rs.getString("logo"), rs.getString("Statut"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -131,7 +135,9 @@ public class CinemaService implements IService<Cinema> {
             pst.setString(1, nom_cinema);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            cinema = new Cinema(rs.getInt("id_cinema"), rs.getString("nom"), rs.getString("adresse"), (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")), rs.getString("logo"), rs.getString("Statut"));
+            cinema = new Cinema(rs.getInt("id_cinema"), rs.getString("nom"), rs.getString("adresse"),
+                    (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")),
+                    rs.getString("logo"), rs.getString("Statut"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -139,6 +145,5 @@ public class CinemaService implements IService<Cinema> {
 
         return cinema;
     }
-
 
 }

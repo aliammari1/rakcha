@@ -10,12 +10,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Date;
 
 public class ProfileController {
+    @FXML
+    public AnchorPane leftPane;
     User user;
     @FXML
     private TextField adresseTextField;
@@ -33,23 +37,35 @@ public class ProfileController {
     private TextField phoneNumberTextField;
     @FXML
     private ImageView photoDeProfilImageView;
-
+    @FXML
+    private Circle imageCircle;
 
     @FXML
     public void initialize() {
     }
 
+    @FXML
     public void setData(User user) {
         this.user = user;
-        firstNameTextField.setText(user.getFirstName());
-        lastNameTextField.setText(user.getLastName());
-        adresseTextField.setText(user.getAddress());
-        emailTextField.setText(user.getEmail());
-        phoneNumberTextField.setText(String.valueOf(user.getPhoneNumber()));
-        dateDeNaissanceDatePicker.setValue(user.getBirthDate().toLocalDate());
-        passwordTextField.setText(user.getPassword());
+        if (user.getFirstName() != null) {
+            firstNameTextField.setText(user.getFirstName());
+        }
+        if (user.getLastName() != null) {
+            lastNameTextField.setText(user.getLastName());
+        }
+        if (user.getAddress() != null) {
+            adresseTextField.setText(user.getAddress());
+        }
+        if (user.getEmail() != null) {
+            emailTextField.setText(user.getEmail());
+        }
+        if (user.getPhoneNumber() != 0) {
+            phoneNumberTextField.setText(String.valueOf(user.getPhoneNumber()));
+        }
+        if (user.getBirthDate() != null) {
+            dateDeNaissanceDatePicker.setValue(user.getBirthDate().toLocalDate());
+        }
     }
-
 
     @FXML
     public void deleteAccount(ActionEvent event) throws IOException {
@@ -84,5 +100,10 @@ public class ProfileController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/SignUp.fxml"));
         Parent root = loader.load();
         stage.setScene(new Scene(root));
+    }
+
+    public void setLeftPane(AnchorPane leftPane) {
+        this.leftPane.getChildren().clear();
+        this.leftPane.getChildren().add(leftPane);
     }
 }

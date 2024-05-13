@@ -12,13 +12,11 @@ import java.util.List;
 
 public class CommentaireService implements IService<Commentaire> {
 
-
     private final Connection connection;
 
     public CommentaireService() {
         connection = DataSource.getInstance().getConnection();
     }
-
 
     @Override
     public void create(Commentaire commentaire) {
@@ -37,7 +35,6 @@ public class CommentaireService implements IService<Commentaire> {
         }
     }
 
-
     @Override
     public List<Commentaire> read() {
         List<Commentaire> commentaire = new ArrayList<>();
@@ -47,10 +44,11 @@ public class CommentaireService implements IService<Commentaire> {
             PreparedStatement pst = connection.prepareStatement(req);
             ProduitService produitsevice = new ProduitService();
 
-
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                commentaire.add(new Commentaire(rs.getInt("idcommentaire"), (Client) new UserService().getUserById(rs.getInt("idClient")), rs.getString("commentaire"), produitsevice.getProduitById(rs.getInt("idProduit")), rs.getDate("datecommantaire")));
+                commentaire.add(new Commentaire(rs.getInt("idcommentaire"),
+                        (Client) new UserService().getUserById(rs.getInt("idClient")), rs.getString("commentaire"),
+                        produitsevice.getProduitById(rs.getInt("idProduit")), rs.getDate("datecommantaire")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -62,7 +60,6 @@ public class CommentaireService implements IService<Commentaire> {
     @Override
     public void update(Commentaire commentaire) {
 
-
     }
 
     @Override
@@ -70,16 +67,13 @@ public class CommentaireService implements IService<Commentaire> {
 
     }
 
-
     public Commentaire readByClientId(int clientId) {
         Commentaire commentaire = null;
-
 
         String req = "SELECT * FROM commentaireproduit WHERE idClient = ? LIMIT 1";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setInt(1, clientId);
-
 
             ResultSet rs = pst.executeQuery();
 
@@ -90,8 +84,7 @@ public class CommentaireService implements IService<Commentaire> {
                         (Client) new UserService().getUserById(rs.getInt("idClient")),
                         rs.getString("commentaire"),
                         produitsevice.getProduitById(rs.getInt("idProduit")),
-                        rs.getDate("datecommantaire")
-                );
+                        rs.getDate("datecommantaire"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,8 +110,7 @@ public class CommentaireService implements IService<Commentaire> {
                         (Client) new UserService().getUserById(rs.getInt("idClient")),
                         rs.getString("commentaire"),
                         produitService.getProduitById(rs.getInt("idProduit")),
-                        rs.getDate("datecommantaire")
-                );
+                        rs.getDate("datecommantaire"));
                 commentaires.add(commentaire);
             }
         } catch (SQLException e) {

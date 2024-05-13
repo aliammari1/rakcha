@@ -99,7 +99,7 @@ public class DashboardAdminController {
                         acceptButton.setOnAction(event -> {
                             Cinema cinema = getTableView().getItems().get(getIndex());
                             // Mettre à jour le statut du cinéma en "Acceptée"
-                            cinema.setStatut("Acceptée");
+                            cinema.setStatut("Accepted");
                             // Mettre à jour le statut dans la base de données
                             CinemaService cinemaService = new CinemaService();
                             cinemaService.update(cinema);
@@ -128,7 +128,7 @@ public class DashboardAdminController {
                         } else {
                             // Récupérer le cinéma associé à cette ligne
                             Cinema cinema = getTableView().getItems().get(getIndex());
-                            if (cinema.getStatut().equals("Acceptée")) {
+                            if (cinema.getStatut().equals("Accepted")) {
                                 // Afficher le bouton "Show Movies" si le statut est "Acceptée"
                                 setGraphic(showMoviesButton);
                             } else {
@@ -250,8 +250,8 @@ public class DashboardAdminController {
     public List<String> getCinemaStatuses() {
         // Créer une liste de statuts pré-définis
         List<String> statuses = new ArrayList<>();
-        statuses.add("En_Attente");
-        statuses.add("Acceptée");
+        statuses.add("Pending");
+        statuses.add("Accepted");
 
         return statuses;
     }

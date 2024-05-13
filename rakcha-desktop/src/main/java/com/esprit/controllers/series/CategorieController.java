@@ -34,15 +34,14 @@ public class CategorieController {
     @FXML
     private TableView<Categorie> tableView;
 
-
     private void ref() {
         tableView.getItems().clear();
         tableView.getColumns().clear();
         nomF.setText("");
         descreptionF.setText("");
-        //affichege tableau
+        // affichege tableau
         IServiceCategorieImpl categorieserv = new IServiceCategorieImpl();
-        //TableColumn<Categorie, Integer> idCol = new TableColumn<>("ID");
+        // TableColumn<Categorie, Integer> idCol = new TableColumn<>("ID");
         // idCol.setCellValueFactory(new PropertyValueFactory<>("idcategorie"));
 
         TableColumn<Categorie, String> nomCol = new TableColumn<>("Name");
@@ -71,7 +70,6 @@ public class CategorieController {
                     }
                 });
             }
-
 
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -110,7 +108,8 @@ public class CategorieController {
             }
         });
 
-        // tableView.getColumns().addAll(idCol,nomCol, descriptionCol,modifierCol, supprimerCol);
+        // tableView.getColumns().addAll(idCol,nomCol, descriptionCol,modifierCol,
+        // supprimerCol);
         tableView.getColumns().addAll(nomCol, descriptionCol, modifierCol, supprimerCol);
 
         try {
@@ -137,8 +136,8 @@ public class CategorieController {
         TextField nomFild = new TextField(categorie.getNom());
         TextField desqFild = new TextField(String.valueOf(categorie.getDescription()));
 
-
-        dialog.getDialogPane().setContent(new VBox(8, new Label("Name:"), nomFild, new Label("Description:"), desqFild));
+        dialog.getDialogPane()
+                .setContent(new VBox(8, new Label("Name:"), nomFild, new Label("Description:"), desqFild));
 
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -214,7 +213,7 @@ public class CategorieController {
         }
     }
 
-    ///Gestion du menu
+    /// Gestion du menu
     @FXML
     void Ocategories(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Categorie-view.fxml")));
@@ -246,7 +245,6 @@ public class CategorieController {
     public void showStatistics(ActionEvent actionEvent) {
         if (actionEvent != null) {
 
-
             // Logique pour basculer vers la vue des statistiques
             // Vous pouvez utiliser un FXMLLoader pour charger la vue des statistiques
             try {
@@ -274,9 +272,7 @@ public class CategorieController {
             System.out.println("actionEvent is null");
         }
 
-
     }
-
 
     public void showmovies(ActionEvent actionEvent) {
     }

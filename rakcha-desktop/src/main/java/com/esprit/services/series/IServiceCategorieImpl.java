@@ -20,7 +20,8 @@ public class IServiceCategorieImpl implements IServiceCategorie<Categorie> {
     @Override
     public void ajouter(Categorie categorie) throws SQLException {
 
-        String req = "INSERT INTO categories (nom, description) VALUES ('" + categorie.getNom() + "','" + categorie.getDescription() + "')";
+        String req = "INSERT INTO categories (nom, description) VALUES ('" + categorie.getNom() + "','"
+                + categorie.getDescription() + "')";
         Statement st = connection.createStatement();
         st.executeUpdate(req);
         System.out.println("Categorie ajoutee avec succes");
@@ -53,7 +54,6 @@ public class IServiceCategorieImpl implements IServiceCategorie<Categorie> {
         Statement st = connection.createStatement();
         ResultSet rs = st.executeQuery(req);
 
-
         while (rs.next()) {
             Categorie categorie = new Categorie();
             categorie.setIdcategorie(rs.getInt("idcategorie"));
@@ -66,7 +66,6 @@ public class IServiceCategorieImpl implements IServiceCategorie<Categorie> {
         return categories;
 
     }
-
 
     public Map<Categorie, Long> getCategoriesStatistics() {
         Map<Categorie, Long> statistics = new HashMap<>();
@@ -95,6 +94,3 @@ public class IServiceCategorieImpl implements IServiceCategorie<Categorie> {
         return statistics;
     }
 }
-
-
-

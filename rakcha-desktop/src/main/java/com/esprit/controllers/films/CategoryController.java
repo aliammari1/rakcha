@@ -51,7 +51,6 @@ public class CategoryController {
     @FXML
     private TextField recherche_textField;
 
-
     @FXML
     void initialize() {
         delete_tableColumn = new TableColumn<>("delete");
@@ -62,7 +61,6 @@ public class CategoryController {
         setupCellOnEditCommit();
         readCategoryTable();
         filterCriteriaComboBox.setItems(FXCollections.observableArrayList("Name", "Description"));
-
 
     }
 
@@ -95,7 +93,6 @@ public class CategoryController {
         readCategoryTable();
 
     }
-
 
     void readCategoryTable() {
         try {
@@ -147,7 +144,6 @@ public class CategoryController {
                 return new TextFieldTableCell<Category, String>(new DefaultStringConverter()) {
                     private Validator validator;
 
-
                     @Override
                     public void startEdit() {
                         super.startEdit();
@@ -171,7 +167,8 @@ public class CategoryController {
                             Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
-                                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                                public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                        String newValue) {
                                     System.out.println(validator.containsErrors());
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
@@ -188,7 +185,6 @@ public class CategoryController {
                         }
                     }
 
-
                 };
             }
         };
@@ -201,33 +197,37 @@ public class CategoryController {
     private void setupCellValueFactory() {
         idCategory_tableColumn.setCellValueFactory(new PropertyValueFactory<Category, Integer>("id"));
 
-        descrptionCategory_tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Category, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Category, String> param) {
-                return new SimpleStringProperty(param.getValue().getDescription());
-            }
-        });
-
-        nomCategory_tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Category, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Category, String> filmcategoryStringCellDataFeatures) {
-
-                return new SimpleStringProperty(filmcategoryStringCellDataFeatures.getValue().getNom());
-            }
-        });
-        delete_tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Category, Button>, ObservableValue<Button>>() {
-            @Override
-            public ObservableValue<Button> call(TableColumn.CellDataFeatures<Category, Button> param) {
-                Button button = new Button("delete");
-                button.setOnAction(new EventHandler<ActionEvent>() {
+        descrptionCategory_tableColumn.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Category, String>, ObservableValue<String>>() {
                     @Override
-                    public void handle(ActionEvent event) {
-                        deleteCategory(param.getValue().getId());
+                    public ObservableValue<String> call(TableColumn.CellDataFeatures<Category, String> param) {
+                        return new SimpleStringProperty(param.getValue().getDescription());
                     }
                 });
-                return new SimpleObjectProperty<Button>(button);
-            }
-        });
+
+        nomCategory_tableColumn.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Category, String>, ObservableValue<String>>() {
+                    @Override
+                    public ObservableValue<String> call(
+                            TableColumn.CellDataFeatures<Category, String> filmcategoryStringCellDataFeatures) {
+
+                        return new SimpleStringProperty(filmcategoryStringCellDataFeatures.getValue().getNom());
+                    }
+                });
+        delete_tableColumn.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Category, Button>, ObservableValue<Button>>() {
+                    @Override
+                    public ObservableValue<Button> call(TableColumn.CellDataFeatures<Category, Button> param) {
+                        Button button = new Button("delete");
+                        button.setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                deleteCategory(param.getValue().getId());
+                            }
+                        });
+                        return new SimpleObjectProperty<Button>(button);
+                    }
+                });
     }
 
     private void setupCellOnEditCommit() {
@@ -260,7 +260,4 @@ public class CategoryController {
 
     }
 
-
 }
-
-

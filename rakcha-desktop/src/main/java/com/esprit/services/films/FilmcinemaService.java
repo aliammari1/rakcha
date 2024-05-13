@@ -49,7 +49,13 @@ public class FilmcinemaService implements IService<Filmcinema> {
             PreparedStatement pst = connection.prepareStatement(req);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                actorfilmArrayList.add(new Filmcinema(new Film(rs.getInt("film.id"), rs.getString("film.nom"), rs.getString("image"), rs.getTime("duree"), rs.getString("film.description"), rs.getInt("annederalisation")), new Cinema(rs.getInt("cinema.id_cinema"), rs.getString("cinemaNames"), rs.getString("cinema.adresse"), (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")), rs.getString("cinema.logo"), rs.getString("cinema.Statut"))));
+                actorfilmArrayList.add(new Filmcinema(
+                        new Film(rs.getInt("film.id"), rs.getString("film.nom"), rs.getString("image"),
+                                rs.getTime("duree"), rs.getString("film.description"), rs.getInt("annederalisation")),
+                        new Cinema(rs.getInt("cinema.id_cinema"), rs.getString("cinemaNames"),
+                                rs.getString("cinema.adresse"),
+                                (Responsable_de_cinema) new UserService().getUserById(rs.getInt("responsable")),
+                                rs.getString("cinema.logo"), rs.getString("cinema.Statut"))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -94,7 +100,6 @@ public class FilmcinemaService implements IService<Filmcinema> {
         }
     }
 
-
     public String getcinemaNames(int id) {
         String s = "";
         String req = "SELECT GROUP_CONCAT(cinema.nom SEPARATOR ', ') AS cinemaNames from filmcinema JOIN cinema  ON filmcinema.id_cinema = cinema.id_cinema JOIN film on filmcinema.id_film = film.id where film.id = ? GROUP BY film.id;";
@@ -117,7 +122,8 @@ public class FilmcinemaService implements IService<Filmcinema> {
             pst.setInt(1, cinemaId);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                Film film = new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"), rs.getString("description"), rs.getInt("annederalisation"));
+                Film film = new Film(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getTime("duree"),
+                        rs.getString("description"), rs.getInt("annederalisation"));
                 moviesForCinema.add(film);
             }
         } catch (SQLException e) {

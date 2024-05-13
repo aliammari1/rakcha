@@ -32,13 +32,12 @@ public class ResponsableDeCinemaSideBarController {
     @FXML
     private Button statestique_button;
 
-
     @FXML
     void switchToActor(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceActor.fxml"));
             ActorController seanceController = loader.getController();
-            //seanceController.setData(resp);
+            // seanceController.setData(resp);
             Parent root = loader.load();
             Stage stage = (Stage) actorButton.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -52,7 +51,7 @@ public class ResponsableDeCinemaSideBarController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/statistiques.fxml"));
             CinemaStatisticsController seanceController = loader.getController();
-            //seanceController.setData(resp);
+            // seanceController.setData(resp);
             Parent root = loader.load();
             Stage stage = (Stage) statestique_button.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -76,7 +75,7 @@ public class ResponsableDeCinemaSideBarController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceCategory.fxml"));
             CategorieController seanceController = loader.getController();
-            //  seanceController.setData(resp);
+            // seanceController.setData(resp);
             Parent root = loader.load();
             Stage stage = (Stage) filmCategorieButton.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -90,7 +89,7 @@ public class ResponsableDeCinemaSideBarController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/InterfaceFilm.fxml"));
             FilmController seanceController = loader.getController();
-            //seanceController.setData(resp);
+            // seanceController.setData(resp);
             Parent root = loader.load();
             Stage stage = (Stage) movieButton.getScene().getWindow();
             stage.setScene(new Scene(root));

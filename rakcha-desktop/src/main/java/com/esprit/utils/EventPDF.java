@@ -23,11 +23,12 @@ public class EventPDF {
 
         document.open();
 
-        Paragraph title = new Paragraph("Detailed Events' List :                                                                                                                                          ");
-        Font titleFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD); // Exemple : taille 16 et police Helvetica en gras
+        Paragraph title = new Paragraph(
+                "Detailed Events' List :                                                                                                                                          ");
+        Font titleFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD); // Exemple : taille 16 et police Helvetica
+                                                                             // en gras
         title.setFont(titleFont);
         title.setAlignment(Element.ALIGN_CENTER);
-
 
         try {
             document.add(title);
@@ -35,17 +36,19 @@ public class EventPDF {
             throw new RuntimeException(e);
         }
 
-        final List<String> attributes = new ArrayList<>() {{
-            this.add("ID");
-            this.add("Event Name");
-            this.add("Category");
-            this.add("Start Date");
-            this.add("End Date");
-            this.add("Localistaion");
-            this.add("Status");
-            this.add("Description");
-        }};
-        final float[] widths = {50, 120, 100, 100, 100, 120, 80, 120};
+        final List<String> attributes = new ArrayList<>() {
+            {
+                this.add("ID");
+                this.add("Event Name");
+                this.add("Category");
+                this.add("Start Date");
+                this.add("End Date");
+                this.add("Localistaion");
+                this.add("Status");
+                this.add("Description");
+            }
+        };
+        final float[] widths = { 50, 120, 100, 100, 100, 120, 80, 120 };
         final PdfPTable table = new PdfPTable(widths);
         this.addTableHeader(table, attributes);
         this.addRows(table, eventData);
@@ -69,7 +72,6 @@ public class EventPDF {
             header.setBackgroundColor(BaseColor.MAGENTA);
             header.setBorderWidth(1);
             header.setIndent(3);
-
 
             header.setPhrase(new Phrase(columnTitle, font));
             table.addCell(header);
@@ -108,7 +110,6 @@ public class EventPDF {
             phrase = new Phrase(event.getDescription(), font);
             table.addCell(phrase);
         }
-
 
     }
 }

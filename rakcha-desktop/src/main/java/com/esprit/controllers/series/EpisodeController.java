@@ -60,7 +60,6 @@ public class EpisodeController {
     @FXML
     private TableView<EpisodeDto> tableView;
 
-
     private void ref() {
         tableView.getItems().clear();
         tableView.getColumns().clear();
@@ -74,8 +73,7 @@ public class EpisodeController {
         IServiceSerieImpl iServiceSerie = new IServiceSerieImpl();
         try {
             serieList = iServiceSerie.recuperers();
-            for (Serie s : serieList
-            ) {
+            for (Serie s : serieList) {
                 serieF.getItems().add(s.getNom());
             }
         } catch (SQLException e) {
@@ -83,8 +81,8 @@ public class EpisodeController {
         }
         ///// affichage du tableau
         IServiceSerieImpl serviceSerie = new IServiceSerieImpl();
-        //TableColumn<EpisodeDto, Integer> idCol = new TableColumn<>("ID");
-        //idCol.setCellValueFactory(new PropertyValueFactory<>("idepisode"));
+        // TableColumn<EpisodeDto, Integer> idCol = new TableColumn<>("ID");
+        // idCol.setCellValueFactory(new PropertyValueFactory<>("idepisode"));
 
         TableColumn<EpisodeDto, String> titreCol = new TableColumn<>("Title");
         titreCol.setCellValueFactory(new PropertyValueFactory<>("titre"));
@@ -155,7 +153,8 @@ public class EpisodeController {
                 }
             }
         });
-        // tableView.getColumns().addAll(idCol, titreCol, numeroepisodeCol, saisonCol, serieCol, supprimerCol, modifierCol);
+        // tableView.getColumns().addAll(idCol, titreCol, numeroepisodeCol, saisonCol,
+        // serieCol, supprimerCol, modifierCol);
         tableView.getColumns().addAll(titreCol, numeroepisodeCol, saisonCol, serieCol, supprimerCol, modifierCol);
 
         // Récupérer les catégories et les ajouter à la TableView
@@ -177,8 +176,7 @@ public class EpisodeController {
         TextField numeroepisodeFild = new TextField(String.valueOf(episodeDto.getNumeroepisode()));
         TextField saisonFild = new TextField(String.valueOf(episodeDto.getSaison()));
         ComboBox<String> serieComboBox = new ComboBox<>();
-        for (Serie s : serieList
-        ) {
+        for (Serie s : serieList) {
             serieComboBox.getItems().add(s.getNom());
         }
         serieComboBox.setValue(episodeDto.getNomSerie());
@@ -196,8 +194,10 @@ public class EpisodeController {
             });
         }
 
-
-        dialog.getDialogPane().setContent(new VBox(10, new Label("Title:"), titreFild, new Label("Number:"), numeroepisodeFild, new Label("Season :"), saisonFild, new Label("Add picture :"), Ajouterimage, new Label("Ajouer Video :"), AJouterVideo, serieComboBox));
+        dialog.getDialogPane()
+                .setContent(new VBox(10, new Label("Title:"), titreFild, new Label("Number:"), numeroepisodeFild,
+                        new Label("Season :"), saisonFild, new Label("Add picture :"), Ajouterimage,
+                        new Label("Ajouer Video :"), AJouterVideo, serieComboBox));
 
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
@@ -217,8 +217,7 @@ public class EpisodeController {
             episode.setSaison(Integer.parseInt(saisonFild.getText()));
             episode.setImage(imgpath);
             episode.setVideo(videopath);
-            for (Serie s : serieList
-            ) {
+            for (Serie s : serieList) {
                 if (s.getNom().equals(serieComboBox.getValue())) {
                     episode.setIdserie(s.getIdserie());
                 }
@@ -254,8 +253,8 @@ public class EpisodeController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose a picture");
         // Set file extension filter to only allow image files
-        FileChooser.ExtensionFilter imageFilter =
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif");
+        FileChooser.ExtensionFilter imageFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg",
+                "*.gif");
         fileChooser.getExtensionFilters().add(imageFilter);
 
         File selectedFile = fileChooser.showOpenDialog(new Stage());
@@ -292,8 +291,8 @@ public class EpisodeController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose a video");
         // Set file extension filter to only allow video files
-        FileChooser.ExtensionFilter videoFilter =
-                new FileChooser.ExtensionFilter("Video Files", "*.mp4", "*.avi", "*.mkv");
+        FileChooser.ExtensionFilter videoFilter = new FileChooser.ExtensionFilter("Video Files", "*.mp4", "*.avi",
+                "*.mkv");
         fileChooser.getExtensionFilters().add(videoFilter);
 
         File selectedFile = fileChooser.showOpenDialog(new Stage());
@@ -419,26 +418,25 @@ public class EpisodeController {
                 picturechek.setText("");
                 videocheck.setText("");
                 seriecheck.setText("");
-                for (Serie s : serieList
-                ) {
+                for (Serie s : serieList) {
                     if (s.getNom() == serieF.getValue()) {
                         episode.setIdserie(s.getIdserie());
                     }
                 }
                 episodeserv.ajouter(episode);
                 // Envoi d'un SMS après avoir ajouté l'épisode avec succès
-                //String message = "A new episode is here : " + episode.getNomSerie();
-                //sendSMS("+21653775010", message);
+                // String message = "A new episode is here : " + episode.getNomSerie();
+                // sendSMS("+21653775010", message);
                 for (Serie s : serieList) {
                     if (Objects.equals(s.getNom(), serieF.getValue())) {
                         episode.setIdserie(s.getIdserie());
                         // Envoi d'un SMS après avoir ajouté l'épisode avec succès
-                        String message = " Episode " + episode.getNumeroepisode() + " Season " + episode.getSaison() + "from your series : " + s.getNom() + " is now available!";
+                        String message = " Episode " + episode.getNumeroepisode() + " Season " + episode.getSaison()
+                                + "from your series : " + s.getNom() + " is now available!";
                         sendSMS("+21653775010", message);
                         break; // Sortir de la boucle une fois la série trouvée
                     }
                 }
-
 
                 tableView.refresh();
                 ref();

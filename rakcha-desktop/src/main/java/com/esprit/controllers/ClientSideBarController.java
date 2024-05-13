@@ -22,7 +22,6 @@ public class ClientSideBarController {
     @FXML
     private Button serieButton;
 
-
     @FXML
     void switchToEvent(ActionEvent event) {
         try {

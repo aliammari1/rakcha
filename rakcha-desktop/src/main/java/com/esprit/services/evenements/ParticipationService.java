@@ -21,7 +21,6 @@ public class ParticipationService implements IService<Participation> {
         connection = DataSource.getInstance().getConnection();
     }
 
-
     @Override
     public void create(Participation participation) {
         String req = "INSERT into participation_evenement(id_evenement, id_user, quantity) values (?, ?, ?);";
@@ -81,7 +80,9 @@ public class ParticipationService implements IService<Participation> {
             EvenementService es = new EvenementService();
             UserService us = new UserService();
             while (rs.next()) {
-                participations.add(new Participation(rs.getInt("id_participation"), es.getEvenement(rs.getInt("id_evenement")), (Client) new UserService().getUserById(rs.getInt("id_user")), rs.getInt("quantity")));
+                participations.add(
+                        new Participation(rs.getInt("id_participation"), es.getEvenement(rs.getInt("id_evenement")),
+                                (Client) new UserService().getUserById(rs.getInt("id_user")), rs.getInt("quantity")));
 
             }
         } catch (SQLException e) {
