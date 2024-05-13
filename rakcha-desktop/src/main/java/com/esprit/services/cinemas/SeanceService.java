@@ -63,7 +63,6 @@ public class SeanceService implements IService<Seance> {
         }
     }
 
-
     public void delete(Seance seance) {
         String req = "DELETE from seance where id_seance= ?;";
         try {
@@ -90,7 +89,9 @@ public class SeanceService implements IService<Seance> {
             FilmService fs = new FilmService();
             int i = 0;
             while (rs.next()) {
-                seances.add(new Seance(rs.getInt("id_seance"), ss.getSalle(rs.getInt("id_salle")), rs.getTime("HD"), rs.getTime("HF"), rs.getDate("date"), rs.getInt("prix"), new Filmcinema(fs.getFilm(rs.getInt("id_film")), cs.getCinema(rs.getInt("id_cinema")))));
+                seances.add(new Seance(rs.getInt("id_seance"), ss.getSalle(rs.getInt("id_salle")), rs.getTime("HD"),
+                        rs.getTime("HF"), rs.getDate("date"), rs.getInt("prix"),
+                        new Filmcinema(fs.getFilm(rs.getInt("id_film")), cs.getCinema(rs.getInt("id_cinema")))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -115,7 +116,9 @@ public class SeanceService implements IService<Seance> {
             FilmService fs = new FilmService();
             int i = 0;
             while (rs.next()) {
-                seances.add(new Seance(rs.getInt("id_seance"), ss.getSalle(rs.getInt("id_salle")), rs.getTime("HD"), rs.getTime("HF"), rs.getDate("date"), rs.getInt("prix"), new Filmcinema(fs.getFilm(rs.getInt("id_film")), cs.getCinema(rs.getInt("id_cinema")))));
+                seances.add(new Seance(rs.getInt("id_seance"), ss.getSalle(rs.getInt("id_salle")), rs.getTime("HD"),
+                        rs.getTime("HF"), rs.getDate("date"), rs.getInt("prix"),
+                        new Filmcinema(fs.getFilm(rs.getInt("id_film")), cs.getCinema(rs.getInt("id_cinema")))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -125,7 +128,8 @@ public class SeanceService implements IService<Seance> {
     }
 
     // Méthode pour récupérer les séances dans une plage de dates spécifiée
-    public Map<LocalDate, List<Seance>> getSeancesByDateRangeAndCinema(LocalDate startDate, LocalDate endDate, Cinema cinema) {
+    public Map<LocalDate, List<Seance>> getSeancesByDateRangeAndCinema(LocalDate startDate, LocalDate endDate,
+            Cinema cinema) {
         Map<LocalDate, List<Seance>> seancesByDate = new HashMap<>();
 
         // Vérifier si cinema est null
@@ -135,7 +139,8 @@ public class SeanceService implements IService<Seance> {
         }
 
         try {
-            // Créer la requête SQL pour récupérer les séances dans la plage de dates spécifiée et pour le cinéma donné
+            // Créer la requête SQL pour récupérer les séances dans la plage de dates
+            // spécifiée et pour le cinéma donné
             String query = "SELECT * FROM seance WHERE date BETWEEN ? AND ? AND id_cinema = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setDate(1, Date.valueOf(startDate)); // Utilisez java.sql.Date.valueOf
@@ -150,9 +155,12 @@ public class SeanceService implements IService<Seance> {
 
             // Parcourir les résultats de la requête et créer des objets Seance
             while (rs.next()) {
-                LocalDate seanceDate = rs.getDate("date").toLocalDate(); // Convertir java.sql.Date en java.time.LocalDate
+                LocalDate seanceDate = rs.getDate("date").toLocalDate(); // Convertir java.sql.Date en
+                                                                         // java.time.LocalDate
                 List<Seance> seancesForDate = seancesByDate.getOrDefault(seanceDate, new ArrayList<>());
-                seancesForDate.add(new Seance(rs.getInt("id_seance"), ss.getSalle(rs.getInt("id_salle")), rs.getTime("HD"), rs.getTime("HF"), seanceDate, rs.getInt("prix"), new Filmcinema(fs.getFilm(rs.getInt("id_film")), cs.getCinema(rs.getInt("id_cinema")))));
+                seancesForDate.add(new Seance(rs.getInt("id_seance"), ss.getSalle(rs.getInt("id_salle")),
+                        rs.getTime("HD"), rs.getTime("HF"), seanceDate, rs.getInt("prix"),
+                        new Filmcinema(fs.getFilm(rs.getInt("id_film")), cs.getCinema(rs.getInt("id_cinema")))));
                 seancesByDate.put(seanceDate, seancesForDate);
             }
         } catch (SQLException e) {
@@ -162,13 +170,13 @@ public class SeanceService implements IService<Seance> {
         return seancesByDate;
     }
 
-
     public List<Seance> getSeancesByDate(LocalDate date) {
         // Exemple de liste de séances fictive
         List<Seance> seances = new ArrayList<>();
 
         // Supposons que seanceList soit une liste de toutes les séances disponibles
-        // Vous devez définir seanceList en fonction de votre logique d'accès aux données
+        // Vous devez définir seanceList en fonction de votre logique d'accès aux
+        // données
         List<Seance> seanceList = null; // Logique pour récupérer les séances depuis la source de données
 
         // Si seanceList est null, retourner une liste vide
@@ -176,7 +184,8 @@ public class SeanceService implements IService<Seance> {
             return Collections.emptyList();
         }
 
-        // Parcourir toutes les séances disponibles et ajouter celles pour la date spécifiée à la liste
+        // Parcourir toutes les séances disponibles et ajouter celles pour la date
+        // spécifiée à la liste
         for (Seance seance : seanceList) {
             if (seance.getDate().equals(date)) {
                 seances.add(seance);
@@ -186,6 +195,5 @@ public class SeanceService implements IService<Seance> {
         // Retourner la liste des séances pour la date spécifiée
         return seances;
     }
-
 
 }

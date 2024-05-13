@@ -47,9 +47,13 @@ public class ActorfilmService implements IService<Actorfilm> {
             ResultSet rs = pst.executeQuery();
             // int i = 0;
             while (rs.next()) {
-                actorfilmArrayList.add(new Actorfilm(new Actor(rs.getInt("actor.id"), rs.getString("actorNames"), rs.getString("actor.image"), rs.getString("actor.biographie")), new Film(rs.getInt("film.id"), rs.getNString("film.nom"), rs.getString("image"), rs.getTime("duree"), rs.getString("film.description"), rs.getInt("annederalisation"))));
-                //     System.out.println(filmArrayList.get(i));
-                //       i++;
+                actorfilmArrayList.add(new Actorfilm(
+                        new Actor(rs.getInt("actor.id"), rs.getString("actorNames"), rs.getString("actor.image"),
+                                rs.getString("actor.biographie")),
+                        new Film(rs.getInt("film.id"), rs.getNString("film.nom"), rs.getString("image"),
+                                rs.getTime("duree"), rs.getString("film.description"), rs.getInt("annederalisation"))));
+                // System.out.println(filmArrayList.get(i));
+                // i++;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,7 +102,6 @@ public class ActorfilmService implements IService<Actorfilm> {
             throw new RuntimeException(e);
         }
     }
-
 
     @Override
     public void delete(Actorfilm actorfilm) {

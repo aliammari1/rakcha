@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CategorieService implements IService<Categorie_Produit> {
 
     private final Connection connection;
@@ -19,7 +18,6 @@ public class CategorieService implements IService<Categorie_Produit> {
     public CategorieService() {
         connection = DataSource.getInstance().getConnection();
     }
-
 
     @Override
     public void create(Categorie_Produit categorieProduit) {
@@ -48,7 +46,8 @@ public class CategorieService implements IService<Categorie_Produit> {
             PreparedStatement pst = connection.prepareStatement(req);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
-                categories.add(new Categorie_Produit(rs.getInt("id_categorie"), rs.getString("nom_categorie"), rs.getString("description")));
+                categories.add(new Categorie_Produit(rs.getInt("id_categorie"), rs.getString("nom_categorie"),
+                        rs.getString("description")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,7 +86,6 @@ public class CategorieService implements IService<Categorie_Produit> {
         }
     }
 
-
     public Categorie_Produit getCategorie(int categorie_id) {
 
         Categorie_Produit category = null;
@@ -98,7 +96,8 @@ public class CategorieService implements IService<Categorie_Produit> {
             pst.setInt(1, categorie_id);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            category = new Categorie_Produit(rs.getInt("id_categorie"), rs.getString("nom_categorie"), rs.getString("description"));
+            category = new Categorie_Produit(rs.getInt("id_categorie"), rs.getString("nom_categorie"),
+                    rs.getString("description"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,7 +116,8 @@ public class CategorieService implements IService<Categorie_Produit> {
             pst.setString(1, categorie_nom);
             ResultSet rs = pst.executeQuery();
             rs.next();
-            category = new Categorie_Produit(rs.getInt("id_categorie"), rs.getString("nom_categorie"), rs.getString("description"));
+            category = new Categorie_Produit(rs.getInt("id_categorie"), rs.getString("nom_categorie"),
+                    rs.getString("description"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -130,7 +130,8 @@ public class CategorieService implements IService<Categorie_Produit> {
     public List<String> getAllCategoriesNames() {
         List<String> categorieNames = new ArrayList<>();
 
-        // Remplacez "getAllCategories()" par la méthode réelle qui récupère toutes les catégories
+        // Remplacez "getAllCategories()" par la méthode réelle qui récupère toutes les
+        // catégories
         List<Categorie_Produit> categories = read();
 
         // Ajoutez les noms de catégories à la liste
@@ -140,12 +141,12 @@ public class CategorieService implements IService<Categorie_Produit> {
 
         return categorieNames;
     }
-
 
     public List<String> getAllCategories() {
         List<String> categorieNames = new ArrayList<>();
 
-        // Remplacez "getAllCategories()" par la méthode réelle qui récupère toutes les catégories
+        // Remplacez "getAllCategories()" par la méthode réelle qui récupère toutes les
+        // catégories
         List<Categorie_Produit> categories = read();
 
         // Ajoutez les noms de catégories à la liste
@@ -155,7 +156,6 @@ public class CategorieService implements IService<Categorie_Produit> {
 
         return categorieNames;
     }
-
 
     public List<Categorie_Produit> searchCategoriesByName(String searchKeyword) {
         List<Categorie_Produit> result = new ArrayList<>();
@@ -187,5 +187,3 @@ public class CategorieService implements IService<Categorie_Produit> {
         return result;
     }
 }
-
-

@@ -10,8 +10,8 @@ public class UserMail {
 
         // Sender's email ID needs to be mentioned
         String from = "ammari.ali.0001@gmail.com";
-        final String username = "ammariali0001";//change accordingly
-        final String password = System.getenv("JAVAMAIL_APP_PASSWORD");//change accordingly
+        final String username = "ammariali0001";// change accordingly
+        final String password = System.getenv("JAVAMAIL_APP_PASSWORD");// change accordingly
 
         // Assuming you are sending email through relay.jangosmtp.net
         String host = "smtp.gmail.com";

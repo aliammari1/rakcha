@@ -27,7 +27,7 @@ public class UserPDF {
         document.open();
         List<String> attributes = Arrays.asList("id", "nom", "prenom", "num_telephone", "email", "role");
 
-        final float[] widths = {50, 50, 50, 80, 50, 50};
+        final float[] widths = { 50, 50, 50, 80, 50, 50 };
         final PdfPTable table = new PdfPTable(widths);
         this.addTableHeader(table, attributes);
         this.addRows(table, userData);

@@ -32,35 +32,30 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
 public class CommentaireProduitController implements Initializable {
 
     @FXML
     private FlowPane CommentaireFlowPane;
 
-
     @FXML
     private TextArea monCommentaitreText;
 
-
     private final Chat chat = new Chat();
 
-
     /*
-    void onKeyPressed(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            String commentaireText = monCommentaitreText.getText();
-
-
-
-            String reponseChat = chat.chatGPT(commentaireText);
-            chatCommentaireText.appendText(reponseChat + "\n");
-
-            monCommentaitreText.clear();
-        }
-
-*/
-
+     * void onKeyPressed(KeyEvent event) {
+     * if (event.getCode() == KeyCode.ENTER) {
+     * String commentaireText = monCommentaitreText.getText();
+     * 
+     * 
+     * 
+     * String reponseChat = chat.chatGPT(commentaireText);
+     * chatCommentaireText.appendText(reponseChat + "\n");
+     * 
+     * monCommentaitreText.clear();
+     * }
+     * 
+     */
 
     @FXML
     void addchat(ActionEvent actionEvent) {
@@ -90,14 +85,15 @@ public class CommentaireProduitController implements Initializable {
                 alert.showAndWait();
             } else {
                 // Créez un objet Commentaire
-                Commentaire commentaire = new Commentaire((Client) new UserService().getUserById(4), userMessage, produitService.getProduitById(produit.getId_produit()), datecommantaire);
+                Commentaire commentaire = new Commentaire((Client) new UserService().getUserById(4), userMessage,
+                        produitService.getProduitById(produit.getId_produit()), datecommantaire);
 
                 CommentaireService commentaireService = new CommentaireService();
                 // Ajoutez le commentaire à la base de données
                 commentaireService.create(commentaire);
 
                 // Mettez à jour l'interface utilisateur
-                //updateCommentaireFlowPane(commentaire);
+                // updateCommentaireFlowPane(commentaire);
             }
         } catch (ParseException e) {
             // Gérez l'exception si la conversion échoue
@@ -105,26 +101,22 @@ public class CommentaireProduitController implements Initializable {
         }
     }
 
-
     public void initialize(URL location, ResourceBundle resources) {
 
         loadAcceptedCommentaire();
 
     }
 
-
     private void loadAcceptedCommentaire() {
         // Récupérer toutes les produits depuis le service
         CommentaireService commentaireservices = new CommentaireService();
         List<Commentaire> commentaires = commentaireservices.read();
-
 
         // Créer une carte pour chaque produit et l'ajouter à la FlowPane
         for (Commentaire comm : commentaires) {
             HBox cardContainer = createcommentairecard(comm);
 
             CommentaireFlowPane.getChildren().add(cardContainer);
-
 
         }
 
@@ -140,7 +132,6 @@ public class CommentaireProduitController implements Initializable {
         // for (Commentaire comm : commentaires) {
         // Créer une VBox pour chaque commentaire
         HBox commentaireVBox = new HBox();
-
 
         commentaireVBox.setStyle("-fx-padding: 5px 0 0 10px");
         AnchorPane card = new AnchorPane();
@@ -171,10 +162,9 @@ public class CommentaireProduitController implements Initializable {
         // Ajout des éléments à la VBox
         card.getChildren().addAll(nomLabel, commentaireLabel);
 
-
         commentaireVBox.getChildren().add(card);
         // Ajout de la VBox au FlowPane
-        //CommentaireFlowPane.getChildren().add(commentaireVBox);
+        // CommentaireFlowPane.getChildren().add(commentaireVBox);
         return commentaireVBox;
     }
 
@@ -203,7 +193,6 @@ public class CommentaireProduitController implements Initializable {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
@@ -230,7 +219,6 @@ public class CommentaireProduitController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
-
 
     }
 
@@ -259,15 +247,12 @@ public class CommentaireProduitController implements Initializable {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
     void profilclient(ActionEvent event) {
 
-
     }
-
 
     @FXML
     void MovieClient(ActionEvent event) {
@@ -322,12 +307,4 @@ public class CommentaireProduitController implements Initializable {
 
     }
 
-
 }
-
-
-
-
-
-
-

@@ -39,8 +39,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-
-
 public class DesignProduitAdminContoller {
 
     private File selectedFile; // pour stocke le fichier image selectionné
@@ -59,7 +57,6 @@ public class DesignProduitAdminContoller {
 
     @FXML
     private TableColumn<Produit, ImageView> image_tableC;
-
 
     @FXML
     private ComboBox<String> nomC_comboBox;
@@ -82,7 +79,6 @@ public class DesignProduitAdminContoller {
     @FXML
     private TextField quantiteP_textFiled;
 
-
     @FXML
     private ImageView image;
 
@@ -96,15 +92,10 @@ public class DesignProduitAdminContoller {
     @FXML
     private AnchorPane formulaire;
 
-
-
-
-
     @FXML
     private TableColumn<Produit, Void> deleteColumn;
 
     private List<Produit> l1 = new ArrayList<>();
-
 
     @FXML
     void initialize() {
@@ -119,14 +110,10 @@ public class DesignProduitAdminContoller {
             nomC_comboBox.getItems().add(c.getNom_categorie());
         }
 
-
         afficher_produit();
         initDeleteColumn();
 
     }
-
-
-
 
     @FXML
     private void showAlert(String message) {
@@ -150,7 +137,6 @@ public class DesignProduitAdminContoller {
 
     }
 
-
     @FXML
     public void add_produit(ActionEvent actionEvent) {
 
@@ -164,7 +150,8 @@ public class DesignProduitAdminContoller {
             String quantiteText = quantiteP_textFiled.getText().trim();
 
             // Vérifier si les champs sont vides
-            if (nomProduit.isEmpty() || prixText.isEmpty() || descriptionProduit.isEmpty() || nomCategorie == null || quantiteText.isEmpty()) {
+            if (nomProduit.isEmpty() || prixText.isEmpty() || descriptionProduit.isEmpty() || nomCategorie == null
+                    || quantiteText.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur de saisie");
                 alert.setContentText("Veuillez remplir tous les champs.");
@@ -180,10 +167,10 @@ public class DesignProduitAdminContoller {
                 if (prix <= 0 || quantite <= 0) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Erreur de saisie");
-                    alert.setContentText("Veuillez entrer des valeurs valides pour le prix et la quantité (supérieures à zéro)");
+                    alert.setContentText(
+                            "Veuillez entrer des valeurs valides pour le prix et la quantité (supérieures à zéro)");
                     alert.show(); // Arrêter l'exécution de la méthode si les valeurs ne sont pas valides
                 }
-
 
                 // Vérifier si le nom ne contient que des alphabets et des chiffres
                 if (!nomProduit.matches("[a-zA-Z0-9]*")) {
@@ -219,7 +206,8 @@ public class DesignProduitAdminContoller {
                     // Créer l'objet Produit avec l'image Blob
                     ProduitService ps = new ProduitService();
                     CategorieService cs = new CategorieService();
-                    Produit nouveauProduit = new Produit(nomProduit, prix, imageBlob, descriptionProduit, cs.getCategorieByNom(nomCategorie), quantite);
+                    Produit nouveauProduit = new Produit(nomProduit, prix, imageBlob, descriptionProduit,
+                            cs.getCategorieByNom(nomCategorie), quantite);
                     ps.create(nouveauProduit);
 
                     // Ajouter le nouveau produit à la liste existante
@@ -252,9 +240,6 @@ public class DesignProduitAdminContoller {
         }
     }
 
-
-
-
     @FXML
     void modifier_produit(Produit produit) {
 
@@ -267,14 +252,13 @@ public class DesignProduitAdminContoller {
         int nouvelleQuantite = produit.getQuantiteP();
         int id = produit.getId_produit();
 
-        // Enregistrez les modifications dans la base de données en utilisant un service approprié
+        // Enregistrez les modifications dans la base de données en utilisant un service
+        // approprié
         ProduitService ps = new ProduitService();
         ps.update(produit);
     }
 
-
-
-    void afficher_produit(){
+    void afficher_produit() {
 
         // Créer un nouveau ComboBox
         ImageView imageView = new ImageView();
@@ -282,38 +266,40 @@ public class DesignProduitAdminContoller {
         nomCP_tableC.setCellValueFactory(new PropertyValueFactory<Produit, String>("nom_categorie"));
         nomCP_tableC.setCellFactory(column -> new TableCell<Produit, String>() {
             @Override
-           /* protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item == null || empty) {
-                    setGraphic(null);
-                } else {
-                    CategorieService cs = new CategorieService();
-                    ComboBox<String> newComboBox = new ComboBox<>();
-
-                    // Obtenez la liste des noms de catégories
-                    List<String> categorieNames = cs.getAllCategoriesNames();
-
-                    // Ajoutez les noms de catégories au ComboBox
-                    newComboBox.getItems().addAll(categorieNames);
-
-                    // Sélectionnez le nom de la catégorie associée au produit
-                    newComboBox.setValue(item);
-
-                    // Afficher le ComboBox nouvellement créé dans la cellule
-                    setGraphic(newComboBox);
-                    newComboBox.setOnAction(event -> {
-                        Produit produit = getTableView().getItems().get(getIndex());
-                        // Mise à jour de la catégorie associée au produit
-                        Categorie selectedCategorie = cs.getCategorieByNom(newComboBox.getValue());
-                        produit.setCategorie(selectedCategorie);
-                        modifier_produit(produit);
-                        newComboBox.getStyleClass().add("combo-box-red");
-
-                    });
-                }
-            }
-        });*/
+            /*
+             * protected void updateItem(String item, boolean empty) {
+             * super.updateItem(item, empty);
+             * 
+             * if (item == null || empty) {
+             * setGraphic(null);
+             * } else {
+             * CategorieService cs = new CategorieService();
+             * ComboBox<String> newComboBox = new ComboBox<>();
+             * 
+             * // Obtenez la liste des noms de catégories
+             * List<String> categorieNames = cs.getAllCategoriesNames();
+             * 
+             * // Ajoutez les noms de catégories au ComboBox
+             * newComboBox.getItems().addAll(categorieNames);
+             * 
+             * // Sélectionnez le nom de la catégorie associée au produit
+             * newComboBox.setValue(item);
+             * 
+             * // Afficher le ComboBox nouvellement créé dans la cellule
+             * setGraphic(newComboBox);
+             * newComboBox.setOnAction(event -> {
+             * Produit produit = getTableView().getItems().get(getIndex());
+             * // Mise à jour de la catégorie associée au produit
+             * Categorie selectedCategorie = cs.getCategorieByNom(newComboBox.getValue());
+             * produit.setCategorie(selectedCategorie);
+             * modifier_produit(produit);
+             * newComboBox.getStyleClass().add("combo-box-red");
+             * 
+             * });
+             * }
+             * }
+             * });
+             */
 
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -343,7 +329,8 @@ public class DesignProduitAdminContoller {
                         produitComboBox.setOnAction(e -> {
                             Produit produit = getTableView().getItems().get(getIndex());
                             // Mise à jour de la catégorie associée au produit
-                            Categorie_Produit selectedCategorieProduit = cs.getCategorieByNom(produitComboBox.getValue());
+                            Categorie_Produit selectedCategorieProduit = cs
+                                    .getCategorieByNom(produitComboBox.getValue());
                             produit.setCategorie(selectedCategorieProduit);
                             produitComboBox.getStyleClass().add("combo-box-red");
 
@@ -362,14 +349,8 @@ public class DesignProduitAdminContoller {
                     }
                 });
 
-
-
-
             }
         });
-
-
-
 
         nomP_tableC.setCellValueFactory(new PropertyValueFactory<Produit, String>("nom"));
         nomP_tableC.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -378,8 +359,6 @@ public class DesignProduitAdminContoller {
             produit.setNom(event.getNewValue());
             modifier_produit(produit);
         });
-
-
 
         PrixP_tableC.setCellValueFactory(new PropertyValueFactory<Produit, Integer>("prix"));
         PrixP_tableC.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
@@ -418,7 +397,8 @@ public class DesignProduitAdminContoller {
                     imageView.setImage(image);
                 } else {
                     // Afficher une image par défaut si le logo est null
-                    Image defaultImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("default_image.png")));
+                    Image defaultImage = new Image(
+                            Objects.requireNonNull(getClass().getResourceAsStream("default_image.png")));
                     imageView.setImage(defaultImage);
                 }
             } catch (SQLException e) {
@@ -461,12 +441,11 @@ public class DesignProduitAdminContoller {
             }
         });
 
-
-
         // Activer l'édition en cliquant sur une ligne
         Produit_tableview.setEditable(true);
 
-        // Gérer la modification du texte dans une cellule et le valider en appuyant sur Enter
+        // Gérer la modification du texte dans une cellule et le valider en appuyant sur
+        // Enter
         Produit_tableview.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 Produit selectedProduit = Produit_tableview.getSelectionModel().getSelectedItem();
@@ -486,9 +465,6 @@ public class DesignProduitAdminContoller {
         Produit_tableview.getSelectionModel().setCellSelectionEnabled(true);
 
     }
-
-
-
 
     private void initDeleteColumn() {
         Callback<TableColumn<Produit, Void>, TableCell<Produit, Void>> cellFactory = new Callback<>() {
@@ -525,37 +501,35 @@ public class DesignProduitAdminContoller {
         };
 
         deleteColumn.setCellFactory(cellFactory);
-        //Produit_tableview.getColumns().add(deleteColumn);
+        // Produit_tableview.getColumns().add(deleteColumn);
     }
-
-
 
     // Méthode pour changer l'image
     private void changerImage(Produit produit) {
-         FileChooser fileChooser = new FileChooser();
+        FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Sélectionner une image");
         selectedFile = fileChooser.showOpenDialog(null);
 
-            if (selectedFile != null) { // Vérifier si une image a été sélectionnée
-                Connection connection = null;
-                try {
-                    // Convertir le fichier en un objet Blob
-                    FileInputStream fis = new FileInputStream(selectedFile);
-                    connection = DataSource.getInstance().getConnection();
-                    Blob imageBlob = connection.createBlob();
+        if (selectedFile != null) { // Vérifier si une image a été sélectionnée
+            Connection connection = null;
+            try {
+                // Convertir le fichier en un objet Blob
+                FileInputStream fis = new FileInputStream(selectedFile);
+                connection = DataSource.getInstance().getConnection();
+                Blob imageBlob = connection.createBlob();
 
-                    // Définir le flux d'entrée de l'image dans l'objet Blob
-                    try (OutputStream outputStream = imageBlob.setBinaryStream(1)) {
-                        byte[] buffer = new byte[4096];
-                        int bytesRead;
-                        while ((bytesRead = fis.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
+                // Définir le flux d'entrée de l'image dans l'objet Blob
+                try (OutputStream outputStream = imageBlob.setBinaryStream(1)) {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = fis.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
                     }
-                    produit.setImage(imageBlob);
-                    modifier_produit(produit);
+                }
+                produit.setImage(imageBlob);
+                modifier_produit(produit);
 
-        } catch ( SQLException | IOException e) {
+            } catch (SQLException | IOException e) {
                 e.printStackTrace();
                 showAlert("Erreur lors du chargement de la nouvelle image : " + e.getMessage());
             }
@@ -565,29 +539,25 @@ public class DesignProduitAdminContoller {
     @FXML
     void GestionCategorie(ActionEvent event) throws IOException {
 
+        // Charger la nouvelle interface ListproduitAdmin.fxml
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignCategorieAdmin.fxml"));
+        Parent root = loader.load();
 
-            // Charger la nouvelle interface ListproduitAdmin.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignCategorieAdmin.fxml"));
-            Parent root = loader.load();
+        // Créer une nouvelle scène avec la nouvelle interface
+        Scene scene = new Scene(root);
 
-            // Créer une nouvelle scène avec la nouvelle interface
-            Scene scene = new Scene(root);
+        // Obtenir la Stage (fenêtre) actuelle à partir de l'événement
+        Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-            // Obtenir la Stage (fenêtre) actuelle à partir de l'événement
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        // Créer une nouvelle fenêtre (stage) et y attacher la scène
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Gestion des categories");
+        stage.show();
 
-            // Créer une nouvelle fenêtre (stage) et y attacher la scène
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("Gestion des categories");
-            stage.show();
-
-            // Fermer la fenêtre actuelle
-            currentStage.close();
-        }
-
-
-
+        // Fermer la fenêtre actuelle
+        currentStage.close();
+    }
 
     @FXML
     private void search(String keyword) {
@@ -598,7 +568,7 @@ public class DesignProduitAdminContoller {
         } else {
             for (Produit produit : produitservice.read()) {
                 if (produit.getNom().toLowerCase().contains(keyword.toLowerCase()) ||
-                        produit.getDescription().toLowerCase().contains(keyword.toLowerCase())||
+                        produit.getDescription().toLowerCase().contains(keyword.toLowerCase()) ||
                         produit.getNom_categorie().toLowerCase().contains(keyword.toLowerCase())) {
                     filteredList.add(produit);
                 }
@@ -607,12 +577,11 @@ public class DesignProduitAdminContoller {
         Produit_tableview.setItems(filteredList);
     }
 
-
-
     private void filterCategorieProduits(String searchText) {
         // Vérifier si le champ de recherche n'est pas vide
         if (!searchText.isEmpty()) {
-            // Filtrer la liste des cinémas pour ne garder que ceux dont le nom contient le texte saisi
+            // Filtrer la liste des cinémas pour ne garder que ceux dont le nom contient le
+            // texte saisi
             ObservableList<Produit> filteredList = FXCollections.observableArrayList();
             for (Produit produit : Produit_tableview.getItems()) {
                 if (produit.getCategorie().getNom_categorie().toLowerCase().contains(searchText.toLowerCase())) {
@@ -630,13 +599,12 @@ public class DesignProduitAdminContoller {
     private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
     private final List<CheckBox> statusCheckBoxes = new ArrayList<>();
 
-
-
     private List<Produit> getAllCategories() {
         ProduitService categorieservice = new ProduitService();
         List<Produit> categorie = categorieservice.read();
         return categorie;
     }
+
     @FXML
     void filtrer(MouseEvent event) {
 
@@ -649,7 +617,6 @@ public class DesignProduitAdminContoller {
         statusCheckBoxes.clear();
         // Récupérer les adresses uniques depuis la base de données
         List<String> categorie = getCategorie_Produit();
-
 
         // Créer des VBox pour les adresses
         VBox addressCheckBoxesVBox = new VBox(5);
@@ -664,21 +631,14 @@ public class DesignProduitAdminContoller {
         addressCheckBoxesVBox.setLayoutX(25);
         addressCheckBoxesVBox.setLayoutY(25);
 
-
         // Ajouter les VBox dans le FilterAnchor
         FilterAnchor.getChildren().addAll(addressCheckBoxesVBox);
         FilterAnchor.setVisible(true);
     }
 
-
-
-
     public List<String> getCategorie_Produit() {
         // Récupérer tous les cinémas depuis la base de données
         List<Produit> categories = getAllCategories();
-
-
-
 
         List<String> categorie = categories.stream()
                 .map(c -> c.getCategorie().getNom_categorie())
@@ -692,7 +652,6 @@ public class DesignProduitAdminContoller {
     public void filtercinema(ActionEvent event) {
 
         Produit_tableview.setOpacity(1);
-
 
         FilterAnchor.setVisible(false);
 
@@ -713,7 +672,6 @@ public class DesignProduitAdminContoller {
         ObservableList<Produit> filteredList = FXCollections.observableArrayList(filteredCategories);
         Produit_tableview.setItems(filteredList);
 
-
     }
 
     private List<String> getSelectedCategories() {
@@ -723,10 +681,6 @@ public class DesignProduitAdminContoller {
                 .map(CheckBox::getText)
                 .collect(Collectors.toList());
     }
-
-
-
-
 
     @FXML
     void cinemaclient(ActionEvent event) {
@@ -752,7 +706,6 @@ public class DesignProduitAdminContoller {
         } catch (IOException e) {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
-
 
     }
 
@@ -781,7 +734,6 @@ public class DesignProduitAdminContoller {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
@@ -809,16 +761,12 @@ public class DesignProduitAdminContoller {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
     void profilclient(ActionEvent event) {
 
-
-
     }
-
 
     @FXML
     void MovieClient(ActionEvent event) {
@@ -872,11 +820,5 @@ public class DesignProduitAdminContoller {
         }
 
     }
-
-
-
-
-
-
 
 }

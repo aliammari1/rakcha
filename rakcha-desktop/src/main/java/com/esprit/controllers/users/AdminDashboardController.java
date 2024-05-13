@@ -1,8 +1,6 @@
 package com.esprit.controllers.users;
 
-import com.esprit.controllers.ClientSideBarController;
 import com.esprit.models.users.Admin;
-import com.esprit.models.users.Client;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
 import javafx.beans.property.SimpleObjectProperty;
@@ -34,16 +32,15 @@ import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import net.synedra.validatorfx.Validator;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class AdminDashboardController {
-
 
     TableColumn<User, String> roleTableColumn;
     TableColumn<User, HBox> photoDeProfilTableColumn;
@@ -82,7 +79,6 @@ public class AdminDashboardController {
     @FXML
     private TableView<User> userTableView;
 
-
     @FXML
     void initialize() {
         try {
@@ -97,7 +93,6 @@ public class AdminDashboardController {
             emailTableColumn = new TableColumn<>("email");
             deleteTableColumn = new TableColumn<>("delete");
 
-            formValidator = new Validator();
             tableValidator = new Validator();
 
             userTableView.setEditable(true);
@@ -113,241 +108,21 @@ public class AdminDashboardController {
 
             Tooltip tooltip = new Tooltip();
 
-            firstNameTextField.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            addValidationListener(firstNameTextField, newValue -> newValue.toLowerCase().equals(newValue),
+                    "Please use only lowercase letters.");
+            addValidationListener(lastNameTextField, newValue -> newValue.toLowerCase().equals(newValue),
+                    "Please use only lowercase letters.");
+            addValidationListener(adresseTextField, newValue -> newValue.toLowerCase().equals(newValue),
+                    "Please use only lowercase letters.");
 
-                    formValidator.createCheck()
-                            .dependsOn("firstName", firstNameTextField.textProperty())
-                            .withMethod(c -> {
-                                String userName = c.get("firstName");
-                                if (userName != null) {
-                                    if (!userName.toLowerCase().equals(userName)) {
-                                        c.error("Please use only lowercase letters.");
-                                    } else if (userName.isEmpty())
-                                        c.error("the string is empty");
-                                }
-                            })
-                            .decorates(firstNameTextField)
-                            .immediate();
-                    Window window = firstNameTextField.getScene().getWindow();
-                    Bounds bounds = firstNameTextField.localToScreen(firstNameTextField.getBoundsInLocal());
-                    firstNameTextField.textProperty().addListener(new ChangeListener<String>() {
-                        @Override
-                        public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                            String newValue) {
-                            if (formValidator.containsErrors()) {
-                                tooltip.setText(formValidator.createStringBinding().getValue());
-                                tooltip.setStyle("-fx-background-color: #f00;");
-                                firstNameTextField.setTooltip(tooltip);
-                                firstNameTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                        bounds.getMinY() + 30);
-                            } else {
-                                if (firstNameTextField.getTooltip() != null) {
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+            addValidationListener(emailTextField, newValue -> newValue.matches(emailRegex), "Invalid email format.");
+            addValidationListener(passwordTextField, newValue -> newValue.toLowerCase().equals(newValue),
+                    "Please use only lowercase letters.");
 
-                                    firstNameTextField.getTooltip().hide();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-
-            lastNameTextField.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    formValidator.createCheck()
-                            .dependsOn("firstName", lastNameTextField.textProperty())
-                            .withMethod(c -> {
-                                String userName = c.get("firstName");
-                                if (userName != null) {
-                                    if (!userName.toLowerCase().equals(userName)) {
-                                        c.error("Please use only lowercase letters.");
-                                    } else if (userName.isEmpty())
-                                        c.error("the string is empty");
-                                }
-                            })
-                            .decorates(lastNameTextField)
-                            .immediate();
-                    Window window = lastNameTextField.getScene().getWindow();
-                    Bounds bounds = lastNameTextField.localToScreen(lastNameTextField.getBoundsInLocal());
-                    lastNameTextField.textProperty().addListener(new ChangeListener<String>() {
-                        @Override
-                        public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                            String newValue) {
-                            if (formValidator.containsErrors()) {
-                                tooltip.setText(formValidator.createStringBinding().getValue());
-                                tooltip.setStyle("-fx-background-color: #f00;");
-                                lastNameTextField.setTooltip(tooltip);
-                                lastNameTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                        bounds.getMinY() + 30);
-                            } else {
-                                if (lastNameTextField.getTooltip() != null) {
-                                    lastNameTextField.getTooltip().hide();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-
-            adresseTextField.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    formValidator.createCheck()
-                            .dependsOn("firstName", adresseTextField.textProperty())
-                            .withMethod(c -> {
-                                String userName = c.get("firstName");
-                                if (userName != null) {
-                                    if (!userName.toLowerCase().equals(userName)) {
-                                        c.error("Please use only lowercase letters.");
-                                    } else if (userName.isEmpty())
-                                        c.error("the string is empty");
-                                }
-                            })
-                            .decorates(adresseTextField)
-                            .immediate();
-                    Window window = adresseTextField.getScene().getWindow();
-                    Bounds bounds = adresseTextField.localToScreen(adresseTextField.getBoundsInLocal());
-                    adresseTextField.textProperty().addListener(new ChangeListener<String>() {
-                        @Override
-                        public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                            String newValue) {
-                            if (formValidator.containsErrors()) {
-                                tooltip.setText(formValidator.createStringBinding().getValue());
-                                tooltip.setStyle("-fx-background-color: #f00;");
-                                adresseTextField.setTooltip(tooltip);
-                                adresseTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                        bounds.getMinY() + 30);
-                            } else {
-                                if (adresseTextField.getTooltip() != null) {
-
-                                    adresseTextField.getTooltip().hide();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-
-            emailTextField.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    formValidator.createCheck()
-                            .dependsOn("firstName", emailTextField.textProperty())
-                            .withMethod(c -> {
-                                String userName = c.get("firstName");
-                                if (userName != null) {
-                                    String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-                                    if (!userName.matches(emailRegex)) {
-                                        c.error("Invalid email format.");
-                                    } else if (userName.isEmpty()) {
-                                        c.error("the string is empty");
-                                    }
-                                }
-                            })
-                            .decorates(emailTextField)
-                            .immediate();
-                    Window window = emailTextField.getScene().getWindow();
-                    Bounds bounds = emailTextField.localToScreen(emailTextField.getBoundsInLocal());
-                    emailTextField.textProperty().addListener(new ChangeListener<String>() {
-                        @Override
-                        public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                            String newValue) {
-                            if (formValidator.containsErrors()) {
-                                tooltip.setText(formValidator.createStringBinding().getValue());
-                                tooltip.setStyle("-fx-background-color: #f00;");
-                                emailTextField.setTooltip(tooltip);
-                                emailTextField.getTooltip().show(window, bounds.getMinX() - 10, bounds.getMinY() + 30);
-                            } else {
-                                if (emailTextField.getTooltip() != null) {
-                                    emailTextField.getTooltip().hide();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-
-            passwordTextField.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
-                    formValidator.createCheck()
-                            .dependsOn("firstName", passwordTextField.textProperty())
-                            .withMethod(c -> {
-                                String userName = c.get("firstName");
-                                if (userName != null) {
-                                    if (!userName.toLowerCase().equals(userName)) {
-                                        c.error("Please use only lowercase letters.");
-                                    } else if (userName.isEmpty())
-                                        c.error("the string is empty");
-                                }
-                            })
-                            .decorates(passwordTextField)
-                            .immediate();
-                    Window window = passwordTextField.getScene().getWindow();
-                    Bounds bounds = passwordTextField.localToScreen(passwordTextField.getBoundsInLocal());
-                    passwordTextField.textProperty().addListener(new ChangeListener<String>() {
-                        @Override
-                        public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                            String newValue) {
-                            if (formValidator.containsErrors()) {
-                                tooltip.setText(formValidator.createStringBinding().getValue());
-                                tooltip.setStyle("-fx-background-color: #f00;");
-                                passwordTextField.setTooltip(tooltip);
-                                passwordTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                        bounds.getMinY() + 30);
-                            } else {
-                                if (passwordTextField.getTooltip() != null) {
-
-                                    passwordTextField.getTooltip().hide();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
-
-            phoneNumberTextField.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    formValidator.createCheck()
-                            .dependsOn("firstName", phoneNumberTextField.textProperty())
-                            .withMethod(c -> {
-                                String userName = c.get("firstName");
-                                if (userName != null) {
-                                    String numberRegex = "\\d*";
-                                    if (!userName.matches(numberRegex)) {
-                                        c.error("Please use only numbers.");
-                                    } else if (userName.isEmpty()) {
-                                        c.error("the string is empty");
-                                    }
-                                }
-                            })
-                            .decorates(phoneNumberTextField)
-                            .immediate();
-                    Window window = phoneNumberTextField.getScene().getWindow();
-                    Bounds bounds = phoneNumberTextField.localToScreen(phoneNumberTextField.getBoundsInLocal());
-                    phoneNumberTextField.textProperty().addListener(new ChangeListener<String>() {
-                        @Override
-                        public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                            String newValue) {
-                            if (formValidator.containsErrors()) {
-                                tooltip.setText(formValidator.createStringBinding().getValue());
-                                tooltip.setStyle("-fx-background-color: #f00;");
-                                phoneNumberTextField.setTooltip(tooltip);
-                                phoneNumberTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                        bounds.getMinY() + 30);
-                            } else {
-                                if (phoneNumberTextField.getTooltip() != null) {
-                                    phoneNumberTextField.getTooltip().hide();
-                                }
-                            }
-                        }
-                    });
-                }
-            });
+            String numberRegex = "\\d*";
+            addValidationListener(phoneNumberTextField, newValue -> newValue.matches(numberRegex),
+                    "Please use only numbers.");
 
             List<String> roleList = List.of("admin");
 
@@ -360,42 +135,41 @@ public class AdminDashboardController {
         }
     }
 
-    void validatorCheckTextField(TextField textField, List<Boolean> condition, List<String> errorMessage) {
+    private void addValidationListener(TextField textField, Predicate<String> validationPredicate,
+            String errorMessage) {
+        Tooltip tooltip = new Tooltip();
         textField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                formValidator.createCheck()
-                        .dependsOn("text", textField.textProperty())
-                        .withMethod(c -> {
-                            String validationText = c.get("text");
-                            if (validationText != null) {
-                                for (int i = 0; i < condition.size(); i++) {
-                                    if (condition.get(i)) {
-                                        c.error(errorMessage.get(i));
-                                    }
-                                }
-                            }
-                        })
-                        .decorates(textField)
-                        .immediate();
+                String error = null;
+
+                if (newValue != null) {
+                    if (!validationPredicate.test(newValue)) {
+                        error = errorMessage;
+                    } else if (newValue.isEmpty()) {
+                        error = "The string is empty.";
+                    }
+                }
+
                 Window window = textField.getScene().getWindow();
                 Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                textField.textProperty().addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
-                        if (formValidator.containsErrors()) {
-                            formValidatorTooltip.setText(formValidator.createStringBinding().getValue());
-                            formValidatorTooltip.setStyle("-fx-background-color: #f00;");
-                            textField.setTooltip(formValidatorTooltip);
-                            textField.getTooltip().show(window, bounds.getMinX() - 10, bounds.getMinY() + 30);
-                        } else {
-                            if (textField.getTooltip() != null) {
-                                textField.getTooltip().hide();
-                            }
-                        }
+
+                if (error != null) {
+                    tooltip.setText(error);
+                    tooltip.setStyle("-fx-background-color: #f00;");
+                    textField.setTooltip(tooltip);
+                    textField.getTooltip().show(window, bounds.getMinX() - 10, bounds.getMinY() + 30);
+                } else {
+                    if (textField.getTooltip() != null) {
+                        textField.getTooltip().hide();
                     }
-                });
+                }
+            }
+        });
+
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue && textField.getTooltip() != null) {
+                textField.getTooltip().hide();
             }
         });
     }
@@ -428,6 +202,7 @@ public class AdminDashboardController {
                 alert.show();
                 return;
             }
+
             UserService userService = new UserService();
             userService.create(user);
         } catch (Exception e) {
@@ -534,7 +309,7 @@ public class AdminDashboardController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                                    String newValue) {
+                                        String newValue) {
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
                                         tooltip.setStyle("-fx-background-color: #f00;");
@@ -592,7 +367,7 @@ public class AdminDashboardController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                                    String newValue) {
+                                        String newValue) {
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
                                         tooltip.setStyle("-fx-background-color: #f00;");
@@ -651,7 +426,7 @@ public class AdminDashboardController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                                    String newValue) {
+                                        String newValue) {
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
                                         tooltip.setStyle("-fx-background-color: #f00;");
@@ -710,7 +485,7 @@ public class AdminDashboardController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                                    String newValue) {
+                                        String newValue) {
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
                                         tooltip.setStyle("-fx-background-color: #f00;");
@@ -771,7 +546,7 @@ public class AdminDashboardController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                                    String newValue) {
+                                        String newValue) {
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
                                         tooltip.setStyle("-fx-background-color: #f00;");
@@ -830,7 +605,7 @@ public class AdminDashboardController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                                    String newValue) {
+                                        String newValue) {
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
                                         tooltip.setStyle("-fx-background-color: #f00;");
@@ -947,7 +722,7 @@ public class AdminDashboardController {
             @Override
             public void handle(CellEditEvent<User, DatePicker> event) {
                 event.getTableView().getItems().get(
-                                event.getTablePosition().getRow())
+                        event.getTablePosition().getRow())
                         .setBirthDate(Date.valueOf(event.getNewValue().getValue()));
                 update(event.getTableView().getItems().get(
                         event.getTablePosition().getRow()));

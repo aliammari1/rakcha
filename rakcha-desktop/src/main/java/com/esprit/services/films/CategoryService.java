@@ -49,7 +49,6 @@ public class CategoryService implements IService<Category> {
         return categoryArrayList;
     }
 
-
     @Override
     public void update(Category category) {
 
@@ -63,7 +62,6 @@ public class CategoryService implements IService<Category> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
 
     }
 

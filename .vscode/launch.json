@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug JavaFX App",
+            "request": "launch",
+            "mainClass": "rakcha-desktop.com.esprit.tests.MainApp",
+            "projectName": "rakcha-desktop",
+            "vmArgs": [
+                "--module-path",
+                "D:\\openjfx\\javafx-sdk-21.0.2",
+                "--add-modules",
+                "javafx.controls,javafx.fxml"
+            ],
+            "preLaunchTask": "cd rakcha-desktop && mvn javafx:run"
+        }
+    ]
+}

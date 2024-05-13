@@ -19,7 +19,6 @@ public class ActorService implements IService<Actor> {
 
     }
 
-
     @Override
     public void create(Actor actor) {
         String req = "insert into actor (nom,image,biographie) values (?,?,?) ";
@@ -43,7 +42,8 @@ public class ActorService implements IService<Actor> {
             ResultSet rs = pst.executeQuery();
             int i = 0;
             while (rs.next()) {
-                actorArrayList.add(new Actor(rs.getInt("id"), rs.getString("nom"), rs.getString("image"), rs.getString("biographie")));
+                actorArrayList.add(new Actor(rs.getInt("id"), rs.getString("nom"), rs.getString("image"),
+                        rs.getString("biographie")));
                 System.out.println(actorArrayList.get(i));
                 i++;
             }
@@ -116,7 +116,9 @@ public class ActorService implements IService<Actor> {
                 String nom = rs.getString("nom");
                 int numberOfAppearances = rs.getInt("NumberOfAppearances");
                 String bio = rs.getString("biographie");
-                return new Actor(id, nom, img, bio, numberOfAppearances); // Assuming Actor class has a constructor that accepts id, nom, img, and numberOfAppearances
+                return new Actor(id, nom, img, bio, numberOfAppearances); // Assuming Actor class has a constructor that
+                                                                          // accepts id, nom, img, and
+                                                                          // numberOfAppearances
             }
             rs.close();
             statement.close();

@@ -103,12 +103,16 @@ public class PaymentuserController implements Initializable {
         cinemacombox_res.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                java.util.List<Seance> seances = new SeanceService().readLoujain(new FilmService().getFilmByName(filmLabel_Payment.getText()).getId(), new CinemaService().getCinemaByName(cinemacombox_res.getValue()).getId_cinema());
+                java.util.List<Seance> seances = new SeanceService().readLoujain(
+                        new FilmService().getFilmByName(filmLabel_Payment.getText()).getId(),
+                        new CinemaService().getCinemaByName(cinemacombox_res.getValue()).getId_cinema());
                 checkcomboboxseance_res.setDisable(false);
                 checkcomboboxseance_res.getItems().clear();
-                System.out.println(new FilmService().getFilmByName(filmLabel_Payment.getText()).getId() + " " + new CinemaService().getCinemaByName(cinemacombox_res.getValue()).getId_cinema());
+                System.out.println(new FilmService().getFilmByName(filmLabel_Payment.getText()).getId() + " "
+                        + new CinemaService().getCinemaByName(cinemacombox_res.getValue()).getId_cinema());
                 for (int i = 0; i < seances.size(); i++)
-                    checkcomboboxseance_res.getItems().add("Seance " + (i + 1) + " " + seances.get(i).getDate() + " " + seances.get(i).getHD() + "-" + seances.get(i).getHF());
+                    checkcomboboxseance_res.getItems().add("Seance " + (i + 1) + " " + seances.get(i).getDate() + " "
+                            + seances.get(i).getHD() + "-" + seances.get(i).getHF());
             }
         });
         checkcomboboxseance_res.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
@@ -117,10 +121,13 @@ public class PaymentuserController implements Initializable {
                 while (change.next()) {
                     if (change.wasAdded()) {
 
-                        java.util.List<Seance> seances = new SeanceService().readLoujain(new FilmService().getFilmByName(filmLabel_Payment.getText()).getId(), new CinemaService().getCinemaByName(cinemacombox_res.getValue()).getId_cinema());
+                        java.util.List<Seance> seances = new SeanceService().readLoujain(
+                                new FilmService().getFilmByName(filmLabel_Payment.getText()).getId(),
+                                new CinemaService().getCinemaByName(cinemacombox_res.getValue()).getId_cinema());
                         seance = seances.get(0);
                         anchorpane_payment.getChildren().forEach(node -> node.setDisable(false));
-                        nbrplacepPayment_Spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, seances.get(0).getId_salle().getNb_places(), 1, 1));
+                        nbrplacepPayment_Spinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,
+                                seances.get(0).getId_salle().getNb_places(), 1, 1));
                     }
                 }
             }
@@ -128,7 +135,9 @@ public class PaymentuserController implements Initializable {
         nbrplacepPayment_Spinner.valueProperty().addListener(new ChangeListener<Integer>() {
             @Override
             public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
-                List<Seance> seances = new SeanceService().readLoujain(new FilmService().getFilmByName(filmLabel_Payment.getText()).getId(), new CinemaService().getCinemaByName(cinemacombox_res.getValue()).getId_cinema());
+                List<Seance> seances = new SeanceService().readLoujain(
+                        new FilmService().getFilmByName(filmLabel_Payment.getText()).getId(),
+                        new CinemaService().getCinemaByName(cinemacombox_res.getValue()).getId_cinema());
                 double totalPrice = 0;
                 for (int i = 0; i < seances.size(); i++) {
                     totalPrice += seances.get(i).getPrix() * nbrplacepPayment_Spinner.getValue();
@@ -167,19 +176,19 @@ public class PaymentuserController implements Initializable {
             final WebView webView = new WebView();
             final WebEngine webEngine = webView.getEngine();
 
-//            Path dest = Path.of("stripe.pdf");
-//            try (InputStream in = new URL(url).openStream()) {
-//                Files.copy(in, Paths.get(dest.toUri()));
-//                System.out.println("PDF downloaded successfully");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            try {
-//                Desktop.getDesktop().open(new File("stripe.pdf"));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                throw new RuntimeException(e);
-//            }
+            // Path dest = Path.of("stripe.pdf");
+            // try (InputStream in = new URL(url).openStream()) {
+            // Files.copy(in, Paths.get(dest.toUri()));
+            // System.out.println("PDF downloaded successfully");
+            // } catch (Exception e) {
+            // e.printStackTrace();
+            // }
+            // try {
+            // Desktop.getDesktop().open(new File("stripe.pdf"));
+            // } catch (IOException e) {
+            // e.printStackTrace();
+            // throw new RuntimeException(e);
+            // }
 
             webView.getEngine().load(url);
 

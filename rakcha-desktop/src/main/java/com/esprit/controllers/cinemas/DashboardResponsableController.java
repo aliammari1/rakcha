@@ -256,7 +256,7 @@ public class DashboardResponsableController implements Initializable {
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
+                .filter(cinema -> cinema.getStatut().equals("Accepted"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {
@@ -278,7 +278,7 @@ public class DashboardResponsableController implements Initializable {
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
+                .filter(cinema -> cinema.getStatut().equals("Accepted"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {
@@ -306,10 +306,16 @@ public class DashboardResponsableController implements Initializable {
         logoImageView.setStyle("-fx-border-color: #000000 ; -fx-border-width: 2px; -fx-border-radius: 5px;");
 
         Image image = null;
-        if (!cinema.getLogo().isEmpty())
-            image = new Image(cinema.getLogo());
-        else
+        try {
+            if (!cinema.getLogo().isEmpty())
+                image = new Image(cinema.getLogo());
+            else
+                image = new Image("Logo.png");
+        } catch(Exception e) {
+            System.out.println("line 315 " + e.getMessage());
             image = new Image("Logo.png");
+        }
+
         logoImageView.setImage(image);
         card.getChildren().add(logoImageView);
 

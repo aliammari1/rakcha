@@ -125,7 +125,7 @@ public class DashboardClientController {
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
+                .filter(cinema -> cinema.getStatut().equals("Accepted"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {

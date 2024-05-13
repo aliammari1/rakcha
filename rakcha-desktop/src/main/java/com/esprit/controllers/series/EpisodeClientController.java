@@ -6,7 +6,8 @@ import com.esprit.models.series.Serie;
 import com.esprit.services.series.IServiceEpisode;
 import com.esprit.services.series.IServiceEpisodeImpl;
 import com.esprit.services.series.IServiceFeedbackImpl;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,13 +32,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-
 public class EpisodeClientController implements Initializable {
     private final IServiceEpisode iServiceEpisode = new IServiceEpisodeImpl();
     @FXML
     private Button uploadButton;
     @FXML
-    private FontAwesomeIconView retour;
+    private FontIcon retour;
     @FXML
     private Label uploadSuccessLabel;
     @FXML
@@ -67,7 +67,6 @@ public class EpisodeClientController implements Initializable {
     private Serie selectedSerie;
     private int idep;
     private List<Episode> episodes = new ArrayList<>();
-
 
     public void initialize(Serie selectedSerie) {
         this.selectedSerie = selectedSerie;
@@ -106,7 +105,8 @@ public class EpisodeClientController implements Initializable {
                     imageView.setFitWidth(imageWidth);
                     imageView.setFitHeight(imageHeight);
                     imageView.setPreserveRatio(true);
-                    setText("\n   Title :" + item.getTitre() + "\n  Number: " + item.getNumeroepisode() + "\n   Season : " + item.getSaison());
+                    setText("\n   Title :" + item.getTitre() + "\n  Number: " + item.getNumeroepisode()
+                            + "\n   Season : " + item.getSaison());
                     setStyle("-fx-font-size: 14; -fx-font-family: 'Arial'; -fx-font-weight: bold;"); // Police en gras
                     setGraphic(imageView);
                     idep = item.getIdepisode();
@@ -127,17 +127,14 @@ public class EpisodeClientController implements Initializable {
                 pausebtn.setOnAction(event -> mediaPlayer.pause());
                 arreterbtn.setOnAction(event -> mediaPlayer.stop());
 
-
             }
         });
     }
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
-
 
     @FXML
     void ajouterFeedBack(ActionEvent event) {
@@ -157,7 +154,6 @@ public class EpisodeClientController implements Initializable {
         txtDescriptionFeedBack.clear();
     }
 
-
     @FXML
     public void afficherserie(javafx.scene.input.MouseEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/SeriesClient.fxml")));
@@ -167,6 +163,5 @@ public class EpisodeClientController implements Initializable {
         stage.show();
 
     }
-
 
 }

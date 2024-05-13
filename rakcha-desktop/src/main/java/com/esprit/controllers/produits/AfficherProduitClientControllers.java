@@ -1,6 +1,5 @@
 package com.esprit.controllers.produits;
 
-
 import com.esprit.models.produits.Commentaire;
 import com.esprit.models.produits.Panier;
 import com.esprit.models.produits.Produit;
@@ -12,6 +11,9 @@ import com.esprit.services.users.UserService;
 import com.esprit.utils.Chat;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,7 +52,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-
 public class AfficherProduitClientControllers implements Initializable {
 
     private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
@@ -58,12 +59,12 @@ public class AfficherProduitClientControllers implements Initializable {
     private final List<Produit> panierList = new ArrayList<Produit>();
     private final Chat chat = new Chat();
     @FXML
-    public FontAwesomeIconView forwardMessage;
-    @FXML
 
     public FlowPane panierFlowPane;
     @FXML
     public TextField SearchBar;
+    @FXML
+    public Button forward_message;
     @FXML
     private AnchorPane FilterAnchor;
     @FXML
@@ -71,12 +72,11 @@ public class AfficherProduitClientControllers implements Initializable {
     @FXML
     private FlowPane topproduitFlowPane;
     @FXML
-    private FontAwesomeIconView idfilter;
+    private FontIcon idfilter;
     private List<Produit> l1 = new ArrayList<>();
     private int produitId;
     @FXML
     private AnchorPane top3anchorpane;
-
 
     @FXML
     private FlowPane topthreeVbox;
@@ -92,7 +92,6 @@ public class AfficherProduitClientControllers implements Initializable {
     private AnchorPane produitAnchor;
     @FXML
     private ComboBox<String> tricomboBox;
-
 
     @FXML
     public static List<Produit> rechercher(List<Produit> liste, String recherche) {
@@ -113,7 +112,6 @@ public class AfficherProduitClientControllers implements Initializable {
         displayAllComments(produitId);
         loadAcceptedTop3();
 
-
         ProduitService produitService = new ProduitService();
         l1 = produitService.read();
 
@@ -123,7 +121,6 @@ public class AfficherProduitClientControllers implements Initializable {
             produitFlowPane.getChildren().clear();
             createProduitCards(produitsRecherches);
             filterCategorieProduits(newValue.trim());
-
 
         });
         tricomboBox.getItems().addAll("nom", "prix");
@@ -136,7 +133,6 @@ public class AfficherProduitClientControllers implements Initializable {
             }
 
         });
-
 
     }
 
@@ -159,7 +155,6 @@ public class AfficherProduitClientControllers implements Initializable {
             produitFlowPane.setPadding(new Insets(10, 10, 10, 10));
         }
 
-
     }
 
     private VBox createProduitCard(Produit Produit) {
@@ -169,9 +164,7 @@ public class AfficherProduitClientControllers implements Initializable {
 
         cardContainer.setStyle("-fx-padding: 20px 0 0  30px;"); // Ajout de remplissage à gauche pour le décalage
 
-
         AnchorPane card = new AnchorPane();
-
 
         // Image du Produit
         ImageView imageView = new ImageView();
@@ -179,7 +172,6 @@ public class AfficherProduitClientControllers implements Initializable {
         imageView.setLayoutY(30);
         imageView.setFitWidth(220);
         imageView.setFitHeight(150);
-
 
         try {
             Blob blob = Produit.getImage();
@@ -220,9 +212,7 @@ public class AfficherProduitClientControllers implements Initializable {
                 throw new RuntimeException(e);
             }
 
-
         });
-
 
         // Prix du Produit
         Label priceLabel = new Label(" " + Produit.getPrix() + " DT");
@@ -240,7 +230,6 @@ public class AfficherProduitClientControllers implements Initializable {
         descriptionLabel.setMaxWidth(230); // Ajuster la largeur maximale selon vos besoins
         descriptionLabel.setWrapText(true); // Activer le retour à la ligne automatique
 
-
         // Nom du Produit
         Label nameLabel = new Label(Produit.getNom());
         nameLabel.setLayoutX(23);
@@ -249,7 +238,6 @@ public class AfficherProduitClientControllers implements Initializable {
         nameLabel.setStyle("-fx-text-fill: black;");
         nameLabel.setMaxWidth(200); // Ajuster la largeur maximale selon vos besoins
         nameLabel.setWrapText(true); // Activer le retour à la ligne automatique
-
 
         nameLabel.setOnMouseClicked(event -> {
 
@@ -276,25 +264,23 @@ public class AfficherProduitClientControllers implements Initializable {
                 throw new RuntimeException(e);
             }
 
-
         });
 
-
         // Bouton Ajouter au Panier
-        Button addToCartButton = new Button("Add to Cart", new FontAwesomeIconView(FontAwesomeIcon.CART_PLUS));
-       /* addToCartButton.setStyle("-fx-background-color: #dd4f4d;\n" +
-                "    -fx-text-fill: #FFFFFF;\n" +
-                "    -fx-font-size: 12px;\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-padding: 10px 10px;");*/
+        Button addToCartButton = new Button("Add to Cart", new FontIcon("fa-cart-plus"));
+        /*
+         * addToCartButton.setStyle("-fx-background-color: #dd4f4d;\n" +
+         * "    -fx-text-fill: #FFFFFF;\n" +
+         * "    -fx-font-size: 12px;\n" +
+         * "    -fx-font-weight: bold;\n" +
+         * "    -fx-padding: 10px 10px;");
+         */
         addToCartButton.setLayoutX(65);
         addToCartButton.setLayoutY(330);
 
         addToCartButton.getStyleClass().add("sale");
 
-
         addToCartButton.setOnAction(event -> {
-
 
             int produitId = Produit.getId_produit();
             int quantity = 1; // Vous pouvez ajuster la quantité en fonction de vos besoins
@@ -302,13 +288,11 @@ public class AfficherProduitClientControllers implements Initializable {
             top3anchorpane.setVisible(false);
             panierFlowPane.setVisible(true);
 
-
         });
 
-
-        FontAwesomeIconView chatIcon = new FontAwesomeIconView();
-        chatIcon.setGlyphName("COMMENTING");
-        chatIcon.setSize("20");
+        FontIcon chatIcon = new FontIcon();
+        chatIcon.setIconLiteral("fa-commenting");
+        chatIcon.setIconSize(20);
         chatIcon.setLayoutX(240);
         chatIcon.setLayoutY(365);
         chatIcon.setOnMouseClicked(event -> {
@@ -319,12 +303,9 @@ public class AfficherProduitClientControllers implements Initializable {
 
             displayAllComments(produitId);
 
-
             idcomment.setStyle("-fx-background-color: #fff;");
 
-
         });
-
 
         card.getChildren().addAll(imageView, nameLabel, descriptionLabel, priceLabel, addToCartButton, chatIcon);
 
@@ -337,7 +318,6 @@ public class AfficherProduitClientControllers implements Initializable {
                 "    -fx-border-width: 2px; /* Largeur de la bordure */\n" +
                 "    -fx-border-radius: 5px; /* Rayon de la bordure pour arrondir les coins */");
         card.getStyleClass().add("bg-white");
-
 
         cardContainer.getChildren().add(card);
 
@@ -385,7 +365,6 @@ public class AfficherProduitClientControllers implements Initializable {
             VBox cardContainer = createProduitCard(produit);
             produitFlowPane.getChildren().add(cardContainer);
 
-
         }
 
     }
@@ -398,7 +377,6 @@ public class AfficherProduitClientControllers implements Initializable {
 
         AnchorPane card = new AnchorPane();
 
-
         // Ajouter un label "Card"
         Label cartLabel = new Label("My Cart");
         cartLabel.setFont(Font.font("Arial Rounded MT Bold", FontWeight.BOLD, 25));
@@ -409,14 +387,12 @@ public class AfficherProduitClientControllers implements Initializable {
         // Centrer le texte dans le label
         cartLabel.setAlignment(Pos.CENTER);
 
-
         // Image du Produit
         ImageView imageView = new ImageView();
         imageView.setLayoutX(50);
         imageView.setLayoutY(70);
         imageView.setFitWidth(150);
         imageView.setFitHeight(150);
-
 
         try {
             Blob blob = produit.getImage();
@@ -433,7 +409,6 @@ public class AfficherProduitClientControllers implements Initializable {
             e.printStackTrace();
         }
 
-
         // Nom du Produit
         Label nameLabel = new Label(produit.getNom());
         nameLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 23));
@@ -443,7 +418,6 @@ public class AfficherProduitClientControllers implements Initializable {
         nameLabel.setMaxWidth(200); // Ajuster la largeur maximale selon vos besoins
         nameLabel.setWrapText(true); // Activer le retour à la ligne automatique
 
-
         // Champ de texte pour la quantité
         Label quantiteLabel = new Label("Quantité : 1");
         quantiteLabel.setFont(Font.font("Arial", FontWeight.BOLD, 15));
@@ -451,7 +425,8 @@ public class AfficherProduitClientControllers implements Initializable {
         quantiteLabel.setLayoutY(250);
 
         // Récupérer la somme totale du prix du produit dans le panier
-        //double sommeTotaleProduit = commandeItemService.calculerSommeTotaleProduit(produit.getId_produit());
+        // double sommeTotaleProduit =
+        // commandeItemService.calculerSommeTotaleProduit(produit.getId_produit());
 
         // Champ de texte pour la somme totale
         Label sommeTotaleLabel = new Label("Somme totale : " + produit.getPrix() + " DT");
@@ -459,9 +434,8 @@ public class AfficherProduitClientControllers implements Initializable {
         sommeTotaleLabel.setLayoutX(30);
         sommeTotaleLabel.setLayoutY(270);
 
-
         // Bouton Ajouter au Panier
-        Button commandebutton = new Button("Order", new FontAwesomeIconView(FontAwesomeIcon.CART_PLUS));
+        Button commandebutton = new Button("Order", new FontIcon("fa-cart-plus"));
         commandebutton.setLayoutX(50);
         commandebutton.setLayoutY(300);
         commandebutton.setPrefWidth(120);
@@ -479,8 +453,8 @@ public class AfficherProduitClientControllers implements Initializable {
 
                         Parent root = null;
                         root = fxmlLoader.load();
-                        //Parent rootNode = fxmlLoader.load();
-                        //Scene scene = new Scene(rootNode);
+                        // Parent rootNode = fxmlLoader.load();
+                        // Scene scene = new Scene(rootNode);
 
                         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                         Stage newStage = new Stage();
@@ -491,20 +465,18 @@ public class AfficherProduitClientControllers implements Initializable {
                         // Fermer la fenêtre actuelle
                         currentStage.close();
                     } catch (IOException e) {
-                        e.printStackTrace(); // Affiche l'erreur dans la console (vous pourriez le remplacer par une boîte de dialogue)
+                        e.printStackTrace(); // Affiche l'erreur dans la console (vous pourriez le
+                                             // remplacer par une boîte de dialogue)
                         System.out.println("Erreur lors du chargement du fichier FXML : " + e.getMessage());
                     }
 
-
                 });
-
 
         // Bouton Ajouter au Panier
         Button achatbutton = new Button("continue shopping");
         achatbutton.setLayoutX(50);
         achatbutton.setLayoutY(370);
         achatbutton.setPrefHeight(50);
-
 
         achatbutton.setStyle(" -fx-background-color: #466288;\n" +
                 "    -fx-text-fill: #FCE19A;\n" +
@@ -516,28 +488,24 @@ public class AfficherProduitClientControllers implements Initializable {
 
                     fermerPanierCard(panierContainer);
 
-
                 });
 
-
         // Icône de fermeture (close)
-        FontAwesomeIconView closeIcon = new FontAwesomeIconView();
-        closeIcon.setGlyphName("TIMES_CIRCLE");
-        closeIcon.setSize("20");
+        FontIcon closeIcon = new FontIcon();
+        closeIcon.setIconLiteral("fab-times-circle");
+        closeIcon.setIconSize(20);
         closeIcon.setLayoutX(230);
         closeIcon.setLayoutY(10);
         closeIcon.getStyleClass().add("close"); // Style de l'icône
-
 
         // Attachez un gestionnaire d'événements pour fermer la carte du panier
         closeIcon.setOnMouseClicked(event -> {
             fermerPanierCard(panierContainer);
 
-
         });
 
-
-        card.getChildren().addAll(cartLabel, closeIcon, imageView, nameLabel, quantiteLabel, sommeTotaleLabel, achatbutton, commandebutton);
+        card.getChildren().addAll(cartLabel, closeIcon, imageView, nameLabel, quantiteLabel, sommeTotaleLabel,
+                achatbutton, commandebutton);
         panierContainer.getChildren().add(card);
         return panierContainer;
     }
@@ -551,7 +519,6 @@ public class AfficherProduitClientControllers implements Initializable {
         produitFlowPane.setOpacity(1);
         top3anchorpane.setVisible(true);
         top3anchorpane.setOpacity(1);
-
 
     }
 
@@ -581,14 +548,13 @@ public class AfficherProduitClientControllers implements Initializable {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
-
 
     private void filterCategorieProduits(String searchText) {
         // Vérifier si le champ de recherche n'est pas vide
         if (!searchText.isEmpty()) {
-            // Filtrer la liste des produits pour ne garder que ceux dont le nom contient le texte saisi
+            // Filtrer la liste des produits pour ne garder que ceux dont le nom contient le
+            // texte saisi
             ObservableList<Node> filteredList = FXCollections.observableArrayList();
             for (Node node : produitFlowPane.getChildren()) {
                 Produit produit = (Produit) node.getUserData(); // Récupérer le Produit associé au Node
@@ -623,7 +589,6 @@ public class AfficherProduitClientControllers implements Initializable {
         // Récupérer les adresses uniques depuis la base de données
         List<String> categorie = getCategorie_Produit();
 
-
         // Créer des VBox pour les adresses
         VBox addressCheckBoxesVBox = new VBox(5);
         Label addressLabel = new Label("Category");
@@ -637,17 +602,14 @@ public class AfficherProduitClientControllers implements Initializable {
         addressCheckBoxesVBox.setLayoutX(25);
         addressCheckBoxesVBox.setLayoutY(50);
 
-
         // Ajouter les VBox dans le FilterAnchor
         FilterAnchor.getChildren().addAll(addressCheckBoxesVBox);
         FilterAnchor.setVisible(true);
     }
 
-
     public List<String> getCategorie_Produit() {
         // Récupérer tous les cinémas depuis la base de données
         List<Produit> categories = getAllCategories();
-
 
         List<String> categorie = categories.stream()
                 .map(c -> c.getCategorie().getNom_categorie())
@@ -686,7 +648,6 @@ public class AfficherProduitClientControllers implements Initializable {
         }
     }
 
-
     private List<String> getSelectedCategories() {
         // Récupérer les adresses sélectionnées dans l'AnchorPane de filtrage
         return addressCheckBoxes.stream()
@@ -694,7 +655,6 @@ public class AfficherProduitClientControllers implements Initializable {
                 .map(CheckBox::getText)
                 .collect(Collectors.toList());
     }
-
 
     @FXML
     void cinemaclient(ActionEvent event) {
@@ -721,7 +681,6 @@ public class AfficherProduitClientControllers implements Initializable {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
@@ -743,13 +702,11 @@ public class AfficherProduitClientControllers implements Initializable {
             stage.setTitle("Event ");
             stage.show();
 
-
             // Fermer la fenêtre actuelle
             currentStage.close();
         } catch (IOException e) {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
-
 
     }
 
@@ -778,15 +735,12 @@ public class AfficherProduitClientControllers implements Initializable {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
     void profilclient(ActionEvent event) {
 
-
     }
-
 
     @FXML
     void MovieClient(ActionEvent event) {
@@ -841,19 +795,16 @@ public class AfficherProduitClientControllers implements Initializable {
 
     }
 
-
     @FXML
     void addCommentaire() {
         // Check for bad words and prevent further processing if found
         String userMessage = txtAreaComments.getText();
         System.out.println("User Message: " + userMessage);
 
-
         String badwordDetection = chat.badword(userMessage);
         System.out.println("Badword Detection Result: " + badwordDetection);
 
         ProduitService produitService = new ProduitService();
-
 
         if (badwordDetection.equals("1")) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -862,17 +813,15 @@ public class AfficherProduitClientControllers implements Initializable {
             alert.showAndWait();
         } else {
             // Créez un objet Commentaire
-            Commentaire commentaire = new Commentaire((Client) new UserService().getUserById(4), userMessage, produitService.getProduitById(produitId), Date.valueOf(LocalDate.now()));
+            Commentaire commentaire = new Commentaire((Client) new UserService().getUserById(4), userMessage,
+                    produitService.getProduitById(produitId), Date.valueOf(LocalDate.now()));
             CommentaireService commentaireService = new CommentaireService();
             // Ajoutez le commentaire à la base de données
             commentaireService.create(commentaire);
 
-
         }
 
-
     }
-
 
     private List<Commentaire> getAllComment(int idproduit) {
         CommentaireService commentaireService = new CommentaireService();
@@ -901,7 +850,6 @@ public class AfficherProduitClientControllers implements Initializable {
         idcomment.setContent(allCommentsContainer);
     }
 
-
     @FXML
     void AddComment(MouseEvent event) {
 
@@ -909,7 +857,6 @@ public class AfficherProduitClientControllers implements Initializable {
         displayAllComments(produitId);
 
     }
-
 
     private HBox addCommentToView(Commentaire commentaire) {
         // Création du cercle pour l'image de l'utilisateur
@@ -947,22 +894,20 @@ public class AfficherProduitClientControllers implements Initializable {
 
         // Création du conteneur pour la carte du commentaire
         HBox cardContainer = new HBox();
-        cardContainer.setStyle("-fx-background-color: white; -fx-padding: 5px ; -fx-border-radius: 8px; -fx-border-color: #000; -fx-background-radius: 8px; ");
+        cardContainer.setStyle(
+                "-fx-background-color: white; -fx-padding: 5px ; -fx-border-radius: 8px; -fx-border-color: #000; -fx-background-radius: 8px; ");
 
         // Nom de l'utilisateur
         Text userName = new Text(commentaire.getClient().getFirstName() + " " + commentaire.getClient().getLastName());
         userName.setStyle("-fx-font-family: 'Arial Rounded MT Bold'; -fx-font-weight: bold;");
-
 
         // Commentaire
         Text commentText = new Text(commentaire.getCommentaire());
         commentText.setStyle("-fx-font-family: 'Arial'; -fx-max-width: 300 ;");
         commentText.setWrappingWidth(300); // Définir une largeur maximale pour le retour à la ligne automatique
 
-
         // Création de la boîte pour le texte du commentaire
         VBox textBox = new VBox();
-
 
         // Ajouter le nom d'utilisateur et le commentaire à la boîte de texte
         textBox.getChildren().addAll(userName, commentText);
@@ -981,14 +926,12 @@ public class AfficherProduitClientControllers implements Initializable {
         return contentContainer;
     }
 
-
     public void Close(MouseEvent mouseEvent) {
 
         produitFlowPane.setOpacity(1);
         produitFlowPane.setVisible(true);
 
         AnchorComments.setVisible(false);
-
 
     }
 
@@ -998,7 +941,6 @@ public class AfficherProduitClientControllers implements Initializable {
         produitFlowPane.setVisible(true);
 
         FilterAnchor.setVisible(false);
-
 
     }
 
@@ -1013,7 +955,6 @@ public class AfficherProduitClientControllers implements Initializable {
                 System.out.println("Pas assez de produits disponibles");
                 return;
             }
-
 
             List<Produit> top3Produits = produits.subList(0, 3);
             int j = 0;
@@ -1031,19 +972,16 @@ public class AfficherProduitClientControllers implements Initializable {
         }
     }
 
-
     public VBox createtopthree(Produit produit) {
         VBox cardContainer = new VBox(5);
         cardContainer.setStyle("-fx-padding: 20px 0 0 30px;"); // Add left padding
 
         cardContainer.setPrefWidth(255);
 
-
         AnchorPane card = new AnchorPane();
         card.setLayoutX(0);
         card.setLayoutY(0);
         card.getStyleClass().add("meilleurproduit");
-
 
         cardContainer.setSpacing(10);
 
@@ -1096,9 +1034,7 @@ public class AfficherProduitClientControllers implements Initializable {
                 throw new RuntimeException(e);
             }
 
-
         });
-
 
         // Product name
         Label nameLabel = new Label(produit.getNom());
@@ -1133,16 +1069,13 @@ public class AfficherProduitClientControllers implements Initializable {
                 throw new RuntimeException(e);
             }
 
-
         });
-
 
         Label priceLabel = new Label(" " + produit.getPrix() + " DT");
         priceLabel.setLayoutX(60);
         priceLabel.setLayoutY(55);
         priceLabel.setFont(Font.font("Arial", 14));
         priceLabel.setStyle("-fx-text-fill: black;");
-
 
         card.getChildren().addAll(nameLabel, priceLabel, imageView);
 
@@ -1151,8 +1084,4 @@ public class AfficherProduitClientControllers implements Initializable {
         return cardContainer;
     }
 
-
 }
-
-
-

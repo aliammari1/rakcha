@@ -1,11 +1,11 @@
 package com.esprit.controllers.produits;
 
-
 import com.esprit.controllers.ClientSideBarController;
 import com.esprit.models.produits.Categorie_Produit;
 import com.esprit.models.users.Client;
 import com.esprit.services.produits.CategorieService;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.fontawesome5.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -44,7 +44,7 @@ public class DesignCategorieAdminController {
     @FXML
     private TextField nomC_textFile;
     @FXML
-    private FontAwesomeIconView idfilter;
+    private FontIcon idfilter;
     @FXML
     private AnchorPane categorieList;
     @FXML
@@ -55,7 +55,6 @@ public class DesignCategorieAdminController {
     private TableColumn<Categorie_Produit, String> nomC_tableC;
     @FXML
     private TableColumn<Categorie_Produit, String> description_tableC;
-
 
     @FXML
     void GestionProduit(ActionEvent event) throws IOException {
@@ -83,16 +82,13 @@ public class DesignCategorieAdminController {
     @FXML
     void initialize() {
 
-
         SearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             search(newValue);
             filterCategorieProduits(newValue.trim());
         });
 
-
         afficher_categorie();
         initDeleteColumn();
-
 
     }
 
@@ -173,7 +169,7 @@ public class DesignCategorieAdminController {
         };
 
         deleteColumn.setCellFactory(cellFactory);
-        //categorie_tableview.getColumns().add(deleteColumn);
+        // categorie_tableview.getColumns().add(deleteColumn);
     }
 
     @FXML
@@ -182,16 +178,15 @@ public class DesignCategorieAdminController {
         String nouveauNom = categorieProduit.getNom_categorie();
         String nouvelleDescription = categorieProduit.getDescription();
 
-        // Enregistrez les modifications dans la base de données en utilisant un service approprié
+        // Enregistrez les modifications dans la base de données en utilisant un service
+        // approprié
         CategorieService ps = new CategorieService();
         ps.update(categorieProduit);
-
 
     }
 
     @FXML
     void afficher_categorie() {
-
 
         nomC_tableC.setCellValueFactory(new PropertyValueFactory<Categorie_Produit, String>("nom_categorie"));
         nomC_tableC.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -209,11 +204,11 @@ public class DesignCategorieAdminController {
             modifier_categorie(categorieProduit);
         });
 
-
         // Activer l'édition en cliquant sur une ligne
         categorie_tableview.setEditable(true);
 
-        // Gérer la modification du texte dans une cellule et le valider en appuyant sur Enter
+        // Gérer la modification du texte dans une cellule et le valider en appuyant sur
+        // Enter
         categorie_tableview.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
                 Categorie_Produit selectedCategorieProduit = categorie_tableview.getSelectionModel().getSelectedItem();
@@ -253,7 +248,8 @@ public class DesignCategorieAdminController {
     private void filterCategorieProduits(String searchText) {
         // Vérifier si le champ de recherche n'est pas vide
         if (!searchText.isEmpty()) {
-            // Filtrer la liste des cinémas pour ne garder que ceux dont le nom contient le texte saisi
+            // Filtrer la liste des cinémas pour ne garder que ceux dont le nom contient le
+            // texte saisi
             ObservableList<Categorie_Produit> filteredList = FXCollections.observableArrayList();
             for (Categorie_Produit categorie : categorie_tableview.getItems()) {
                 if (categorie.getNom_categorie().toLowerCase().contains(searchText.toLowerCase())) {
@@ -286,7 +282,6 @@ public class DesignCategorieAdminController {
         // Récupérer les adresses uniques depuis la base de données
         List<String> categorie = getCategorie_Produit();
 
-
         // Créer des VBox pour les adresses
         VBox addressCheckBoxesVBox = new VBox();
         Label addressLabel = new Label("Category");
@@ -300,12 +295,10 @@ public class DesignCategorieAdminController {
         addressCheckBoxesVBox.setLayoutX(25);
         addressCheckBoxesVBox.setLayoutY(60);
 
-
         // Ajouter les VBox dans le FilterAnchor
         FilterAnchor.getChildren().addAll(addressCheckBoxesVBox);
         FilterAnchor.setVisible(true);
     }
-
 
     public List<String> getCategorie_Produit() {
         // Récupérer tous les cinémas depuis la base de données
@@ -328,7 +321,6 @@ public class DesignCategorieAdminController {
         categorieList.setVisible(true);
         categorie_tableview.setOpacity(1);
 
-
         FilterAnchor.setVisible(false);
 
         categorie_tableview.setVisible(true);
@@ -347,7 +339,6 @@ public class DesignCategorieAdminController {
         // Mettre à jour le TableView avec les cinémas filtrés
         ObservableList<Categorie_Produit> filteredList = FXCollections.observableArrayList(filteredCategories);
         categorie_tableview.setItems(filteredList);
-
 
     }
 
@@ -384,7 +375,6 @@ public class DesignCategorieAdminController {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
@@ -411,7 +401,6 @@ public class DesignCategorieAdminController {
         } catch (IOException e) {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
-
 
     }
 
@@ -440,15 +429,12 @@ public class DesignCategorieAdminController {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
-
     }
 
     @FXML
     void profilclient(ActionEvent event) {
 
-
     }
-
 
     @FXML
     void MovieClient(ActionEvent event) {
@@ -502,6 +488,5 @@ public class DesignCategorieAdminController {
         }
 
     }
-
 
 }
