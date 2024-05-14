@@ -102,24 +102,21 @@ class SeriesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Traitement de l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = preg_replace('/\s/', '_', $originalFilename);
-                $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-                $newFilename = 'img/series/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/img/series/',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // Gestion de l'exception
+            $file = $form['image']->getData();
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
                 }
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                $file->move($destination, $filename);
+                $series->setImage("/img/series/" . $filename);
 
-                // Enregistrement du chemin de l'image dans l'entité Series
-                $series->setImage($newFilename);
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->persist($series);
             $entityManager->flush();
@@ -171,24 +168,21 @@ class SeriesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Traitement de l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = preg_replace('/\s/', '_', $originalFilename);
-                $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-                $newFilename = 'img/series/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/img/series/',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // Gestion de l'exception
+            $file = $form['image']->getData();
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
                 }
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                $file->move($destination, $filename);
+                $series->setImage("/img/series/" . $filename);
 
-                // Mettre à jour le chemin de l'image dans l'entité Series
-                $series->setImage($newFilename);
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->flush();
 

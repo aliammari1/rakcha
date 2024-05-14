@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MainApp",
+            "request": "launch",
+            "mainClass": "com.esprit.tests.MainApp",
+            "projectName": "RAKCHA"
+        },
+        {
+            "type": "java",
             "name": "Debug JavaFX App",
             "request": "launch",
             "mainClass": "rakcha-desktop.com.esprit.tests.MainApp",
