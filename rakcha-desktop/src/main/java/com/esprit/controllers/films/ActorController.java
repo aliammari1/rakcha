@@ -1,8 +1,6 @@
 package com.esprit.controllers.films;
 
-import com.esprit.controllers.ClientSideBarController;
 import com.esprit.models.films.Actor;
-import com.esprit.models.users.Client;
 import com.esprit.services.films.ActorService;
 import com.esprit.utils.DataSource;
 import javafx.beans.property.SimpleObjectProperty;
@@ -30,6 +28,7 @@ import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -126,8 +125,17 @@ public class ActorController {
 
     @FXML
     void insertActor(ActionEvent event) {
+        String fullPath = imageAcotr_ImageView1.getImage().getUrl();
+        String requiredPath = fullPath.substring(fullPath.indexOf("/img/actors/"));
+        URI uri = null;
+        try {
+            uri = new URI(requiredPath);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         ActorService actorService = new ActorService();
-        Actor actor = new Actor(nomAcotr_textArea1.getText(), imageAcotr_ImageView1.getImage().getUrl(),
+
+        Actor actor = new Actor(nomAcotr_textArea1.getText(), uri.getPath(),
                 bioAcotr_textArea.getText());
         actorService.create(actor);
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -165,6 +173,34 @@ public class ActorController {
             }
         });
 
+    }
+
+    @FXML
+    void importImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        fileChooser.setTitle("Sélectionner une image");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                String destinationDirectory1 = "./src/main/resources/img/actors/";
+                String destinationDirectory2 = "C:\\xampp\\htdocs\\Rakcha\\rakcha-web\\public\\img\\actors\\";
+                Path destinationPath1 = Paths.get(destinationDirectory1);
+                Path destinationPath2 = Paths.get(destinationDirectory2);
+                String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destinationFilePath1 = destinationPath1.resolve(uniqueFileName);
+                Path destinationFilePath2 = destinationPath2.resolve(uniqueFileName);
+                Files.copy(selectedFile.toPath(), destinationFilePath1);
+                Files.copy(selectedFile.toPath(), destinationFilePath2);
+                Image selectedImage = new Image(destinationFilePath1.toUri().toString());
+                imageAcotr_ImageView1.setImage(selectedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     void updateActor(Actor actor) {

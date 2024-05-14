@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RatingCinemaService implements IService<RatingCinema> {
+
     Connection connection;
 
     public RatingCinemaService() {
@@ -36,7 +37,7 @@ public class RatingCinemaService implements IService<RatingCinema> {
             statement.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -51,11 +52,10 @@ public class RatingCinemaService implements IService<RatingCinema> {
                 return resultSet.getInt("rate");
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return -1; // Retourne -1 si aucun résultat n'est trouvé ou s'il y a une exception
     }
-
 
     // Méthode pour supprimer l'ancienne note du même utilisateur pour le même cinéma
     private void deleteByUserAndCinema(int userId, int cinemaId) {
@@ -66,7 +66,7 @@ public class RatingCinemaService implements IService<RatingCinema> {
             preparedStatement.setInt(2, userId);
             preparedStatement.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -90,9 +90,8 @@ public class RatingCinemaService implements IService<RatingCinema> {
             preparedStatement.setInt(2, ratingCinema.getId_user().getId());
             preparedStatement.executeUpdate();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-
 
     }
 
@@ -106,18 +105,18 @@ public class RatingCinemaService implements IService<RatingCinema> {
                 return resultSet.getDouble("average");
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return 0; // Retourne 0 si aucun résultat n'est trouvé ou s'il y a une exception
     }
 
     public List<Cinema> getTopRatedCinemas() {
         List<Cinema> topRatedCinemas = new ArrayList<>();
-        String req = "SELECT id_cinema, AVG(rate) AS average_rating " +
-                "FROM ratingcinema " +
-                "GROUP BY id_cinema " +
-                "ORDER BY average_rating DESC " +
-                "LIMIT 3"; // Sélectionne les 3 premiers cinémas les mieux notés
+        String req = "SELECT id_cinema, AVG(rate) AS average_rating "
+                + "FROM ratingcinema "
+                + "GROUP BY id_cinema "
+                + "ORDER BY average_rating DESC "
+                + "LIMIT 3"; // Sélectionne les 3 premiers cinémas les mieux notés
         try {
             PreparedStatement statement = connection.prepareStatement(req);
             ResultSet resultSet = statement.executeQuery();
@@ -130,10 +129,9 @@ public class RatingCinemaService implements IService<RatingCinema> {
                 }
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return topRatedCinemas;
     }
-
 
 }

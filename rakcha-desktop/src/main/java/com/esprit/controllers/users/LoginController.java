@@ -1,38 +1,30 @@
 package com.esprit.controllers.users;
 
-import com.esprit.controllers.AdminSideBarController;
-import com.esprit.controllers.ClientSideBarController;
-import com.esprit.controllers.ResponsableDeCinemaSideBarController;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
+import com.esprit.utils.InputValidator;
 import com.github.plushaze.traynotification.notification.Notifications;
 import com.github.plushaze.traynotification.notification.TrayNotification;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-
 import javafx.util.Duration;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class LoginController implements Initializable {
+
     @FXML
     private AnchorPane anchorPane;
 
@@ -63,6 +55,9 @@ public class LoginController implements Initializable {
     private Button googleSIgnInButton;
     @FXML
     private Button microsoftSignInButton;
+    @FXML
+    private AnchorPane loginAnchorPane;
+
 
     @FXML
     void signInWithGoogle(ActionEvent event) throws IOException, ExecutionException, InterruptedException {
@@ -93,7 +88,7 @@ public class LoginController implements Initializable {
         UserService userService = new UserService();
         User user = userService.login(emailTextField.getText(), passwordTextField.getText());
         if (user != null) {
-            TrayNotification trayNotification = new TrayNotification("users","the user found", Notifications.SUCCESS);
+            TrayNotification trayNotification = new TrayNotification("users", "the user found", Notifications.SUCCESS);
             trayNotification.showAndDismiss(new Duration(3000));
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "the user was found", ButtonType.CLOSE);
             alert.show();
@@ -131,6 +126,14 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Platform.runLater(() -> {
+            loginAnchorPane.getChildren().forEach(node -> {
+                if (node instanceof TextField textField) {
+                    InputValidator.inputValidator(textField, new String[]{}, new String[]{}, new String[]{});
+                }
+            });
+            InputValidator.inputValidator(emailTextField, new String[]{"^[A-Za-z0-9+_.-]+@(.+)$"}, new String[]{"Invalid email address"}, new String[]{"Valid email address"});
+        });
         forgetPasswordHyperlink.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

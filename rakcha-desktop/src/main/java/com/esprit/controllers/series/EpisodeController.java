@@ -1,9 +1,7 @@
 package com.esprit.controllers.series;
 
-import com.esprit.controllers.ClientSideBarController;
 import com.esprit.models.series.Episode;
 import com.esprit.models.series.Serie;
-import com.esprit.models.users.Client;
 import com.esprit.services.series.DTO.EpisodeDto;
 import com.esprit.services.series.IServiceEpisodeImpl;
 import com.esprit.services.series.IServiceSerieImpl;
@@ -18,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -25,6 +24,10 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +36,8 @@ import java.util.Optional;
 public class EpisodeController {
     public static final String ACCOUNT_SID = "ACd3d2094ef7f546619e892605940f1631";
     public static final String AUTH_TOKEN = "8d56f8a04d84ff2393de4ea888f677a1";
-
+    @FXML
+    public ImageView episodeImageView;
     @FXML
     private Label numbercheck;
     @FXML
@@ -270,6 +274,36 @@ public class EpisodeController {
 
     }
 
+
+    @FXML
+    void importImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        fileChooser.setTitle("Sélectionner une image");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                String destinationDirectory1 = "./src/main/resources/img/series/";
+                String destinationDirectory2 = "C:\\xampp\\htdocs\\Rakcha\\rakcha-web\\public\\img\\series\\";
+                Path destinationPath1 = Paths.get(destinationDirectory1);
+                Path destinationPath2 = Paths.get(destinationDirectory2);
+                String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destinationFilePath1 = destinationPath1.resolve(uniqueFileName);
+                Path destinationFilePath2 = destinationPath2.resolve(uniqueFileName);
+                Files.copy(selectedFile.toPath(), destinationFilePath1);
+                Files.copy(selectedFile.toPath(), destinationFilePath2);
+                Image selectedImage = new Image(destinationFilePath1.toUri().toString());
+                episodeImageView.setImage(selectedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     // Method to retrieve the stored file path
     public String getFilePath() {
         return imgpath;
@@ -305,6 +339,7 @@ public class EpisodeController {
             System.out.println("Please select a valid video file.");
         }
     }
+
 
     // Method to check if the selected file is a video file
     private boolean isVideoFile(File file) {
@@ -402,15 +437,17 @@ public class EpisodeController {
         titrecheck();
         numbercheck();
         seasoncheck();
-        picturechek();
         videocheck();
         seriecheck();
-        if (titrecheck() && numbercheck() && seasoncheck() && picturechek() && videocheck() && seriecheck()) {
+        if (titrecheck() && numbercheck() && seasoncheck() && videocheck() && seriecheck()) {
             try {
+                String fullPath = episodeImageView.getImage().getUrl();
+                String requiredPath = fullPath.substring(fullPath.indexOf("/img/series/"));
+                URI uri = new URI(requiredPath);
                 episode.setTitre(titreF.getText());
                 episode.setNumeroepisode(Integer.parseInt(numeroepisodeF.getText()));
                 episode.setSaison(Integer.parseInt(saisonF.getText()));
-                episode.setImage(imgpath);
+                episode.setImage(uri.getPath());
                 episode.setVideo(videopath);
                 titrecheck.setText("");
                 numbercheck.setText("");

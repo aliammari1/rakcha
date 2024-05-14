@@ -22,7 +22,7 @@ public class ActorfilmService implements IService<Actorfilm> {
 
     @Override
     public void create(Actorfilm actorfilm) {
-        String req = "INSERT INTO actorfilm (idfilm,idactor) VALUES (?,?)";
+        String req = "INSERT INTO film_actor (film_id,actor_id) VALUES (?,?)";
         try {
             Actor actor = actorfilm.getIdactor();
             String[] actorNames = actor.getNom().split(", ");
@@ -41,7 +41,7 @@ public class ActorfilmService implements IService<Actorfilm> {
     @Override
     public List<Actorfilm> read() {
         List<Actorfilm> actorfilmArrayList = new ArrayList<>();
-        String req = "SELECT film.*,GROUP_CONCAT(actor.nom SEPARATOR ', ') AS actorNames,actor.id,actor.image,actor.biographie from actorfilm JOIN actor  ON actorfilm.idactor  = actor.id JOIN film on actorfilm.idfilm  = film.id GROUP BY film.id;";
+        String req = "SELECT film.*,GROUP_CONCAT(actor.nom SEPARATOR ', ') AS actorNames,actor.id,actor.image,actor.biographie from film_actor JOIN actor  ON film_actor.actor_id = actor.id JOIN film on film_actor.film_id = film.id GROUP BY film.id;";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             ResultSet rs = pst.executeQuery();
@@ -64,10 +64,10 @@ public class ActorfilmService implements IService<Actorfilm> {
 
     @Override
     public void update(Actorfilm actorfilm) {
-        String req = "UPDATE actorFilm " +
-                "INNER JOIN actor ON actorFilm.idactor = actor.id " +
-                "INNER JOIN film ON actorFilm.idfilm = film.id " +
-                "SET actorFilm.idfilm = ?, " +
+        String req = "UPDATE film_actor " +
+                "INNER JOIN actor ON film_actor.actor_id = actor.id " +
+                "INNER JOIN film ON film_actor.film_id = film.id " +
+                "SET film_actor.film_id = ?, " +
                 "    actor.nom = ? " +
                 "WHERE actor.id = ? AND film.id = ?;";
         try {
@@ -82,7 +82,7 @@ public class ActorfilmService implements IService<Actorfilm> {
         ActorService actorService = new ActorService();
         filmService.update(film);
         System.out.println("filmCategory---------------: " + film);
-        String reqDelete = "DELETE FROM actorfilm WHERE idfilm = ?;";
+        String reqDelete = "DELETE FROM film_actor WHERE film_id = ?;";
         try {
             PreparedStatement statement = connection.prepareStatement(reqDelete);
             statement.setInt(1, film.getId());
@@ -90,7 +90,7 @@ public class ActorfilmService implements IService<Actorfilm> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String req = "INSERT INTO actorfilm (idfilm, idactor) VALUES (?,?)";
+        String req = "INSERT INTO film_actor (film_id, actor_id) VALUES (?,?)";
         try {
             PreparedStatement statement = connection.prepareStatement(req);
             statement.setInt(1, film.getId());
@@ -110,7 +110,7 @@ public class ActorfilmService implements IService<Actorfilm> {
 
     public String getActorsNames(int id) {
         String s = "";
-        String req = "SELECT GROUP_CONCAT(actor.nom SEPARATOR ', ') AS actorNames from actorfilm JOIN actor  ON actorfilm.idactor  = actor.id JOIN film on actorfilm.idfilm  = film.id where film.id = ? GROUP BY film.id;";
+        String req = "SELECT GROUP_CONCAT(actor.nom SEPARATOR ', ') AS actorNames from film_actor JOIN actor  ON film_actor.actor_id = actor.id JOIN film on film_actor.film_id = film.id where film.id = ? GROUP BY film.id;";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setInt(1, id);

@@ -66,7 +66,7 @@ public class AvisService implements IService<Avis> {
     @Override
     public void update(Avis avis) {
 
-        String req = "UPDATE avis set note = ? where idavis=?";
+        String req = "UPDATE avis set note = ? where id=?";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setInt(1, avis.getNote());
@@ -82,7 +82,7 @@ public class AvisService implements IService<Avis> {
     @Override
     public void delete(Avis avis) {
 
-        String req = "DELETE from avis where iduseres = ? and id_produit=?;";
+        String req = "DELETE from avis where idusers = ? and id_produit=?;";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setInt(1, avis.getUser().getId());
@@ -126,7 +126,7 @@ public class AvisService implements IService<Avis> {
     }
 
     public Avis ratingExiste(int id_produit, int iduseres) {
-        String req = "SELECT *  FROM avis WHERE id_produit =? AND iduseres=? ";
+        String req = "SELECT *  FROM avis WHERE id_produit =? AND idusers=? ";
         Avis rate = null;
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(req);

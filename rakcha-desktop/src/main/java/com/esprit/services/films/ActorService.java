@@ -100,9 +100,9 @@ public class ActorService implements IService<Actor> {
     }
 
     public Actor getActorByPlacement(int actorPlacement) {
-        String req = "SELECT a.*, COUNT(af.idfilm) AS NumberOfAppearances " +
+        String req = "SELECT a.*, COUNT(af.film_id) AS NumberOfAppearances " +
                 "FROM actor a " +
-                "JOIN actorfilm af ON a.id = af.idactor " +
+                "JOIN film_actor af ON a.id = af.actor_id " +
                 "GROUP BY a.id, a.nom " +
                 "ORDER BY NumberOfAppearances DESC " +
                 "LIMIT ?, 1;"; // Use parameter placeholder for the limit

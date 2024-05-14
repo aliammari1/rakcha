@@ -9,11 +9,6 @@ import com.esprit.services.produits.PanierService;
 import com.esprit.services.produits.ProduitService;
 import com.esprit.services.users.UserService;
 import com.esprit.utils.Chat;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.javafx.FontIcon;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -40,13 +35,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Blob;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -171,13 +163,14 @@ public class AfficherProduitClientControllers implements Initializable {
         imageView.setLayoutX(45);
         imageView.setLayoutY(30);
         imageView.setFitWidth(220);
+
+
         imageView.setFitHeight(150);
 
         try {
-            Blob blob = Produit.getImage();
-            if (blob != null) {
-                byte[] bytes = blob.getBytes(1, (int) blob.length());
-                Image image = new Image(new ByteArrayInputStream(bytes));
+            String produitImage = Produit.getImage();
+            if (!produitImage.isEmpty()) {
+                Image image = new Image(produitImage);
                 imageView.setImage(image);
             } else {
                 // Utiliser une image par défaut si le Blob est null
@@ -398,10 +391,9 @@ public class AfficherProduitClientControllers implements Initializable {
         imageView.setFitHeight(150);
 
         try {
-            Blob blob = produit.getImage();
-            if (blob != null) {
-                byte[] bytes = blob.getBytes(1, (int) blob.length());
-                Image image = new Image(new ByteArrayInputStream(bytes));
+            String produitImage = produit.getImage();
+            if (!produitImage.isEmpty()) {
+                Image image = new Image(produitImage);
                 imageView.setImage(image);
             } else {
                 // Utiliser une image par défaut si le Blob est null
@@ -460,6 +452,7 @@ public class AfficherProduitClientControllers implements Initializable {
                         // Scene scene = new Scene(rootNode);
 
                         Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                        Stage newStage = new Stage();
                         currentStage.setScene(new Scene(root, 1280, 700));
                         currentStage.setTitle("my cart");
                         currentStage.show();
@@ -468,7 +461,7 @@ public class AfficherProduitClientControllers implements Initializable {
 
                     } catch (IOException e) {
                         e.printStackTrace(); // Affiche l'erreur dans la console (vous pourriez le
-                                             // remplacer par une boîte de dialogue)
+                        // remplacer par une boîte de dialogue)
                         System.out.println("Erreur lors du chargement du fichier FXML : " + e.getMessage());
                     }
 
@@ -816,7 +809,7 @@ public class AfficherProduitClientControllers implements Initializable {
         } else {
             // Créez un objet Commentaire
             Client client = (Client) txtAreaComments.getScene().getWindow().getUserData();
-            Commentaire commentaire = new Commentaire(client, userMessage,produitService.getProduitById(produitId));
+            Commentaire commentaire = new Commentaire(client, userMessage, produitService.getProduitById(produitId));
             CommentaireService commentaireService = new CommentaireService();
             // Ajoutez le commentaire à la base de données
             commentaireService.create(commentaire);
@@ -995,10 +988,9 @@ public class AfficherProduitClientControllers implements Initializable {
         imageView.setFitHeight(50);
 
         try {
-            Blob blob = produit.getImage();
-            if (blob != null) {
-                byte[] bytes = blob.getBytes(1, (int) blob.length());
-                Image image = new Image(new ByteArrayInputStream(bytes));
+            String produitImage = produit.getImage();
+            if (!produitImage.isEmpty()) {
+                Image image = new Image(produitImage);
                 imageView.setImage(image);
             } else {
                 // Use a default image if Blob is null
@@ -1085,5 +1077,6 @@ public class AfficherProduitClientControllers implements Initializable {
 
         return cardContainer;
     }
+
 
 }

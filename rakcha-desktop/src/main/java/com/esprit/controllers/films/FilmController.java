@@ -37,6 +37,11 @@ import net.synedra.validatorfx.Validator;
 import org.controlsfx.control.CheckComboBox;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Time;
 import java.time.Year;
@@ -232,13 +237,15 @@ public class FilmController {
                 showAlert("Au moins un cinéma doit être sélectionné.");
                 return;
             }
-
+            String fullPath = imageFilm_ImageView.getImage().getUrl();
+            String requiredPath = fullPath.substring(fullPath.indexOf("/img/films/"));
+            URI uri = new URI(requiredPath);
             // Création et insertion des données après validation
             FilmcategoryService fs = new FilmcategoryService();
             fs.create(new Filmcategory(
                     new Category(Categorychecj_ComboBox.getCheckModel().getCheckedItems().stream()
                             .collect(Collectors.joining(", ")), ""),
-                    new Film(nomFilm_textArea.getText(), imageFilm_ImageView.getImage().getUrl(),
+                    new Film(nomFilm_textArea.getText(), uri.getPath(),
                             Time.valueOf(dureeFilm_textArea.getText()), descriptionFilm_textArea.getText(),
                             Integer.parseInt(annederealisationFilm_textArea.getText()))));
 
@@ -356,7 +363,7 @@ public class FilmController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                                                    String newValue) {
                                     System.out.println(validator.containsErrors());
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
@@ -414,7 +421,7 @@ public class FilmController {
                                     textField.textProperty().addListener(new ChangeListener<String>() {
                                         @Override
                                         public void changed(ObservableValue<? extends String> observable,
-                                                String oldValue, String newValue) {
+                                                            String oldValue, String newValue) {
                                             if (validator.containsErrors()) {
                                                 tooltip.setText(validator.createStringBinding().getValue());
                                                 tooltip.setStyle("-fx-background-color: #f00;");
@@ -477,7 +484,7 @@ public class FilmController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                                                    String newValue) {
                                     System.out.println(validator.containsErrors());
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
@@ -526,7 +533,7 @@ public class FilmController {
                             textField.textProperty().addListener(new ChangeListener<String>() {
                                 @Override
                                 public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                        String newValue) {
+                                                    String newValue) {
                                     System.out.println(validator.containsErrors());
                                     if (validator.containsErrors()) {
                                         tooltip.setText(validator.createStringBinding().getValue());
@@ -708,7 +715,7 @@ public class FilmController {
                         System.out.println(filmcategoryStringCellDataFeatures.getValue().getId() + " "
                                 + afs.getActorsNames(filmcategoryStringCellDataFeatures.getValue().getId()));
                         List<String> ls = Stream.of(
-                                afs.getActorsNames(filmcategoryStringCellDataFeatures.getValue().getId()).split(", "))
+                                        afs.getActorsNames(filmcategoryStringCellDataFeatures.getValue().getId()).split(", "))
                                 .toList();
                         System.out.println("pass: " + filmcategoryStringCellDataFeatures.getValue().getId());
                         for (String checkedString : ls)
@@ -738,7 +745,7 @@ public class FilmController {
                         checkComboBox.getItems().addAll(l);
                         FilmcinemaService cfs = new FilmcinemaService();
                         List<String> ls = Stream.of(
-                                cfs.getcinemaNames(filmcategoryStringCellDataFeatures.getValue().getId()).split(", "))
+                                        cfs.getcinemaNames(filmcategoryStringCellDataFeatures.getValue().getId()).split(", "))
                                 .toList();
                         for (String checkedString : ls)
                             checkComboBox.getCheckModel().check(checkedString);
@@ -830,6 +837,34 @@ public class FilmController {
         // }
         readFilmTable();
 
+    }
+
+    @FXML
+    void importImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        fileChooser.setTitle("Sélectionner une image");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                String destinationDirectory1 = "./src/main/resources/img/films/";
+                String destinationDirectory2 = "C:\\xampp\\htdocs\\Rakcha\\rakcha-web\\public\\img\\films\\";
+                Path destinationPath1 = Paths.get(destinationDirectory1);
+                Path destinationPath2 = Paths.get(destinationDirectory2);
+                String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destinationFilePath1 = destinationPath1.resolve(uniqueFileName);
+                Path destinationFilePath2 = destinationPath2.resolve(uniqueFileName);
+                Files.copy(selectedFile.toPath(), destinationFilePath1);
+                Files.copy(selectedFile.toPath(), destinationFilePath2);
+                Image selectedImage = new Image(destinationFilePath1.toUri().toString());
+                imageFilm_ImageView.setImage(selectedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML

@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
@@ -14,88 +15,88 @@
 
 <AnchorPane prefHeight="855.0" prefWidth="1507.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.esprit.controllers.series.SerieController">
     <children>
-      <AnchorPane layoutX="322.0" layoutY="126.0" prefHeight="673.0" prefWidth="272.0" style="-fx-border-color: red; -fx-border-radius: 10; -fx-border-width: 2;">
-         <children>
-                <Label layoutX="26.0" layoutY="54.0" prefHeight="17.0" prefWidth="68.0" stylesheets="@dashbord.css" text="Name :" textFill="#a42121">
+        <Pane layoutX="335.0" layoutY="117.0" prefHeight="582.0" prefWidth="248.0">
+            <children>
+                <Label layoutX="14.0" layoutY="117.0" prefHeight="17.0" prefWidth="68.0" stylesheets="@dashbord.css" text="Name :" textFill="#a42121">
                     <font>
                         <Font name="Arial Rounded MT Bold" size="16.0" />
                     </font>
                 </Label>
-                <Label layoutX="24.0" layoutY="130.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text="Summary:" textFill="#a42121">
+                <Label layoutX="12.0" layoutY="181.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text="Summary:" textFill="#a42121">
                     <font>
                         <Font name="Arial Rounded MT Bold" size="16.0" />
                     </font>
                 </Label>
-                <TextField fx:id="nomF" layoutX="28.0" layoutY="78.0" prefHeight="30.0" prefWidth="229.0">
-               <cursor>
-                  <Cursor fx:constant="TEXT" />
-               </cursor>
-            </TextField>
-                <TextField fx:id="resumeF" layoutX="28.0" layoutY="156.0" prefHeight="30.0" prefWidth="230.0" styleClass="text-field-red" stylesheets="@dashbord.css" />
-                <Button layoutX="86.0" layoutY="533.0" mnemonicParsing="false" onAction="#ajouterSerie" prefHeight="42.0" prefWidth="126.0" styleClass="sale" stylesheets="@dashbord.css" text="ADD" />
-                <Button fx:id="image" layoutX="31.0" layoutY="370.0" mnemonicParsing="false" onAction="#addimg" prefHeight="23.0" prefWidth="230.0" styleClass="instert-btn-picture" text="Select" />
+                <TextField fx:id="nomF" layoutX="40.0" layoutY="144.0" prefHeight="25.0" prefWidth="193.0" styleClass="text-field-red" stylesheets="@dashbord.css" />
+                <TextField fx:id="resumeF" layoutX="40.0" layoutY="207.0" prefHeight="25.0" prefWidth="193.0" styleClass="text-field-red" stylesheets="@dashbord.css" />
+                <Button layoutX="76.0" layoutY="540.0" mnemonicParsing="false" onAction="#ajouterSerie" prefHeight="25.0" prefWidth="104.0" styleClass="instert-btn" stylesheets="@dashbord.css" text="ADD" />
+                <Button fx:id="image" layoutX="43.0" layoutY="421.0" mnemonicParsing="false" onAction="#importImage" prefHeight="23.0" prefWidth="187.0" styleClass="instert-btn-picture" text="Select" />
 
-      
-                      <Label layoutX="28.0" layoutY="203.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text="Director :" textFill="#a42121">
+
+                <Label layoutX="12.0" layoutY="254.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text="Director :" textFill="#a42121">
                     <font>
                         <Font name="Arial Rounded MT Bold" size="16.0" />
                     </font>
                 </Label>
-                <TextField fx:id="directeurF" layoutX="29.0" layoutY="226.0" prefHeight="30.0" prefWidth="230.0" styleClass="text-field-red" stylesheets="@dashbord.css" />
-                <Label layoutX="19.0" layoutY="271.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text=" Country :" textFill="#a42121">
+                <TextField fx:id="directeurF" layoutX="41.0" layoutY="277.0" prefHeight="25.0" prefWidth="193.0" styleClass="text-field-red" stylesheets="@dashbord.css" />
+                <Label layoutX="12.0" layoutY="322.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text=" Country :" textFill="#a42121">
                     <font>
                         <Font name="Arial Rounded MT Bold" size="16.0" />
                     </font>
                 </Label>
-                <TextField fx:id="paysF" layoutX="29.0" layoutY="297.0" prefHeight="30.0" prefWidth="230.0" styleClass="text-field-red" stylesheets="@dashbord.css" />
-                <Label layoutX="23.0" layoutY="344.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text="Picture:" textFill="#a42121">
+                <TextField fx:id="paysF" layoutX="41.0" layoutY="348.0" prefHeight="25.0" prefWidth="193.0" styleClass="text-field-red" stylesheets="@dashbord.css" />
+                <Label layoutX="12.0" layoutY="395.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text="Picture:" textFill="#a42121">
                     <font>
                         <Font name="Arial Rounded MT Bold" size="16.0" />
                     </font>
                 </Label>
-                <ComboBox fx:id="categorieF" layoutX="28.0" layoutY="440.0" prefHeight="26.0" prefWidth="230.0" />
-                <Label layoutX="20.0" layoutY="415.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text="Category :" textFill="#a42121">
+                <ComboBox fx:id="categorieF" layoutX="40.0" layoutY="494.0" prefHeight="25.0" prefWidth="193.0" />
+                <Label layoutX="12.0" layoutY="467.0" prefHeight="20.0" prefWidth="125.0" stylesheets="@dashbord.css" text="Category :" textFill="#a42121">
                     <font>
                         <Font name="Arial Rounded MT Bold" size="16.0" />
                     </font>
                 </Label>
-                <Label layoutX="48.0" prefHeight="43.0" prefWidth="239.0" stylesheets="@dashbord.css" text="Add Serie" textFill="#c7d485">
+                <Label layoutX="63.0" layoutY="-7.0" prefHeight="43.0" prefWidth="131.0" stylesheets="@dashbord.css" text="Add Serie" textFill="#c7d485">
                     <font>
                         <Font name="Arial Rounded MT Bold" size="24.0" />
                     </font>
                 </Label>
-                <Label fx:id="nomcheck" layoutX="36.0" layoutY="111.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
+                <Label fx:id="nomcheck" layoutX="48.0" layoutY="168.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
                     <font>
                         <Font size="11.0" />
                     </font>
                 </Label>
-                <Label fx:id="resumecheck" layoutX="31.0" layoutY="183.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
+                <Label fx:id="resumecheck" layoutX="43.0" layoutY="234.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
                     <font>
                         <Font size="11.0" />
                     </font>
                 </Label>
-                <Label fx:id="directeurcheck" layoutX="36.0" layoutY="253.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
+                <Label fx:id="directeurcheck" layoutX="48.0" layoutY="304.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
                     <font>
                         <Font size="11.0" />
                     </font>
                 </Label>
-                <Label fx:id="payscheck" layoutX="31.0" layoutY="324.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
+                <Label fx:id="payscheck" layoutX="43.0" layoutY="375.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
                     <font>
                         <Font size="11.0" />
                     </font>
                 </Label>
-                <Label fx:id="imagechek" layoutX="32.0" layoutY="393.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
+                <Label fx:id="imagechek" layoutX="44.0" layoutY="444.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
                     <font>
                         <Font size="11.0" />
                     </font>
                 </Label>
-                <Label fx:id="categoriecheck" layoutX="31.0" layoutY="465.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
+                <Label fx:id="categoriecheck" layoutX="43.0" layoutY="519.0" prefHeight="17.0" prefWidth="187.0" textFill="RED">
                     <font>
                         <Font size="11.0" />
                     </font>
                 </Label>
-         </children>
-      </AnchorPane>
+            <ImageView fx:id="serieImageView" fitHeight="81.0" fitWidth="104.0" layoutX="66.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+            <stylesheets>
+                <URL value="@dashbord.css" />
+            </stylesheets>
+        </Pane>
         <Pane layoutX="714.0" layoutY="189.0" prefHeight="494.0" prefWidth="715.0" styleClass="bg-white">
             <children>
                 <TableView fx:id="tableView" layoutX="63.0" layoutY="75.0" prefHeight="297.0" prefWidth="586.0" stylesheets="@dashbord.css">
@@ -128,7 +129,7 @@
             </stylesheets>
         </Pane>
         <fx:include source="adminSideBar.fxml" />
-        
+
         <Button layoutX="782.0" layoutY="150.0" mnemonicParsing="false" onAction="#Oepisodes" prefHeight="26.0" prefWidth="211.0" styleClass="instert-btn-picture" stylesheets="@dashbord.css" text="Episode Management " />
     </children>
 </AnchorPane>

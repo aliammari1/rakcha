@@ -28,12 +28,12 @@ import javafx.util.Callback;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.sql.Blob;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,61 +41,46 @@ import java.util.stream.Collectors;
 
 public class DesignProduitAdminContoller {
 
+    private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
+    private final List<CheckBox> statusCheckBoxes = new ArrayList<>();
+    private final List<Produit> l1 = new ArrayList<>();
     private File selectedFile; // pour stocke le fichier image selectionné
-
     @FXML
     private TableColumn<Produit, Integer> PrixP_tableC;
-
     @FXML
     private TableView<Produit> Produit_tableview;
-
     @FXML
     private TableColumn<Produit, String> descriptionP_tableC;
-
     @FXML
     private TextArea descriptionP_textArea;
-
     @FXML
     private TableColumn<Produit, ImageView> image_tableC;
-
     @FXML
     private ComboBox<String> nomC_comboBox;
-
     @FXML
     private TableColumn<Produit, String> nomCP_tableC;
-
     @FXML
     private TableColumn<Produit, String> nomP_tableC;
-
     @FXML
     private TextField nomP_textFiled;
-
     @FXML
     private TextField prix_textFiled;
-
     @FXML
     private TableColumn<Produit, Integer> quantiteP_tableC;
-
     @FXML
     private TextField quantiteP_textFiled;
-
     @FXML
     private ImageView image;
-
     @FXML
     private TextField SearchBar;
     @FXML
     private AnchorPane categorieList;
     @FXML
     private AnchorPane FilterAnchor;
-
     @FXML
     private AnchorPane formulaire;
-
     @FXML
     private TableColumn<Produit, Void> deleteColumn;
-
-    private List<Produit> l1 = new ArrayList<>();
 
     @FXML
     void initialize() {
@@ -187,27 +172,20 @@ public class DesignProduitAdminContoller {
                     return; // Arrêter l'exécution de la méthode si les champs sont vides
                 }
 
-                // Convertir le fichier en un objet Blob
-                Connection connection = null;
                 try {
-                    FileInputStream fis = new FileInputStream(selectedFile);
-                    connection = DataSource.getInstance().getConnection();
-                    Blob imageBlob = connection.createBlob();
+                    URI uri = null;
+                    String fullPath = image.getImage().getUrl();
+                    System.out.println(fullPath);
+                    String requiredPath = fullPath.substring(fullPath.indexOf("/img/produit/"));
+                    uri = new URI(requiredPath);
 
-                    // Définir le flux d'entrée de l'image dans l'objet Blob
-                    try (OutputStream outputStream = imageBlob.setBinaryStream(1)) {
-                        byte[] buffer = new byte[4096];
-                        int bytesRead;
-                        while ((bytesRead = fis.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
-                    }
-
-                    // Créer l'objet Produit avec l'image Blob
                     ProduitService ps = new ProduitService();
                     CategorieService cs = new CategorieService();
-                    Produit nouveauProduit = new Produit(nomProduit, prix, imageBlob, descriptionProduit,
+                    Produit nouveauProduit = new Produit(nomProduit, prix, uri.getPath(), descriptionProduit,
                             cs.getCategorieByNom(nomCategorie), quantite);
+                    System.out.println(nomProduit + " " + prix + " " + uri.getPath() + " " + descriptionProduit + " " +
+                            cs.getCategorieByNom(nomCategorie) + " " + quantite);
+                    System.out.println("nouveauProduit: --------------- " + nouveauProduit);
                     ps.create(nouveauProduit);
 
                     // Ajouter le nouveau produit à la liste existante
@@ -220,18 +198,10 @@ public class DesignProduitAdminContoller {
                     alert.setTitle("Produit ajouté");
                     alert.setContentText("Produit ajouté !");
                     alert.show();
-                } catch (SQLException | IOException e) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                     showAlert("Erreur lors de l'ajout du produit : " + e.getMessage());
-                } finally {
-                    if (connection != null) {
-                        try {
-                            connection.close();
-                        } catch (SQLException e) {
-                            showAlert("Erreur lors de la fermeture de la connexion : " + e.getMessage());
-                        }
-                    }
                 }
-
             } catch (NumberFormatException e) {
                 showAlert("Veuillez entrer des valeurs numériques valides pour le prix et la quantité.");
             }
@@ -248,7 +218,7 @@ public class DesignProduitAdminContoller {
         String nouveauNom = produit.getNom();
         int nouveauPrix = produit.getPrix();
         String nouvelleDescription = produit.getDescription();
-        Blob img = produit.getImage();
+        String img = produit.getImage();
         int nouvelleQuantite = produit.getQuantiteP();
         int id = produit.getId_produit();
 
@@ -269,22 +239,22 @@ public class DesignProduitAdminContoller {
             /*
              * protected void updateItem(String item, boolean empty) {
              * super.updateItem(item, empty);
-             * 
+             *
              * if (item == null || empty) {
              * setGraphic(null);
              * } else {
              * CategorieService cs = new CategorieService();
              * ComboBox<String> newComboBox = new ComboBox<>();
-             * 
+             *
              * // Obtenez la liste des noms de catégories
              * List<String> categorieNames = cs.getAllCategoriesNames();
-             * 
+             *
              * // Ajoutez les noms de catégories au ComboBox
              * newComboBox.getItems().addAll(categorieNames);
-             * 
+             *
              * // Sélectionnez le nom de la catégorie associée au produit
              * newComboBox.setValue(item);
-             * 
+             *
              * // Afficher le ComboBox nouvellement créé dans la cellule
              * setGraphic(newComboBox);
              * newComboBox.setOnAction(event -> {
@@ -294,7 +264,7 @@ public class DesignProduitAdminContoller {
              * produit.setCategorie(selectedCategorie);
              * modifier_produit(produit);
              * newComboBox.getStyleClass().add("combo-box-red");
-             * 
+             *
              * });
              * }
              * }
@@ -391,9 +361,9 @@ public class DesignProduitAdminContoller {
             imageView.setFitWidth(100); // Réglez la largeur de l'image selon vos préférences
             imageView.setFitHeight(50); // Réglez la hauteur de l'image selon vos préférences
             try {
-                Blob blob = p.getImage();
-                if (blob != null) {
-                    Image image = new Image(blob.getBinaryStream());
+                String pImage = p.getImage();
+                if (!pImage.isEmpty()) {
+                    Image image = new Image(pImage);
                     imageView.setImage(image);
                 } else {
                     // Afficher une image par défaut si le logo est null
@@ -401,7 +371,7 @@ public class DesignProduitAdminContoller {
                             Objects.requireNonNull(getClass().getResourceAsStream("default_image.png")));
                     imageView.setImage(defaultImage);
                 }
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return new javafx.beans.property.SimpleObjectProperty<>(imageView);
@@ -513,23 +483,12 @@ public class DesignProduitAdminContoller {
         if (selectedFile != null) { // Vérifier si une image a été sélectionnée
             Connection connection = null;
             try {
-                // Convertir le fichier en un objet Blob
-                FileInputStream fis = new FileInputStream(selectedFile);
                 connection = DataSource.getInstance().getConnection();
-                Blob imageBlob = connection.createBlob();
 
-                // Définir le flux d'entrée de l'image dans l'objet Blob
-                try (OutputStream outputStream = imageBlob.setBinaryStream(1)) {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = fis.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-                }
-                produit.setImage(imageBlob);
+                produit.setImage(selectedFile.toURI().toURL().toString());
                 modifier_produit(produit);
 
-            } catch (SQLException | IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 showAlert("Erreur lors du chargement de la nouvelle image : " + e.getMessage());
             }
@@ -595,9 +554,6 @@ public class DesignProduitAdminContoller {
             afficher_produit();
         }
     }
-
-    private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
-    private final List<CheckBox> statusCheckBoxes = new ArrayList<>();
 
     private List<Produit> getAllCategories() {
         ProduitService categorieservice = new ProduitService();
@@ -819,6 +775,34 @@ public class DesignProduitAdminContoller {
             e.printStackTrace(); // Gérer l'exception d'entrée/sortie
         }
 
+    }
+
+    @FXML
+    void importImage(MouseEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        fileChooser.setTitle("Sélectionner une image");
+        selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                String destinationDirectory1 = "./src/main/resources/img/produit/";
+                String destinationDirectory2 = "C:\\xampp\\htdocs\\Rakcha\\rakcha-web\\public\\img\\produit\\";
+                Path destinationPath1 = Paths.get(destinationDirectory1);
+                Path destinationPath2 = Paths.get(destinationDirectory2);
+                String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destinationFilePath1 = destinationPath1.resolve(uniqueFileName);
+                Path destinationFilePath2 = destinationPath2.resolve(uniqueFileName);
+                Files.copy(selectedFile.toPath(), destinationFilePath1);
+                Files.copy(selectedFile.toPath(), destinationFilePath2);
+                Image selectedImage = new Image(destinationFilePath1.toUri().toString());
+                image.setImage(selectedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

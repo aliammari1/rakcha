@@ -165,7 +165,7 @@ public class CommandeItemService implements IService<CommandeItem> {
     }
 
     public List<CommandeItem> getavergeratingSorted() {
-        String req = "SELECT id_produit, quantity  FROM commandeitem GROUP BY id_produit ORDER BY quantity DESC WHERE statu like payee";
+        String req = "SELECT id_produit, quantity FROM commandeitem WHERE statu LIKE 'payee' GROUP BY id_produit ORDER BY quantity DESC";
         List<CommandeItem> aver = new ArrayList<>();
         try {
             PreparedStatement pst = connection.prepareStatement(req);

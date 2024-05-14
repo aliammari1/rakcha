@@ -6,14 +6,11 @@ import com.esprit.models.cinemas.Seance;
 import com.esprit.models.films.Film;
 import com.esprit.models.films.Filmcinema;
 import com.esprit.models.users.Responsable_de_cinema;
-import com.esprit.models.users.User;
 import com.esprit.services.cinemas.CinemaService;
-import com.esprit.services.cinemas.RatingCinemaService;
 import com.esprit.services.cinemas.SalleService;
 import com.esprit.services.cinemas.SeanceService;
 import com.esprit.services.films.FilmService;
 import com.esprit.services.films.FilmcinemaService;
-import com.esprit.services.users.UserService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -48,6 +45,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -58,10 +56,13 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class  DashboardResponsableController implements Initializable {
+public class DashboardResponsableController implements Initializable {
 
     Responsable_de_cinema responsableDeCinema;
     @FXML
@@ -145,11 +146,6 @@ public class  DashboardResponsableController implements Initializable {
     @FXML
     private FontAwesomeIconView backSession;
 
-
-
-
-
-
     public void setData(Responsable_de_cinema resp) {
         this.responsableDeCinema = resp;
     }
@@ -170,41 +166,26 @@ public class  DashboardResponsableController implements Initializable {
             return;
         }
 
-        // Check if a responsible cinema ID is selected
-        int selectedResponsableCinemaId = 1; // Set the selected responsible cinema ID to 1
-
-        String defaultStatut = "En_Attente";
+        String defaultStatut = "Pending";
 
         // Fetch the responsible cinema by its ID
-        Responsable_de_cinema responsableDeCinema = fetchResponsableCinemaById(selectedResponsableCinemaId);
-
+        Responsable_de_cinema responsableDeCinema = (Responsable_de_cinema) tfNom.getScene().getWindow().getUserData();
+        URI uri = null;
+        try {
+            String fullPath = image.getImage().getUrl();
+            String requiredPath = fullPath.substring(fullPath.indexOf("/img/cinemas/"));
+            uri = new URI(requiredPath);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         // Create the cinema object
-        Cinema cinema = new Cinema(tfNom.getText(), tfAdresse.getText(), responsableDeCinema, image.getImage().getUrl(), defaultStatut);
+        Cinema cinema = new Cinema(tfNom.getText(), tfAdresse.getText(), responsableDeCinema, uri.getPath(), defaultStatut);
 
         // Call the CinemaService to create the cinema
         CinemaService cs = new CinemaService();
         cs.create(cinema);
         showAlert("Cinema added successfully!");
     }
-
-    private Responsable_de_cinema fetchResponsableCinemaById(int id) {
-        // Instancier le service responsableDeCinemaService
-        UserService userService = new UserService();
-
-        // Appeler la méthode du service pour récupérer le responsable de cinéma par son ID
-        User user = userService.getUserById(id);
-
-        // Vérifier si l'utilisateur récupéré est bien un responsable de cinéma
-        if (user instanceof Responsable_de_cinema) {
-            return (Responsable_de_cinema) user;
-        } else {
-            System.out.println("User is not a responsible cinema!");
-            return null;
-        }
-    }
-
-
-
 
     @FXML
     void selectImage(MouseEvent event) {
@@ -213,7 +194,7 @@ public class  DashboardResponsableController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             try {
-                String destinationDirectory = "./src/main/resources/pictures/films/";
+                String destinationDirectory = "./src/main/resources/img/cinemas/";
                 Path destinationPath = Paths.get(destinationDirectory);
                 String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
                 Path destinationFilePath = destinationPath.resolve(uniqueFileName);
@@ -221,11 +202,10 @@ public class  DashboardResponsableController implements Initializable {
                 Image selectedImage = new Image(destinationFilePath.toUri().toString());
                 image.setImage(selectedImage);
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -240,8 +220,6 @@ public class  DashboardResponsableController implements Initializable {
         sessionButton.setVisible(true);
         backSession.setVisible(false);
         backButton.setVisible(false);
-
-
 
         for (Cinema c : acceptedCinemas) {
             comboCinema.getItems().add(c.getNom());
@@ -263,7 +241,6 @@ public class  DashboardResponsableController implements Initializable {
 
     }
 
-
     private void loadMoviesForCinema(int cinemaId) {
         comboMovie.getItems().clear();
         FilmcinemaService fs = new FilmcinemaService();
@@ -283,13 +260,12 @@ public class  DashboardResponsableController implements Initializable {
         }
     }
 
-
     private HashSet<Cinema> loadAcceptedCinemas() {
         CinemaService cinemaService = new CinemaService();
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
+                .filter(cinema -> cinema.getStatut().equals("Accepted"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {
@@ -311,7 +287,7 @@ public class  DashboardResponsableController implements Initializable {
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
+                .filter(cinema -> cinema.getStatut().equals("Accepted"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {
@@ -321,7 +297,6 @@ public class  DashboardResponsableController implements Initializable {
         HashSet<Cinema> acceptedCinemasSet = new HashSet<>(acceptedCinemasList);
         return acceptedCinemasSet;
     }
-
 
     private HBox createCinemaCard(Cinema cinema) {
         HBox cardContainer = new HBox();
@@ -339,10 +314,16 @@ public class  DashboardResponsableController implements Initializable {
         logoImageView.setStyle("-fx-border-color: #000000 ; -fx-border-width: 2px; -fx-border-radius: 5px;");
 
         Image image = null;
-        if (!cinema.getLogo().isEmpty())
-            image = new Image(cinema.getLogo());
-        else
+        try {
+            if (!cinema.getLogo().isEmpty()) {
+                image = new Image(cinema.getLogo());
+            } else {
+                image = new Image("Logo.png");
+            }
+        } catch (Exception e) {
+            System.out.println("line 335 " + e.getMessage());
             image = new Image("Logo.png");
+        }
         logoImageView.setImage(image);
         card.getChildren().add(logoImageView);
 
@@ -392,9 +373,7 @@ public class  DashboardResponsableController implements Initializable {
                     card.getChildren().remove(nameTextField);
                 });
 
-
                 card.getChildren().add(nameTextField);
-
 
                 nameTextField.requestFocus();
                 nameTextField.selectAll();
@@ -421,7 +400,6 @@ public class  DashboardResponsableController implements Initializable {
                 adresseTextField.setStyle("-fx-font-family: 'Arial Rounded MT Bold'; -fx-font-size: 14px;");
                 adresseTextField.setPrefWidth(adresseLabel.getWidth());
 
-
                 adresseTextField.setOnAction(e -> {
                     adresseLabel.setText(adresseTextField.getText());
                     cinema.setAdresse(adresseTextField.getText());
@@ -430,14 +408,12 @@ public class  DashboardResponsableController implements Initializable {
                     card.getChildren().remove(adresseTextField);
                 });
 
-
                 card.getChildren().add(adresseTextField);
 
                 adresseTextField.requestFocus();
                 adresseTextField.selectAll();
             }
         });
-
 
         Line verticalLine = new Line();
         verticalLine.setStartX(240);
@@ -449,13 +425,11 @@ public class  DashboardResponsableController implements Initializable {
 
         card.getChildren().add(verticalLine);
 
-
         Circle circle = new Circle();
         circle.setRadius(30);
         circle.setLayoutX(285);
         circle.setLayoutY(45);
         circle.setFill(Color.web("#ae2d3c"));
-
 
         FontAwesomeIconView deleteIcon = new FontAwesomeIconView();
         deleteIcon.setGlyphName("TRASH");
@@ -478,7 +452,6 @@ public class  DashboardResponsableController implements Initializable {
                 cardContainer.getChildren().remove(card);
             }
         });
-
 
         card.getChildren().addAll(circle, deleteIcon);
 
@@ -520,7 +493,6 @@ public class  DashboardResponsableController implements Initializable {
                                 getTableView().getItems().remove(salle);
                             });
                         }
-
 
                         @Override
                         protected void updateItem(Void item, boolean empty) {
@@ -647,8 +619,6 @@ public class  DashboardResponsableController implements Initializable {
         return cardContainer;
     }
 
-
-
     @FXML
     private void showCinemaList() {
         cinemaFormPane.setVisible(true);
@@ -699,7 +669,6 @@ public class  DashboardResponsableController implements Initializable {
                             getTableView().getItems().remove(seance);
                         });
                     }
-
 
                     @Override
                     protected void updateItem(Void item, boolean empty) {
@@ -948,7 +917,6 @@ public class  DashboardResponsableController implements Initializable {
                     setText(salleName);
                 }
 
-
                 // Double clic détecté
                 setOnMouseClicked(event -> {
                     if (event.getClickCount() == 2) {
@@ -1003,7 +971,6 @@ public class  DashboardResponsableController implements Initializable {
                 } else {
                     setText(filmName);
                 }
-
 
                 // Double clic détecté
                 setOnMouseClicked(event -> {
@@ -1063,9 +1030,8 @@ public class  DashboardResponsableController implements Initializable {
         String endTimeText = tfEndTime.getText();
         String priceText = tfPrice.getText();
 
-
-        if (selectedCinemaName == null || selectedFilmName == null || selectedRoomName == null || selectedDate == null ||
-                departureTimeText.isEmpty() || endTimeText.isEmpty() || priceText.isEmpty()) {
+        if (selectedCinemaName == null || selectedFilmName == null || selectedRoomName == null || selectedDate == null
+                || departureTimeText.isEmpty() || endTimeText.isEmpty() || priceText.isEmpty()) {
             showAlert("Please complete all fields.");
             return;
         }
@@ -1117,7 +1083,6 @@ public class  DashboardResponsableController implements Initializable {
         showSessionForm();
     }
 
-
     private List<Seance> loadSeances() {
         SeanceService seanceService = new SeanceService();
         List<Seance> seances = seanceService.read();
@@ -1135,7 +1100,6 @@ public class  DashboardResponsableController implements Initializable {
             showAlert("please complete all fields!");
             return;
         }
-
 
         try {
             int nombrePlaces = Integer.parseInt(tfNbrPlaces.getText());
@@ -1158,7 +1122,6 @@ public class  DashboardResponsableController implements Initializable {
 
         loadsalles();
     }
-
 
     private void loadsalles() {
         SalleService salleService = new SalleService();
@@ -1222,7 +1185,6 @@ public class  DashboardResponsableController implements Initializable {
         currentStage.close();
     }
 
-
     @FXML
     void back(MouseEvent event) {
 
@@ -1248,7 +1210,6 @@ public class  DashboardResponsableController implements Initializable {
         showSessionForm();
         System.out.println(loadSeances());
 
-
     }
 
     @FXML
@@ -1262,7 +1223,32 @@ public class  DashboardResponsableController implements Initializable {
 
     }
 
-
-
+    @FXML
+    void importImage(MouseEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        fileChooser.setTitle("Sélectionner une image");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                String destinationDirectory1 = "./src/main/resources/img/cinemas/";
+                String destinationDirectory2 = "C:\\xampp\\htdocs\\Rakcha\\rakcha-web\\public\\img\\cinemas\\";
+                Path destinationPath1 = Paths.get(destinationDirectory1);
+                Path destinationPath2 = Paths.get(destinationDirectory2);
+                String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destinationFilePath1 = destinationPath1.resolve(uniqueFileName);
+                Path destinationFilePath2 = destinationPath2.resolve(uniqueFileName);
+                Files.copy(selectedFile.toPath(), destinationFilePath1);
+                Files.copy(selectedFile.toPath(), destinationFilePath2);
+                Image selectedImage = new Image(destinationFilePath1.toUri().toString());
+                image.setImage(selectedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
