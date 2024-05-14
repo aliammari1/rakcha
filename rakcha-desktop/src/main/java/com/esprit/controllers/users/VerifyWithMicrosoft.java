@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 
 public class VerifyWithMicrosoft {
 
-
     @FXML
     private TextField authTextField;
     @FXML
@@ -30,7 +29,6 @@ public class VerifyWithMicrosoft {
     private Label passwordErrorLabel;
     @FXML
     private Button sendButton;
-
 
     @FXML
     void initialize() throws IOException, ExecutionException, InterruptedException {

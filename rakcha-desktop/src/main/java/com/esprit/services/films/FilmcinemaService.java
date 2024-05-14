@@ -25,7 +25,7 @@ public class FilmcinemaService implements IService<Filmcinema> {
 
     @Override
     public void create(Filmcinema filmcinema) {
-        String req = "INSERT INTO filmcinema (id_film,id_cinema) VALUES (?,?)";
+        String req = "INSERT INTO film_cinema (film_id,cinema_id) VALUES (?,?)";
         try {
             Cinema cinema = filmcinema.getId_cinema();
             String[] cinemanames = cinema.getNom().split(", ");
@@ -44,7 +44,7 @@ public class FilmcinemaService implements IService<Filmcinema> {
     @Override
     public List<Filmcinema> read() {
         List<Filmcinema> actorfilmArrayList = new ArrayList<>();
-        String req = "SELECT film.*,cinema.*, GROUP_CONCAT(cinema.nom SEPARATOR ', ') AS cinemaNames from filmcinema JOIN cinema  ON filmcinema.id_cinema  = cinema.id_cinema JOIN film on filmcinema.id_film  = film.id GROUP BY film.id;";
+        String req = "SELECT film.*,cinema.*, GROUP_CONCAT(cinema.nom SEPARATOR ', ') AS cinemaNames from film_cinema JOIN cinema  ON film_cinema.cinema_id = cinema.id_cinema JOIN film on film_cinema.film_id = film.id GROUP BY film.id;";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             ResultSet rs = pst.executeQuery();
@@ -79,7 +79,7 @@ public class FilmcinemaService implements IService<Filmcinema> {
         CinemaService cinemaService = new CinemaService();
         filmService.update(film);
         System.out.println("filmcinema............: " + film);
-        String reqDelete = "DELETE FROM filmcinema WHERE id_film = ?;";
+        String reqDelete = "DELETE FROM film_cinema WHERE film_id = ?;";
         try {
             PreparedStatement statement = connection.prepareStatement(reqDelete);
             statement.setInt(1, film.getId());
@@ -87,7 +87,7 @@ public class FilmcinemaService implements IService<Filmcinema> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String req = "INSERT INTO filmcinema (id_film, id_cinema) VALUES (?,?)";
+        String req = "INSERT INTO film_cinema (film_id, cinema_id) VALUES (?,?)";
         try {
             PreparedStatement statement = connection.prepareStatement(req);
             statement.setInt(1, film.getId());
@@ -102,7 +102,7 @@ public class FilmcinemaService implements IService<Filmcinema> {
 
     public String getcinemaNames(int id) {
         String s = "";
-        String req = "SELECT GROUP_CONCAT(cinema.nom SEPARATOR ', ') AS cinemaNames from filmcinema JOIN cinema  ON filmcinema.id_cinema = cinema.id_cinema JOIN film on filmcinema.id_film = film.id where film.id = ? GROUP BY film.id;";
+        String req = "SELECT GROUP_CONCAT(cinema.nom SEPARATOR ', ') AS cinemaNames from film_cinema JOIN cinema  ON film_cinema.cinema_id = cinema.id_cinema JOIN film on film_cinema.film_id = film.id where film.id = ? GROUP BY film.id;";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setInt(1, id);
@@ -117,7 +117,7 @@ public class FilmcinemaService implements IService<Filmcinema> {
 
     public List<Film> readMoviesForCinema(int cinemaId) {
         List<Film> moviesForCinema = new ArrayList<>();
-        String query = "SELECT film.*,cinema.* from filmcinema  JOIN cinema  ON filmcinema.id_cinema  = cinema.id_cinema  JOIN film on filmcinema.id_film  = film.id where cinema.id_cinema = ? GROUP BY film.id;";
+        String query = "SELECT film.*,cinema.* from film_cinema  JOIN cinema  ON film_cinema.cinema_id = cinema.id_cinema  JOIN film on film_cinema.film_id = film.id where cinema.id_cinema = ? GROUP BY film.id;";
         try (PreparedStatement pst = connection.prepareStatement(query)) {
             pst.setInt(1, cinemaId);
             ResultSet rs = pst.executeQuery();

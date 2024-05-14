@@ -24,10 +24,11 @@ public class ProduitService implements IService<Produit> {
     public void create(Produit produit) {
         String req = "INSERT into produit(nom, prix,image,description,quantiteP,id_categorieProduit) values (?, ?,?,?,?,?)  ;";
         try {
+            System.out.println("peoduit: " + produit);
             PreparedStatement pst = connection.prepareStatement(req);
             pst.setString(1, produit.getNom());
             pst.setInt(2, produit.getPrix());
-            pst.setBlob(3, produit.getImage());
+            pst.setString(3, produit.getImage());
             pst.setString(4, produit.getDescription());
             pst.setInt(5, produit.getQuantiteP());
             pst.setInt(6, produit.getCategorie().getId_categorie());
@@ -52,7 +53,7 @@ public class ProduitService implements IService<Produit> {
             while (rs.next()) {
 
                 produits.add(new Produit(rs.getInt("id_produit"), rs.getString("nom"), rs.getInt("prix"),
-                        rs.getBlob("image"), rs.getString("description"),
+                        rs.getString("image"), rs.getString("description"),
                         cs.getCategorie(rs.getInt("id_categorieProduit")), rs.getInt("quantiteP")));
                 System.out.println(produits.get(i));
                 i++;
@@ -85,7 +86,7 @@ public class ProduitService implements IService<Produit> {
                         rs.getInt("id_produit"),
                         rs.getString("nom"),
                         rs.getInt("prix"),
-                        rs.getBlob("image"),
+                        rs.getString("image"),
                         rs.getString("description"),
                         cs.getCategorie(rs.getInt("id_categorieProduit")),
                         rs.getInt("quantiteP")));
@@ -112,7 +113,7 @@ public class ProduitService implements IService<Produit> {
             pst.setString(2, produit.getNom());
             pst.setInt(3, produit.getPrix());
             pst.setString(4, produit.getDescription());
-            pst.setBlob(5, produit.getImage());
+            pst.setString(5, produit.getImage());
             pst.setInt(6, produit.getQuantiteP());
             pst.setInt(1, produit.getCategorie().getId_categorie());
             pst.executeUpdate();
@@ -154,7 +155,7 @@ public class ProduitService implements IService<Produit> {
                         rs.getInt("id_produit"),
                         rs.getString("nom"),
                         rs.getInt("prix"),
-                        rs.getBlob("image"),
+                        rs.getString("image"),
                         rs.getString("description"),
                         cs.getCategorie(rs.getInt("id_categorieProduit")),
                         rs.getInt("quantiteP"));
@@ -201,7 +202,7 @@ public class ProduitService implements IService<Produit> {
         String req = "SELECT p.*, ci.*, c.*, SUM(ci.quantity) AS total_quantity FROM produit p JOIN commandeitem ci ON p.id_produit = ci.id_produit JOIN commande c ON ci.idCommande = c.idCommande WHERE c.statu = 'payee' GROUP BY p.id_produit ORDER BY total_quantity DESC;";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(req);
-                ResultSet resultSet = preparedStatement.executeQuery()) {
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
                 CategorieService cs = new CategorieService();
@@ -210,7 +211,7 @@ public class ProduitService implements IService<Produit> {
                         resultSet.getInt("id_produit"),
                         resultSet.getString("nom"),
                         resultSet.getInt("prix"),
-                        resultSet.getBlob("image"),
+                        resultSet.getString("image"),
                         resultSet.getString("description"),
                         cs.getCategorie(resultSet.getInt("id_categorieProduit")),
                         resultSet.getInt("quantiteP"));

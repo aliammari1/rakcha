@@ -30,7 +30,7 @@ public class CinemaService implements IService<Cinema> {
             pst.setInt(3, cinema.getResponsable().getId());
             pst.setString(4, cinema.getLogo());
             // Définition de la valeur par défaut pour le champ Statut
-            pst.setString(5, cinema.getStatut() != null ? cinema.getStatut() : "En_attente");
+            pst.setString(5, cinema.getStatut() != null ? cinema.getStatut() : "Pending");
             pst.executeUpdate();
             System.out.println("Cinéma ajouté !");
         } catch (SQLException e) {

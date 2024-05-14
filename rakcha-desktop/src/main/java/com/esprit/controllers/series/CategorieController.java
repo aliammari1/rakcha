@@ -265,7 +265,6 @@ public class CategorieController {
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
-                // Gérer l'exception
             }
         } else {
             // Gérer le cas où actionEvent est nul

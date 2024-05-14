@@ -53,6 +53,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DashboardClientController {
+
     private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
     private final List<CheckBox> namesCheckBoxes = new ArrayList<>();
     @FXML
@@ -87,7 +88,6 @@ public class DashboardClientController {
 
     @FXML
     private AnchorPane Anchortop3;
-
 
     @FXML
     public static List<Cinema> rechercher(List<Cinema> liste, String recherche) {
@@ -130,7 +130,7 @@ public class DashboardClientController {
         List<Cinema> cinemas = cinemaService.read();
 
         List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> cinema.getStatut().equals("Acceptée"))
+                .filter(cinema -> cinema.getStatut().equals("Accepted"))
                 .collect(Collectors.toList());
 
         if (acceptedCinemasList.isEmpty()) {
@@ -146,7 +146,6 @@ public class DashboardClientController {
 
         return acceptedCinemasSet;
     }
-
 
     @FXML
     private void showAlert(String message) {
@@ -263,8 +262,9 @@ public class DashboardClientController {
 
         // Ajout d'un écouteur pour la notation
         rating.ratingProperty().addListener((observable, oldValue, newValue) -> {
+            Client client =(Client) AnchorComments.getScene().getWindow().getUserData();
             // Enregistrez le nouveau taux dans la base de données
-            RatingCinema ratingCinema = new RatingCinema(cinema, new Client(111) , newValue.intValue());
+            RatingCinema ratingCinema = new RatingCinema(cinema, client, newValue.intValue());
             ratingService.create(ratingCinema);
         });
 
@@ -316,7 +316,6 @@ public class DashboardClientController {
             card.getChildren().add(adresseLabel);
 
             // Vous pouvez ajouter d'autres éléments comme le logo, le bouton de réservation, etc.
-
             // Positionnement de la carte dans Anchortop3
             AnchorPane.setTopAnchor(card, currentY);
             AnchorPane.setLeftAnchor(card, 30.0);
@@ -326,7 +325,6 @@ public class DashboardClientController {
             currentY += cardHeight + cardSpacing;
         }
     }
-
 
     private void geocodeAddress(String address) {
         new Thread(() -> {
@@ -496,8 +494,6 @@ public class DashboardClientController {
         planningFlowPane.getChildren().add(planningContent);
     }
 
-
-
     private StackPane createSeanceCard(Seance seance) {
         StackPane cardContainer = new StackPane();
         cardContainer.setPrefWidth(600);
@@ -575,12 +571,10 @@ public class DashboardClientController {
 
     }
 
-
     private void createfilmCards(List<Cinema> Cinemas) {
         for (Cinema cinema : Cinemas) {
             HBox cardContainer = createCinemaCard(cinema);
             cinemaFlowPane.getChildren().add(cardContainer);
-
 
         }
 
@@ -754,7 +748,6 @@ public class DashboardClientController {
 
     }
 
-
     @FXML
     void addCommentaire() {
         String message = txtAreaComments.getText();
@@ -766,7 +759,7 @@ public class DashboardClientController {
         } else {
             SentimentAnalysisController sentimentAnalysisController = new SentimentAnalysisController();
             String sentimentResult = sentimentAnalysisController.analyzeSentiment(message);
-            System.out.println(cinemaId + " "+new CinemaService().getCinema(cinemaId));
+            System.out.println(cinemaId + " " + new CinemaService().getCinema(cinemaId));
             CommentaireCinema commentaire = new CommentaireCinema(new CinemaService().getCinema(cinemaId), (Client) new UserService().getUserById(2), message, sentimentResult);
             System.out.println(commentaire + " " + new UserService().getUserById(2));
             CommentaireCinemaService commentaireCinemaService = new CommentaireCinemaService();
@@ -785,7 +778,6 @@ public class DashboardClientController {
         CommentaireCinemaService commentaireCinemaService = new CommentaireCinemaService();
         List<CommentaireCinema> allComments = commentaireCinemaService.read();
         List<CommentaireCinema> cinemaComments = new ArrayList<>();
-
 
         for (CommentaireCinema comment : allComments) {
             if (comment.getCinema().getId_cinema() == cinemaId) {
@@ -842,10 +834,8 @@ public class DashboardClientController {
         commentText.setStyle("-fx-font-family: 'Arial'; -fx-max-width: 300 ;");
         commentText.setWrappingWidth(300); // Définir une largeur maximale pour le retour à la ligne automatique
 
-
         // Création de la boîte pour le texte du commentaire
         VBox textBox = new VBox();
-
 
         // Ajouter le nom d'utilisateur et le commentaire à la boîte de texte
         textBox.getChildren().addAll(userName, commentText);
@@ -863,7 +853,6 @@ public class DashboardClientController {
         ScrollPaneComments.setContent(contentContainer);
         return contentContainer;
     }
-
 
     private void displayAllComments(int cinemaId) {
         List<CommentaireCinema> comments = getAllComment(cinemaId);
@@ -884,6 +873,5 @@ public class DashboardClientController {
         listCinemaClient.setVisible(true);
 
     }
-
 
 }
