@@ -28,7 +28,7 @@ public class CommandeService implements IService<Commande> {
 
             // pst.setInt(1, commande.getCommandeItem().());
             pst.setDate(1, (Date) commande.getDateCommande());
-            pst.setString(2, commande.getStatu() != null ? commande.getStatu() : "En_Cours");
+            pst.setString(2, commande.getStatu() != null ? commande.getStatu() : "en cours");
             pst.setInt(3, commande.getIdClient().getId());
             pst.setInt(4, commande.getNum_telephone());
             pst.setString(5, commande.getAdresse());
@@ -46,7 +46,7 @@ public class CommandeService implements IService<Commande> {
         String req = "INSERT into commande(dateCommande,statu , idClient,num_telephone,adresse) values ( ?,?,?,?,?)  ;";
         PreparedStatement pst = connection.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
         pst.setDate(1, (Date) commande.getDateCommande());
-        pst.setString(2, commande.getStatu() != null ? commande.getStatu() : "En_Cours");
+        pst.setString(2, commande.getStatu() != null ? commande.getStatu() : "en cours");
         pst.setInt(3, commande.getIdClient().getId());
         pst.setInt(4, commande.getNum_telephone());
         pst.setString(5, commande.getAdresse());
@@ -113,11 +113,11 @@ public class CommandeService implements IService<Commande> {
     @Override
     public void update(Commande commande) {
 
-        String req = "UPDATE commande c" +
-                " JOIN commandeitem ci ON c.idCommande = ci.idCommande " +
-                "JOIN users cl ON c.idClient = cl.id " +
-                "SET c.dateCommande = ?, c.statu = ?, c.num_telephone=? , c.adresse=? " +
-                " WHERE c.idCommande = ? ";
+        String req = "UPDATE commande c"
+                + " JOIN commandeitem ci ON c.idCommande = ci.idCommande "
+                + "JOIN users cl ON c.idClient = cl.id "
+                + "SET c.dateCommande = ?, c.statu = ?, c.num_telephone=? , c.adresse=? "
+                + " WHERE c.idCommande = ? ";
 
         try {
             PreparedStatement pst = connection.prepareStatement(req);
@@ -169,7 +169,7 @@ public class CommandeService implements IService<Commande> {
 
     public List<Commande> getCommandesPayees() {
         List<Commande> commandesPayees = new ArrayList<>();
-        String req = "SELECT * FROM commande WHERE etat like 'payée'";
+        String req = "SELECT * FROM commande WHERE statu like 'payee'";
         try {
             PreparedStatement pst = connection.prepareStatement(req);
             ResultSet rs = pst.executeQuery();
@@ -189,14 +189,14 @@ public class CommandeService implements IService<Commande> {
             }
 
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des commandes payées : " + e.getMessage());
+            System.out.println("Erreur lors de la récupération des commandes payees : " + e.getMessage());
         }
         return commandesPayees;
     }
 
     // Compter le nombre d'achats d'un produit donné
     public Map<Integer, Integer> getTop3ProduitsAchetes() {
-        String req = "SELECT ci.idProduit, SUM(ci.quantite) AS nombreAchats FROM commandeitem ci JOIN commande c ON ci.idCommande = c.idCommande WHERE c.etat = 'PAYEE' GROUP BY ci.idProduit ORDER BY nombreAchats DESC LIMIT 3";
+        String req = "SELECT ci.id_produit, SUM(ci.quantity) AS nombreAchats FROM commandeitem ci JOIN commande c ON ci.idCommande = c.idCommande WHERE c.statu = 'payee' GROUP BY ci.id_produit ORDER BY nombreAchats DESC LIMIT 3";
         Map<Integer, Integer> produitsAchats = new HashMap<>();
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(req);

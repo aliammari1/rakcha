@@ -4,12 +4,16 @@ import com.esprit.controllers.evenements.AffichageEvenementClientController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-public class ClientSideBarController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ClientSideBarController implements Initializable {
 
     @FXML
     private Button cinemaButton;
@@ -21,6 +25,10 @@ public class ClientSideBarController {
     private Button productButton;
     @FXML
     private Button serieButton;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Button profileButton;
 
     @FXML
     void switchToEvent(ActionEvent event) {
@@ -88,4 +96,33 @@ public class ClientSideBarController {
         }
     }
 
+    @FXML
+    void switchToLogout(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setUserData(null);
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void switchToProfile(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Profile.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) profileButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
 }

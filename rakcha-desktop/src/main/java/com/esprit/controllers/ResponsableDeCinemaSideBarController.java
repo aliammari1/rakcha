@@ -8,14 +8,17 @@ import com.esprit.models.users.Responsable_de_cinema;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class ResponsableDeCinemaSideBarController {
+public class ResponsableDeCinemaSideBarController implements Initializable {
 
     Responsable_de_cinema resp;
     @FXML
@@ -31,6 +34,10 @@ public class ResponsableDeCinemaSideBarController {
 
     @FXML
     private Button statestique_button;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Button profileButton;
 
     @FXML
     void switchToActor(ActionEvent event) {
@@ -113,5 +120,36 @@ public class ResponsableDeCinemaSideBarController {
     public void setData(Responsable_de_cinema resp) {
         this.resp = resp;
     }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
+    @FXML
+    void switchToLogout(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setUserData(null);
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void switchToProfile(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Profile.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) profileButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

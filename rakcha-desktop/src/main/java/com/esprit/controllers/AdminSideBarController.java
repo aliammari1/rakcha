@@ -16,6 +16,8 @@ import java.util.ResourceBundle;
 
 public class AdminSideBarController implements Initializable {
 
+    @FXML
+    public Button usersButton;
     Admin admin;
     @FXML
     private WebView webView;
@@ -29,6 +31,10 @@ public class AdminSideBarController implements Initializable {
     private Button productButton;
     @FXML
     private Button serieButton;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Button profileButton;
 
     @FXML
     void switchToEvent(ActionEvent event) {
@@ -98,7 +104,45 @@ public class AdminSideBarController implements Initializable {
         }
     }
 
+    @FXML
+    public void switchToUsers(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminDashboard.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) usersButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }
+
+    @FXML
+    void switchToLogout(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setUserData(null);
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void switchToProfile(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Profile.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) profileButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

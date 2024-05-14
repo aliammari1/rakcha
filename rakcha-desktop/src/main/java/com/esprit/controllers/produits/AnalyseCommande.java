@@ -41,7 +41,6 @@ public class AnalyseCommande implements Initializable {
         updateGraphs();
     }
 
-
     private void updateGraphs() {
         // Mettre à jour les graphiques ici
         TauxCommande.getData().clear();
@@ -55,7 +54,6 @@ public class AnalyseCommande implements Initializable {
 
         CategorieService categorieService = new CategorieService();
         List<Categorie_Produit> categories = categorieService.read();
-
 
         Map<String, Integer> enCoursByDate = new HashMap<>();
         Map<String, Integer> payeeByDate = new HashMap<>();
@@ -109,7 +107,7 @@ public class AnalyseCommande implements Initializable {
         enCoursSeries.setName("Commandes en cours");
 
         XYChart.Series<String, Number> payeeSeries = new XYChart.Series<>();
-        payeeSeries.setName("Commandes payées");
+        payeeSeries.setName("Commandes payees");
 
         for (String date : dates) {
             enCoursSeries.getData().add(new XYChart.Data<>(date, enCoursByDate.get(date)));

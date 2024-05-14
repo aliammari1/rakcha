@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class DashboardAdminController {
+
     private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
     private final List<CheckBox> statusCheckBoxes = new ArrayList<>();
 
@@ -50,7 +50,6 @@ public class DashboardAdminController {
     private TextField tfSearch;
     @FXML
     private AnchorPane FilterAnchor;
-
 
     @FXML
     void afficherCinemas() {
@@ -96,8 +95,8 @@ public class DashboardAdminController {
                         acceptButton.getStyleClass().add("delete-btn");
                         acceptButton.setOnAction(event -> {
                             Cinema cinema = getTableView().getItems().get(getIndex());
-                            // Mettre à jour le statut du cinéma en "Acceptée"
-                            cinema.setStatut("Acceptée");
+                            // Mettre à jour le statut du cinéma en "Accepted"
+                            cinema.setStatut("Accepted");
                             // Mettre à jour le statut dans la base de données
                             CinemaService cinemaService = new CinemaService();
                             cinemaService.update(cinema);
@@ -126,8 +125,8 @@ public class DashboardAdminController {
                         } else {
                             // Récupérer le cinéma associé à cette ligne
                             Cinema cinema = getTableView().getItems().get(getIndex());
-                            if (cinema.getStatut().equals("Acceptée")) {
-                                // Afficher le bouton "Show Movies" si le statut est "Acceptée"
+                            if (cinema.getStatut().equals("Accepted")) {
+                                // Afficher le bouton "Show Movies" si le statut est "Accepted"
                                 setGraphic(showMoviesButton);
                             } else {
                                 // Afficher les boutons "Accepter" et "Refuser" si le statut est "En attente"
@@ -138,7 +137,6 @@ public class DashboardAdminController {
                 };
             }
         });
-
 
         loadCinemas();
     }
@@ -232,7 +230,6 @@ public class DashboardAdminController {
         FilterAnchor.setVisible(true);
     }
 
-
     public List<String> getCinemaAddresses() {
         // Récupérer tous les cinémas depuis la base de données
         List<Cinema> cinemas = getAllCinemas();
@@ -249,8 +246,8 @@ public class DashboardAdminController {
     public List<String> getCinemaStatuses() {
         // Créer une liste de statuts pré-définis
         List<String> statuses = new ArrayList<>();
-        statuses.add("En_Attente");
-        statuses.add("Acceptée");
+        statuses.add("Pending");
+        statuses.add("Accepted");
 
         return statuses;
     }
@@ -275,7 +272,6 @@ public class DashboardAdminController {
         ObservableList<Cinema> filteredList = FXCollections.observableArrayList(filteredCinemas);
         listCinema.setItems(filteredList);
     }
-
 
     private List<String> getSelectedAddresses() {
         // Récupérer les adresses sélectionnées dans l'AnchorPane de filtrage

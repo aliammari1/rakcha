@@ -1,10 +1,8 @@
 package com.esprit.controllers.series;
 
-import com.esprit.controllers.ClientSideBarController;
 import com.esprit.models.series.Categorie;
 import com.esprit.models.series.Feedback;
 import com.esprit.models.series.Serie;
-import com.esprit.models.users.Client;
 import com.esprit.services.series.DTO.SerieDto;
 import com.esprit.services.series.IServiceCategorieImpl;
 import com.esprit.services.series.IServiceFeedbackImpl;
@@ -22,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -34,6 +33,10 @@ import org.apache.commons.mail.HtmlEmail;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -41,7 +44,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class SerieController {
-
+    @FXML
+    public ImageView serieImageView;
+    String imgpath;
     ///
     @FXML
     private Label categoriecheck;
@@ -65,7 +70,6 @@ public class SerieController {
     private TextField paysF;
     @FXML
     private ComboBox<String> categorieF;
-    private String imgpath;
     private List<Categorie> categorieList;
     @FXML
     private TableView<SerieDto> tableView;
@@ -351,7 +355,7 @@ public class SerieController {
             serie.setPays(paysFild.getText());
             serie.setImage(imgpath);
             for (Categorie c : categorieList) {
-                if (c.getNom() == categorieComboBox.getValue()) {
+                if (Objects.equals(c.getNom(), categorieComboBox.getValue())) {
                     serie.setIdcategorie(c.getIdcategorie());
                 }
             }
@@ -400,6 +404,36 @@ public class SerieController {
         }
 
     }
+
+
+    @FXML
+    void importImage(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("PNG", "*.png"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg")
+        );
+        fileChooser.setTitle("Sélectionner une image");
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            try {
+                String destinationDirectory1 = "./src/main/resources/img/series/";
+                String destinationDirectory2 = "C:\\xampp\\htdocs\\Rakcha\\rakcha-web\\public\\img\\series\\";
+                Path destinationPath1 = Paths.get(destinationDirectory1);
+                Path destinationPath2 = Paths.get(destinationDirectory2);
+                String uniqueFileName = System.currentTimeMillis() + "_" + selectedFile.getName();
+                Path destinationFilePath1 = destinationPath1.resolve(uniqueFileName);
+                Path destinationFilePath2 = destinationPath2.resolve(uniqueFileName);
+                Files.copy(selectedFile.toPath(), destinationFilePath1);
+                Files.copy(selectedFile.toPath(), destinationFilePath2);
+                Image selectedImage = new Image(destinationFilePath1.toUri().toString());
+                serieImageView.setImage(selectedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     // Method to retrieve the stored file path
     public String getFilePath() {
@@ -468,7 +502,7 @@ public class SerieController {
     }
 
     boolean imagechek() {
-        if (imgpath != "") {
+        if (!Objects.equals(imgpath, "")) {
 
             return true;
         } else {
@@ -509,17 +543,22 @@ public class SerieController {
         directeurcheck();
         payscheck();
         resumecheck();
-        imagechek();
-        if (nomcheck() && categoriecheck() && directeurcheck() && payscheck() && resumecheck() && imagechek()) {
+
+        if (nomcheck() && categoriecheck() && directeurcheck() && payscheck() && resumecheck()) {
+
             try {
+                String fullPath = serieImageView.getImage().getUrl();
+                String requiredPath = fullPath.substring(fullPath.indexOf("/img/series/"));
+                URI uri = new URI(requiredPath);
                 serie.setNom(nomF.getText());
                 serie.setResume(resumeF.getText());
                 serie.setDirecteur(directeurF.getText());
                 serie.setPays(paysF.getText());
-                serie.setImage(imgpath);
+                serie.setImage(uri.getPath());
+
 
                 for (Categorie c : categorieList) {
-                    if (c.getNom() == categorieF.getValue()) {
+                    if (Objects.equals(c.getNom(), categorieF.getValue())) {
                         serie.setIdcategorie(c.getIdcategorie());
                     }
                 }
@@ -533,7 +572,7 @@ public class SerieController {
                 imagechek.setText("");
                 // Envoyer un e-mail de notification
                 String recipientEmail = "nourhene.ftaymia@esprit.tn"; // Remplacez par l'adresse e-mail réelle du
-                                                                      // destinataire
+                // destinataire
                 String subject = "Exciting News! New Series Alert 🚀";
                 String message = "Dear Viewer,\n\nWe are thrilled to announce a new series on our platform!\n\n" +
                         "Title: " + serie.getNom() + "\n" +
@@ -555,7 +594,7 @@ public class SerieController {
         /*
          * private void showStatistics() {
          * IServiceSerieImpl serviceSerie = new IServiceSerieImpl();
-         * 
+         *
          * try {
          * Map<String, Long> statistics = serviceSerie.getSeriesStatisticsByCategory();
          * // Handle or display the statistics as needed
@@ -619,6 +658,6 @@ public class SerieController {
  * @FXML
  * public void showStatistics(ActionEvent actionEvent) {
  * statstiqueController.handleShowPieChart();
- * 
+ *
  * }
  */
