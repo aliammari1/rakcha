@@ -97,23 +97,21 @@ class ProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-
-                // Ceci est nécessaire pour générer un nom de fichier unique basé sur le nom de fichier original.
-                $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
-                $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-
-                $newFilename = 'img/produit/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/img/produit/',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
+            $file = $form['image']->getData();
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
                 }
-                $produit->setImage($newFilename);
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/produit";
+                $file->move($destination, $filename);
+                $produit->setImage("/img/produit/" . $filename);
+
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\produit";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
 
 
@@ -181,23 +179,21 @@ class ProduitController extends AbstractController
         $updateform->handleRequest($request);
 
         if ($updateform->isSubmitted() && $updateform->isValid()) {
-            $imageFile = $updateform->get('image')->getData();
-            if ($imageFile) {
-
-
-                $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
-                $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-
-                $newFilename = 'img/produit/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/img/produit/',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
+            $file = $updateform['image']->getData();
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
                 }
-                $produit->setImage($newFilename);
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/produit";
+                $file->move($destination, $filename);
+                $produit->setImage("/img/produit/" . $filename);
+
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\produit";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
 
             $entityManager->flush();
