@@ -118,21 +118,21 @@ class CinemaController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('logo')->getData();
-            if ($imageFile) {
-                $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
-                $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-
-                $newFilename = 'img/cinemas/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir').'/public/img/cinemas',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
+            $file = $form['logo']->getData();
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
                 }
-                $cinema->setLogo($newFilename);
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/cinemas";
+                $file->move($destination, $filename);
+                $cinema->setLogo("/img/cinemas/" . $filename);
+
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\cinemas";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $cinema->setStatut('Pending');
             $cinema->setResponsable($this->getUser()->getId());
@@ -173,21 +173,21 @@ class CinemaController extends AbstractController
 
 
         if ($updateform->isSubmitted() && $updateform->isValid()) {
-            $imageFile = $updateform->get('logo')->getData();
-            if ($imageFile) {
-                $safeFilename = preg_replace('/\s/', '_', $imageFile->getClientOriginalName());
-                $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-
-                $newFilename = 'img/cinemas/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir').'/public/img/cinemas',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
+            $file = $updateform['logo']->getData();
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
                 }
-                $cinema->setLogo($newFilename);
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/cinemas";
+                $file->move($destination, $filename);
+                $cinema->setLogo("/img/cinemas/" . $filename);
+
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\cinemas";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->flush();
 
