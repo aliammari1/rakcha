@@ -40,6 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -199,11 +200,52 @@ public class AdminDashboardController {
             if (role.equals("admin")) {
                 String fullPath = photoDeProfilImageView.getImage().getUrl();
                 String requiredPath = fullPath.substring(fullPath.indexOf("/img/users/"));
-                uri = new URI(requiredPath);                
-                user = new Admin(firstNameTextField.getText(), lastNameTextField.getText(),
-                        Integer.parseInt(phoneNumberTextField.getText()), passwordTextField.getText(),
-                        roleComboBox.getValue(), emailTextField.getText(),
-                        Date.valueOf(dateDeNaissanceDatePicker.getValue()), emailTextField.getText(), uri.getPath());
+                uri = new URI(requiredPath);
+                String firstName = firstNameTextField.getText();
+                String lastName = lastNameTextField.getText();
+                String phoneNumber = phoneNumberTextField.getText();
+                String password = passwordTextField.getText();
+                String email = emailTextField.getText();
+                LocalDate dateDeNaissance = dateDeNaissanceDatePicker.getValue();
+
+                // Perform input validation
+                if (firstName.isEmpty() || lastName.isEmpty() || phoneNumber.isEmpty() || password.isEmpty() ||
+                        role.isEmpty() || email.isEmpty() || dateDeNaissance == null) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill in all the required fields", ButtonType.CLOSE);
+                    alert.show();
+                    return;
+                }
+
+                // Validate name format
+                if (!firstName.matches("[a-zA-Z]+") || !lastName.matches("[a-zA-Z]+")) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid name format", ButtonType.CLOSE);
+                    alert.show();
+                    return;
+                }
+
+                // Validate password length
+                if (password.length() < 8) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Password must be at least 8 characters long", ButtonType.CLOSE);
+                    alert.show();
+                    return;
+                }
+
+                // Validate phone number format
+                if (!phoneNumber.matches("\\d{10}")) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid phone number format", ButtonType.CLOSE);
+                    alert.show();
+                    return;
+                }
+
+                // Validate email format
+                if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid email format", ButtonType.CLOSE);
+                    alert.show();
+                    return;
+                }
+
+                user = new Admin(firstName, lastName, Integer.parseInt(phoneNumber), password, role, email,
+                        Date.valueOf(dateDeNaissance), email, uri.getPath());
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "the given role is not available", ButtonType.CLOSE);
                 alert.show();

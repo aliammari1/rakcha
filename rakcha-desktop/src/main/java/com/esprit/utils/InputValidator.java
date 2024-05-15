@@ -1,12 +1,12 @@
 package com.esprit.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class InputValidator {
 
@@ -41,7 +41,7 @@ public class InputValidator {
                         tooltip.setText(combinedErrorMessage.toString());
                         tooltip.setStyle("-fx-background-color: "
                                 + "linear-gradient(from 0% 0% to 0% 100%, #ff0000 0%, #ff0000 100%);"
-                                + "-fx-background-radius: 5.0;");
+                                + "-fx-background-radius: 20.0px;");
                         textField.setStyle("-fx-border-color: #ff0000;");
                         Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
                         tooltip.show(textField.getScene().getWindow(), bounds.getMinX(), bounds.getMaxY());
@@ -49,7 +49,7 @@ public class InputValidator {
                         tooltip.setText(String.join("\n", successMessages));
                         tooltip.setStyle("-fx-background-color: "
                                 + "linear-gradient(from 0% 0% to 0% 100%, #00ff00 0%, #00ff00 100%);"
-                                + "-fx-background-radius: 5.0;");
+                                + "-fx-background-radius: 20.0px;");
                         textField.setStyle("-fx-border-color: #00ff00;");
                         tooltip.hide();
                     }
