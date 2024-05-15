@@ -55,8 +55,8 @@
 						{% set items = ['cinema', 'Seances', 'film','category','actor','logout'] %}
 						{% set paths = [path('app_cinema_index'), path('app_seance_index'),path('app_film_index'),path('app_category_index'),path('app_actor_index'),path('app_logout_index')] %}
 					{% elseif is_granted('ROLE_ADMIN') %}
-						{% set items = ['users','Cinema','produit','categorie Produit', 'series','episodes','categories','events','logout'] %}
-						{% set paths = [path('app_users_index'),path('app_cinemaAdmin_index'), path('app_produit_index'), path('app_categorie_produit_index'),path('app_series_index'),path('app_episodes_index'),path('app_categories_index'),path('app_evenement_affichback'),path('app_logout_index')] %}
+						{% set items = ['users','Cinema','produit','categorie Produit', 'series','episodes','categories','logout'] %}
+						{% set paths = [path('app_users_index'),path('app_cinemaAdmin_index'), path('app_produit_index'), path('app_categorie_produit_index'),path('app_series_index'),path('app_episodes_index'),path('app_categories_index'),path('app_logout_index')] %}
 					{% endif %}
 					{% for item in items %}
 						<li class="nav-item ms-4 my-1">
