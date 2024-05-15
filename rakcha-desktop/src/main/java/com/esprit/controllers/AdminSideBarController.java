@@ -1,6 +1,10 @@
 package com.esprit.controllers;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import com.esprit.models.users.Admin;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,9 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class AdminSideBarController implements Initializable {
 
@@ -38,16 +39,7 @@ public class AdminSideBarController implements Initializable {
 
     @FXML
     void switchToEvent(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DesignEvenementAdmin.fxml"));
-            // DesignCategorieAdminController seanceController = loader.getController();
-            // seanceController.setData(admin);
-            Parent root = loader.load();
-            Stage stage = (Stage) eventButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     @FXML
