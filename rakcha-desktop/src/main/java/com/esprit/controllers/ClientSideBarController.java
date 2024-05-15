@@ -1,6 +1,8 @@
 package com.esprit.controllers;
 
-import com.esprit.controllers.evenements.AffichageEvenementClientController;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,9 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class ClientSideBarController implements Initializable {
 
@@ -32,16 +31,7 @@ public class ClientSideBarController implements Initializable {
 
     @FXML
     void switchToEvent(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageEvenementClient.fxml"));
-            Parent root = loader.load();
-            AffichageEvenementClientController seanceController = loader.getController();
-            Stage stage = (Stage) eventButton.getScene().getWindow();
-            System.out.println("---------" + stage.getUserData());
-            stage.setScene(new Scene(root));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     @FXML
