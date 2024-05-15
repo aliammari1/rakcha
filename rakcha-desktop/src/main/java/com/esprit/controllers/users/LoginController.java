@@ -2,10 +2,8 @@ package com.esprit.controllers.users;
 
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
-import com.esprit.utils.InputValidator;
 import com.github.plushaze.traynotification.notification.Notifications;
 import com.github.plushaze.traynotification.notification.TrayNotification;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -126,14 +124,6 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Platform.runLater(() -> {
-            loginAnchorPane.getChildren().forEach(node -> {
-                if (node instanceof TextField textField) {
-                    InputValidator.inputValidator(textField, new String[]{}, new String[]{}, new String[]{});
-                }
-            });
-            InputValidator.inputValidator(emailTextField, new String[]{"^[A-Za-z0-9+_.-]+@(.+)$"}, new String[]{"Invalid email address"}, new String[]{"Valid email address"});
-        });
         forgetPasswordHyperlink.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

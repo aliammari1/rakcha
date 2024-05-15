@@ -1,16 +1,5 @@
 package com.esprit.services.users;
 
-import com.esprit.models.users.Admin;
-import com.esprit.models.users.Client;
-import com.esprit.models.users.Responsable_de_cinema;
-import com.esprit.models.users.User;
-import com.esprit.services.IService;
-import com.esprit.utils.DataSource;
-import com.esprit.utils.UserMail;
-import com.esprit.utils.UserPDF;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +9,20 @@ import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.esprit.models.users.Admin;
+import com.esprit.models.users.Client;
+import com.esprit.models.users.Responsable_de_cinema;
+import com.esprit.models.users.User;
+import com.esprit.services.IService;
+import com.esprit.utils.DataSource;
+import com.esprit.utils.UserMail;
+import com.esprit.utils.UserPDF;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
 public class UserService implements IService<User> {
+
     Connection con;
 
     public UserService() {
@@ -57,16 +59,26 @@ public class UserService implements IService<User> {
     public void create(User user) {
         try {
             PreparedStatement statement = this.con.prepareStatement(
-                    "INSERT INTO users (nom,prenom,num_telephone,password,role,adresse,date_de_naissance,email,photo_de_profil) VALUES (?,?,?,?,?,?,?,?,?)");
+                    "INSERT INTO users (nom,prenom,num_telephone,password,role,adresse,date_de_naissance,email,photo_de_profil,is_verified,roles) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
             statement.setInt(3, user.getPhoneNumber());
-            statement.setString(4, user.getPassword());
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+            hashedPassword = hashedPassword.replaceFirst("\\$2a\\$", "\\$2y\\$");
+            statement.setString(4, hashedPassword);
             statement.setString(5, user.getRole());
             statement.setString(6, user.getAddress());
             statement.setDate(7, user.getBirthDate());
             statement.setString(8, user.getEmail());
             statement.setString(9, user.getPhoto_de_profil());
+            statement.setBoolean(10, true);
+            if (user.getRole().equals("admin")) {
+                statement.setString(11, "[\"ROLE_ADMIN\"]");
+            } else if (user.getRole().equals("client")) {
+                statement.setString(11, "[\"ROLE_CLIENT\"]");
+            } else if (user.getRole().equals("responsable de cinema")) {
+                statement.setString(11, "[\"ROLE_RESPONSABLE_DE_CINEMA\"]");
+            }
             statement.executeUpdate();
             System.out.println("user was added");
         } catch (SQLException e) {
@@ -149,45 +161,45 @@ public class UserService implements IService<User> {
             String role = resultSet.getString("role");
             userList.add(
                     switch (role) {
-                        case "admin":
-                            yield new Admin(
-                                    resultSet.getInt("id"),
-                                    resultSet.getString("nom"),
-                                    resultSet.getString("prenom"),
-                                    resultSet.getInt("num_telephone"),
-                                    resultSet.getString("password"),
-                                    resultSet.getString("role"),
-                                    resultSet.getString("adresse"),
-                                    resultSet.getDate("date_de_naissance"),
-                                    resultSet.getString("email"),
-                                    resultSet.getString("photo_de_profil"));
-                        case "client":
-                            yield new Client(
-                                    resultSet.getInt("id"),
-                                    resultSet.getString("nom"),
-                                    resultSet.getString("prenom"),
-                                    resultSet.getInt("num_telephone"),
-                                    resultSet.getString("password"),
-                                    resultSet.getString("role"),
-                                    resultSet.getString("adresse"),
-                                    resultSet.getDate("date_de_naissance"),
-                                    resultSet.getString("email"),
-                                    resultSet.getString("photo_de_profil"));
-                        case "responsable de cinema":
-                            yield new Responsable_de_cinema(
-                                    resultSet.getInt("id"),
-                                    resultSet.getString("nom"),
-                                    resultSet.getString("prenom"),
-                                    resultSet.getInt("num_telephone"),
-                                    resultSet.getString("password"),
-                                    resultSet.getString("role"),
-                                    resultSet.getString("adresse"),
-                                    resultSet.getDate("date_de_naissance"),
-                                    resultSet.getString("email"),
-                                    resultSet.getString("photo_de_profil"));
-                        default:
-                            yield null;
-                    });
+                case "admin":
+                    yield new Admin(
+                    resultSet.getInt("id"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getInt("num_telephone"),
+                    resultSet.getString("password"),
+                    resultSet.getString("role"),
+                    resultSet.getString("adresse"),
+                    resultSet.getDate("date_de_naissance"),
+                    resultSet.getString("email"),
+                    resultSet.getString("photo_de_profil"));
+                case "client":
+                    yield new Client(
+                    resultSet.getInt("id"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getInt("num_telephone"),
+                    resultSet.getString("password"),
+                    resultSet.getString("role"),
+                    resultSet.getString("adresse"),
+                    resultSet.getDate("date_de_naissance"),
+                    resultSet.getString("email"),
+                    resultSet.getString("photo_de_profil"));
+                case "responsable de cinema":
+                    yield new Responsable_de_cinema(
+                    resultSet.getInt("id"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getInt("num_telephone"),
+                    resultSet.getString("password"),
+                    resultSet.getString("role"),
+                    resultSet.getString("adresse"),
+                    resultSet.getDate("date_de_naissance"),
+                    resultSet.getString("email"),
+                    resultSet.getString("photo_de_profil"));
+                default:
+                    yield null;
+            });
         }
         return userList;
     }
@@ -224,9 +236,9 @@ public class UserService implements IService<User> {
             PreparedStatement preparedStatement = this.con.prepareStatement(query);
             preparedStatement.setString(1, email);
             User user = getUserRow(preparedStatement);
-            if (user != null)
+            if (user != null) {
                 sendMail(user.getEmail(), "you forget your password dumbhead hhhh");
-            else {
+            } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "the user was not found", ButtonType.CLOSE);
                 alert.show();
             }
@@ -244,40 +256,40 @@ public class UserService implements IService<User> {
             return switch (role.trim()) {
                 case "admin":
                     yield new Admin(
-                            resultSet.getInt("id"),
-                            resultSet.getString("nom"),
-                            resultSet.getString("prenom"),
-                            resultSet.getInt("num_telephone"),
-                            resultSet.getString("password"),
-                            resultSet.getString("role"),
-                            resultSet.getString("adresse"),
-                            resultSet.getDate("date_de_naissance"),
-                            resultSet.getString("email"),
-                            resultSet.getString("photo_de_profil"));
+                    resultSet.getInt("id"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getInt("num_telephone"),
+                    resultSet.getString("password"),
+                    resultSet.getString("role"),
+                    resultSet.getString("adresse"),
+                    resultSet.getDate("date_de_naissance"),
+                    resultSet.getString("email"),
+                    resultSet.getString("photo_de_profil"));
                 case "client":
                     yield new Client(
-                            resultSet.getInt("id"),
-                            resultSet.getString("nom"),
-                            resultSet.getString("prenom"),
-                            resultSet.getInt("num_telephone"),
-                            resultSet.getString("password"),
-                            resultSet.getString("role"),
-                            resultSet.getString("adresse"),
-                            resultSet.getDate("date_de_naissance"),
-                            resultSet.getString("email"),
-                            resultSet.getString("photo_de_profil"));
+                    resultSet.getInt("id"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getInt("num_telephone"),
+                    resultSet.getString("password"),
+                    resultSet.getString("role"),
+                    resultSet.getString("adresse"),
+                    resultSet.getDate("date_de_naissance"),
+                    resultSet.getString("email"),
+                    resultSet.getString("photo_de_profil"));
                 case "responsable de cinema":
                     yield new Responsable_de_cinema(
-                            resultSet.getInt("id"),
-                            resultSet.getString("nom"),
-                            resultSet.getString("prenom"),
-                            resultSet.getInt("num_telephone"),
-                            resultSet.getString("password"),
-                            resultSet.getString("role"),
-                            resultSet.getString("adresse"),
-                            resultSet.getDate("date_de_naissance"),
-                            resultSet.getString("email"),
-                            resultSet.getString("photo_de_profil"));
+                    resultSet.getInt("id"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getInt("num_telephone"),
+                    resultSet.getString("password"),
+                    resultSet.getString("role"),
+                    resultSet.getString("adresse"),
+                    resultSet.getDate("date_de_naissance"),
+                    resultSet.getString("email"),
+                    resultSet.getString("photo_de_profil"));
                 default:
                     yield null;
             };
@@ -289,8 +301,9 @@ public class UserService implements IService<User> {
     public User login(String email, String password) {
 
         User user = getUserByEmail(email);
-        if (user == null)
+        if (user == null) {
             return null;
+        }
 
         try {
             String query = "select * from users where (email LIKE ?) and (password LIKE ?)";

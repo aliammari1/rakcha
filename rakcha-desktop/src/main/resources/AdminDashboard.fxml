@@ -23,9 +23,6 @@
                 <AnchorPane layoutX="265.0" layoutY="83.0" prefHeight="686.0" prefWidth="1050.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
                     <TableView fx:id="userTableView" layoutX="26.0" layoutY="37.0" prefHeight="200.0" prefWidth="775.0" />
-                    <TextField fx:id="idTextField" layoutX="361.0" layoutY="354.0" prefHeight="26.0" prefWidth="110.0" />
-
-                    <Label layoutX="370.0" layoutY="335.0" text="id" />
                     <Label layoutX="233.0" layoutY="392.0" text="nom" />
                     <TextField fx:id="firstNameTextField" layoutX="233.0" layoutY="419.0" prefHeight="26.0" prefWidth="94.0" />
                     <TextField fx:id="lastNameTextField" layoutX="233.0" layoutY="354.0" prefHeight="26.0" prefWidth="94.0" />
@@ -43,12 +40,10 @@
                     <Label layoutX="361.0" layoutY="269.0" text="email" />
                     <Label layoutX="652.0" layoutY="241.0" text="image" />
                     <ImageView fx:id="photoDeProfilImageView" fitHeight="150.0" fitWidth="200.0" layoutX="636.0" layoutY="260.0" pickOnBounds="true" preserveRatio="true" />
-                    <Button layoutX="710.0" layoutY="419.0" mnemonicParsing="false" onAction="#importImage" text="import" />
+                    <Button layoutX="710.0" layoutY="419.0" mnemonicParsing="false" onAction="#importImage" styleClass="sale" text="import" />
                     <ComboBox fx:id="roleComboBox" layoutX="501.0" layoutY="419.0" prefHeight="26.0" prefWidth="94.0" />
-                    <Button layoutX="52.0" layoutY="367.0" mnemonicParsing="false" text="delete" />
-                    <Button layoutX="55.0" layoutY="274.0" mnemonicParsing="false" onAction="#addAdmin" text="add" />
-                    <Button layoutX="47.0" layoutY="419.0" mnemonicParsing="false" text="update" />
-                    <Button layoutX="53.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearTextFields" text="clear" />
+                    <Button layoutX="55.0" layoutY="274.0" mnemonicParsing="false" onAction="#addAdmin" styleClass="sale" text="add" />
+                    <Button layoutX="53.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearTextFields" styleClass="sale" text="clear" />
                     <Button layoutX="33.0" layoutY="14.0" mnemonicParsing="false" onAction="#generatePDF" styleClass="sale" text="generate PDF" />
                 </AnchorPane>
             </AnchorPane>

@@ -66,7 +66,7 @@ class RegistrationController extends AbstractController
             else if ($user->getRole() == 'responsable de cinema')
                 $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
 
-            $user->setIsVerified(false);
+            $user->setIsVerified(true);
             $entityManager->persist($user);
             $entityManager->flush();
 

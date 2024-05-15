@@ -272,8 +272,8 @@ public class DesignEvenementAdminController {
                 // Ajouter le nouvel evenement à la liste existante
                 tvEvenement.setItems(FXCollections.observableArrayList(es.read()));
 
-                SmsService.sendSms("+21622757828",
-                        "   A new adventure is here ! RAKCHA just added an event, feel free to know the details in the events list !");
+               /* SmsService.sendSms("+21622757828",
+                        "   A new adventure is here ! RAKCHA just added an event, feel free to know the details in the events list !");*/
 
                 // Rafraîchir la TableView
                 tvEvenement.refresh();
@@ -512,10 +512,10 @@ public class DesignEvenementAdminController {
                 } else if (evenement.getLieu().toLowerCase().contains(lowerCaseFilter)) {
                     return true; // Filter matches description.
                 } else // Filter matches description.
-                if (evenement.getEtat().toLowerCase().contains(lowerCaseFilter)) {
-                    return true; // Filter matches description.
-                } else
-                    return evenement.getDescription().toLowerCase().contains(lowerCaseFilter);// Does not match.
+                    if (evenement.getEtat().toLowerCase().contains(lowerCaseFilter)) {
+                        return true; // Filter matches description.
+                    } else
+                        return evenement.getDescription().toLowerCase().contains(lowerCaseFilter);// Does not match.
             });
         });
 

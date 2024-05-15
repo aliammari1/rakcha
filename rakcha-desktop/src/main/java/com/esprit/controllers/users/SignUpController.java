@@ -1,13 +1,9 @@
 package com.esprit.controllers.users;
 
-import com.esprit.controllers.ClientSideBarController;
 import com.esprit.models.users.Client;
 import com.esprit.models.users.Responsable_de_cinema;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
-
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -15,7 +11,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -24,7 +19,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -37,9 +31,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class SignUpController {
 
@@ -120,7 +114,7 @@ public class SignUpController {
                 nomTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                            String newValue) {
+                                        String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -171,7 +165,7 @@ public class SignUpController {
                 prenomTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                            String newValue) {
+                                        String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -221,7 +215,7 @@ public class SignUpController {
                 adresseTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                            String newValue) {
+                                        String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -274,7 +268,7 @@ public class SignUpController {
                 emailTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                            String newValue) {
+                                        String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -323,7 +317,7 @@ public class SignUpController {
                 passwordTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                            String newValue) {
+                                        String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -376,7 +370,7 @@ public class SignUpController {
                 num_telephoneTextField.textProperty().addListener(new ChangeListener<String>() {
                     @Override
                     public void changed(ObservableValue<? extends String> observable, String oldValue,
-                            String newValue) {
+                                        String newValue) {
                         if (validator.containsErrors()) {
                             tooltip.setText(validator.createStringBinding().getValue());
                             tooltip.setStyle("-fx-background-color: #f00;");
@@ -439,14 +433,36 @@ public class SignUpController {
         }
     }
 
-
-
     @FXML
     void signup(ActionEvent event) throws IOException {
         String role = roleComboBox.getValue();
         User user = null;
         URI uri = null;
+        String nom = nomTextField.getText();
+        String prenom = prenomTextField.getText();
+        String num_telephone = num_telephoneTextField.getText();
+        String password = passwordTextField.getText();
+        String email = emailTextField.getText();
+        LocalDate dateDeNaissance = dateDeNaissanceDatePicker.getValue();
 
+        if (nom.isEmpty() || prenom.isEmpty() || num_telephone.isEmpty() || password.isEmpty()
+                || role.isEmpty() || email.isEmpty() || dateDeNaissance == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill in all the required fields", ButtonType.CLOSE);
+            alert.show();
+            return;
+        }
+
+        if (!num_telephone.matches("\\d+")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid phone number format", ButtonType.CLOSE);
+            alert.show();
+            return;
+        }
+
+        if (!email.matches("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid email format", ButtonType.CLOSE);
+            alert.show();
+            return;
+        }
         if (role.equals("responsable de cinema")) {
             user = new Responsable_de_cinema(nomTextField.getText(), prenomTextField.getText(),
                     Integer.parseInt(num_telephoneTextField.getText()), passwordTextField.getText(),
