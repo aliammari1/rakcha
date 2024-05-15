@@ -221,8 +221,9 @@ public class FilmController {
                 return;
             }
             if (annederealisationFilm_textArea.getText().isEmpty()
-                    || !annederealisationFilm_textArea.getText().matches("\\d{4}")) {
-                showAlert("L'année de réalisation du film est requise au format (YYYY).");
+                    || !annederealisationFilm_textArea.getText().matches("\\d{4}")
+                    || Integer.parseInt(annederealisationFilm_textArea.getText()) < 1900) {
+                showAlert("L'année de réalisation du film est requise au format (YYYY) et doit être supérieure ou égale à 1900.");
                 return;
             }
             if (Categorychecj_ComboBox.getCheckModel().getCheckedItems().isEmpty()) {
