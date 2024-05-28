@@ -1,11 +1,9 @@
 package com.esprit.controllers.produits;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
-import java.sql.Blob;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -142,10 +140,9 @@ public class DetailsProduitClientController implements Initializable {
         imageView.setFitHeight(400);
 
         try {
-            Blob blob = produit.getImage();
-            if (blob != null) {
-                byte[] bytes = blob.getBytes(1, (int) blob.length());
-                Image image = new Image(new ByteArrayInputStream(bytes));
+            String produitImage = produit.getImage();
+            if (produitImage != null) {
+                Image image = new Image(produitImage);
                 imageView.setImage(image);
             } else {
                 // Utiliser une image par défaut si le Blob est null
@@ -346,10 +343,9 @@ public class DetailsProduitClientController implements Initializable {
         imageView.setFitHeight(150);
 
         try {
-            Blob blob = produit.getImage();
-            if (blob != null) {
-                byte[] bytes = blob.getBytes(1, (int) blob.length());
-                Image image = new Image(new ByteArrayInputStream(bytes));
+            String produitImage = produit.getImage();
+            if (produitImage != null) {
+                Image image = new Image(produitImage);
                 imageView.setImage(image);
             } else {
                 // Utiliser une image par défaut si le Blob est null
@@ -723,10 +719,9 @@ public class DetailsProduitClientController implements Initializable {
         imageView.setFitHeight(50);
 
         try {
-            Blob blob = produit.getImage();
-            if (blob != null) {
-                byte[] bytes = blob.getBytes(1, (int) blob.length());
-                Image image = new Image(new ByteArrayInputStream(bytes));
+            String produitImage = produit.getImage();
+            if (produitImage != null) {
+                Image image = new Image(produitImage);
                 imageView.setImage(image);
             } else {
                 // Use a default image if Blob is null

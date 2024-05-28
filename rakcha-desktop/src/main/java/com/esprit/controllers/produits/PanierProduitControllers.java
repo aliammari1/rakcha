@@ -10,7 +10,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import org.kordamp.ikonli.javafx.FontIcon;
-
+import javafx.scene.image.Image;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +19,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -69,11 +68,11 @@ public class PanierProduitControllers implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadAcceptedPanier();
-                    }
-                });
+            @Override
+            public void run() {
+                loadAcceptedPanier();
+            }
+        });
     }
 
     private void loadAcceptedPanier() {
@@ -125,14 +124,13 @@ public class PanierProduitControllers implements Initializable {
         imageView.setFitHeight(150);
 
         try {
-            Blob blob = Panier.getProduit().getImage();
-            if (blob != null) {
-                byte[] bytes = blob.getBytes(1, (int) blob.length());
-                javafx.scene.image.Image image = new javafx.scene.image.Image(new ByteArrayInputStream(bytes));
+            String produitImage = Panier.getProduit().getImage();
+            if (produitImage != null) {
+                Image image = new Image(produitImage);
                 imageView.setImage(image);
             } else {
                 // Utiliser une image par défaut si le Blob est null
-                javafx.scene.image.Image defaultImage = new Image(getClass().getResourceAsStream("defaultImage.png"));
+                Image defaultImage = new Image(getClass().getResourceAsStream("defaultImage.png"));
                 imageView.setImage(defaultImage);
             }
         } catch (Exception e) {
@@ -169,7 +167,7 @@ public class PanierProduitControllers implements Initializable {
         sommeTotaleLabel.setLayoutX(550);
         sommeTotaleLabel.setLayoutY(60);
         sommeTotaleLabel.setMaxWidth(150); // Ajuster la largeur max double sommeTotaleProduit =
-                                           // PanierService.calculerSommeTotaleProduit(Panier.getProduit().getId_produit());
+        // PanierService.calculerSommeTotaleProduit(Panier.getProduit().getId_produit());
         sommeTotaleLabel.setWrapText(true); // Activer le retour à la ligne automatique
 
         // CheckBox pour sélectionner le produit
@@ -253,14 +251,14 @@ public class PanierProduitControllers implements Initializable {
             }
         });
 
-        card.setStyle("-fx-background-color:#F6F2F2;\n" +
-                " -fx-text-fill: #FFFFFF;\n" +
-                "    -fx-font-size: 12px;\n" +
-                "    -fx-font-weight: bold;\n" +
-                "    -fx-padding: 10px;\n" +
-                "    -fx-border-color:  #ae2d3c;/* Couleur de la bordure */\n" +
-                "    -fx-border-width: 2px; /* Largeur de la bordure */\n" +
-                "    -fx-border-radius: 5px; /* Rayon de la bordure pour arrondir les coins */");
+        card.setStyle("-fx-background-color:#F6F2F2;\n"
+                + " -fx-text-fill: #FFFFFF;\n"
+                + "    -fx-font-size: 12px;\n"
+                + "    -fx-font-weight: bold;\n"
+                + "    -fx-padding: 10px;\n"
+                + "    -fx-border-color:  #ae2d3c;/* Couleur de la bordure */\n"
+                + "    -fx-border-width: 2px; /* Largeur de la bordure */\n"
+                + "    -fx-border-radius: 5px; /* Rayon de la bordure pour arrondir les coins */");
 
         // Ajouter tous les éléments au VBox
         card.getChildren().addAll(imageView, nameLabel, priceLabel, decreaseIcon, quantityTextField, increaseIcon,
