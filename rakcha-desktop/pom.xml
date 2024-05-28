@@ -183,25 +183,15 @@
             <artifactId>javafx-web</artifactId>
             <version>21.0.2</version>
         </dependency>
-            <dependency>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-swing</artifactId>
-        <version>21.0.2</version>
-    </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>21.0.2</version>
+        </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
             <version>21.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>4.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
@@ -259,7 +249,7 @@
             <artifactId>javacv-platform</artifactId>
             <version>1.5.10</version>
         </dependency>
-    <dependency>
+        <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>opencv-platform-gpu</artifactId>
             <version>4.9.0-1.5.10</version>
