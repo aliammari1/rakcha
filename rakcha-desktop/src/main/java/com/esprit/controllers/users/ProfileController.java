@@ -1,7 +1,11 @@
 package com.esprit.controllers.users;
 
+import java.io.IOException;
+import java.sql.Date;
+
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,13 +13,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.sql.Date;
 
 public class ProfileController {
     @FXML
@@ -64,6 +66,9 @@ public class ProfileController {
         }
         if (user.getBirthDate() != null) {
             dateDeNaissanceDatePicker.setValue(user.getBirthDate().toLocalDate());
+        }
+        if (user.getPhoto_de_profil() != null) {
+            photoDeProfilImageView.setImage(new Image(user.getPhoto_de_profil()));
         }
     }
 
