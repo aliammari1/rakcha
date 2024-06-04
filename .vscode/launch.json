@@ -20,6 +20,13 @@
                 "javafx.controls,javafx.fxml"
             ],
             "preLaunchTask": "cd rakcha-desktop && mvn javafx:run"
+        },
+        {
+            "type": "java",
+            "name": "Run with AppMap",
+            "request": "launch",
+            "mainClass": "",
+            "vmArgs": "-javaagent:${userHome}/.appmap/lib/java/appmap.jar"
         }
     ]
 }
