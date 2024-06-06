@@ -2,7 +2,15 @@ package com.esprit.services;
 
 
 
+
+
+
+
 import java.util.List;
+
+
+
+
 
 
 
@@ -10,7 +18,15 @@ public interface IService<T> {
 
 
 
+
+
+
+
     void create(T t);
+
+
+
+
 
 
 
@@ -18,11 +34,23 @@ public interface IService<T> {
 
 
 
+
+
+
+
     void update(T t);
+
+
+
+
 
 
 
     void delete(T t);
 
+
+
 }
+
+
 
