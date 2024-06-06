@@ -94,6 +94,13 @@ import java.util.ResourceBundle;
 
 
 
+/**
+ * Is responsible for handling user commands related to the cinema and event modules.
+ * It provides an interface for loading new fxml files based on user actions, such
+ * as showing a movie or an event. The controller also handles closing the current
+ * stage and displaying a new one. Additionally, it includes methods for handling
+ * Movie and Serie client interactions.
+ */
 public class CommandeClientController implements Initializable {
 
 
@@ -146,10 +153,16 @@ public class CommandeClientController implements Initializable {
 
     
 
-    /** 
-
-     * @param commandeselectionner
-
+    /**
+     * Sets the value of a `Commande` object and runs a lambda action to retrieve and
+     * print the user's name, then creates a label with the total price and adds it to a
+     * `FlowPane`.
+     * 
+     * @param commandeselectionner selected command that triggers the function to execute,
+     * which is used to retrieve the total price from SharedData and create a label
+     * displaying the result.
+     * 
+     * `commandeselectionner`: An instance of `Commande`, representing the selected command.
      */
 
     @FXML
@@ -162,6 +175,9 @@ public class CommandeClientController implements Initializable {
 
                 new Runnable() {
 
+                    /**
+                     * Retrieves and prints the connected user's data to the console.
+                     */
                     @Override
 
                     public void run() {
@@ -200,12 +216,13 @@ public class CommandeClientController implements Initializable {
 
     
 
-    /** 
-
-     * @param url
-
-     * @param resourceBundle
-
+    /**
+     * Is called when an URL and a resource bundle are provided to initialize the
+     * application. It sets up the resources and prepares the application for usage.
+     * 
+     * @param url URL of the web application being initialized by the `initialize()` method.
+     * 
+     * @param resourceBundle collection of translated keys and their corresponding values
      */
 
     @Override
@@ -218,6 +235,20 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Creates a new `Label` component with a double value as its text and sets various
+     * styling properties to display the number in a specific format.
+     * 
+     * @param prixTotal total price of an item, which is used to create a label with the
+     * value displayed.
+     * 
+     * @returns a label displaying the price total in bold font with a specific color.
+     * 
+     * 	- The output is a `Label` object named `prixTotalLabel`.
+     * 	- The label's text value is the sum of `prixTotal` and "DT".
+     * 	- The font of the label is set to Verdana with a size of 25.
+     * 	- The text fill color of the label is set to #d72222.
+     */
     private Label createPrixTotalLabel(double prixTotal) {
 
         Label prixTotalLabel = new Label(prixTotal + " DT");
@@ -232,6 +263,19 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Validates input fields, creates a new command object, and calls a service method
+     * to create the command in the database. It then iterates through each item in the
+     * command and creates a new item object, updates the inventory of the product, and
+     * sets the payment line visible.
+     * 
+     * @param event action event triggered by clicking on the "Order" button, which
+     * initiates the processing of the command and calls the various methods to create
+     * and update objects and database records.
+     * 
+     * 	- `event`: an ActionEvent object representing the user's action of clicking on
+     * the "Order" button.
+     */
     @FXML
 
     void order(ActionEvent event) {
@@ -314,6 +358,14 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Creates an `Alert` object with specified title and content, then displays it using
+     * the `showAndWait()` method.
+     * 
+     * @param title title of an alert message displayed by the `showAlert()` method.
+     * 
+     * @param content text to be displayed in the alert window.
+     */
     private void showAlert(String title, String content) {
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -330,6 +382,16 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Verifies if a given string represents a valid phone number with exactly 8 digits
+     * and only containing numbers.
+     * 
+     * @param phoneNumber 8-digit phone number to be validated for its correct format,
+     * consisting only of digits.
+     * 
+     * @returns a boolean value indicating whether the provided string represents a valid
+     * phone number.
+     */
     private boolean isValidPhoneNumber(String phoneNumber) {
 
         // Vérifier si le numéro de téléphone a exactement 8 chiffres et ne contient que
@@ -342,6 +404,19 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Decrements the stock of a product in the database by subtracting the specified
+     * quantity from the product's current quantity, and updates the product record in
+     * the database using an instance of `ProduitService`.
+     * 
+     * @param produit product object whose stock is being decremented.
+     * 
+     * 	- `produit`: A `Produit` object representing a product.
+     * 	- `quantity`: An integer representing the quantity of the product to be decremented.
+     * 
+     * @param quantity amount of stock to be decremented from the product's current
+     * quantity in the database.
+     */
     private void decrementStock(Produit produit, int quantity) {
 
         // Décrémenter le stock dans la base de données
@@ -358,6 +433,18 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new UI scene from an FXML file, creates a new stage with the scene, and
+     * replaces the current stage with the new one, closing the original stage.
+     * 
+     * @param event MouseEvent object that triggered the function, providing information
+     * about the mouse button pressed, the screen position of the click, and other details.
+     * 
+     * 	- Type: `MouseEvent` indicating that the event was triggered by a mouse action.
+     * 	- Source: The object that generated the event, which is typically a button or
+     * link in the user interface.
+     * 	- Event type: The specific type of event, such as `MOUSE_CLICKED` or `MOUSE_OVER`.
+     */
     @FXML
 
     void panier(MouseEvent event) {
@@ -414,6 +501,17 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Creates a PayPal payment request and redirects the user to PayPal for approval.
+     * It retrieves the payment details and redirects the user to the appropriate URL
+     * based on the payment method.
+     * 
+     * @param event event that triggered the `payment()` method and provides the necessary
+     * context for the payment creation process.
+     * 
+     * 	- `event`: An ActionEvent object representing a payment action triggered by the
+     * user.
+     */
     @FXML
 
     void payment(ActionEvent event) {
@@ -502,6 +600,14 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Redirect users to PayPal's redirection page for successful payments, passing payment
+     * ID and payer ID as query parameters.
+     * 
+     * @param approvalLink URL of the PayPal approval page, which is loaded into a WebView
+     * component and monitored for the successful redirection to a predefined URL indicating
+     * the completion of the payment process.
+     */
     private void redirectToPayPal(String approvalLink) {
 
         Platform.runLater(() -> {
@@ -586,6 +692,17 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Parses a URL's query parameters and returns the value of a specified parameter
+     * name if it exists, or `null` otherwise.
+     * 
+     * @param url URL to be analyzed and is used to extract the query parameter value
+     * using `URLEncodedUtils.parse()`.
+     * 
+     * @param parameterName name of the query parameter to be extracted from the URL.
+     * 
+     * @returns a string representing the value of a query parameter found in a URL.
+     */
     private String extractQueryParameter(String url, String parameterName) {
 
         try {
@@ -614,6 +731,15 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Executes a PayPal payment using the `execute()` method, checking the payment state
+     * and updating the commande status accordingly.
+     * 
+     * @param paymentId unique identifier of the payment to be executed.
+     * 
+     * @param payerId identifier of the payer in the PayPal payment execution, which is
+     * used to identify the user making the payment.
+     */
     private void completePayment(String paymentId, String payerId) {
 
         APIContext apiContext = new APIContext(CLIENT_ID, CLIENT_SECRET, "sandbox");
@@ -662,6 +788,18 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Charges a new `FXML` file, creates a new scene, and attaches it to a new stage,
+     * replacing the current stage.
+     * 
+     * @param event ActionEvent that triggered the function execution and provides access
+     * to information about the event, such as the source of the event.
+     * 
+     * 	- It is an `ActionEvent`, which means it carries information about the action
+     * that triggered the function.
+     * 	- The source of the event is a `Node`, which represents the element in the user
+     * interface that triggered the event.
+     */
     @FXML
 
     void cinemaclient(ActionEvent event) {
@@ -716,6 +854,18 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Charges a new FXML file (`AffichageEvenementClient.fxml`) and creates a new scene,
+     * then attaches it to an existing stage and replaces the current stage with the new
+     * one, closing the original stage afterward.
+     * 
+     * @param event ActionEvent object that triggered the event handler method, providing
+     * information about the action that was performed, such as the source of the event
+     * and the type of event.
+     * 
+     * 	- It is an instance of `ActionEvent`, which indicates that the event was triggered
+     * by a user action (e.g., clicking a button).
+     */
     @FXML
 
     void eventClient(ActionEvent event) {
@@ -770,6 +920,16 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML interface using `FXMLLoader`, creates a new scene with it, and
+     * attaches it to a new stage. It then closes the current stage to display the new one.
+     * 
+     * @param event ActionEvent object that triggered the function execution, providing
+     * the source of the event and allowing for handling the corresponding action.
+     * 
+     * 	- `event`: an ActionEvent object representing a user action (e.g., mouse click
+     * or key press) that triggered the function execution.
+     */
     @FXML
 
     void produitClient(ActionEvent event) {
@@ -824,6 +984,13 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Likely profiles a client-side application using Java's built-in profiling tools
+     * to gather performance data on various aspects of the application, such as CPU
+     * usage, memory allocation, and method execution time.
+     * 
+     * @param event occurrence of an action event that triggered the function execution.
+     */
     @FXML
 
     void profilclient(ActionEvent event) {
@@ -834,6 +1001,12 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Is triggered when the user clicks a button and displays a cinema-related interface.
+     * 
+     * @param event occurrence of a button click event that triggered the `showcinema()`
+     * method invocation.
+     */
     @FXML
 
     void showcinema(ActionEvent event) {
@@ -844,6 +1017,13 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Is called when the `showEvenement` action is triggered and performs an unspecified
+     * action.
+     * 
+     * @param event AnimationEvent object that triggered the execution of the `showEvenement`
+     * method.
+     */
     @FXML
 
     void showevenement(ActionEvent event) {
@@ -854,6 +1034,19 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new UI scene from an FXML file, creates a new stage with the scene, and
+     * replaces the current stage with the new one, closing the original stage.
+     * 
+     * @param event ActionEvent object that triggered the showmovie method, providing
+     * information about the source of the event and allowing the method to handle the
+     * appropriate action accordingly.
+     * 
+     * 	- It is an instance of `ActionEvent`, which represents an action event occurred
+     * in the JavaFX application.
+     * 	- The source of the event is a `Node`, which can be any element in the FXML
+     * document, such as a button or a label.
+     */
     @FXML
 
     void showmovie(ActionEvent event) {
@@ -908,6 +1101,13 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Is triggered by an ActionEvent and performs unspecified action related to showing
+     * a product.
+     * 
+     * @param event occurrence of an action, triggered by the user, that calls the
+     * `showproduit()` method.
+     */
     @FXML
 
     void showproduit(ActionEvent event) {
@@ -918,6 +1118,16 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML file, creates a new scene and stage, and replaces the current
+     * stage with the new one.
+     * 
+     * @param event ActionEvent that triggered the function, providing the source of the
+     * event and allowing for proper handling of the action taken.
+     * 
+     * 	- `event` represents an ActionEvent object containing information about the action
+     * that triggered the function's execution.
+     */
     @FXML
 
     void showserie(ActionEvent event) throws IOException {
@@ -972,6 +1182,19 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML interface, creates a new scene with it, and attaches the scene
+     * to a new stage. It also closes the current stage.
+     * 
+     * @param event event that triggers the execution of the `MovieClient` method, which
+     * is an ActionEvent object containing information about the action that triggered
+     * the method call.
+     * 
+     * 	- `event` is an `ActionEvent` object representing the user's action that triggered
+     * the function.
+     * 	- The source of the event is a `Node` object, which provides information about
+     * the element that was clicked or selected.
+     */
     @FXML
 
     void MovieClient(ActionEvent event) {
@@ -1024,6 +1247,18 @@ public class CommandeClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML interface, creates a new scene, and attaches it to a new stage,
+     * while closing the current stage.
+     * 
+     * @param event ActionEvent object that triggered the `SerieClient()` method to be
+     * called, providing the source of the event and any related data.
+     * 
+     * 	- It is an instance of `ActionEvent`, representing an action performed on the
+     * JavaFX application.
+     * 	- Its source field references the object that triggered the event, which in this
+     * case is a `Node` (i.e., a FXML component).
+     */
     @FXML
 
     void SerieClient(ActionEvent event) {
