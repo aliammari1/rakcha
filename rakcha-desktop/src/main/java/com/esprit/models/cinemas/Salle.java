@@ -1,5 +1,12 @@
 package com.esprit.models.cinemas;
 
+/**
+ * Is used to represent a salle within a cinema. It has several fields and methods
+ * that allow for the manipulation of these values. The class has four fields: id_salle,
+ * id_cinema, nb_places, and nom_salle. Additionally, it has several methods for
+ * accessing and modifying these fields, such as getId_salle(), setId_salle(),
+ * getId_cinema(), setId_cinema(), getNb_places(), and setNb_places().
+ */
 public class Salle {
 
     private int id_salle;

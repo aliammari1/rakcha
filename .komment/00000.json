@@ -1,0 +1,258 @@
+[
+  {
+    "name": "Cinema.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/cinemas/Cinema.java",
+    "content": {
+      "structured": {
+        "description": "A `Cinema` class that represents a cinema. It has various attributes and methods for manipulating those attributes, such as ID, name, address, responsible person, logo, and status. The class also provides toString() method for easy conversion into a string representation of the object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "CommentaireCinema.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/cinemas/CommentaireCinema.java",
+    "content": {
+      "structured": {
+        "description": "A `CommentaireCinema` class that represents a comment on a cinema. The class has several constructors, getters and setters for idcommentaire, cinema, client, commentaire, and sentiment properties. Additionally, the class implements the `ToString` interface to provide a string representation of the object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "RatingCinema.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/cinemas/RatingCinema.java",
+    "content": {
+      "structured": {
+        "description": "A class \"RatingCinema\" that represents a cinema rating given by a user. The class has several fields and methods for storing and manipulating the cinema ID, user ID, and rating. The toString() method provides a string representation of the object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Salle.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/cinemas/Salle.java",
+    "content": {
+      "structured": {
+        "description": "A `Salle` class that represents a movie theater. The class has several constructors that allow for different ways of creating a new instance of the class, including specifying the id of the salle, id of the cinema, number of places, and name of the salle. The class also provides methods for returning the id of the salle, id of the cinema, number of places, and name of the salle. Additionally, the code defines an `toString()` method that allows for a string representation of the `Salle` object.",
+        "items": [
+          {
+            "id": "6e755d96-5e99-19be-d643-aaf6960ca761",
+            "ancestors": [],
+            "type": "function",
+            "description": "Is used to represent a salle within a cinema. It has several fields and methods that allow for the manipulation of these values. The class has four fields: id_salle, id_cinema, nb_places, and nom_salle. Additionally, it has several methods for accessing and modifying these fields, such as getId_salle(), setId_salle(), getId_cinema(), setId_cinema(), getNb_places(), and setNb_places().",
+            "name": "Salle",
+            "location": {
+              "start": 3,
+              "insert": 3,
+              "offset": " ",
+              "indent": 0,
+              "comment": null
+            },
+            "item_type": "class",
+            "length": 122,
+            "docLength": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "Seance.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/cinemas/Seance.java",
+    "content": {
+      "structured": {
+        "description": "A class called Seance that represents a movie session in a cinema. The class has several constructors that take different parameters, such as id_seance, salle, HD, HF, date, and prix. The class also has getter and setter methods for the properties of the seance, such as the filmcinema associated with it. Additionally, the code includes a toString() method for debugging purposes.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Actor.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/Actor.java",
+    "content": {
+      "structured": {
+        "description": "A `Actor` class that represents an actor in a film. The class has several constructors to create instances of the class with varying arguments, such as id, name, image, and biography. Additionally, the class provides methods for getting and setting various properties of the actor, such as the number of appearances, id, name, image, and biography.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Actorfilm.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/Actorfilm.java",
+    "content": {
+      "structured": {
+        "description": "A class called Actorfilm that represents the association between an actor and a film. The class has several constructors, getters, and setters for idactor and idfilm properties. It also provides a toString() method for generating a string representation of the object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Category.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/Category.java",
+    "content": {
+      "structured": {
+        "description": "A `Category` class that represents a category of films. The class has several constructors for creating instances of the category with different parameters. It also provides getters and setters for the name, id, and description of the category. Additionally, the code includes an override for the `toString()` method to provide a string representation of the category object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Film.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/Film.java",
+    "content": {
+      "structured": {
+        "description": "A class called `Film` that represents a film. The class has several fields and methods for setting and retrieving attributes such as the film's name, ID, image URL, duration, description, and year of release. The class also provides methods for constructing new Film objects and for returning string representations of the objects.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Filmcategory.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/Filmcategory.java",
+    "content": {
+      "structured": {
+        "description": "A `Filmcategory` class that represents a film category and its associated film. The class has several constructors for creating new instances and provides getters and setters for the category and film IDs. Additionally, it includes an override of the `toString()` method for easy serialization.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Filmcinema.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/Filmcinema.java",
+    "content": {
+      "structured": {
+        "description": "A class `FilmCinema` that represents a combination of a film and a cinema. The class has several fields and methods for associating and manipulating the film and cinema, including constructors, getters, and setters. The class also implements the `ToString` interface to provide a string representation of the object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Filmcoment.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/Filmcoment.java",
+    "content": {
+      "structured": {
+        "description": "A `Filmcoment` class that represents a film comment. The class has several fields and methods for accessing and manipulating the comment's attributes, such as the id, comment, user_id, and film_id. The ` Filmcoment` class also provides a constructor for creating new instances of the class and an `toString()` method for converting the object to a string representation.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "RatingFilm.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/RatingFilm.java",
+    "content": {
+      "structured": {
+        "description": "A `RatingFilm` class that represents a rating given by a user to a film. The class has fields for the film being rated and the user who gave the rating, as well as a field for the rating itself. The class also has constructors, getters, and setters for each of these fields. Additionally, the code includes an override of the `toString()` method.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Ticket.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/films/Ticket.java",
+    "content": {
+      "structured": {
+        "description": "A `Ticket` class that represents a movie session ticket. The class has several fields and methods for accessing and modifying the ticket's attributes, such as the number of seats, the client associated with the ticket, and the movie session associated with the ticket. The class also provides toString() method for generating a string representation of the ticket object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Avis.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/produits/Avis.java",
+    "content": {
+      "structured": {
+        "description": "A class called `Avis` that represents a user's review of a product. The class has several fields and methods for storing and manipulating information about the user, note, and produit associated with the avis. The `toString()` method returns a string representation of the object, including its fields.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Categorie_Produit.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/produits/Categorie_Produit.java",
+    "content": {
+      "structured": {
+        "description": "A `Categorie_Produit` class that represents a category of products. The class has several constructors for creating instances of the class with different parameter combinations, and also provides methods for getting and setting the ID of the category, its name, and its description. The `toString()` method allows for easy string representation of the category.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Commande.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/produits/Commande.java",
+    "content": {
+      "structured": {
+        "description": "A `Commande` class that represents a command made by a client. The class has various attributes and methods for manipulating those attributes, such as an ID, date, status, client, list of items, telephone number, and address. The `toString()` method provides a string representation of the object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "CommandeItem.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/produits/CommandeItem.java",
+    "content": {
+      "structured": {
+        "description": "A class `CommandeItem` representing an item in a command. The class has various fields and methods for storing and manipulating the item's ID, quantity, product, and command. The `toString()` method provides a string representation of the object.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Commentaire.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/produits/Commentaire.java",
+    "content": {
+      "structured": {
+        "description": "A `Commentaire` class that represents a comment made by a client on a product. The class has several attributes and methods for accessing and manipulating these attributes, including an ID, client, commentary, and product.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "Panier.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/produits/Panier.java",
+    "content": {
+      "structured": {
+        "description": "A class `Panier` that represents a shopping cart. It has several constructors for creating a panier with various parameters, such as ID, produit, quantity, and user. The class also provides methods for getting and setting the panier's ID, quantity, produit, and user. Additionally, it includes an override of the `toString()` method to provide a string representation of the panier object.",
+        "items": [
+          {
+            "id": "7457f502-0b92-4196-5b46-6e07c4d39f89",
+            "ancestors": [],
+            "type": "function",
+            "description": "Is used to represent a shopping cart containing various products and users. It has several fields such as idpanier, quantity, produit, and users, which can be accessed through getters and setters methods. The class also provides a toString() method for creating a string representation of the panier object.",
+            "name": "Panier",
+            "location": {
+              "start": 7,
+              "insert": 7,
+              "offset": " ",
+              "indent": 0,
+              "comment": null
+            },
+            "item_type": "class",
+            "length": 128,
+            "docLength": null
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "Produit.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/produits/Produit.java",
+    "content": {
+      "structured": {
+        "description": "A `Produit` class representing a product with attributes such as ID, name, price, image, description, category, and quantity. It also includes methods for constructing and retrieving the product's attributes, as well as methods for setting and getting the product's ID, name, price, image, description, category, and quantity.",
+        "items": []
+      }
+    }
+  },
+  {
+    "name": "SharedData.java",
+    "path": "rakcha-desktop/src/main/java/com/esprit/models/produits/SharedData.java",
+    "content": {
+      "structured": {
+        "description": "A `SharedData` class that follows the Singleton pattern to ensure only one instance of the class exists. It provides methods for returning and setting the total price stored in the shared data object. The class also includes a private constructor to prevent direct instantiation and a static method for retrieving the instance of the class.",
+        "items": []
+      }
+    }
+  }
+]
