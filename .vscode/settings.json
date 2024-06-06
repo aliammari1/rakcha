@@ -9,5 +9,8 @@
                 "-Dappmap.output.directory=${command:appmap.getAppmapDir}"
             ]
         }
-    ]
+    ],
+    "docwriter.style": "Auto-detect",
+    "docwriter.progress.trackClasses": true,
+    "docwriter.progress.trackTypes": true
 }
