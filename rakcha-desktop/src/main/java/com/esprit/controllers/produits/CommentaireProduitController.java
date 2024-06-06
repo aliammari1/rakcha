@@ -66,6 +66,13 @@ import java.util.ResourceBundle;
 
 
 
+/**
+ * Is responsible for handling user actions related to the "Commentaire Produit"
+ * section of the application. It contains methods that handle the creation of new
+ * stages and scenes, as well as the closing of existing stages. The controller also
+ * handles events related to the "Event", "ProduitClient", "MovieClient", and
+ * "SerieClient" sections.
+ */
 public class CommentaireProduitController implements Initializable {
 
 
@@ -116,6 +123,18 @@ public class CommentaireProduitController implements Initializable {
 
 
 
+    /**
+     * Takes a user message as input and processes it by detecting if it contains any bad
+     * words, and if so, displays an alert message. If the message is clean, it creates
+     * a new comment object and saves it to the database.
+     * 
+     * @param actionEvent event that triggers the execution of the `addChat()` method,
+     * which in this case is a user pressing the "Enter" key while focused on the chat field.
+     * 
+     * 	- Type: ActionEvent
+     * 	- Target: FXML
+     * 	- Origin: User interface element (not specified)
+     */
     @FXML
 
     void addchat(ActionEvent actionEvent) {
@@ -206,12 +225,15 @@ public class CommentaireProduitController implements Initializable {
 
     
 
-    /** 
-
-     * @param location
-
-     * @param resources
-
+    /**
+     * Initializes the application by loading a accepted commentaire resource.
+     * 
+     * @param location URL of the initial resource to be loaded and is used to set the
+     * starting point for the loading process.
+     * 
+     * @param resources ResourceBundle containing localized messages and values for the
+     * application, which is used by the `loadAcceptedCommentaire()` method to access
+     * translated strings and other resources.
      */
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -226,6 +248,10 @@ public class CommentaireProduitController implements Initializable {
 
 
 
+    /**
+     * Retrieves comments from a service, creates a card for each comment, and adds them
+     * to a `FlowPane`.
+     */
     private void loadAcceptedCommentaire() {
 
         // Récupérer toutes les produits depuis le service
@@ -258,12 +284,45 @@ public class CommentaireProduitController implements Initializable {
 
     
 
-    /** 
-
-     * @param comm
-
-     * @return HBox
-
+    /**
+     * Creates a `HBox` containing the commentary and the author's name, using a
+     * `CommentaireService` to retrieve the comments and a `FlowPane` to display the `HBox`.
+     * 
+     * @param comm `Commentaire` object that contains information about a particular
+     * comment, which is to be displayed on a card.
+     * 
+     * 	- `comm` is an instance of `Commentaire`, representing a comment made by a user
+     * on a website.
+     * 	- `comm.getClient()` returns a `Client` object, containing information about the
+     * user who made the comment.
+     * 	- `comm.getCommentaire()` returns the actual comment text made by the user.
+     * 
+     * @returns a customizable HBox containing the author's name and the content of a
+     * given comment.
+     * 
+     * 1/ The output is an `HBox` object, which represents a container for other UI elements.
+     * 2/ The `setStyle` method is used to set the padding of the `HBox` to 5 pixels on
+     * all sides.
+     * 3/ An `AnchorPane` object is created and set as the content of the `HBox`. This
+     * means that the `AnchorPane` will be the container for the other UI elements inside
+     * the `HBox`.
+     * 4/ The `setPrefWidth` method is used to set the width of the `AnchorPane` to 200
+     * pixels.
+     * 5/ A `Label` object representing the author's name is created and added as a child
+     * element of the `AnchorPane`.
+     * 6/ The `setStyle` method is used again to set the font weight, font family, and
+     * text fill color of the label to bold, Verdana, and black, respectively.
+     * 7/ The `setPrefWidth` method is used to set the width of the label to 230 pixels.
+     * 8/ The `setLayoutX` and `setLayoutY` methods are used to position the label at
+     * (20, 30) on the anchor pane.
+     * 9/ A second `Label` object representing the comment is created and added as a child
+     * element of the `AnchorPane`.
+     * 10/ The same styling properties as before are applied to the second label.
+     * 11/ The `setPrefWidth` method is used again to set the width of the second label
+     * to 230 pixels.
+     * 12/ The `setLayoutX` and `setLayoutY` methods are used to position the second label
+     * at (20, 55) on the anchor pane.
+     * 13/ Finally, the `getChildren` method is used to add both labels to the `AnchorPane`.
      */
 
     public HBox createcommentairecard(Commentaire comm) {
@@ -358,6 +417,17 @@ public class CommentaireProduitController implements Initializable {
 
 
 
+    /**
+     * Loads a new user interface (`CommentaireProduit.fxml`) when the `ActionEvent` is
+     * triggered, creates a new stage with the loaded scene, and replaces the current
+     * stage with the new one.
+     * 
+     * @param event ActionEvent object that triggered the function execution, providing
+     * the source of the event and allowing for proper handling of the corresponding action.
+     * 
+     * 	- `event`: An ActionEvent object representing a user event, such as clicking a
+     * button or pressing a key.
+     */
     @FXML
 
     void cinemaclient(ActionEvent event) {
@@ -412,6 +482,19 @@ public class CommentaireProduitController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML interface when an event is triggered, creates a new scene with
+     * the loaded interface, and attaches it to a new stage, replacing the current stage.
+     * 
+     * @param event ActionEvent object that triggered the event handler method, providing
+     * information about the source of the event and any associated data.
+     * 
+     * 	- It is an instance of `ActionEvent`, which represents an action event that
+     * occurred in the application.
+     * 	- It has various properties related to the event, such as the source of the event
+     * (e.g., a button click), the event type (e.g., "click"), and any additional data
+     * associated with the event.
+     */
     @FXML
 
     void eventClient(ActionEvent event) {
@@ -466,6 +549,17 @@ public class CommentaireProduitController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML interface, creates a new scene, and attaches it to a new stage,
+     * replacing the current stage.
+     * 
+     * @param event ActionEvent object that triggered the function execution, providing
+     * information about the action that was performed, such as the source of the event
+     * and the ID of the action.
+     * 
+     * 	- Type: ActionEvent
+     * 	- Source: Node (the object that triggered the event)
+     */
     @FXML
 
     void produitClient(ActionEvent event) {
@@ -520,6 +614,13 @@ public class CommentaireProduitController implements Initializable {
 
 
 
+    /**
+     * Likely profiles client-side code execution, possibly monitoring performance or
+     * memory usage for optimization purposes.
+     * 
+     * @param event occurrence of an action event that triggered the execution of the
+     * `profilclient` function.
+     */
     @FXML
 
     void profilclient(ActionEvent event) {
@@ -530,6 +631,17 @@ public class CommentaireProduitController implements Initializable {
 
 
 
+    /**
+     * Creates a new scene with an FXML file, loads it, and displays it as a new stage.
+     * It also closes the current stage.
+     * 
+     * @param event ActionEvent that triggered the function execution, providing the
+     * necessary information to load and display the new FXML interface.
+     * 
+     * 	- `event`: An ActionEvent object representing a user action that triggered the
+     * function to run.
+     * 	- `source`: The source of the event, which is typically a button or other UI element.
+     */
     @FXML
 
     void MovieClient(ActionEvent event) {
@@ -582,6 +694,18 @@ public class CommentaireProduitController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML interface, creates a new scene, and attaches it to a new stage.
+     * It then closes the current stage and displays the new one.
+     * 
+     * @param event EventObject that triggered the `SeriesClient` method to be called,
+     * providing access to information about the event such as the source of the event.
+     * 
+     * 	- It is an instance of `ActionEvent`, which represents an action event occurring
+     * in the JavaFX application.
+     * 	- The source of the event is a `Node` object, which represents the element that
+     * triggered the event.
+     */
     @FXML
 
     void SerieClient(ActionEvent event) {

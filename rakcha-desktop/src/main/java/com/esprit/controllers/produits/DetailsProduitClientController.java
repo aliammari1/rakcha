@@ -92,6 +92,12 @@ import javafx.stage.Window;
 
 
 
+/**
+ * Is used to display details of a product when the user clicks on its name in the
+ * list view. It retrieves the product ID from the event, and then loads an FXML file
+ * to display additional information such as price and image. The controller also
+ * handles mouse clicks on the image and displays a new stage with additional information.
+ */
 public class DetailsProduitClientController implements Initializable {
 
 
@@ -176,6 +182,13 @@ public class DetailsProduitClientController implements Initializable {
 
     // Méthode pour initialiser l'ID du produit
 
+    /**
+     * Sets the `produitId` field to a given value, then initializes details of the product
+     * based on the set ID.
+     * 
+     * @param produitId ID of the product to which the method is being called, and it is
+     * used to store the value in the field `this.produitId`.
+     */
     public void setProduitId(int produitId) throws IOException {
 
         this.produitId = produitId;
@@ -194,12 +207,22 @@ public class DetailsProduitClientController implements Initializable {
 
     
 
-    /** 
-
-     * @param location
-
-     * @param resources
-
+    /**
+     * Loads a list of top-3 accepted products and attaches an event handler to the icon's
+     * mouse click, which displays the product when clicked.
+     * 
+     * @param location URL of the resource to be initialized, which is used to load the
+     * accepted top-3 products when the function is called.
+     * 
+     * Location refers to an URL that provides the root resource of the application. It
+     * represents the base URL of the application and is used in loading accepted top 3.
+     * 
+     * @param resources ResourceBundle containing keys for localized strings, which are
+     * used to display product information when the user clicks on the icon.
+     * 
+     * 	- `location`: A URL object representing the location of the application.
+     * 	- `resources`: A ResourceBundle object providing key-value pairs of resource
+     * strings in different languages.
      */
 
     @Override
@@ -220,6 +243,11 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Returns the value of the `quantiteSelectionnee` field.
+     * 
+     * @returns the value of the `quantiteSelectionnee` variable.
+     */
     public int getQuantiteSelectionnee() {
 
         return quantiteSelectionnee;
@@ -228,6 +256,11 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Retrieves a product from a service using its ID, verifies if the product is found,
+     * and adds a card for the product to a `FlowPane` if it exists, and also adds a card
+     * for the product's cart to another `FlowPane`.
+     */
     private void initDetailsProduit() {
 
         // Récupérer le produit depuis le service en utilisant l'ID
@@ -270,6 +303,46 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Creates a scene containing a card for a product, with an image, name, description,
+     * price, rating, and a "Add to Cart" button. The rating is calculated based on the
+     * average rating of the product and displayed as a number of stars out of 5. When
+     * the "Add to Cart" button is clicked, the function deletes any existing rating for
+     * the product and creates a new rating with the current rating value.
+     * 
+     * @param produit Product object that is being displayed in the detail view, and it
+     * is used to retrieve the product's ID, name, image URL, price, and rating for display
+     * in the corresponding Card element.
+     * 
+     * 	- `id_produit`: an integer representing the product ID
+     * 	- `nom`: a string representing the product name
+     * 	- `description`: a string representing the product description
+     * 	- `prix`: a double representing the product price
+     * 	- `imagePath`: a string representing the path to the product image
+     * 
+     * Note: These properties are not explained in detail as they are already defined in
+     * the function.
+     * 
+     * @returns a stage with a card containing information about a product, including an
+     * image, name, description, price, and rating.
+     * 
+     * 	- `card`: The `Card` object that represents the product card, containing various
+     * elements such as an image view, name label, description label, price label, rating,
+     * and a "Add to cart" button.
+     * 	- `imageView`: An `Image` view that displays the product image.
+     * 	- `nameLabel`: A `Label` that displays the product name.
+     * 	- `descriptionLabel`: A `Label` that displays the product description.
+     * 	- `priceLabel`: A `Label` that displays the product price.
+     * 	- `rating`: A `Rating` widget that displays the average rating of the product
+     * based on customer reviews.
+     * 	- `etoilelabel`: A `Label` that displays the current rating out of 5, using a
+     * yellow font and formatting.
+     * 	- `addToCartButton`: An `Hyperlink` button that allows users to add the product
+     * to their cart.
+     * 	- `iconeetoile`: A `FontIcon` widget that displays an orange "star" icon when the
+     * product has no reviews, and a yellow "star" icon when the product has at least one
+     * review.
+     */
     private HBox createProduitCard(Produit produit) {
 
         // Créer une carte pour le produit avec ses informations
@@ -532,6 +605,15 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Adds a product to the shopping cart based on available stock, retrieves product
+     * details and user information, creates a new panier object, and displays the updated
+     * panier.
+     * 
+     * @param produitId ID of the product to be added to the cart.
+     * 
+     * @param quantity quantity of the product that the user wants to add to the cart.
+     */
     private void ajouterAuPanier(int produitId, int quantity) {
 
         ProduitService produitService = new ProduitService();
@@ -570,6 +652,10 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Loads an FXML page, creates a new stage for it, and shows it modally, closing the
+     * previous stage.
+     */
     @FXML
 
     public void afficherProduit() {
@@ -636,6 +722,10 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Sets the visibility of a `FlowPane` and its child elements to true, with the
+     * `opacity` of one of the child elements set to 0.2.
+     */
     private void afficherpanier() {
 
 
@@ -656,6 +746,39 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Creates a `Card` object that displays the cart contents, includes a "Continue
+     * Shopping" button and an icon for closing the card. It also sets up event handlers
+     * for closing the card and the "Continue Shopping" button.
+     * 
+     * @param produit product to be displayed in the shopping cart card, which is used
+     * to set the corresponding labels and images for each product in the panier.
+     * 
+     * 	- `name`: The name of the product.
+     * 	- `imageUrl`: The URL of the product image.
+     * 	- `price`: The price of the product in euros.
+     * 	- `quantite`: The quantity of the product in stock.
+     * 	- `sommeTotale`: The total cost of the product in euros, calculated by multiplying
+     * the quantity by the price.
+     * 
+     * @returns a `Pane` object containing all the elements of the shopping cart.
+     * 
+     * 	- `panierContainer`: The Parent Node that holds all the children components for
+     * the panier card.
+     * 	- `card`: A `Node` object that represents the panier card component.
+     * 	- `cartLabel`: A `Text` object that displays the total number of items in the panier.
+     * 	- `imageView`: An `Image` object that displays a cart icon.
+     * 	- `nameLabel`: A `Text` object that displays the name of the product.
+     * 	- `priceLabel`: A `Text` object that displays the price of the product.
+     * 	- `quantiteLabel`: A `Text` object that displays the quantity of the product in
+     * the panier.
+     * 	- `sommeTotaleLabel`: A `Text` object that displays the total cost of the products
+     * in the panier.
+     * 	- `achatbutton`: A `Button` object that allows the user to continue shopping.
+     * 	- `commandebutton`: A `Button` object that allows the user to add the product to
+     * the panier.
+     * 	- `closeIcon`: A `FontIcon` object that displays a close icon for the panier card.
+     */
     private HBox createPanierCard(Produit produit) {
 
         // Créer une carte pour le produit avec ses informations
@@ -930,6 +1053,19 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Calculates the total price of a product based on its ID and quantity. It retrieves
+     * the unitarian price of the product from the `ProduitService` class and multiplies
+     * it by the input quantity to obtain the total price.
+     * 
+     * @param idProduit ID of the product for which the price is being calculated.
+     * 
+     * @param quantity number of products to be priced, and is multiplied by the unit
+     * price returned by the `getPrixProduit()` method to calculate the total price for
+     * the specified quantity of products.
+     * 
+     * @returns the product of the quantity and the price of the product for the given ID.
+     */
     private double prixProduit(int idProduit, int quantity) {
 
         ProduitService produitService = new ProduitService();
@@ -942,6 +1078,17 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Renders the cart card invisible, makes the `panierFlowPane` and `detailFlowPane`
+     * visible and sets their opacity to 1. Additionally, it makes the `anchordetail` and
+     * `top3anchorpane` visible and sets their opacity to 1.
+     * 
+     * @param panierContainer `HBox` container that holds the `FlowPane` representing the
+     * shopping cart, which is rendered invisible when the function is called.
+     * 
+     * 	- `panierContainer` is an instance of `HBox`.
+     * 	- It contains a `FlowPane` and other components.
+     */
     private void fermerPanierCard(HBox panierContainer) {
 
         // Rendre la carte du panier invisible
@@ -976,6 +1123,17 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML interface, creates a new scene and attaches it to a new stage,
+     * replacing the current stage, and closes the original stage.
+     * 
+     * @param event MouseEvent object that triggered the function execution, providing
+     * information about the mouse click or other event that occurred.
+     * 
+     * 	- Event source: The element that triggered the event (not shown)
+     * 	- Type: The type of event (not shown)
+     * 	- X and Y coordinates: The position of the event relative to the element (not shown)
+     */
     @FXML
 
     void panier(MouseEvent event) {
@@ -1030,6 +1188,19 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new user interface using an FXML loader, creates a new scene, and attaches
+     * it to a new stage when an event is triggered. It also closes the current stage
+     * upon execution.
+     * 
+     * @param event MouseEvent that triggered the function execution, providing information
+     * about the mouse click or other event that occurred in the FXML document.
+     * 
+     * 	- It is a `MouseEvent` object representing a mouse event that triggered the
+     * function's execution.
+     * 	- The source of the event is the element that was clicked or hovered over, which
+     * is not explicitly stated in the code snippet provided.
+     */
     @FXML
 
     void commentaire(MouseEvent event) {
@@ -1086,6 +1257,16 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new UI scene (`CommentaireProduit.fxml`) into an existing stage when an
+     * action event is triggered, replacing the current scene and closing the previous stage.
+     * 
+     * @param event ActionEvent object that triggered the function execution, providing
+     * the source of the event and allowing the code to access its related information.
+     * 
+     * 	- `event`: an ActionEvent object representing the event triggered by the user's
+     * action, such as clicking on a button or entering text in a field.
+     */
     @FXML
 
     void cinemaclient(ActionEvent event) {
@@ -1140,6 +1321,17 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML file, creates a new scene and stage, and replaces the current
+     * stage with the new one.
+     * 
+     * @param event EventObject that triggered the method, providing access to information
+     * about the event, such as its source and details, which can be used to handle the
+     * event appropriately.
+     * 
+     * 	- Event object contains information about the event that triggered the function,
+     * such as the source element and the type of event.
+     */
     @FXML
 
     void eventClient(ActionEvent event) {
@@ -1194,6 +1386,16 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML file, creates a new scene, and attaches it to a new stage, replacing
+     * the current stage. It also closes the current stage.
+     * 
+     * @param event ActionEvent object that triggered the function execution, providing
+     * the source of the action and allowing the code to access the event details.
+     * 
+     * 	- Event source: The object that triggered the event (in this case, a button press)
+     * 	- Type of event: The type of event that was triggered (in this case, an action event)
+     */
     @FXML
 
     void produitClient(ActionEvent event) {
@@ -1248,6 +1450,14 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Appears to be a Java method that handles an `ActionEvent`. It does not provide any
+     * information about the code author or licensing, and its purpose is not explicitly
+     * stated in the provided code snippet.
+     * 
+     * @param event client profile data that triggered the execution of the `profilclient`
+     * method.
+     */
     @FXML
 
     void profilclient(ActionEvent event) {
@@ -1258,6 +1468,17 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new user interface (`filmuser.fxml`) using the `FXMLLoader`, creates a new
+     * scene with it, and attaches it to a new stage. It also closes the current stage
+     * and displays the new one.
+     * 
+     * @param event ActionEvent object that triggered the function execution, providing
+     * information about the source of the event and the type of action performed.
+     * 
+     * 	- Event source: The object that generated the event, which is typically a button
+     * or other user interface element.
+     */
     @FXML
 
     void MovieClient(ActionEvent event) {
@@ -1310,6 +1531,19 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML file, creates a new scene and attaches it to a new stage, replacing
+     * the current stage.
+     * 
+     * @param event ActionEvent object that triggered the `SeriesClient()` method, providing
+     * information about the source of the event and allowing the method to determine the
+     * appropriate action to take.
+     * 
+     * 	- Event source: The origin of the event, which is an instance of the `ActionEvent`
+     * class.
+     * 	- Parameter: An optional parameter associated with the event, which can be of any
+     * type.
+     */
     @FXML
 
     void SerieClient(ActionEvent event) {
@@ -1364,6 +1598,11 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Retrieves and displays a list of the top 3 best-selling products based on their
+     * quantity and status, using a ProduitService instance to retrieve the data and
+     * create card containers for each product.
+     */
     public void loadAcceptedTop3() {
 
 
@@ -1420,6 +1659,32 @@ public class DetailsProduitClientController implements Initializable {
 
 
 
+    /**
+     * Generates a `VBox` container that displays a product's name, price, and image. The
+     * image is loaded from an URL or a default image if null, and the name and price are
+     * displayed with font style and size. When the product name is clicked, a new stage
+     * displaying details of the product is opened.
+     * 
+     * @param produit Produit object that contains information about the product, including
+     * its name, image, and price, which are used to create the UI elements and display
+     * them in the card container.
+     * 
+     * 	- `id_produit`: an integer representing the product ID.
+     * 	- `nom`: the product name.
+     * 	- `prix`: the product price.
+     * 	- `image`: a Blob object containing the image of the product (optional).
+     * 
+     * @returns a `VBox` container containing an `ImageView`, a `Label`, and a `Label`,
+     * representing the product's name, price, and image.
+     * 
+     * 1/ `cardContainer`: A `VBox` object that contains three components: an `Label`,
+     * an `ImageView`, and another `Label`.
+     * 2/ `imageView`: An `ImageView` component that displays an image of the product.
+     * 3/ `nameLabel`: A `Label` component that displays the product name.
+     * 4/ `priceLabel`: A `Label` component that displays the product price.
+     * 5/ `card`: The root `Node` of the `VBox` container, which contains the three
+     * components mentioned above.
+     */
     public VBox createtopthree(Produit produit) {
 
         VBox cardContainer = new VBox(5);

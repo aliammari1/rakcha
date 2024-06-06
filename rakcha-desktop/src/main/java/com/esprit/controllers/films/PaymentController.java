@@ -39,13 +39,12 @@ import java.util.regex.Pattern;
 
 
 /**
-
- * FXML Controller class
-
- *
-
- * @author WALID
-
+ * Is responsible for handling payment processing and redirection to either a success
+ * or failure page after a successful payment. The class includes several methods
+ * that validate credit card numbers, email addresses, and expiration dates, and
+ * checks if the client's information is valid before redirecting to the appropriate
+ * page. Additionally, it provides an alert mechanism for displaying informational
+ * messages during the payment process.
  */
 
 public class PaymentController {
@@ -120,6 +119,10 @@ public class PaymentController {
 
 
 
+    /**
+     * Sets up three SpinnerValueFactories, `MM`, `YY`, and `cvc`, for displaying dates
+     * in the format `mm/yyyy/ccvc`. It assigns the value factories to the respective Spinners.
+     */
     @FXML
 
     void initialize() {
@@ -142,10 +145,21 @@ public class PaymentController {
 
     
 
-    /** 
-
-     * @param s
-
+    /**
+     * Sets the `Seance` object's fields and updates spinner values for the year, month,
+     * and cvc based on the `Seance` object's `prix` field and sets the text of a text
+     * field with the total amount.
+     * 
+     * @param s Seance object passed into the function, which is used to set the values
+     * of various fields within the `Seance` object.
+     * 
+     * 	- `seance`: represents an object of the Seance class, containing information about
+     * a seance.
+     * 	- `prix`: a float representing the price of the seance.
+     * 	- `terrain_id`: an integer representing the terrain ID for display purposes.
+     * 	- `monthValue` and `year`: integers representing the current month and year respectively.
+     * 	- `cvc`: an object of the CVC class, used to display a spinner for the number of
+     * seats available in the seance.
      */
 
     public void setData(Seance s) {
@@ -203,9 +217,20 @@ public class PaymentController {
 
 
     /**
-
-     * Initializes the controller class.
-
+     * Validates user input and processes a payment using a third-party payment processor.
+     * If the payment is successful, it displays an information alert; otherwise, it
+     * displays an error alert.
+     * 
+     * @param event payment action that triggered the function execution, and it is used
+     * to identify the specific payment method being processed.
+     * 
+     * 	- `System.out.println(cvc.getValue());`: This line prints the value of the `CVC`
+     * field.
+     * 
+     * `event` is an instance of the `ActionEvent` class, which represents a user event
+     * related to a button press or other action in the JavaFX application. It provides
+     * information about the event, such as the source of the event (e.g., a button), the
+     * type of event (e.g., "click"), and any additional data related to the event.
      */
 
     @FXML
@@ -414,12 +439,14 @@ public class PaymentController {
 
     
 
-    /** 
-
-     * @param value
-
-     * @return boolean
-
+    /**
+     * Verifies if a given integer value can be represented as a three-digit credit card
+     * number (CVC) by checking its length. If the length is equal to 3, the function
+     * returns `true`, otherwise it returns `false`.
+     * 
+     * @param value 3-digit credit card number to be checked for length.
+     * 
+     * @returns a boolean value indicating whether the input string has a length of 3.
      */
 
     private boolean check_cvc(int value) {
@@ -434,6 +461,18 @@ public class PaymentController {
 
 
 
+    /**
+     * Takes two parameters `value_y` and `value_mm`, checks if the date represented by
+     * those parameters is after the current date, and returns `true` if it is, or `false`
+     * otherwise.
+     * 
+     * @param value_y 4-digit year value in the expiration date.
+     * 
+     * @param value_mm month of the date to be checked, which is used to determine if the
+     * date is valid.
+     * 
+     * @returns a boolean value indicating whether the given date is valid.
+     */
     private boolean check_expDate(int value_y, int value_mm) {
 
         boolean valid = false;
@@ -452,6 +491,17 @@ public class PaymentController {
 
 
 
+    /**
+     * Checks whether a given credit card number follows a specific format by matching
+     * it against a regular expression pattern. It returns `true` if the pattern matches
+     * and `false` otherwise.
+     * 
+     * @param cardNumber 13-19 digit credit card number to be checked against the regular
+     * expression pattern for validation.
+     * 
+     * @returns a boolean value indicating whether the provided credit card number matches
+     * the specified pattern.
+     */
     private boolean check_card_num(String cardNumber) {
 
         // Trim the input string to remove any leading or trailing whitespace
@@ -490,6 +540,15 @@ public class PaymentController {
 
 
 
+    /**
+     * Checks whether a given email address is valid by matching it against a regular
+     * expression pattern that matches most standard email addresses.
+     * 
+     * @param email email address to be checked for validity.
+     * 
+     * @returns a boolean value indicating whether the provided email address is valid
+     * or not.
+     */
     public boolean isValidEmail(String email) {
 
         // Trim the input string to remove any leading or trailing whitespace
@@ -522,6 +581,9 @@ public class PaymentController {
 
 
 
+    /**
+     * Redirects the user to a success page with data loaded from an external resource.
+     */
     private void redirect_to_successPage() {
 
 //        try {
@@ -554,6 +616,10 @@ public class PaymentController {
 
     //
 
+    /**
+     * Redirects the user to a "Fail Page" by loading an FXML file, updating the controller
+     * with data from the reservation object, and displaying the scene on the stage.
+     */
     private void redirect_to_FailPage() {
 
 //        try {
@@ -586,6 +652,16 @@ public class PaymentController {
 
     //
 
+    /**
+     * Redirects the user to a new scene containing a reservation view client. It loads
+     * the reservation view client fxml file, sets the controller data with the client
+     * ID, and displays the stage in a new window.
+     * 
+     * @param event triggering of an action, specifically the click on the "Back" button,
+     * which calls the `redirectToListReservation()` method.
+     * 
+     * 	- `event` is an instance of the `ActionEvent` class.
+     */
     @FXML
 
     private void redirectToListReservation(ActionEvent event) {

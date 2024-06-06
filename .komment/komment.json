@@ -1,10 +1,11 @@
 {
   "meta": {
     "version": "1",
-    "updated_at": "2024-06-06T15:29:48.390Z",
+    "updated_at": "2024-06-06T16:03:51.052Z",
     "created_at": "2024-06-06T15:31:26.227Z",
     "pipelines": [
-      "4756e845-864b-4d4d-8556-72ffeb4971b1"
+      "4756e845-864b-4d4d-8556-72ffeb4971b1",
+      "9e123484-fc5a-47a3-8225-c2492947819c"
     ]
   },
   "lookup": [
@@ -30,7 +31,39 @@
       "rakcha-desktop/src/main/java/com/esprit/models/produits/Commentaire.java",
       "rakcha-desktop/src/main/java/com/esprit/models/produits/Panier.java",
       "rakcha-desktop/src/main/java/com/esprit/models/produits/Produit.java",
-      "rakcha-desktop/src/main/java/com/esprit/models/produits/SharedData.java"
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/SharedData.java",
+      "rakcha-desktop/Main.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/AdminSideBarController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/ClientSideBarController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/ResponsableDeCinemaSideBarController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/cinemas/CinemaStatisticsController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/cinemas/DashboardAdminController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/cinemas/DashboardClientController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/cinemas/DashboardResponsableController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/cinemas/ModifierCinemaController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/cinemas/SentimentAnalysisController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/films/ActorController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/films/CategoryController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/films/FilmUserController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/films/PaymentController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/films/PaymentuserController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/produits/AfficherProduitClientControllers.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/produits/AnalyseCommande.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/produits/CommandeClientController.java"
+    ],
+    [
+      "rakcha-desktop/src/main/java/com/esprit/controllers/produits/CommentaireProduitController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/produits/DesignProduitAdminContoller.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/produits/DetailsProduitClientController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/produits/ListCommandeController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/series/CategorieController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/series/CategoriesClientController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/series/EpisodeClientController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/series/HomeController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/series/HommeClientController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/series/ListFavorisController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/series/SerieClientController.java",
+      "rakcha-desktop/src/main/java/com/esprit/controllers/series/StatistiqueController.java"
     ]
   ]
 }
