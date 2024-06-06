@@ -4,11 +4,23 @@ package com.esprit.services.series;
 
 
 
+
+
+
+
+
+
 import com.esprit.services.series.DTO.SerieDto;
 
 
 
+
+
+
+
 import java.sql.SQLException;
+
+
 
 import java.util.List;
 
@@ -16,9 +28,21 @@ import java.util.List;
 
 
 
+
+
+
+
+
+
 public interface IServiceSerie<T> {
 
+
+
     void ajouter(T t) throws SQLException;
+
+
+
+
 
 
 
@@ -26,7 +50,15 @@ public interface IServiceSerie<T> {
 
 
 
+
+
+
+
     void supprimer(int id) throws SQLException;
+
+
+
+
 
 
 
@@ -34,7 +66,15 @@ public interface IServiceSerie<T> {
 
 
 
+
+
+
+
     List<T> recuperers() throws SQLException;
+
+
+
+
 
 
 
@@ -42,5 +82,11 @@ public interface IServiceSerie<T> {
 
 
 
+
+
+
+
 }
+
+
 
