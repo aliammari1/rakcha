@@ -17,12 +17,21 @@ public class Chat {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param response
+     * @return String
+     */
     public static String extractContentFromResponse(String response) {
         int startMarker = response.indexOf("content") + 11; // Marqueur pour le début du contenu
         int endMarker = response.indexOf("\"", startMarker); // Marqueur pour la fin du contenu
         return response.substring(startMarker, endMarker); // Retourner la sous-chaîne contenant uniquement la réponse
     }
 
+   
+   /** 
+    * @return String
+    */
    /* public String badword(String message) {
         String question = "detecter si le discours de contenu de la publication est haineux ou non si il ya haineux votre reponse doit etre 100% correcte afficher 1 si non afficher 0 just dit 0 ou 1 idont need anything else  " + message ;
         try {

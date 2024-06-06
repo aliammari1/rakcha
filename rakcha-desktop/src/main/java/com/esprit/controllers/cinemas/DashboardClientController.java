@@ -89,6 +89,12 @@ public class DashboardClientController {
     @FXML
     private AnchorPane Anchortop3;
 
+    
+    /** 
+     * @param liste
+     * @param recherche
+     * @return List<Cinema>
+     */
     @FXML
     public static List<Cinema> rechercher(List<Cinema> liste, String recherche) {
         List<Cinema> resultats = new ArrayList<>();
@@ -117,6 +123,10 @@ public class DashboardClientController {
         listCinemaClient.setVisible(true);
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void showListCinema(ActionEvent event) {
         cinemaFlowPane.getChildren().clear();

@@ -22,6 +22,10 @@ public class CinemaStatisticsController {
     private CommentaireCinemaService commentaireCinemaService = new CommentaireCinemaService();
     private CinemaService cinemaService = new CinemaService();
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void showStatistics(ActionEvent event) {
         StatisticsAnchor.getChildren().clear();
@@ -46,6 +50,11 @@ public class CinemaStatisticsController {
         StatisticsAnchor.getChildren().add(chartContainer);
     }
 
+    
+    /** 
+     * @param comments
+     * @return Map<String, Map<String, Integer>>
+     */
     // Méthode pour générer les statistiques sur l'analyse de sentiment pour chaque cinéma
     private Map<String, Map<String, Integer>> generateSentimentStatistics(List<CommentaireCinema> comments) {
         Map<String, Map<String, Integer>> cinemaSentimentStatistics = new HashMap<>();

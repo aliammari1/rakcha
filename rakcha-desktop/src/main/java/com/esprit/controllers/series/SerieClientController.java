@@ -100,6 +100,12 @@ public class SerieClientController {
     @FXML
     private HBox hboxTop3;
 
+    
+    /** 
+     * @param liste
+     * @param recherche
+     * @return List<Serie>
+     */
     // FOCTION RECHERCHE
     public static List<Serie> rechercher(List<Serie> liste, String recherche) {
         List<Serie> resultats = new ArrayList<>();
@@ -113,6 +119,11 @@ public class SerieClientController {
         return resultats;
     }
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void onWatch(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/EpisodeClient.fxml"));

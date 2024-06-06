@@ -20,6 +20,10 @@ public class FilmcategoryService implements IService<Filmcategory> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param filmcategory
+     */
     @Override
     public void create(Filmcategory filmcategory) {
         FilmService filmService = new FilmService();
@@ -39,6 +43,10 @@ public class FilmcategoryService implements IService<Filmcategory> {
 
     }
 
+    
+    /** 
+     * @return List<Filmcategory>
+     */
     @Override
     public List<Filmcategory> read() {
         List<Filmcategory> filmcategoryArrayList = new ArrayList<>();

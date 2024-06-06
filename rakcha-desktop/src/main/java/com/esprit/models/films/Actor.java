@@ -37,10 +37,18 @@ public class Actor {
         this.numberOfAppearances = numberOfAppearances;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getNumberOfAppearances() {
         return numberOfAppearances;
     }
 
+    
+    /** 
+     * @param numberOfAppearances
+     */
     public void setNumberOfAppearances(int numberOfAppearances) {
         this.numberOfAppearances = numberOfAppearances;
     }

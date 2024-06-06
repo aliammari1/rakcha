@@ -20,6 +20,10 @@ public class SeanceService implements IService<Seance> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param seance
+     */
     public void create(Seance seance) {
         String req = "INSERT into seance(id_film, id_salle, HD, HF, date, id_cinema, prix) values (?, ?, ?, ?, ?, ?, ?);";
         try {
@@ -38,6 +42,10 @@ public class SeanceService implements IService<Seance> {
         }
     }
 
+    
+    /** 
+     * @param seance
+     */
     public void update(Seance seance) {
         String req = "UPDATE seance " +
                 "JOIN cinema ON seance.id_cinema = cinema.id_cinema " +

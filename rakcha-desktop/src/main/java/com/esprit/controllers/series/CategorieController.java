@@ -120,6 +120,11 @@ public class CategorieController {
         }
     }
 
+    
+    /** 
+     * @param title
+     * @param message
+     */
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -128,6 +133,10 @@ public class CategorieController {
         alert.showAndWait();
     }
 
+    
+    /** 
+     * @param categorie
+     */
     private void modifierCategorie(Categorie categorie) {
         IServiceCategorieImpl iServiceCategorie = new IServiceCategorieImpl();
         Dialog<Pair<String, String>> dialog = new Dialog<>();

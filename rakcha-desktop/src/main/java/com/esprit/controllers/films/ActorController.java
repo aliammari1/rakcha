@@ -79,6 +79,10 @@ public class ActorController {
         });
     }
 
+    
+    /** 
+     * @param searchText
+     */
     private void searchActor(String searchText) {
         filteredActors.setPredicate(actor -> {
             // Si le champ de recherche est vide, afficher tous les acteurs
@@ -93,6 +97,10 @@ public class ActorController {
         });
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void importAcotrImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();

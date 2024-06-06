@@ -8,6 +8,10 @@ public class SharedData {
         // Constructeur privé pour empêcher l'instanciation directe
     }
 
+    
+    /** 
+     * @return SharedData
+     */
     public static SharedData getInstance() {
         if (instance == null) {
             instance = new SharedData();
@@ -15,6 +19,10 @@ public class SharedData {
         return instance;
     }
 
+    
+    /** 
+     * @return double
+     */
     public double getTotalPrix() {
         return totalPrix;
     }

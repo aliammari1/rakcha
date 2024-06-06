@@ -20,10 +20,18 @@ public class Salle {
         this.nom_salle = nom_salle;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getId_salle() {
         return id_salle;
     }
 
+    
+    /** 
+     * @param id_salle
+     */
     public void setId_salle(int id_salle) {
         this.id_salle = id_salle;
     }

@@ -23,6 +23,10 @@ public class FilmcinemaService implements IService<Filmcinema> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param filmcinema
+     */
     @Override
     public void create(Filmcinema filmcinema) {
         String req = "INSERT INTO film_cinema (film_id,cinema_id) VALUES (?,?)";
@@ -41,6 +45,10 @@ public class FilmcinemaService implements IService<Filmcinema> {
         }
     }
 
+    
+    /** 
+     * @return List<Filmcinema>
+     */
     @Override
     public List<Filmcinema> read() {
         List<Filmcinema> actorfilmArrayList = new ArrayList<>();

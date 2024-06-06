@@ -21,6 +21,10 @@ public class CinemaService implements IService<Cinema> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param cinema
+     */
     public void create(Cinema cinema) {
         String req = "INSERT into cinema(nom, adresse, responsable, logo, Statut) values (?, ?, ?, ?, ?);";
         try {
@@ -38,6 +42,10 @@ public class CinemaService implements IService<Cinema> {
         }
     }
 
+    
+    /** 
+     * @param cinema
+     */
     public void update(Cinema cinema) {
         String req = "UPDATE cinema set nom = ?, adresse = ?, logo = ?, Statut = ? where id_cinema = ?;";
         try {

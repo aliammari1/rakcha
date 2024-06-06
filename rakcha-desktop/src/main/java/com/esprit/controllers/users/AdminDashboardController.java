@@ -141,6 +141,12 @@ public class AdminDashboardController {
         }
     }
 
+    
+    /** 
+     * @param textField
+     * @param validationPredicate
+     * @param errorMessage
+     */
     private void addValidationListener(TextField textField, Predicate<String> validationPredicate,
                                        String errorMessage) {
         Tooltip tooltip = new Tooltip();
@@ -191,6 +197,10 @@ public class AdminDashboardController {
         }
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void addAdmin(ActionEvent event) {
         try {

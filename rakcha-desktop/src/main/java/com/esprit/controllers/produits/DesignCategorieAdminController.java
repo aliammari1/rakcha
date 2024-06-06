@@ -56,6 +56,11 @@ public class DesignCategorieAdminController {
     @FXML
     private TableColumn<Categorie_Produit, String> description_tableC;
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void GestionProduit(ActionEvent event) throws IOException {
 
@@ -92,6 +97,10 @@ public class DesignCategorieAdminController {
 
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void ajouter_categorie(ActionEvent event) {
         // Récupérer les valeurs des champs de saisie

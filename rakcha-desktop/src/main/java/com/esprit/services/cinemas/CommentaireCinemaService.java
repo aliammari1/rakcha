@@ -21,6 +21,10 @@ public class CommentaireCinemaService implements IService<CommentaireCinema> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param commentaire
+     */
     @Override
     public void create(CommentaireCinema commentaire) {
 
@@ -39,6 +43,10 @@ public class CommentaireCinemaService implements IService<CommentaireCinema> {
         }
     }
 
+    
+    /** 
+     * @return List<CommentaireCinema>
+     */
     @Override
     public List<CommentaireCinema> read() {
         List<CommentaireCinema> commentaire = new ArrayList<>();

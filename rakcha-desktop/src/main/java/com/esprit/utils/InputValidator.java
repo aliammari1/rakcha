@@ -10,6 +10,13 @@ import javafx.scene.control.Tooltip;
 
 public class InputValidator {
 
+    
+    /** 
+     * @param textField
+     * @param regexes
+     * @param errorMessages
+     * @param successMessages
+     */
     public static void inputValidator(TextField textField, String[] regexes, String[] errorMessages, String[] successMessages) {
         Tooltip tooltip = new Tooltip();
         textField.focusedProperty().addListener((observable, oldValue, newValue) -> {

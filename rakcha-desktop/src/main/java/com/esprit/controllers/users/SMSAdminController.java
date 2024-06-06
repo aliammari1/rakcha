@@ -34,6 +34,10 @@ public class SMSAdminController implements Initializable {
     private Button sendSMS;
 
 
+    
+    /** 
+     * @param event
+     */
     public void sendSMS(ActionEvent event) {
         if (verificationCode == Integer.parseInt(codeTextField.getText())) {
             try {
@@ -49,6 +53,11 @@ public class SMSAdminController implements Initializable {
 
     }
 
+    
+    /** 
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         phoneNumberTextfield.textProperty().addListener(new ChangeListener<String>() {

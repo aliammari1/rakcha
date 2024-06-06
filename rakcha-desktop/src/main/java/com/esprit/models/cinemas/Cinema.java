@@ -28,10 +28,18 @@ public class Cinema {
         Statut = statut;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getId_cinema() {
         return id_cinema;
     }
 
+    
+    /** 
+     * @param id_cinema
+     */
     public void setId_cinema(int id_cinema) {
         this.id_cinema = id_cinema;
     }

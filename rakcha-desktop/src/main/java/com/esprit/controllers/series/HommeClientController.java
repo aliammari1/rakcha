@@ -15,6 +15,11 @@ import java.util.Objects;
 public class HommeClientController {
 
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     */
     ///gestion de menu
     @FXML
     void Ocategories(ActionEvent event) throws IOException {
@@ -25,6 +30,11 @@ public class HommeClientController {
         stage.show();
     }
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void Oseries(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/SeriesClient.fxml")));

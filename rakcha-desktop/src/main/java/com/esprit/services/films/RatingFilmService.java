@@ -19,6 +19,10 @@ public class RatingFilmService implements IService<RatingFilm> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param ratingfilm
+     */
     @Override
     public void create(RatingFilm ratingfilm) {
         String req = "INSERT INTO ratingfilm (id_film,id_user,rate) VALUES (?,?,?)";
@@ -34,6 +38,10 @@ public class RatingFilmService implements IService<RatingFilm> {
         }
     }
 
+    
+    /** 
+     * @return List<RatingFilm>
+     */
     @Override
     public List<RatingFilm> read() {
         String req = "SELECT * FROM ratingfilm ";
