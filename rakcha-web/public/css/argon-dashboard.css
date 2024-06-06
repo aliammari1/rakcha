@@ -2473,7 +2473,7 @@ progress {
 }
 
 .table> :not(caption)>*>* {
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem;
   background-color: var(--bs-table-bg);
   border-bottom-width: 1px;
   box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
@@ -2496,7 +2496,7 @@ progress {
 }
 
 .table-sm> :not(caption)>*>* {
-  padding: 0.25rem 0.25rem;
+  padding: 0.25rem;
 }
 
 .table-bordered> :not(caption)>* {
@@ -2833,14 +2833,14 @@ progress {
 
 .form-control-lg {
   min-height: unset;
-  padding: 0.75rem 0.75rem;
+  padding: 0.75rem;
   font-size: 0.875rem;
   border-radius: 0.5rem;
 }
 
 .form-control-lg::file-selector-button {
-  padding: 0.75rem 0.75rem;
-  margin: -0.75rem -0.75rem;
+  padding: 0.75rem;
+  margin: -0.75rem;
   margin-inline-end: 0.75rem;
 }
 
@@ -3311,7 +3311,7 @@ textarea.form-control-lg {
 .input-group-lg>.form-select,
 .input-group-lg>.input-group-text,
 .input-group-lg>.btn {
-  padding: 0.75rem 0.75rem;
+  padding: 0.75rem;
   font-size: 0.875rem;
   border-radius: 0.5rem;
 }
@@ -6273,7 +6273,7 @@ fieldset:disabled .btn {
   box-sizing: content-box;
   width: 1em;
   height: 1em;
-  padding: 0.25em 0.25em;
+  padding: 0.25em;
   color: #fff;
   background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 16 16'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
   border: 0;
@@ -20332,7 +20332,7 @@ fieldset:disabled .btn {
 .btn-group-sm>.btn.btn-icon-only {
   width: 1.7rem;
   height: 1.7rem;
-  padding: 0.3rem 0.3rem;
+  padding: 0.3rem;
 }
 
 .btn.btn-sm i,
@@ -20344,7 +20344,7 @@ fieldset:disabled .btn {
 .btn-group-lg>.btn.btn-icon-only {
   width: 3.25rem;
   height: 3.25rem;
-  padding: 1rem 1rem;
+  padding: 1rem;
 }
 
 .btn.btn-lg i,
@@ -21992,7 +21992,6 @@ html {
   transition: 0.2s ease-out;
   overflow: hidden;
   -webkit-transform-origin: 50% 0;
-  transform-origin: 50% 0;
   transform-origin: 50% 0;
   -webkit-transform: perspective(999px) rotateX(0deg) translate3d(0, 0, 0);
   transform: perspective(999px) rotateX(0deg) translate3d(0, 0, 0);
@@ -24664,7 +24663,6 @@ hr.horizontal.gray-light {
 }
 
 .timeline-content {
-  position: relative;
   margin-left: 45px;
   padding-top: 0.35rem;
   position: relative;
@@ -25372,7 +25370,6 @@ body.dark-version {
 }
 
 .flatpickr-calendar {
-  background: transparent;
   opacity: 0;
   display: none;
   text-align: center;
@@ -25729,13 +25726,12 @@ body.dark-version {
 
 .flatpickr-current-month {
   font-size: 135%;
-  line-height: inherit;
   font-weight: 300;
   color: inherit;
   position: absolute;
   width: 75%;
   left: 12.5%;
-  padding: 7.48px 0 0 0;
+  padding: 7.48px 0 0;
   line-height: 1;
   height: 34px;
   display: inline-block;
@@ -25818,7 +25814,7 @@ body.dark-version {
   font-weight: 300;
   height: auto;
   line-height: inherit;
-  margin: -1px 0 0 0;
+  margin: -1px 0 0;
   outline: none;
   padding: 0 0 0 0.5ch;
   position: relative;
@@ -25889,7 +25885,7 @@ span.flatpickr-weekday {
 
 .dayContainer,
 .flatpickr-weeks {
-  padding: 1px 0 0 0;
+  padding: 1px 0 0;
 }
 
 .flatpickr-days {
@@ -26132,16 +26128,12 @@ span.flatpickr-weekday {
 .flatpickr-time {
   text-align: center;
   outline: 0;
-  display: block;
   height: 0;
   line-height: 40px;
   max-height: 40px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
 }
 
@@ -26932,5 +26924,3 @@ pre[class*="language-"] {
     overflow: auto !important;
   }
 }
-
-/*# sourceMappingURL=dashboard-free.css.map */
