@@ -15,6 +15,11 @@ import java.util.Objects;
 public class HomeController {
 
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void Ocategories(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Categorie-view.fxml")));
@@ -25,6 +30,11 @@ public class HomeController {
 
     }
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void Oseries(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Serie-view.fxml")));

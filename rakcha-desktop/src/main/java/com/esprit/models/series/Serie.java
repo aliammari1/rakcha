@@ -62,10 +62,18 @@ public class Serie {
         this.clickFavoris = 0;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getIdserie() {
         return idserie;
     }
 
+    
+    /** 
+     * @param idserie
+     */
     public void setIdserie(int idserie) {
         this.idserie = idserie;
     }

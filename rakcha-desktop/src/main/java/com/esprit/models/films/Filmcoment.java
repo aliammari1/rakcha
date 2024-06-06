@@ -21,10 +21,18 @@ public class Filmcoment {
         this.film_id = film_id;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getId() {
         return id;
     }
 
+    
+    /** 
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }

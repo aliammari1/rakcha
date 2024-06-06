@@ -17,6 +17,11 @@ public class IServiceCategorieImpl implements IServiceCategorie<Categorie> {
         connection = mydatabase.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param categorie
+     * @throws SQLException
+     */
     @Override
     public void ajouter(Categorie categorie) throws SQLException {
 
@@ -27,6 +32,11 @@ public class IServiceCategorieImpl implements IServiceCategorie<Categorie> {
         System.out.println("Categorie ajoutee avec succes");
     }
 
+    
+    /** 
+     * @param categorie
+     * @throws SQLException
+     */
     @Override
     public void modifier(Categorie categorie) throws SQLException {
         String req = "UPDATE categories SET nom = ?, description = ? WHERE idcategorie = ?";

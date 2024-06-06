@@ -9,6 +9,11 @@ public class FilmYoutubeTrailer {
 
     private final String API_KEY = "AIzaSyABEi2834N8l6Cty8yFCEiGRisZjyXonEM";
 
+    
+    /** 
+     * @param filmNom
+     * @return String
+     */
     public String watchTrailer(String filmNom) {
         System.out.println("watch the trailer");
         try {

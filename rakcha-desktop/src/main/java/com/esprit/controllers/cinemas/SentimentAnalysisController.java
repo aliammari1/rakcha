@@ -14,6 +14,11 @@ public class SentimentAnalysisController {
 
 
 
+    
+    /** 
+     * @param text
+     * @return String
+     */
     public String analyzeSentiment(String text) {
         // Configure pipeline properties
         Properties props = new Properties();

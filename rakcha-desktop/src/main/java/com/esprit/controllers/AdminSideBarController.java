@@ -37,11 +37,19 @@ public class AdminSideBarController implements Initializable {
     @FXML
     private Button profileButton;
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void switchToEvent(ActionEvent event) {
 
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void switchToMovies(ActionEvent event) {
         try {

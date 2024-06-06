@@ -184,6 +184,10 @@ public class SerieController {
         }
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     private void exportPdf(ActionEvent event) {
         // Afficher la boîte de dialogue de sélection de fichier
@@ -309,6 +313,10 @@ public class SerieController {
         }
     }
 
+    
+    /** 
+     * @param serieDto
+     */
     private void modifierSerie(SerieDto serieDto) {
         IServiceSerieImpl iServiceSerie = new IServiceSerieImpl();
         Dialog<Pair<String, String>> dialog = new Dialog<>();

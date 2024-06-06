@@ -35,6 +35,11 @@ public class ListFavorisController implements Initializable {
     @FXML
     private ListView<Serie> listViewFav;
 
+    
+    /** 
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -44,6 +49,10 @@ public class ListFavorisController implements Initializable {
         }
     }
 
+    
+    /** 
+     * @param series
+     */
     public void afficherliste(List<Serie> series) {
         listViewFav.getItems().clear();
 

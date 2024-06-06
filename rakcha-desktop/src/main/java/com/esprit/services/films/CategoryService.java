@@ -18,6 +18,10 @@ public class CategoryService implements IService<Category> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param category
+     */
     @Override
     public void create(Category category) {
 
@@ -33,6 +37,10 @@ public class CategoryService implements IService<Category> {
 
     }
 
+    
+    /** 
+     * @return List<Category>
+     */
     @Override
     public List<Category> read() {
         List<Category> categoryArrayList = new ArrayList<>();

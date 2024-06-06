@@ -13,10 +13,18 @@ public class RatingFilm {
         this.rate = rate;
     }
 
+    
+    /** 
+     * @return Film
+     */
     public Film getId_film() {
         return id_film;
     }
 
+    
+    /** 
+     * @param id_film
+     */
     public void setId_film(Film id_film) {
         this.id_film = id_film;
     }

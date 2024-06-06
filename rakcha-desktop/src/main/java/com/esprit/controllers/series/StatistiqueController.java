@@ -32,6 +32,12 @@ public class StatistiqueController implements Initializable {
     @FXML
     private BorderPane borderPane;
 
+    
+    /** 
+     * @param statistics
+     * @param limit
+     * @return BarChart<String, Number>
+     */
     // Méthode pour créer un BarChart avec une limite de catégories
     private BarChart<String, Number> createBarChart(Map<Categorie, Long> statistics, int limit) {
         CategoryAxis xAxis = new CategoryAxis();
@@ -74,6 +80,11 @@ public class StatistiqueController implements Initializable {
         return barChart;
     }
 
+    
+    /** 
+     * @param statistics
+     * @param limit
+     */
     // Méthode pour afficher le BarChart avec une limite de catégories
     private void showBarChart(Map<Categorie, Long> statistics, int limit) {
         CategoryAxis xAxis = new CategoryAxis();

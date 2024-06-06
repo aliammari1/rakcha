@@ -21,10 +21,18 @@ public class Ticket {
         this.prix = prix;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getNbrdeplace() {
         return nbrdeplace;
     }
 
+    
+    /** 
+     * @param nbrdeplace
+     */
     public void setNbrdeplace(int nbrdeplace) {
         this.nbrdeplace = nbrdeplace;
     }

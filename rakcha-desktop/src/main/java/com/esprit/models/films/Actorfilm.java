@@ -9,10 +9,18 @@ public class Actorfilm {
         this.idfilm = idfilm;
     }
 
+    
+    /** 
+     * @return Actor
+     */
     public Actor getIdactor() {
         return idactor;
     }
 
+    
+    /** 
+     * @param idactor
+     */
     public void setIdactor(Actor idactor) {
         this.idactor = idactor;
     }

@@ -17,6 +17,10 @@ public class IServiceFavorisImpl implements IServiceFavoris<Favoris> {
         conx = mydatabase.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param a
+     */
     @Override
     public void ajouter(Favoris a) {
         String req =
@@ -34,6 +38,10 @@ public class IServiceFavorisImpl implements IServiceFavoris<Favoris> {
         }
     }
 
+    
+    /** 
+     * @param a
+     */
     @Override
     public void modifier(Favoris a) {
         try {

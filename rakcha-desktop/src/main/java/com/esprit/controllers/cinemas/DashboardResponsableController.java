@@ -146,10 +146,18 @@ public class DashboardResponsableController implements Initializable {
     @FXML
     private FontAwesomeIconView backSession;
 
+    
+    /** 
+     * @param resp
+     */
     public void setData(Responsable_de_cinema resp) {
         this.responsableDeCinema = resp;
     }
 
+    
+    /** 
+     * @param message
+     */
     @FXML
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

@@ -17,6 +17,10 @@ public class TicketService implements IService<Ticket> {
 
     }
 
+    
+    /** 
+     * @param ticket
+     */
     @Override
     public void create(Ticket ticket) {
 
@@ -33,6 +37,10 @@ public class TicketService implements IService<Ticket> {
         }
     }
 
+    
+    /** 
+     * @return List<Ticket>
+     */
     @Override
     public List<Ticket> read() {
 

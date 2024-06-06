@@ -15,6 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UserPDF {
+    
+    /** 
+     * @param userData
+     */
     public void generate(final List<User> userData) {
         final Document document = new Document();
         try {
@@ -42,6 +46,11 @@ public class UserPDF {
         document.close();
     }
 
+    
+    /** 
+     * @param table
+     * @param attributes
+     */
     private void addTableHeader(final PdfPTable table, final List<String> attributes) {
         attributes.forEach(columnTitle -> {
             final PdfPCell header = new PdfPCell();

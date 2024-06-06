@@ -20,6 +20,13 @@ public class SignInFacebook {
     private static final String PROTECTED_RESOURCE_URL = "https://graph.facebook.com/v3.2/me";
 
 
+    
+    /** 
+     * @param args
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     @SuppressWarnings("PMD.SystemPrintln")
     public static void main(String... args) throws IOException, InterruptedException, ExecutionException {
         // Replace these with your client id and secret

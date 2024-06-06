@@ -20,6 +20,10 @@ public class ResetPasswordController {
     @FXML
     private Label passwordErrorLabel;
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void resetPassword(ActionEvent event) {
         if (newPass.getText().equals(pass.getText())) {

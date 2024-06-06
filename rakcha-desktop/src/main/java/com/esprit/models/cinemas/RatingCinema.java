@@ -13,10 +13,18 @@ public class RatingCinema {
         this.rate = rate;
     }
 
+    
+    /** 
+     * @return Cinema
+     */
     public Cinema getId_cinema() {
         return id_cinema;
     }
 
+    
+    /** 
+     * @param id_cinema
+     */
     public void setId_cinema(Cinema id_cinema) {
         this.id_cinema = id_cinema;
     }

@@ -70,6 +70,10 @@ public class EpisodeClientController implements Initializable {
     private int idep;
     private List<Episode> episodes = new ArrayList<>();
 
+    
+    /** 
+     * @param selectedSerie
+     */
     public void initialize(Serie selectedSerie) {
         this.selectedSerie = selectedSerie;
         double imageWidth = 250; // Largeur fixe souhaitée
@@ -133,6 +137,11 @@ public class EpisodeClientController implements Initializable {
         });
     }
 
+    
+    /** 
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

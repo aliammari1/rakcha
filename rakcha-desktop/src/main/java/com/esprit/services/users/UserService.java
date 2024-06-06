@@ -29,6 +29,11 @@ public class UserService implements IService<User> {
         this.con = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param id
+     * @return User
+     */
     public User getUserById(int id) {
         String req = "select * from users where id = ?";
         User user = null;
@@ -42,6 +47,11 @@ public class UserService implements IService<User> {
         return user;
     }
 
+    
+    /** 
+     * @param email
+     * @return User
+     */
     private User getUserByEmail(String email) {
         String req = "select * from users where email = ?";
         User user = null;

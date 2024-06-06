@@ -17,6 +17,14 @@ public class SignInMicrosoft {
     private static final String PROTECTED_RESOURCE_URL = "https://apis.live.net/v5.0/me";
     static OAuth20Service service;
 
+    
+    /** 
+     * @param args
+     * @return String
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     @SuppressWarnings("PMD.SystemPrintln")
     public static String SignInWithMicrosoft(String... args) throws IOException, InterruptedException, ExecutionException {
         // Replace these with your own api key and secret
@@ -40,6 +48,13 @@ public class SignInMicrosoft {
         return authorizationUrl;
     }
 
+    
+    /** 
+     * @param code
+     * @throws IOException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     public static void verifyAuthUrl(String code) throws IOException, ExecutionException, InterruptedException {
         System.out.println("And paste the authorization code here");
         System.out.print(">>");

@@ -93,6 +93,10 @@ public class ListCommandeController {
         commandeTableView.getSelectionModel().setCellSelectionEnabled(true);
     }
 
+    
+    /** 
+     * @param keyword
+     */
     @FXML
     private void search(String keyword) {
         CommandeService commandeservice = new CommandeService();
@@ -150,6 +154,10 @@ public class ListCommandeController {
 
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void statCommande(ActionEvent event) {
 

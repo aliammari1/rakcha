@@ -15,10 +15,18 @@ public class Categorie {
 
 
 
+    
+    /** 
+     * @return int
+     */
     public int getIdcategorie() {
         return idcategorie;
     }
 
+    
+    /** 
+     * @param idcategorie
+     */
     public void setIdcategorie(int idcategorie) {
         this.idcategorie = idcategorie;
     }

@@ -170,6 +170,10 @@ public class EpisodeController {
         }
     }
 
+    
+    /** 
+     * @param episodeDto
+     */
     private void modifierEpisode(EpisodeDto episodeDto) {
         IServiceEpisodeImpl iServiceEpisode = new IServiceEpisodeImpl();
         Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -243,6 +247,11 @@ public class EpisodeController {
         ref();
     }
 
+    
+    /** 
+     * @param title
+     * @param message
+     */
     @FXML
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

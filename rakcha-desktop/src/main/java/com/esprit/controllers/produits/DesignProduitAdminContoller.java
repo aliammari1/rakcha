@@ -100,6 +100,10 @@ public class DesignProduitAdminContoller {
 
     }
 
+    
+    /** 
+     * @param message
+     */
     @FXML
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -109,6 +113,10 @@ public class DesignProduitAdminContoller {
         alert.show();
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void selectImage(MouseEvent event) {
 

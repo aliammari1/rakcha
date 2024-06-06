@@ -20,6 +20,10 @@ public class CommandeService implements IService<Commande> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param commande
+     */
     @Override
     public void create(Commande commande) {
         String req = "INSERT into commande(dateCommande,statu , idClient,num_telephone,adresse) values ( ?,?,?,?,?)  ;";
@@ -41,6 +45,12 @@ public class CommandeService implements IService<Commande> {
 
     }
 
+    
+    /** 
+     * @param commande
+     * @return int
+     * @throws SQLException
+     */
     public int createcommande(Commande commande) throws SQLException {
         int commandeId = 0;
         String req = "INSERT into commande(dateCommande,statu , idClient,num_telephone,adresse) values ( ?,?,?,?,?)  ;";

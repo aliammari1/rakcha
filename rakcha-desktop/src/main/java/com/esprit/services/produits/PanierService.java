@@ -20,6 +20,10 @@ public class PanierService implements IService<Panier> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param panier
+     */
     @Override
     public void create(Panier panier) {
 
@@ -38,6 +42,10 @@ public class PanierService implements IService<Panier> {
 
     }
 
+    
+    /** 
+     * @return List<Panier>
+     */
     @Override
     public List<Panier> read() {
         return null;

@@ -81,6 +81,11 @@ public class DetailsProduitClientController implements Initializable {
     PanierService panierService = new PanierService();
     Panier panier = new Panier();
 
+    
+    /** 
+     * @param produitId
+     * @throws IOException
+     */
     // Méthode pour initialiser l'ID du produit
     public void setProduitId(int produitId) throws IOException {
         this.produitId = produitId;
@@ -90,6 +95,11 @@ public class DetailsProduitClientController implements Initializable {
 
     }
 
+    
+    /** 
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadAcceptedTop3();

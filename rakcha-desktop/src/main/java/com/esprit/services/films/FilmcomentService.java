@@ -20,6 +20,10 @@ public class FilmcomentService implements IService<Filmcoment> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param filmcoment
+     */
     @Override
     public void create(Filmcoment filmcoment) {
         String req = "INSERT into filmcoment(comment,user_id,film_id ) values (?,?,?);";
@@ -37,6 +41,10 @@ public class FilmcomentService implements IService<Filmcoment> {
 
     }
 
+    
+    /** 
+     * @return List<Filmcoment>
+     */
     @Override
     public List<Filmcoment> read() {
         List<Filmcoment> commentaire = new ArrayList<>();

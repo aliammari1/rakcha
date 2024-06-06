@@ -28,10 +28,19 @@ public class FilmService implements IService<Film> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @return int
+     */
     public static int getFilmLastInsertID() {
         return filmLastInsertID;
     }
 
+    
+    /** 
+     * @param query
+     * @return String
+     */
     public static String getIMDBUrlbyNom(String query) {
         try {
             String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);

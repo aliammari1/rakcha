@@ -31,12 +31,22 @@ public class VerifyWithGoogle {
     private Button sendButton;
 
 
+    
+    /** 
+     * @throws IOException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @FXML
     void initialize() throws IOException, ExecutionException, InterruptedException {
         String link = SignInGoogle.signInWithGoogle();
         Desktop.getDesktop().browse(URI.create(link));
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void verifyAuthCode(ActionEvent event) {
         try {

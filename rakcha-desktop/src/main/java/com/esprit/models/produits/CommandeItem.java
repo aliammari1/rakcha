@@ -31,10 +31,18 @@ public class CommandeItem {
         this.commande = commande;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getIdCommandeItem() {
         return idCommandeItem;
     }
 
+    
+    /** 
+     * @param idCommandeItem
+     */
     public void setIdCommandeItem(int idCommandeItem) {
         this.idCommandeItem = idCommandeItem;
     }

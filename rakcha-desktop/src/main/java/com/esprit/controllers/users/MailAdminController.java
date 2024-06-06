@@ -24,6 +24,10 @@ public class MailAdminController {
     @FXML
     private Button sendButton;
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void sendMail(ActionEvent event) {
         Random random = new Random();

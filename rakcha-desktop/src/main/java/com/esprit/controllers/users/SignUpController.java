@@ -405,6 +405,10 @@ public class SignUpController {
         }
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void importImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -433,6 +437,11 @@ public class SignUpController {
         }
     }
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     */
     @FXML
     void signup(ActionEvent event) throws IOException {
         String role = roleComboBox.getValue();

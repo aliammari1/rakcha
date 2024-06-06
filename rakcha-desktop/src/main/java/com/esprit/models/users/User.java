@@ -40,10 +40,18 @@ public abstract class User {
         this.photo_de_profil = photo_de_profil;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getId() {
         return id;
     }
 
+    
+    /** 
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }

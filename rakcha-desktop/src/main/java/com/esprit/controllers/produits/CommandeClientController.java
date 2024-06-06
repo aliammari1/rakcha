@@ -71,6 +71,10 @@ public class CommandeClientController implements Initializable {
     @FXML
     private Button idpaymentenligne;
 
+    
+    /** 
+     * @param commandeselectionner
+     */
     @FXML
     void initialize(Commande commandeselectionner) {
         commande = commandeselectionner;
@@ -94,6 +98,11 @@ public class CommandeClientController implements Initializable {
 
     }
 
+    
+    /** 
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

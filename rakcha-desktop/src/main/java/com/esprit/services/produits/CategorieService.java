@@ -19,6 +19,10 @@ public class CategorieService implements IService<Categorie_Produit> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param categorieProduit
+     */
     @Override
     public void create(Categorie_Produit categorieProduit) {
 
@@ -36,6 +40,10 @@ public class CategorieService implements IService<Categorie_Produit> {
         }
     }
 
+    
+    /** 
+     * @return List<Categorie_Produit>
+     */
     @Override
     public List<Categorie_Produit> read() {
 

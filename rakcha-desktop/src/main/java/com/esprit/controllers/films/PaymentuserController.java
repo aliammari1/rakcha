@@ -78,11 +78,21 @@ public class PaymentuserController implements Initializable {
     @FXML
     private Button viewPDF;
 
+    
+    /** 
+     * @param str
+     * @return boolean
+     */
     public static boolean isNum(String str) {
         String expression = "\\d+";
         return str.matches(expression);
     }
 
+    
+    /** 
+     * @param value
+     * @return int
+     */
     public static int floatToInt(float value) {
         return (int) value;
     }

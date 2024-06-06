@@ -11,6 +11,10 @@ public class Admin extends User {
         super(id, firstName, lastName, phoneNumber, password, role, address, birthDate, email, photo_de_profil);
     }
 
+    
+    /** 
+     * @return String
+     */
     @Override
     public String toString() {
         return "Admin{" + super.toString() + "}";

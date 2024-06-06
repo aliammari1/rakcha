@@ -20,12 +20,20 @@ public class mydatabase {
             System.err.println(e.getMessage());
         }
     }
+    
+    /** 
+     * @return mydatabase
+     */
     public static mydatabase getInstance(){
         if(instance==null)
             instance = new mydatabase();
         return instance;
     }
 
+    
+    /** 
+     * @return Connection
+     */
     public Connection getConnection() {
         return connection;
     }

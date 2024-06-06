@@ -30,12 +30,22 @@ public class VerifyWithMicrosoft {
     @FXML
     private Button sendButton;
 
+    
+    /** 
+     * @throws IOException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @FXML
     void initialize() throws IOException, ExecutionException, InterruptedException {
         String link = SignInMicrosoft.SignInWithMicrosoft();
         Desktop.getDesktop().browse(URI.create(link));
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void verifyAuthCode(ActionEvent event) {
         try {

@@ -15,6 +15,11 @@ public class IServiceEpisodeImpl implements IServiceEpisode<Episode> {
         connection = mydatabase.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param episode
+     * @throws SQLException
+     */
     @Override
     public void ajouter(Episode episode) throws SQLException {
         String req = "INSERT INTO episodes (titre,numeroepisode,saison,image,video,idserie) VALUES('" + episode.getTitre() + "'," + episode.getNumeroepisode() + ",'" + episode.getSaison() + "','" + episode.getImage() + "','" + episode.getVideo() + "','" + episode.getIdserie() + "')";
@@ -23,6 +28,11 @@ public class IServiceEpisodeImpl implements IServiceEpisode<Episode> {
         System.out.println("episode ajoutee avec succes");
     }
 
+    
+    /** 
+     * @param episode
+     * @throws SQLException
+     */
     @Override
     public void modifier(Episode episode) throws SQLException {
         String req = "UPDATE episodes set titre = ?, numeroepisode = ?,saison = ?, image = ?,video = ? ,idserie = ?  where idepisode = ?;";

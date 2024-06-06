@@ -69,6 +69,10 @@ public class PaymentController {
         cvc.setValueFactory(valueFactory_cvc);
     }
 
+    
+    /** 
+     * @param s
+     */
     public void setData(Seance s) {
 
         this.seance = s;
@@ -201,6 +205,11 @@ public class PaymentController {
 
     }
 
+    
+    /** 
+     * @param value
+     * @return boolean
+     */
     private boolean check_cvc(int value) {
         String cvc_txt = String.valueOf(value);
         boolean valid = cvc_txt.length() == 3;

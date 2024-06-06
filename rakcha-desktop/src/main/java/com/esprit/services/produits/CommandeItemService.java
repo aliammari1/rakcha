@@ -21,6 +21,10 @@ public class CommandeItemService implements IService<CommandeItem> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param commandeItem
+     */
     @Override
     public void create(CommandeItem commandeItem) {
 
@@ -39,6 +43,10 @@ public class CommandeItemService implements IService<CommandeItem> {
 
     }
 
+    
+    /** 
+     * @return List<CommandeItem>
+     */
     @Override
     public List<CommandeItem> read() {
         List<CommandeItem> commandeitem = new ArrayList<>();

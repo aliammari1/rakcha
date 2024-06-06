@@ -85,6 +85,12 @@ public class AfficherProduitClientControllers implements Initializable {
     @FXML
     private ComboBox<String> tricomboBox;
 
+    
+    /** 
+     * @param liste
+     * @param recherche
+     * @return List<Produit>
+     */
     @FXML
     public static List<Produit> rechercher(List<Produit> liste, String recherche) {
         List<Produit> resultats = new ArrayList<>();
@@ -98,6 +104,11 @@ public class AfficherProduitClientControllers implements Initializable {
         return resultats;
     }
 
+    
+    /** 
+     * @param location
+     * @param resources
+     */
     public void initialize(URL location, ResourceBundle resources) {
 
         loadAcceptedProduits();

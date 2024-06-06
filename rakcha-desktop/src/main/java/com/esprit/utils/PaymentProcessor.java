@@ -13,6 +13,17 @@ public class PaymentProcessor {
 
     private static final String STRIPE_API_KEY = "sk_test_51M9YqwA2tc9VjbDkLO3AcupMJW2tJquATnN2jize1vg7O2VZkqDssPzeSEjFviA1rQ076mRxqbKbhsWVZtwUOkjA00y3GKCfsy";
 
+    
+    /** 
+     * @param name
+     * @param email
+     * @param amount
+     * @param cardNumber
+     * @param cardExpMonth
+     * @param cardExpYear
+     * @param cardCvc
+     * @return boolean
+     */
     public static boolean processPayment(String name, String email, float amount, String cardNumber, int cardExpMonth,
             int cardExpYear, String cardCvc) {
         boolean result = false;
@@ -36,6 +47,13 @@ public class PaymentProcessor {
         return result;
     }
 
+    
+    /** 
+     * @param name
+     * @param email
+     * @return Customer
+     * @throws StripeException
+     */
     private static Customer retrieveOrCreateCustomer(String name, String email) throws StripeException {
         Map<String, Object> customerParams = new HashMap<>();
         customerParams.put("name", name);

@@ -44,10 +44,18 @@ public class Seance {
         this.prix = prix;
     }
 
+    
+    /** 
+     * @return Filmcinema
+     */
     public Filmcinema getFilmcinema() {
         return filmcinema;
     }
 
+    
+    /** 
+     * @param filmcinema
+     */
     public void setFilmcinema(Filmcinema filmcinema) {
         this.filmcinema = filmcinema;
     }
