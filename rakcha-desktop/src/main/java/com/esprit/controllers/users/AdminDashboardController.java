@@ -170,6 +170,10 @@ public class AdminDashboardController {
 
 
 
+    /**
+     * Sets up user interface components for a table displaying information about users,
+     * including text fields, combo boxes, and validation listeners to ensure data validity.
+     */
     @FXML
 
     void initialize() {
@@ -287,15 +291,21 @@ public class AdminDashboardController {
     
 
     /** 
-
-     * @param textField
-
-     * @param validationPredicate
-
-     * @param errorMessage
-
+    /**
+     * Adds a listener to a `TextField` that validates the inputted string using a provided
+     * `Predicate<String>`. If the string is invalid, a tooltip with an error message is
+     * displayed near the text field.
+     * 
+     * @param textField TextField component whose text value will be validated and whose
+     * tooltip will be updated accordingly.
+     * 
+     * @param validationPredicate function that determines whether or not a given string
+     * is valid, and it is used to determine whether an error message should be displayed
+     * when the user types something into the text field.
+     * 
+     * @param errorMessage message to be displayed as a tooltip when the user enters an
+     * invalid value in the text field.
      */
-
     private void addValidationListener(TextField textField, Predicate<String> validationPredicate,
 
                                        String errorMessage) {
@@ -304,6 +314,20 @@ public class AdminDashboardController {
 
         textField.textProperty().addListener(new ChangeListener<String>() {
 
+            /**
+             * Detects changes to the `textField`'s value and displays an error message in a
+             * tooltip if the new value does not meet a validation predicate or is empty.
+             * 
+             * @param observable ObservableValue object that emits changes to its value, allowing
+             * the function to detect and respond to those changes.
+             * 
+             * @param oldValue previous value of the observable variable before the change occurred,
+             * which is used to validate the new value and determine if an error message should
+             * be displayed.
+             * 
+             * @param newValue updated value of the `TextField`, which is used to validate and
+             * display an error message if necessary.
+             */
             @Override
 
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -374,6 +398,10 @@ public class AdminDashboardController {
 
 
 
+    /**
+     * Reads data from a User Service and populates the user table view with the retrieved
+     * data.
+     */
     @FXML
 
     void readUserTable() {
@@ -399,11 +427,13 @@ public class AdminDashboardController {
     
 
     /** 
-
-     * @param event
-
+    /**
+     * Allows users to create a new admin account by providing their first name, last
+     * name, phone number, password, email, and role. It then validates the input and
+     * creates a new admin user using the provided information.
+     * 
+     * @param event `addAdmin` action, triggering the execution of the code within the function.
      */
-
     @FXML
 
     void addAdmin(ActionEvent event) {
@@ -540,6 +570,12 @@ public class AdminDashboardController {
 
 
 
+    /**
+     * Sets up cell value factories for each column of a table displaying information
+     * about users. These factories provide the content for each cell, such as a user's
+     * first or last name, phone number, password, role, address, date of birth, email,
+     * and photo profile picture.
+     */
     private void setupCellValueFactories() {
 
         firstNameTableColumn.setCellValueFactory(new PropertyValueFactory<User, String>("firstName"));
@@ -558,6 +594,15 @@ public class AdminDashboardController {
 
                 new Callback<TableColumn.CellDataFeatures<User, DatePicker>, ObservableValue<DatePicker>>() {
 
+                    /**
+                     * Creates a new `DatePicker` object and sets its value to the local date of the
+                     * user's birth date if it is not null.
+                     * 
+                     * @param param value of a table cell, which contains the birth date of a user.
+                     * 
+                     * @returns a `SimpleObjectProperty` of a `DatePicker` object initialized with the
+                     * birth date value from the input `User` object, if available.
+                     */
                     @Override
 
                     public ObservableValue<DatePicker> call(TableColumn.CellDataFeatures<User, DatePicker> param) {
@@ -584,6 +629,20 @@ public class AdminDashboardController {
 
                 new Callback<TableColumn.CellDataFeatures<User, HBox>, ObservableValue<HBox>>() {
 
+                    /**
+                     * Takes a `TableColumn.CellDataFeatures` parameter and generates an `HBox` widget
+                     * with an image view containing the user's profile picture. The image view is
+                     * customized to fit a specified size, and an event handler is added to handle mouse
+                     * clicks on the image view, opening a file chooser to allow the user to select a new
+                     * profile picture.
+                     * 
+                     * @param param value of the `User` object being processed, which provides the
+                     * `photo_de_profil` property that is used to display the photo of the profile in the
+                     * `ImageView`.
+                     * 
+                     * @returns an `ObservableValue` of type `HBox`, which contains a single `ImageView`
+                     * component that displays the user's profile picture.
+                     */
                     @Override
 
                     public ObservableValue<HBox> call(TableColumn.CellDataFeatures<User, HBox> param) {
@@ -602,6 +661,14 @@ public class AdminDashboardController {
 
                             hBox.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
+                                /**
+                                 * Displays a file open dialog box, selects an image file using FileChooser, sets the
+                                 * selected image as the viewable image in the stage, and clears any previous images
+                                 * in the container.
+                                 * 
+                                 * @param event mouse event that triggered the function's execution, providing no
+                                 * further context beyond that.
+                                 */
                                 @Override
 
                                 public void handle(MouseEvent event) {
@@ -658,6 +725,17 @@ public class AdminDashboardController {
 
                 new Callback<TableColumn.CellDataFeatures<User, Button>, ObservableValue<Button>>() {
 
+                    /**
+                     * Creates a new `Button` element with the text "delete". The button's `onAction`
+                     * event handler is set to delete the corresponding user's ID when clicked, and then
+                     * reads the entire user table.
+                     * 
+                     * @param param `CellDataFeatures` of a table column, providing the current cell value
+                     * and related data.
+                     * 
+                     * @returns a `SimpleObjectProperty` of a `Button` object with an action to delete
+                     * the corresponding user ID.
+                     */
                     @Override
 
                     public ObservableValue<Button> call(TableColumn.CellDataFeatures<User, Button> param) {
@@ -666,6 +744,13 @@ public class AdminDashboardController {
 
                         button.setOnAction(new EventHandler<ActionEvent>() {
 
+                            /**
+                             * Deletes a record with the specified ID from a data storage and subsequently reloads
+                             * the user table.
+                             * 
+                             * @param event deleting event triggered by the user's action, and it is passed to
+                             * the `handle()` method as an argument to enable the appropriate actions to be taken.
+                             */
                             @Override
 
                             public void handle(ActionEvent event) {
@@ -688,6 +773,11 @@ public class AdminDashboardController {
 
 
 
+    /**
+     * Sets up cell factories for the `adresse` and `email` columns of the user table,
+     * which will display a text field for each column. The `cellFactory` method is used
+     * to create TableCells that can display text data in a formatted way.
+     */
     private void setupCellFactories() {
 
         firstNameTableColumn.setCellFactory(new Callback<TableColumn<User, String>, TableCell<User, String>>() {

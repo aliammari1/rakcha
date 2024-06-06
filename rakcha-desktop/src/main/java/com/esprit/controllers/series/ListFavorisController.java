@@ -58,6 +58,12 @@ import java.util.ResourceBundle;
 
 
 
+/**
+ * Is responsible for handling user actions related to favorite series. It displays
+ * a list of series in an AnchorPane and provides buttons to watch, dislike, and add
+ * to favorites. The controller also loads the favorite series list from the database
+ * using the IServiceSerieImpl and IServiceFavorisImpl interfaces.
+ */
 public class ListFavorisController implements Initializable {
 
 
@@ -74,12 +80,22 @@ public class ListFavorisController implements Initializable {
 
     
 
-    /** 
-
-     * @param url
-
-     * @param resourceBundle
-
+    /**
+     * Initializes a series fav list by loading it from a database using a SQLException-catching
+     * mechanism if an error occurs.
+     * 
+     * @param url URL of the web page from which the user's favorite series should be loaded.
+     * 
+     * 	- `URL`: represents a web address or a URL, which provides access to a specific
+     * resource or service on the internet.
+     * 
+     * @param resourceBundle localized data for the application, which is used to load
+     * the series favor list.
+     * 
+     * 	- `URL`: represents the URL of the web page that contains the series favorites
+     * list data
+     * 	- `ResourceBundle`: is a collection of culturally-specific data, including messages,
+     * labels, and other information.
      */
 
     @Override
@@ -102,10 +118,21 @@ public class ListFavorisController implements Initializable {
 
     
 
-    /** 
-
-     * @param series
-
+    /**
+     * Displays a list of series with buttons for liking, disliking, and watching each
+     * series. When a button is clicked, the corresponding action is performed on the
+     * series data model.
+     * 
+     * @param series 2D array of series data that will be displayed in the list view, and
+     * it is used to populate the list view with the appropriate series items.
+     * 
+     * 	- `id`: an integer representing the unique identifier of the series.
+     * 	- `nom`: a string representing the name of the series.
+     * 	- `genre`: a string representing the genre of the series (e.g., "drama", "comedy",
+     * etc.).
+     * 	- `description`: a string representing a brief description of the series.
+     * 	- `poster`: a URL or image path representing the poster image for the series.
+     * 	- `nbEpisodes`: an integer representing the number of episodes in the series.
      */
 
     public void afficherliste(List<Serie> series) {
@@ -116,6 +143,31 @@ public class ListFavorisController implements Initializable {
 
         listViewFav.setCellFactory(param -> new ListCell<Serie>() {
 
+            /**
+             * Updates an item's information based on user interactions with like and dislike
+             * buttons, favorites button, and a watch button. It retrieves data from a database
+             * and updates the item's likes and dislikes counts, favorites count, and watch status
+             * accordingly.
+             * 
+             * @param item current episode being displayed, and it is used to access its properties
+             * such as title, image, likes count, dislikes count, and favorite status, which are
+             * then displayed on the user interface.
+             * 
+             * 	- `id serie`: The id of the series to which the item belongs.
+             * 	- `name`: The name of the episode.
+             * 	- `summary`: A brief summary of the episode.
+             * 	- `director`: The director of the episode.
+             * 	- `country`: The country where the episode was produced.
+             * 	- `likes`: The number of likes received by the episode.
+             * 	- `dislikes`: The number of dislikes received by the episode.
+             * 	- `clickDislikes`: The number of times the dislike button has been clicked.
+             * 	- `NbDislikes`: The total number of dislikes received by the episode.
+             * 	- `clickFavoris`: The number of times the favorite button has been clicked.
+             * 	- `NbFavoris`: The total number of favorites for the episode.
+             * 
+             * @param empty empty stage, which is used to display the watch episode button when
+             * the user clicks on it.
+             */
             @Override
 
             protected void updateItem(Serie item, boolean empty) {
@@ -312,6 +364,20 @@ public class ListFavorisController implements Initializable {
 
                     likeButton.setOnAction(new EventHandler<ActionEvent>() {
 
+                        /**
+                         * Increments or decrements the number of likes for a given item based on its current
+                         * like count and parity, and updates the liked status of the item in the database.
+                         * 
+                         * @param event ActionEvent object that triggered the function, providing the context
+                         * and event information for the handling of likes and dislikes.
+                         * 
+                         * 	- `item`: an instance of the `Item` class representing the item that triggered
+                         * the event
+                         * 	- `likes`: the total number of likes for the item
+                         * 
+                         * These properties are used in the function to increment the number of likes and
+                         * print it, as well as to check if the item has been liked or disliked.
+                         */
                         @Override
 
                         public void handle(ActionEvent event) {
@@ -370,6 +436,17 @@ public class ListFavorisController implements Initializable {
 
                     dislikeButton.setOnAction(new EventHandler<ActionEvent>() {
 
+                        /**
+                         * Updates the number of dislikes for an item based on a condition, adds or removes
+                         * the item from a list, and disables the like button accordingly.
+                         * 
+                         * @param event event generated by the click of a button, which triggers the execution
+                         * of the `handle()` method and the updating of the item's dislike count.
+                         * 
+                         * 	- `event` represents an action event that triggers the function's execution.
+                         * 	- `item` is the object on which the action was performed, containing information
+                         * such as click count and likes/dislikes counter.
+                         */
                         @Override
 
                         public void handle(ActionEvent event) {
@@ -428,6 +505,16 @@ public class ListFavorisController implements Initializable {
 
                     favButton.setOnAction(new EventHandler<ActionEvent>() {
 
+                        /**
+                         * Updates a `Favoris` object with an id_user and id_serie, adds or removes it from
+                         * a database based on a condition, and prints the updated value to the console.
+                         * 
+                         * @param event ActionEvent object that triggered the function execution, providing
+                         * the necessary information to handle the corresponding action.
+                         * 
+                         * 	- `event`: an instance of `ActionEvent`, representing an action event triggered
+                         * by a user interaction with the application.
+                         */
                         @Override
 
                         public void handle(ActionEvent event) {
@@ -590,6 +677,12 @@ public class ListFavorisController implements Initializable {
 
 
 
+    /**
+     * Retrieves a list of series from a database based on the current session ID, and
+     * then loops through the list of favorite series to retrieve the corresponding series
+     * object from a separate service implementation, finally displaying the combined
+     * list of series in the UI.
+     */
     @FXML
 
     private void loadSeriesFavList() throws SQLException {
