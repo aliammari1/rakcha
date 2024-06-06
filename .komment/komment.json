@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "version": "1",
+    "updated_at": "2024-06-06T15:29:48.390Z",
+    "created_at": "2024-06-06T15:31:26.227Z",
+    "pipelines": [
+      "4756e845-864b-4d4d-8556-72ffeb4971b1"
+    ]
+  },
+  "lookup": [
+    [
+      "rakcha-desktop/src/main/java/com/esprit/models/cinemas/Cinema.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/cinemas/CommentaireCinema.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/cinemas/RatingCinema.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/cinemas/Salle.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/cinemas/Seance.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/Actor.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/Actorfilm.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/Category.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/Film.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/Filmcategory.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/Filmcinema.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/Filmcoment.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/RatingFilm.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/films/Ticket.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/Avis.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/Categorie_Produit.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/Commande.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/CommandeItem.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/Commentaire.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/Panier.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/Produit.java",
+      "rakcha-desktop/src/main/java/com/esprit/models/produits/SharedData.java"
+    ]
+  ]
+}
