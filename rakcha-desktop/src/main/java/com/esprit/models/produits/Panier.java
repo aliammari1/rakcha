@@ -4,6 +4,12 @@ import com.esprit.models.users.User;
 
 import java.util.Objects;
 
+/**
+ * Is used to represent a shopping cart containing various products and users. It has
+ * several fields such as idpanier, quantity, produit, and users, which can be accessed
+ * through getters and setters methods. The class also provides a toString() method
+ * for creating a string representation of the panier object.
+ */
 public class Panier {
 
     private int idpanier;
