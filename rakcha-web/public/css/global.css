@@ -275,7 +275,7 @@ color:#44BCDD;
 .social-circle li a {
 display:inline-block;
 position:relative;
-margin:0 auto 0 auto;
+margin:0 auto;
 -moz-border-radius:50%;
 -webkit-border-radius:50%;
 border-radius:50%;
@@ -359,7 +359,7 @@ display:block;
 bottom:-50px; 
  }
 #stream .trend_2im2{
-padding:50px 15px 0px 15px!important; 
+padding:50px 15px 0px!important; 
 background-color: rgba(0, 0, 0, 0.8);
 height:100%;
  }
@@ -557,7 +557,7 @@ flex-wrap:wrap!important;
 margin-right:20px!important; 
  }
 .sticky .nav-link{
-padding:10px 10px!important; 
+padding:10px!important; 
  }
 .popular_2i1lm1 img{
 min-height:240px; 
