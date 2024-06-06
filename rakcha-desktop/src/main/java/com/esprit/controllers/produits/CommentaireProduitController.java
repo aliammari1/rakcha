@@ -101,6 +101,11 @@ public class CommentaireProduitController implements Initializable {
         }
     }
 
+    
+    /** 
+     * @param location
+     * @param resources
+     */
     public void initialize(URL location, ResourceBundle resources) {
 
         loadAcceptedCommentaire();
@@ -122,6 +127,11 @@ public class CommentaireProduitController implements Initializable {
 
     }
 
+    
+    /** 
+     * @param comm
+     * @return HBox
+     */
     public HBox createcommentairecard(Commentaire comm) {
 
         // Charger les commentaires depuis le service

@@ -22,6 +22,10 @@ public class RatingCinemaService implements IService<RatingCinema> {
     }
     CinemaService cinemaService = new CinemaService();
 
+    
+    /** 
+     * @param ratingCinema
+     */
     @Override
     public void create(RatingCinema ratingCinema) {
         // Supprimer l'ancienne note du même utilisateur pour le même cinéma s'il existe
@@ -41,6 +45,12 @@ public class RatingCinemaService implements IService<RatingCinema> {
         }
     }
 
+    
+    /** 
+     * @param clientId
+     * @param cinemaId
+     * @return int
+     */
     public int getRatingForClientAndCinema(int clientId, int cinemaId) {
         String req = "SELECT rate FROM ratingcinema WHERE id_cinema=? AND id_user=?";
         try {

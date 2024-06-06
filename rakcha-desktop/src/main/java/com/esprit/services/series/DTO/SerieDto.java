@@ -10,10 +10,18 @@ public class SerieDto extends Serie {
 
 
 
+    
+    /** 
+     * @return String
+     */
     public String getNomCategories() {
         return nomCategories;
     }
 
+    
+    /** 
+     * @param nomCategories1
+     */
     public void setNomCategories(String nomCategories1) {
         nomCategories = nomCategories1;
     }

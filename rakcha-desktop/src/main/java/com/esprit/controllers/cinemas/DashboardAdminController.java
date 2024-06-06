@@ -150,6 +150,10 @@ public class DashboardAdminController {
         listCinema.setItems(cinemaObservableList);
     }
 
+    
+    /** 
+     * @return List<Cinema>
+     */
     private List<Cinema> getAllCinemas() {
         CinemaService cinemaService = new CinemaService();
         List<Cinema> cinemas = cinemaService.read();
@@ -169,6 +173,10 @@ public class DashboardAdminController {
         afficherCinemas();
     }
 
+    
+    /** 
+     * @param searchText
+     */
     private void filterCinemas(String searchText) {
         // Vérifier si le champ de recherche n'est pas vide
         if (!searchText.isEmpty()) {

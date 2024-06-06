@@ -46,6 +46,10 @@ public class ProfileController {
     public void initialize() {
     }
 
+    
+    /** 
+     * @param user
+     */
     @FXML
     public void setData(User user) {
         this.user = user;
@@ -72,6 +76,11 @@ public class ProfileController {
         }
     }
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     */
     @FXML
     public void deleteAccount(ActionEvent event) throws IOException {
         Stage stage = (Stage) firstNameTextField.getScene().getWindow();

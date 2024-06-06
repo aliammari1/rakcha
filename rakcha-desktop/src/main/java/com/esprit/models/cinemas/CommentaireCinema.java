@@ -28,10 +28,18 @@ public class CommentaireCinema {
         this.sentiment = sentiment;
     }
 
+    
+    /** 
+     * @return int
+     */
     public int getIdcommentaire() {
         return idcommentaire;
     }
 
+    
+    /** 
+     * @param idcommentaire
+     */
     public void setIdcommentaire(int idcommentaire) {
         this.idcommentaire = idcommentaire;
     }

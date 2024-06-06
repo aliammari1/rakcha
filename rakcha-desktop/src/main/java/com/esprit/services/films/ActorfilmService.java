@@ -20,6 +20,10 @@ public class ActorfilmService implements IService<Actorfilm> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param actorfilm
+     */
     @Override
     public void create(Actorfilm actorfilm) {
         String req = "INSERT INTO film_actor (film_id,actor_id) VALUES (?,?)";
@@ -38,6 +42,10 @@ public class ActorfilmService implements IService<Actorfilm> {
         }
     }
 
+    
+    /** 
+     * @return List<Actorfilm>
+     */
     @Override
     public List<Actorfilm> read() {
         List<Actorfilm> actorfilmArrayList = new ArrayList<>();

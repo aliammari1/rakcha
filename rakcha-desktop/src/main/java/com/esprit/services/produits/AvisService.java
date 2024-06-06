@@ -22,6 +22,10 @@ public class AvisService implements IService<Avis> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param avis
+     */
     @Override
     public void create(Avis avis) {
         String req = "INSERT into avis(idusers,note,id_produit ) values (?,?, ?);";
@@ -38,6 +42,10 @@ public class AvisService implements IService<Avis> {
         }
     }
 
+    
+    /** 
+     * @return List<Avis>
+     */
     @Override
     public List<Avis> read() {
         List<Avis> avisList = new ArrayList<>();

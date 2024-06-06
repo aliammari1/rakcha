@@ -20,6 +20,10 @@ public class ProduitService implements IService<Produit> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param produit
+     */
     @Override
     public void create(Produit produit) {
         String req = "INSERT into produit(nom, prix,image,description,quantiteP,id_categorieProduit) values (?, ?,?,?,?,?)  ;";
@@ -41,6 +45,10 @@ public class ProduitService implements IService<Produit> {
 
     }
 
+    
+    /** 
+     * @return List<Produit>
+     */
     @Override
     public List<Produit> read() {
         List<Produit> produits = new ArrayList<>();

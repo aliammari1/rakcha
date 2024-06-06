@@ -52,10 +52,18 @@ public class Film {
     }
 
 
+    
+    /** 
+     * @return String
+     */
     public String getNom() {
         return nom;
     }
 
+    
+    /** 
+     * @param nom
+     */
     public void setNom(String nom) {
         this.nom = nom;
     }

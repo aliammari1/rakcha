@@ -18,6 +18,11 @@ public class IServiceSerieImpl implements IServiceSerie<Serie> {
         connection = mydatabase.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param serie
+     * @throws SQLException
+     */
     @Override
     public void ajouter(Serie serie) throws SQLException {
         String req = "INSERT INTO series (nom, resume, directeur, pays, image, liked, nbLikes ,disliked, nbDislikes,idcategorie) VALUES (?, ?, ?, ?,?,?, ?,?, ?, ?)";
@@ -36,6 +41,11 @@ public class IServiceSerieImpl implements IServiceSerie<Serie> {
         ps.close();
     }
 
+    
+    /** 
+     * @param serie
+     * @throws SQLException
+     */
     @Override
     public void modifier(Serie serie) throws SQLException {
         String req = "UPDATE series set nom = ?, resume = ?,directeur = ?, pays = ?,image = ?,liked = ?,nbLikes = ? ,idcategorie = ? where idserie = ?;";

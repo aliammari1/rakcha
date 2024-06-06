@@ -65,6 +65,11 @@ public class PanierProduitControllers implements Initializable {
     @FXML
     private FontIcon retour;
 
+    
+    /** 
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(new Runnable() {
@@ -99,6 +104,11 @@ public class PanierProduitControllers implements Initializable {
 
     }
 
+    
+    /** 
+     * @param prixTotal
+     * @return Label
+     */
     private Label createPrixTotalLabel(double prixTotal) {
         // Créez le Label du prix total ici
         Label prixTotalLabel = new Label(prixTotal + " DT");

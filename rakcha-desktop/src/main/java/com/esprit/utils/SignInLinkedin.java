@@ -22,6 +22,13 @@ public class SignInLinkedin {
             = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
 
 
+    
+    /** 
+     * @param args
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
     @SuppressWarnings("PMD.SystemPrintln")
     public static void main(String... args) throws IOException, InterruptedException, ExecutionException {
         // Replace these with your client id and secret

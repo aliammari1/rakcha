@@ -35,6 +35,11 @@ public class AnalyseCommande implements Initializable {
     @FXML
     private CategoryAxis xCommandeAxis;
 
+    
+    /** 
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Appeler la logique d'initialisation

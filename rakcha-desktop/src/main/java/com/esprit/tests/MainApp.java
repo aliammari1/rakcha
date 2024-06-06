@@ -8,10 +8,19 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    
+    /** 
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));

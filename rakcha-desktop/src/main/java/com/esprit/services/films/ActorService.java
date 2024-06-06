@@ -19,6 +19,10 @@ public class ActorService implements IService<Actor> {
 
     }
 
+    
+    /** 
+     * @param actor
+     */
     @Override
     public void create(Actor actor) {
         String req = "insert into actor (nom,image,biographie) values (?,?,?) ";
@@ -33,6 +37,10 @@ public class ActorService implements IService<Actor> {
         }
     }
 
+    
+    /** 
+     * @return List<Actor>
+     */
     @Override
     public List<Actor> read() {
         List<Actor> actorArrayList = new ArrayList<>();

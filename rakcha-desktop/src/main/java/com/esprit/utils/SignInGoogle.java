@@ -26,6 +26,13 @@ public class SignInGoogle {
         private static final String PROTECTED_RESOURCE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
         static OAuth20Service service;
 
+        
+        /** 
+         * @return String
+         * @throws InterruptedException
+         * @throws ExecutionException
+         * @throws IOException
+         */
         public static String signInWithGoogle() throws InterruptedException, ExecutionException, IOException {
 
                 final HttpClientConfig clientConfig = new AhcHttpClientConfig(new DefaultAsyncHttpClientConfig.Builder()
@@ -62,6 +69,14 @@ public class SignInGoogle {
                 return authorizationUrl;
         }
 
+        
+        /** 
+         * @param code
+         * @return Boolean
+         * @throws IOException
+         * @throws ExecutionException
+         * @throws InterruptedException
+         */
         public static Boolean verifyAuthUrl(String code) throws IOException, ExecutionException, InterruptedException {
                 try {
                         System.out.println();

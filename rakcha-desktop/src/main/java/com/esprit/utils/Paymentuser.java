@@ -10,6 +10,12 @@ import java.util.Map;
 
 public class Paymentuser {
 
+    
+    /** 
+     * @param f
+     * @return String
+     * @throws StripeException
+     */
     public static String pay(int f) throws StripeException {
         Stripe.apiKey = "[REDACTED]";
         Map<String, Object> params = new HashMap<>();

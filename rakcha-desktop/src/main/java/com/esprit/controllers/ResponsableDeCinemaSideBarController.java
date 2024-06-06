@@ -39,6 +39,10 @@ public class ResponsableDeCinemaSideBarController implements Initializable {
     @FXML
     private Button profileButton;
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void switchToActor(ActionEvent event) {
         try {
@@ -53,6 +57,10 @@ public class ResponsableDeCinemaSideBarController implements Initializable {
         }
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void switchstatestique(ActionEvent event) {
         try {

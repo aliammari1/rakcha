@@ -6,6 +6,11 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class UserMail {
+    
+    /** 
+     * @param Recipient
+     * @param messageToSend
+     */
     public static void send(String Recipient, String messageToSend) {
 
         // Sender's email ID needs to be mentioned

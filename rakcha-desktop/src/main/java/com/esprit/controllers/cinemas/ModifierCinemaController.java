@@ -37,10 +37,19 @@ public class ModifierCinemaController implements Initializable {
     private File selectedFile;
 
 
+    
+    /** 
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }
 
+    
+    /** 
+     * @param cinema
+     */
     public void initData(Cinema cinema) {
         this.cinema = cinema;
         tfNom.setText(cinema.getNom());

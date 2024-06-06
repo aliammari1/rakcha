@@ -25,10 +25,18 @@ public class Episode {
         this.idserie = idserie;
     }
 
+    
+    /** 
+     * @return String
+     */
     public String getVideo() {
         return video;
     }
 
+    
+    /** 
+     * @param video
+     */
     public void setVideo(String video) {
         this.video = video;
     }

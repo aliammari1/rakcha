@@ -123,6 +123,12 @@ public class FilmUserController extends Application {
 
     private int filmId;
 
+    
+    /** 
+     * @param liste
+     * @param recherche
+     * @return List<Film>
+     */
     @FXML
     public static List<Film> rechercher(List<Film> liste, String recherche) {
         List<Film> resultats = new ArrayList<>();
@@ -136,6 +142,11 @@ public class FilmUserController extends Application {
         return resultats;
     }
 
+    
+    /** 
+     * @param nom
+     * @throws IOException
+     */
     public void switchtopayment(String nom) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/Paymentuser.fxml"));
         AnchorPane root = fxmlLoader.load();

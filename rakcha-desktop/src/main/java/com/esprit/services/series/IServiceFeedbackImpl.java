@@ -17,6 +17,10 @@ public class IServiceFeedbackImpl implements IServiceFeedback<Feedback> {
         conx = mydatabase.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param a
+     */
     @Override
     public void ajouter(Feedback a) {
         String req =
@@ -36,6 +40,10 @@ public class IServiceFeedbackImpl implements IServiceFeedback<Feedback> {
         }
     }
 
+    
+    /** 
+     * @param a
+     */
     @Override
     public void modifier(Feedback a) {
         try {

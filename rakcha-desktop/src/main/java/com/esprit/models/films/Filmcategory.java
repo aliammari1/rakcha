@@ -9,10 +9,18 @@ public class Filmcategory {
         this.filmId = filmId;
     }
 
+    
+    /** 
+     * @return Category
+     */
     public Category getCategoryId() {
         return categoryId;
     }
 
+    
+    /** 
+     * @param categoryId
+     */
     public void setCategoryId(Category categoryId) {
         this.categoryId = categoryId;
     }

@@ -39,10 +39,18 @@ public class Commentaire {
 
 
 
+    
+    /** 
+     * @return int
+     */
     public int getIdCommentaire() {
         return idcommentaire;
     }
 
+    
+    /** 
+     * @param idCommentaire
+     */
     public void setIdCommentaire(int idCommentaire) {
         this.idcommentaire = idCommentaire;
     }

@@ -18,6 +18,10 @@ public class CommentaireService implements IService<Commentaire> {
         connection = DataSource.getInstance().getConnection();
     }
 
+    
+    /** 
+     * @param commentaire
+     */
     @Override
     public void create(Commentaire commentaire) {
         String req = "INSERT into commentaire_produit (id_client_id, commentaire, id_produit) values (?, ?, ?);";
@@ -35,6 +39,10 @@ public class CommentaireService implements IService<Commentaire> {
         }
     }
 
+    
+    /** 
+     * @return List<Commentaire>
+     */
     @Override
     public List<Commentaire> read() {
         List<Commentaire> commentaire = new ArrayList<>();

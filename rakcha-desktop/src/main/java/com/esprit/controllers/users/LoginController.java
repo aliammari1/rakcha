@@ -57,6 +57,13 @@ public class LoginController implements Initializable {
     private AnchorPane loginAnchorPane;
 
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @FXML
     void signInWithGoogle(ActionEvent event) throws IOException, ExecutionException, InterruptedException {
         try {
@@ -69,6 +76,13 @@ public class LoginController implements Initializable {
         }
     }
 
+    
+    /** 
+     * @param event
+     * @throws IOException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     @FXML
     void signInWithMicrosoft(ActionEvent event) throws IOException, ExecutionException, InterruptedException {
         try {

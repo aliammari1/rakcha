@@ -6,6 +6,12 @@ import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 
 public class UserSMSAPI {
+    
+    /** 
+     * @param number
+     * @param senderName
+     * @param messageBody
+     */
     public static void sendSMS(int number, String senderName, String messageBody) {
         VonageClient client = VonageClient.builder().apiKey("bf61ba81").apiSecret("BsA4inzyxBJDOCwk").build();
         TextMessage message = new TextMessage("Vonage APIs",

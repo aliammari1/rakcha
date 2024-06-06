@@ -64,6 +64,10 @@ public class CategoryController {
 
     }
 
+    
+    /** 
+     * @param keyword
+     */
     private void search(String keyword) {
         CategoryService categoryService = new CategoryService();
         ObservableList<Category> filteredList = FXCollections.observableArrayList();
@@ -80,6 +84,10 @@ public class CategoryController {
         filmCategory_tableView.setItems(filteredList);
     }
 
+    
+    /** 
+     * @param event
+     */
     @FXML
     void insertCategory(ActionEvent event) {
         CategoryService categoryService = new CategoryService();

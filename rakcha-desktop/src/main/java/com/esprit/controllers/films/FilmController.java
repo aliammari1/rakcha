@@ -155,6 +155,10 @@ public class FilmController {
         });
     }
 
+    
+    /** 
+     * @param searchText
+     */
     private void searchActor(String searchText) {
         filteredActors.setPredicate(actor -> {
             // Si le champ de recherche est vide, afficher tous les acteurs
@@ -169,6 +173,10 @@ public class FilmController {
         });
     }
 
+    
+    /** 
+     * @param message
+     */
     @FXML
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

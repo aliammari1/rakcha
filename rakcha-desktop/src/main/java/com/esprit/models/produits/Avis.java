@@ -24,10 +24,18 @@ public class Avis {
 
 
 
+    
+    /** 
+     * @return Client
+     */
     public Client getUser() {
         return user;
     }
 
+    
+    /** 
+     * @param user
+     */
     public void setUser(Client user) {
         this.user = user;
     }

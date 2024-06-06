@@ -34,10 +34,18 @@ public class Panier {
         }
 
 
+        
+        /** 
+         * @return int
+         */
         public int getIdPanier() {
             return idpanier;
         }
 
+        
+        /** 
+         * @param idPanier
+         */
         public void setIdPanier(int idPanier) {
             this.idpanier = idPanier;
         }
