@@ -6,82 +6,122 @@ import java.util.Objects;
 
 public class Panier {
 
+    private int idpanier;
+    private int quantity;
+    private Produit produit;
+    private User users;
 
+    /**
+     * Default constructor for the Panier class.
+     */
+    public Panier() {
+    }
 
-        private int idpanier;
-        private int quantity;
+    /**
+     * Constructor for the Panier class with all parameters.
+     *
+     * @param idpanier The ID of the panier.
+     * @param produit  The produit associated with the panier.
+     * @param quantity The quantity of the produit in the panier.
+     * @param users    The user associated with the panier.
+     */
+    public Panier(int idpanier, Produit produit, int quantity, User users) {
+        this.idpanier = idpanier;
+        this.quantity = quantity;
+        this.produit = produit;
+        this.users = users;
+    }
 
-        private Produit produit;
+    /**
+     * Constructor for the Panier class without the ID parameter.
+     *
+     * @param produit  The produit associated with the panier.
+     * @param quantity The quantity of the produit in the panier.
+     * @param users    The user associated with the panier.
+     */
+    public Panier(Produit produit, int quantity, User users) {
+        this.quantity = quantity;
+        this.produit = produit;
+        this.users = users;
+    }
 
-        private User users;
+    /**
+     * Get the ID of the panier.
+     *
+     * @return The ID of the panier.
+     */
+    public int getIdPanier() {
+        return idpanier;
+    }
 
+    /**
+     * Set the ID of the panier.
+     *
+     * @param idPanier The ID of the panier.
+     */
+    public void setIdPanier(int idPanier) {
+        this.idpanier = idPanier;
+    }
 
-        public Panier(){
+    /**
+     * Get the quantity of the produit in the panier.
+     *
+     * @return The quantity of the produit in the panier.
+     */
+    public int getQuantity() {
+        return quantity;
+    }
 
-        }
-        public Panier(int idpanier, Produit produit,int quantity , User users) {
-            this.idpanier = idpanier;
-            this.quantity = quantity;
-            this.produit = produit;
-            this.users = users;
+    /**
+     * Set the quantity of the produit in the panier.
+     *
+     * @param quantity The quantity of the produit in the panier.
+     */
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
-        }
+    /**
+     * Get the produit associated with the panier.
+     *
+     * @return The produit associated with the panier.
+     */
+    public Produit getProduit() {
+        return produit;
+    }
 
-        public Panier(Produit produit,int quantity,User users) {
-            this.quantity = quantity;
-            this.produit = produit;
-            this.users = users;
-        }
+    /**
+     * Set the produit associated with the panier.
+     *
+     * @param produit The produit associated with the panier.
+     */
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
 
-
-        
-        /** 
-         * @return int
-         */
-        public int getIdPanier() {
-            return idpanier;
-        }
-
-        
-        /** 
-         * @param idPanier
-         */
-        public void setIdPanier(int idPanier) {
-            this.idpanier = idPanier;
-        }
-
-        public int getIdpanier() {
-            return idpanier;
-        }
-
-        public void setIdpanier(int idpanier) {
-            this.idpanier = idpanier;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
-        }
-
-        public Produit getProduit() {
-            return produit;
-        }
-
-        public void setProduit(Produit produit) {
-            this.produit = produit;
-        }
-
+    /**
+     * Get the user associated with the panier.
+     *
+     * @return The user associated with the panier.
+     */
     public User getUser() {
         return users;
     }
 
+    /**
+     * Set the user associated with the panier.
+     *
+     * @param users The user associated with the panier.
+     */
     public void setUser(User users) {
         this.users = users;
     }
 
+    /**
+     * Returns a string representation of the Panier object.
+     *
+     * @return A string representation of the Panier object.
+     */
     @Override
     public String toString() {
         return "Panier{" +
