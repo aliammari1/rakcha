@@ -54,6 +54,14 @@ import java.util.Date;
 
 
 
+/**
+ * Is responsible for handling user interactions related to commande data display and
+ * manipulation. The controller initiates the display of the commande table, enables
+ * cell selection, and implements a search function using an observable list.
+ * Additionally, it provides a delete column and handles deletion events. Finally,
+ * it offers an option to open a new stage with an analysis interface for further
+ * examination of the command data.
+ */
 public class ListCommandeController {
 
 
@@ -106,6 +114,11 @@ public class ListCommandeController {
 
 
 
+    /**
+     * Sets up events for the `SearchBar` text property, triggering the `search` method
+     * when the text changes. It also calls `afficheCommande()` and initializes a delete
+     * column.
+     */
     @FXML
 
     void initialize() {
@@ -128,6 +141,12 @@ public class ListCommandeController {
 
 
 
+    /**
+     * Displays the details of a command in a table, including the client's first and
+     * last name, address, phone number, and order date, using a `PropertyValueFactory`
+     * to generate cell values based on the command object. It also sets up an observable
+     * list to store the commands and enables cell selection for easy navigation.
+     */
     void afficheCommande() {
 
         idnom.setCellValueFactory(cellData -> {
@@ -190,10 +209,13 @@ public class ListCommandeController {
 
     
 
-    /** 
-
-     * @param keyword
-
+    /**
+     * Receives a keyword and filters the `Commande` objects based on their addresses,
+     * client names, or statuses containing the keyword. It then adds the filtered objects
+     * to an observable list and sets it as the items of a table view.
+     * 
+     * @param keyword search query used to filter the list of Commands displayed in the
+     * `commandeTableView`.
      */
 
     @FXML
@@ -234,10 +256,35 @@ public class ListCommandeController {
 
 
 
+    /**
+     * Sets up a custom cell factory for a delete button in a table view, which when
+     * clicked deletes the item in the table and updates the view.
+     */
     private void initDeleteColumn() {
 
         Callback<TableColumn<Commande, Void>, TableCell<Commande, Void>> cellFactory = new Callback<>() {
 
+            /**
+             * Creates a new `TableCell` instance that displays a delete button for each item in
+             * the table. When the button is pressed, the corresponding item is deleted from the
+             * table and the table view is updated.
+             * 
+             * @param param TableColumn object that invokes the function, providing the necessary
+             * context for the function to operate on the appropriate data.
+             * 
+             * 	- `param`: A `TableColumn<Commande, Void>` object representing the table column
+             * that the cell belongs to.
+             * 
+             * @returns a `TableCell` object that displays a delete button for each item in the
+             * table.
+             * 
+             * 	- The output is a `TableCell` object of type `<Commande, Void>`.
+             * 	- The cell contains a button with a class of "delete-button".
+             * 	- The button has an `onAction` method that deletes the corresponding Commande
+             * object from the database when clicked.
+             * 	- The method also updates the TableView by removing the deleted Commande object
+             * and refreshing the view.
+             */
             @Override
 
             public TableCell<Commande, Void> call(final TableColumn<Commande, Void> param) {
@@ -274,6 +321,21 @@ public class ListCommandeController {
 
 
 
+                    /**
+                     * Updates an item's graphic based on its emptiness, setting `null` if empty and
+                     * `btnDelete` otherwise.
+                     * 
+                     * @param item Void object being updated, which is passed to the superclass's
+                     * `updateItem()` method and then processed further in the current method based on
+                     * the value of the `empty` parameter.
+                     * 
+                     * 	- `item`: The item being updated, which can be either null or an instance of `Void`.
+                     * 	- `empty`: A boolean indicating whether the item is empty or not. If true, the
+                     * graphic is set to null; otherwise, it is set to `btnDelete`.
+                     * 
+                     * @param empty whether the item being updated is empty or not, and determines whether
+                     * the graphic of the update button should be set to `null` or `btnDelete`.
+                     */
                     @Override
 
                     protected void updateItem(Void item, boolean empty) {
@@ -312,10 +374,18 @@ public class ListCommandeController {
 
     
 
-    /** 
-
-     * @param event
-
+    /**
+     * Loads a new FXML interface, creates a new scene and stage, and attaches the scene
+     * to the stage. When the stage is closed, the original stage is shown.
+     * 
+     * @param event ActionEvent object that triggered the function execution and provides
+     * access to the source node of the event, which is the button in this case.
+     * 
+     * 	- `event`: An `ActionEvent` object representing the event triggered by the user's
+     * action on the UI element.
+     * 
+     * The `event` object provides information about the source of the event, the type
+     * of event, and other details that can be used to handle the event appropriately.
      */
 
     @FXML

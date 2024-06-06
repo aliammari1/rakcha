@@ -90,6 +90,11 @@ import java.util.regex.Pattern;
 
 
 
+/**
+ * Is responsible for handling payments for a Visa card. It has several methods for
+ * validating user input, creating a receipt PDF, and opening the PDF file. The class
+ * also initializes an Alert to display error messages if necessary.
+ */
 public class PaymentuserController implements Initializable {
 
     Client client;
@@ -160,12 +165,14 @@ public class PaymentuserController implements Initializable {
 
     
 
-    /** 
-
-     * @param str
-
-     * @return boolean
-
+    /**
+     * Checks if a given string is a numerical value by matching it against a regular
+     * expression pattern of one or more digits.
+     * 
+     * @param str String to be checked for matching the regular expression `\d+`.
+     * 
+     * @returns a `Boolean` value indicating whether the input string matches the regular
+     * expression for a number.
      */
 
     public static boolean isNum(String str) {
@@ -180,12 +187,13 @@ public class PaymentuserController implements Initializable {
 
     
 
-    /** 
-
-     * @param value
-
-     * @return int
-
+    /**
+     * Converts a `float` argument into an `int` value by calling the `int` casting
+     * operator `(int)`.
+     * 
+     * @param value floating-point number to be converted to an integer.
+     * 
+     * @returns an integer value equivalent to the provided floating-point number.
      */
 
     public static int floatToInt(float value) {
@@ -196,6 +204,16 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Sets the `client` field and displays the film name on a label. It also prints the
+     * value of `client` to the console.
+     * 
+     * @param client Client object that provides the payment details for the film name
+     * set by the `filmName` parameter.
+     * 
+     * @param filmName name of a film that is being associated with the `Client` object
+     * passed as an argument to the `setData()` method.
+     */
     public void setData(Client client, String filmName) {
 
         this.client = client;
@@ -208,6 +226,36 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Reads the film and cinema data, creates a combobox for selecting cinemas and
+     * initializes the payment panel with disabled options. When the user selects a cinema,
+     * it calls the `readLoujain` method to retrieve the seance list for that cinema,
+     * which is then displayed in a spinner.
+     * 
+     * @param url URL of a resource bundle that provides localization keys for the
+     * function's output, such as film and cinema names.
+     * 
+     * 	- `url`: The URL provided by the user, which contains information about the film
+     * and cinema.
+     * 	- `rb`: A `ResourceBundle` object containing key-value pairs of localized messages
+     * and resource keys.
+     * 
+     * @param rb ResourceBundle object, which provides localized messages and values for
+     * the Java application.
+     * 
+     * 	- `rb`: A `ResourceBundle` object containing key-value pairs for resource string
+     * messages.
+     * 
+     * The main properties of `rb` are:
+     * 
+     * 	- Key-value pairs: Contains key-value pairs in the form of `(key, value)`, where
+     * `key` is a unique identifier for a message, and `value` is the corresponding message
+     * text.
+     * 	- Messages: `rb` provides a collection of messages that can be used to localize
+     * user interface elements, such as labels, buttons, and menus.
+     * 	- Culture-specific messages: `rb` allows developers to create culture-specific
+     * messages by providing separate key-value pairs for each culture.
+     */
     @Override
 
     public void initialize(URL url, ResourceBundle rb) {
@@ -224,6 +272,27 @@ public class PaymentuserController implements Initializable {
 
         cinemacombox_res.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
 
+            /**
+             * Reads movie and cinema information to populate a combobox with seance options for
+             * a given film and cinema. It clears the existing items, retrieves new seance data,
+             * and adds it to the combobox.
+             * 
+             * @param observableValue observable value that has been changed, providing the updated
+             * value and the previous value (in `s` and `t1`).
+             * 
+             * 	- `observableValue` is an `ObservableValue` object that represents changes to the
+             * `Seance` list in the UI.
+             * 	- The type of the value being observed is a `String`, indicating that the list
+             * contains strings representing the names of `Seance` objects.
+             * 	- The third argument, `t1`, is not used in this implementation.
+             * 
+             * @param s string value of a film label, which is used to retrieve the id of the
+             * corresponding film and cinema id for displaying seance options in the combobox.
+             * 
+             * @param t1 2nd string value passed to the function, which is used to populate the
+             * `checkcomboboxseance_res` widget with available seance options based on the selected
+             * film and cinema.
+             */
             @Override
 
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -254,6 +323,19 @@ public class PaymentuserController implements Initializable {
 
         checkcomboboxseance_res.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
 
+            /**
+             * Updates the spinner value based on the change in the film and cinema comboboxes,
+             * retrieves the seating information for the selected film and cinema, and sets the
+             * disable status of the payment nodes to false.
+             * 
+             * @param change change event that occurs when the user interacts with the `Loujain`
+             * list, providing the opportunity to process the changes and update the `Seance`
+             * objects accordingly.
+             * 
+             * 	- `change.next()` returns true if there are more changes to iterate over.
+             * 	- `change.wasAdded()` indicates whether a new element was added to the list or
+             * not. If true, the code inside the `if` statement is executed.
+             */
             @Override
 
             public void onChanged(Change<? extends String> change) {
@@ -288,6 +370,29 @@ public class PaymentuserController implements Initializable {
 
         nbrplacepPayment_Spinner.valueProperty().addListener(new ChangeListener<Integer>() {
 
+            /**
+             * Reads the seances available for a given film and cinema, calculates the total price
+             * based on the number of places paid, and displays the total price to the user.
+             * 
+             * @param observableValue observeable value that has changed, providing the new value
+             * and the old value for the method to operate on.
+             * 
+             * 	- `observableValue`: An observable value of type `Integer`, which represents the
+             * selected payment method.
+             * 	- `integer`: The current value of the `observableValue`.
+             * 
+             * @param integer 2nd value passed to the `changed()` method, which is the `t1` value
+             * from the observable value notification.
+             * 
+             * 	- `t1`: The value of `t1` is not explicitly mentioned in the provided code snippet.
+             * However, based on the context, it can be inferred that `t1` represents a time
+             * interval or a timestamp.
+             * 
+             * @param t1 2nd value passed to the `readLoujain()` method, which is used to retrieve
+             * the film and cinema information for the payment calculation.
+             * 
+             * 	- `t1`: An `Integer` variable representing the ID of the film.
+             */
             @Override
 
             public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
@@ -334,6 +439,16 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Processes a payment for a ticket purchase by first checking if the input is valid,
+     * then calculating and charging the correct amount based on the ticket's price and
+     * quantity, and finally saving the order to the database.
+     * 
+     * @param event Pay action event, which triggers the execution of the function and
+     * enables the processing of the payment request.
+     * 
+     * 	- `event` is an ActionEvent that represents a user's action on the Pay button.
+     */
     @FXML
 
     private void Pay(ActionEvent event) throws StripeException {
@@ -454,6 +569,13 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Validates input fields for a Visa card number, month and year of expiration, and
+     * CVC code. It returns `true` if all inputs are valid, otherwise it displays an error
+     * message and returns `false`.
+     * 
+     * @returns a boolean value indicating whether the input is valid or not.
+     */
     private boolean isValidInput() {
 
         if (!isValidVisaCardNo(carte.getText())) {
@@ -506,6 +628,23 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Takes a string as input and checks if it matches the valid Visa card number format,
+     * which is a 13-digit number consisting of four digits followed by a hyphen and then
+     * another four digits.
+     * 
+     * @param text 13-digit credit card number to be validated.
+     * 
+     * @returns a boolean value indicating whether the given string represents a valid
+     * Visa card number or not.
+     * 
+     * 	- The function returns a boolean value indicating whether the given text represents
+     * a valid Visa card number or not.
+     * 	- The output is based on the pattern `(^4[0-9]{12}(?:[0-9]{3})?$)` which is used
+     * to validate the Visa card number.
+     * 	- The pattern checks that the card number consists of 12 digits, with the first
+     * 4 digits being "4", and optionally followed by a further 3 digits.
+     */
     private boolean isValidVisaCardNo(String text) {
 
         String regex = "^4[0-9]{12}(?:[0-9]{3})?$";
@@ -522,6 +661,16 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Creates an Alert object with an error title and message, displays it using the
+     * `showAndWait()` method.
+     * 
+     * @param title title of an error message that is displayed in the alert box when the
+     * `showError()` method is called.
+     * 
+     * @param message message to be displayed as the content of an error alert when the
+     * function is called.
+     */
     private void showError(String title, String message) {
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -538,6 +687,14 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Sets the values of class variables `client` and `seance`, and updates the text of
+     * a label `total`.
+     * 
+     * @param p Seance object, which is assigned to the class instance variable `seance`.
+     * 
+     * @param client Client object that is associated with the Seance object being initialized.
+     */
     public void init(Seance p, Client client) {
 
         this.client = client;
@@ -550,6 +707,15 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Loads and displays a FXML file named "filmuser.fxml" using Java's `FXMLLoader`
+     * class, creating a new stage and scene to display the content.
+     * 
+     * @param event ActionEvent object that triggered the method execution, providing the
+     * necessary information about the action that was performed.
+     * 
+     * Event: An ActionEvent object representing a user event.
+     */
     public void switchtfillmmaa(ActionEvent event) {
 
         try {
@@ -574,6 +740,20 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Creates a PDF receipt for a ticket purchase by adding text and graphics to a blank
+     * page using a PDPageContentStream, then saving the document with a specified filename.
+     * 
+     * @param filename name of the output PDF file that the `createReceiptPDF` method
+     * will save.
+     * 
+     * @param ticket ticket for which a receipt is to be generated, and its contents are
+     * used to populate the receipt document.
+     * 
+     * 	- Ticket is an instance of the `Ticket` class.
+     * 	- It contains information about the ticket purchase, such as the date and time
+     * of purchase, the amount paid, and any other relevant details.
+     */
     public void createReceiptPDF(String filename, Ticket ticket) throws IOException {
 
         try (PDDocument document = new PDDocument()) {
@@ -616,6 +796,11 @@ public class PaymentuserController implements Initializable {
 
 
 
+    /**
+     * Opens a PDF file using the desktop application.
+     * 
+     * @param filename name of the PDF file to be opened.
+     */
     public void openPDF(String filename) throws IOException {
 
         if (Desktop.isDesktopSupported()) {
