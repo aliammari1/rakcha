@@ -30,6 +30,13 @@ import java.util.Map;
 
 
 
+/**
+ * Is responsible for generating and displaying sentiment statistics for various
+ * cinemas based on user comments. It retrieves movie commentary data from a service,
+ * generates sentiment statistics for each cinema using the comments, and creates
+ * PieCharts to visualize the statistics. The controller also displays the generated
+ * PieCharts in an AnchorPane.
+ */
 public class CinemaStatisticsController {
 
 
@@ -48,10 +55,15 @@ public class CinemaStatisticsController {
 
     
 
-    /** 
-
-     * @param event
-
+    /**
+     * Clears an existing children container, retrieves comments from a database, generates
+     * sentiment statistics for each cinema, and displays the statistics as PieCharts
+     * within a new container added to the parent AnchorPane.
+     * 
+     * @param event ActionEvent triggered by the button click that initiates the code
+     * execution and calls the `showStatistics()` method.
+     * 
+     * 	- `event`: an instance of `ActionEvent`, representing a user-generated event
      */
 
     @FXML
@@ -114,6 +126,29 @@ public class CinemaStatisticsController {
 
     // Méthode pour générer les statistiques sur l'analyse de sentiment pour chaque cinéma
 
+    /**
+     * Generates a map of sentiment statistics for each cinema based on a list of comments,
+     * where each comment is associated with a cinema and a sentiment label. The function
+     * counts the number of comments with each sentiment and stores it in the map for
+     * that cinema.
+     * 
+     * @param comments list of comments that will be processed to generate sentiment
+     * statistics for each cinema.
+     * 
+     * 	- It is a list of `CommentaireCinema` objects, representing user comments on
+     * cinema movies.
+     * 
+     * @returns a map of cinema names to sentiment statistics, where each cinema's sentiment
+     * is counted and stored as an integer value.
+     * 
+     * 	- The output is a map of cinema names to maps of sentiment names to integer counts
+     * of the number of comments expressing that sentiment for each cinema.
+     * 	- Each cinema name in the outer map corresponds to a map of sentiment names in
+     * the inner map, indicating the number of comments expressing that sentiment for
+     * that cinema.
+     * 	- The maps are keyed by sentiment name and contain integer values representing
+     * the count of comments expressing that sentiment for each cinema.
+     */
     private Map<String, Map<String, Integer>> generateSentimentStatistics(List<CommentaireCinema> comments) {
 
         Map<String, Map<String, Integer>> cinemaSentimentStatistics = new HashMap<>();
@@ -160,6 +195,28 @@ public class CinemaStatisticsController {
 
     // Méthode pour créer un PieChart pour un cinéma donné
 
+    /**
+     * Creates a PieChart object and sets its title based on a cinema name and sentiment
+     * statistics map. It then adds the chart data based on the map entries.
+     * 
+     * @param cinemaName name of the cinema for which sentiment statistics are being
+     * generated and displayed in the PieChart.
+     * 
+     * @param sentimentStatistics sentiment statistics of a cinema, which is used to
+     * generate a pie chart displaying the distribution of sentiment scores for that cinema.
+     * 
+     * 	- `Map<String, Integer>`: This map contains sentiment statistics for different
+     * cinema names, where each key represents a cinema name and the value represents the
+     * number of reviews with a positive sentiment towards that cinema.
+     * 
+     * @returns a pie chart representing the sentiment statistics of a given cinema.
+     * 
+     * 1/ Title: The title of the PieChart is set to the cinema name followed by " Sentiment
+     * Statistics".
+     * 2/ Data: The function adds the sentiment statistics data to the PieChart's data
+     * list. Each entry in the data list consists of a category (key) and the corresponding
+     * frequency (value).
+     */
     private PieChart createPieChart(String cinemaName, Map<String, Integer> sentimentStatistics) {
 
         PieChart pieChart = new PieChart();

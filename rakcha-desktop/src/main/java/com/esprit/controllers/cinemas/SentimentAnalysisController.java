@@ -22,6 +22,12 @@ import java.util.Properties;
 
 
 
+/**
+ * Is designed to analyze text sentiment using Stanford CoreNLP pipeline. It takes a
+ * text input and returns a sentiment result as a string. The class configures the
+ * pipeline properties, initializes the StanfordCoreNLP pipeline, creates an annotation
+ * with the input text, and analyzes the text to extract sentiment annotations.
+ */
 public class SentimentAnalysisController {
 
 
@@ -32,12 +38,14 @@ public class SentimentAnalysisController {
 
     
 
-    /** 
-
-     * @param text
-
-     * @return String
-
+    /**
+     * Analyzes a given text using Stanford CoreNLP pipeline to extract sentiment
+     * annotations, such as positive, negative or neutral. It returns the extracted
+     * sentiment in a string format.
+     * 
+     * @param text text to be analyzed for sentiment using the Stanford CoreNLP pipeline.
+     * 
+     * @returns a string containing the sentiment annotations of the given text.
      */
 
     public String analyzeSentiment(String text) {

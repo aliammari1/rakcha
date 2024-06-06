@@ -32,6 +32,12 @@ import javafx.stage.Stage;
 
 
 
+/**
+ * Manages the navigation between different views in an application for an administrator.
+ * It provides buttons to switch between views such as users, events, movies, products,
+ * series, cinema, and profile. The controller also includes a web view and handles
+ * the login and logout functionality.
+ */
 public class AdminSideBarController implements Initializable {
 
 
@@ -78,10 +84,12 @@ public class AdminSideBarController implements Initializable {
 
     
 
-    /** 
-
-     * @param event
-
+    /**
+     * Is called when an action event occurs, indicating a change in the state of the
+     * application. It performs no additional actions and does not modify any variables.
+     * 
+     * @param event occurrence of an action that triggered the `switchToEvent` method to
+     * be called.
      */
 
     @FXML
@@ -96,10 +104,15 @@ public class AdminSideBarController implements Initializable {
 
     
 
-    /** 
-
-     * @param event
-
+    /**
+     * Loads an fxml file named `ListeCommande.fxml` and sets the stage scene to display
+     * its root element.
+     * 
+     * @param event triggered action that initiated the code execution in the `switchToMovies()`
+     * method.
+     * 
+     * 	- Event type: `ActionEvent`
+     * 	- Target: `movieButton` (a button object)
      */
 
     @FXML
@@ -130,6 +143,19 @@ public class AdminSideBarController implements Initializable {
 
 
 
+    /**
+     * Loads an FXML file and sets the stage scene to display the contents of the file.
+     * 
+     * @param event click event of a button, which triggers the execution of the
+     * `switchToProducts()` method.
+     * 
+     * Event: An event object representing a button press.
+     * 
+     * Properties:
+     * 
+     * 	- `getSource()`: Returns the source of the event (in this case, the `ProductButton`).
+     * 	- `getButton()`: Returns the button that was pressed (e.g., "Product").
+     */
     @FXML
 
     void switchToProducts(ActionEvent event) {
@@ -158,6 +184,16 @@ public class AdminSideBarController implements Initializable {
 
 
 
+    /**
+     * Loads a FXML file named "Categorie-view.fxml" into a Stage using the `FXMLLoader`.
+     * It sets the data for the controller and then sets the scene of the Stage to the
+     * loaded root node.
+     * 
+     * @param event click event of the `switchToSeries` button, triggering the execution
+     * of the code inside the function.
+     * 
+     * 	- `event`: An `ActionEvent` object representing a user-initiated action.
+     */
     @FXML
 
     void switchToSeries(ActionEvent event) {
@@ -186,6 +222,15 @@ public class AdminSideBarController implements Initializable {
 
 
 
+    /**
+     * Loads a new FXML file `DashboardAdminCinema.fxml` when the `cinemaButton` is
+     * clicked. It creates a new stage and sets its scene to the loaded root element.
+     * 
+     * @param event click event on the cinema button that triggered the function execution.
+     * 
+     * 	- `event`: An `ActionEvent` object representing the user's action of switching
+     * to the cinema view.
+     */
     @FXML
 
     void switchtcinema(ActionEvent event) {
@@ -210,6 +255,14 @@ public class AdminSideBarController implements Initializable {
 
 
 
+    /**
+     * Loads a new user interface using the FXMLLoader and replaces the existing stage
+     * with the new scene.
+     * 
+     * @param event user action that triggered the call to the `switchToUsers()` method.
+     * 
+     * 	- Event type: ActionEvent
+     */
     @FXML
 
     public void switchToUsers(ActionEvent event) {
@@ -234,6 +287,14 @@ public class AdminSideBarController implements Initializable {
 
 
 
+    /**
+     * Is called when an instance of a class is created and initializes some resources.
+     * 
+     * @param location URL of the application's resource bundle, which is used to load
+     * the appropriate resources for the application.
+     * 
+     * @param resources resource bundle for the current application.
+     */
     @Override
 
     public void initialize(URL location, ResourceBundle resources) {
@@ -242,6 +303,16 @@ public class AdminSideBarController implements Initializable {
 
 
 
+    /**
+     * Loads a new scene with a FXML file when the logout button is clicked, replacing
+     * the current stage's scene with the new one.
+     * 
+     * @param event click event on the logout button that triggers the function execution.
+     * 
+     * 	- Event type: `ActionEvent`, indicating that the event was triggered by a user action.
+     * 	- Target object: `logoutButton`, indicating the button that was clicked to trigger
+     * the event.
+     */
     @FXML
 
     void switchToLogout(ActionEvent event) {
@@ -268,6 +339,14 @@ public class AdminSideBarController implements Initializable {
 
 
 
+    /**
+     * Loads and displays the `Profile.fxml` stage when the `profileButton` is clicked.
+     * 
+     * @param event mouse click event that triggered the function execution.
+     * 
+     * 	- `event`: An `ActionEvent` object representing the user's action of clicking on
+     * the "Switch to Profile" button.
+     */
     @FXML
 
     void switchToProfile(ActionEvent event) {

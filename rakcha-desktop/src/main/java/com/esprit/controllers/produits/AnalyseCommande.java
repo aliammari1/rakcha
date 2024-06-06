@@ -44,6 +44,14 @@ import com.esprit.services.produits.CategorieService;
 
 
 
+/**
+ * Is used to analyze the number of orders placed by date and categorize them based
+ * on the products purchased. It updates two graphical representations: TauxCommande
+ * (number of orders per date) and TauxCategorie (number of categories purchased per
+ * date). The class retrieves data from various sources, including a list of all
+ * orders, a list of all products, and a list of all categories. It then processes
+ * the data to create the graphs and displays them on the screen.
+ */
 public class AnalyseCommande implements Initializable {
 
 
@@ -74,12 +82,14 @@ public class AnalyseCommande implements Initializable {
 
     
 
-    /** 
-
-     * @param location
-
-     * @param resources
-
+    /**
+     * Is responsible for calling the initialization logic, which in turn updates the graphs.
+     * 
+     * @param location URL of the initial graph layout, which is passed to the `updateGraphs()`
+     * method for initialization.
+     * 
+     * @param resources resource bundle that provides localized strings and values for
+     * the application.
      */
 
     @Override
@@ -94,6 +104,11 @@ public class AnalyseCommande implements Initializable {
 
 
 
+    /**
+     * Updates a bar graph and a stacked bar chart with the number of orders, payments,
+     * and categories purchased by date. It retrieves data from a database and calculates
+     * the number of orders and payments for each category by date.
+     */
     private void updateGraphs() {
 
         // Mettre à jour les graphiques ici
