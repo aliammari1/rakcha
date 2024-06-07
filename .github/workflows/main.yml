@@ -1,0 +1,2 @@
+- name: Artistic Style
+  uses: per1234/artistic-style-action@v1.0.2
