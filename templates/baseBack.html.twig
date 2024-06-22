@@ -41,7 +41,7 @@
 		<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4" data-color="danger" id="sidenav-main">
 			<div class="sidenav-header">
 				<i aria-hidden="true" class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" id="iconSidenav"></i>
-				<a class="navbar-brand m-0" href="https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html" target="_blank">
+				<a class="navbar-brand m-0" href="{{ path('app_home_index') }}">
 					<img alt="main_logo" class="navbar-brand-img h-100" src="{{ asset('img/Logo.png') }}"/>
 					<span class="ms-1 font-weight-bold">Rakcha</span>
 				</a>
@@ -51,12 +51,12 @@
 				<ul class="navbar-nav">
 					{% set items = [] %}
 					{% set paths = [] %}
-					{% if app.user.role == 'responsable de cinema' %}
+					{% if is_granted('ROLE_RESPONSABLE_DE_CINEMA') %}
 						{% set items = ['cinema', 'Seances', 'film','category','actor','logout'] %}
 						{% set paths = [path('app_cinema_index'), path('app_seance_index'),path('app_film_index'),path('app_category_index'),path('app_actor_index'),path('app_logout_index')] %}
-					{% elseif app.user.role == 'admin' %}
-						{% set items = ['users','Cinema','produit','categorie Produit', 'series','episodes','categories','events','logout'] %}
-						{% set paths = [path('app_users_index'),path('app_cinemaAdmin_index'), path('app_produit_index'), path('app_categorie_produit_index'),path('app_series_index'),path('app_episodes_index'),path('app_categories_index'),path('app_evenement_affichback'),path('app_logout_index')] %}
+					{% elseif is_granted('ROLE_ADMIN') %}
+						{% set items = ['users','Cinema','produit','categorie Produit', 'series','episodes','categories','logout'] %}
+						{% set paths = [path('app_users_index'),path('app_cinemaAdmin_index'), path('app_produit_index'), path('app_categorie_produit_index'),path('app_series_index'),path('app_episodes_index'),path('app_categories_index'),path('app_logout_index')] %}
 					{% endif %}
 					{% for item in items %}
 						<li class="nav-item ms-4 my-1">
