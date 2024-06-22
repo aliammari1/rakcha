@@ -42,11 +42,20 @@ class ActorController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['image']->getData();
-
-            $extension = $file->guessExtension();
-            if (!$extension) {
-                // extension cannot be guessed
-                $extension = 'bin';
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
+                }
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
+                $file->move($destination, $filename);
+                $actor->setimage("/img/actors/" . $filename);
+    
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $filename = rand(1, 99999) . '.' . $extension;
             $file->move($this->getParameter('kernel.project_dir') . "/public/img/actors", $filename);
@@ -98,8 +107,13 @@ class ActorController extends AbstractController
                     $extension = 'bin';
                 }
                 $filename = rand(1, 99999) . '.' . $extension;
-                $file->move($this->getParameter('kernel.project_dir') . "/public/img/actors", $filename);
-                $actor->setImage("/img/actors/" . $filename);
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
+                $file->move($destination, $filename);
+                $actor->setimage("/img/actors/" . $filename);
+    
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->flush();
             $this->addFlash('actors', 'actor edited successfully');
