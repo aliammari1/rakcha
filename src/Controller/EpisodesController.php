@@ -69,26 +69,24 @@ class EpisodesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Traitement de l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = preg_replace('/\s/', '_', $originalFilename);
-                $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-                $newFilename = 'img/series/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/img/series/',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // Gestion de l'exception
-                }
-
-                // Enregistrement du chemin de l'image dans l'entité Series
-                $episode->setImage($newFilename);
-            }
+             // Traitement de l'image
+             $file = $form['image']->getData();
+             if ($file) {
+                 $extension = $file->guessExtension();
+                 if (!$extension) {
+                     // extension cannot be guessed
+                     $extension = 'bin';
+                 }
+                 $filename = rand(1, 99999) . '.' . $extension;
+                 $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                 $file->move($destination, $filename);
+                 $episode->setImage("/img/series/" . $filename);
+ 
+                 // Copy the file to another location
+                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
+                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+             }
+            
             //Traitement du video 
             $videoFile = $form->get('video')->getData();
             // Vérifier si un fichier vidéo a été téléchargé
@@ -115,9 +113,10 @@ class EpisodesController extends AbstractController
 
             $entityManager->persist($episode);
             $entityManager->flush();
-
+        
             return $this->redirectToRoute('app_episodes_index', [], Response::HTTP_SEE_OTHER);
         }
+    
 
         return $this->render('back/episodesTables.html.twig', [
             'episodes' => $episodesRepository->findAll(),
@@ -125,6 +124,7 @@ class EpisodesController extends AbstractController
             'updateForms' => $updateForms,
         ]);
     }
+
 
     #[Route('/{idepisode}', name: 'app_episodes_show', methods: ['GET'])]
     public function show(Episodes $episode): Response
@@ -142,26 +142,23 @@ class EpisodesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Traitement de l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = preg_replace('/\s/', '_', $originalFilename);
-                $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-                $newFilename = 'img/series/' . $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/img/series/',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // Gestion de l'exception
-                }
-
-                // Enregistrement du chemin de l'image dans l'entité Series
-                $episode->setImage($newFilename);
-            }
+             // Traitement de l'image
+             $file = $form['image']->getData();
+             if ($file) {
+                 $extension = $file->guessExtension();
+                 if (!$extension) {
+                     // extension cannot be guessed
+                     $extension = 'bin';
+                 }
+                 $filename = rand(1, 99999) . '.' . $extension;
+                 $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                 $file->move($destination, $filename);
+                 $episode->setImage("/img/series/" . $filename);
+ 
+                 // Copy the file to another location
+                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
+                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+             }
             //Traitement du video 
             $videoFile = $form->get('video')->getData();
             // Vérifier si un fichier vidéo a été téléchargé

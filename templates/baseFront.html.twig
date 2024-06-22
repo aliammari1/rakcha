@@ -69,6 +69,16 @@
 											<li>
 												<a class="dropdown-item" href="{{path('app_logout')}}">logout</a>
 											</li>
+											{% if is_granted('ROLE_ADMIN') %}
+												<li>
+													<a class="dropdown-item" href="{{ path('app_users_index') }}">Admin Dashboard</a>
+												</li>
+											{% endif %}
+											{% if is_granted('ROLE_RESPONSABLE_DE_CINEMA') %}
+												<li>
+													<a class="dropdown-item" href="{{ path('app_cinema_index') }}">Responsable Dashboard</a>
+												</li>
+											{% endif %}
 										</ul>
 									</div>
 									<a href="{{ path('app_panier_liste') }}" class="ms-4">
@@ -79,12 +89,12 @@
 							{% else %}
 								<div class="d-flex">
 									<a href="{{path('app_login')}}" class="me-4">
-										<button class="btn btn-danger">
+										<button class="btn btn-danger" style="background: #de1002;">
 											login
 										</button>
 									</a>
 									<a href="{{path('app_register')}}">
-										<button class="btn btn-danger">
+										<button class="btn btn-danger" style="background: #de1002;">
 											register
 										</button>
 									</a>
@@ -118,10 +128,6 @@
 								<li class="nav-item">
 									<a class="nav-link" href="{{ path('app_series_liste') }}">Series</a>
 								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="{{ path('app_evenement_index') }}">Events</a>
-								</li>
-
 								<li class="nav-item">
 									<a class="nav-link" href="">{{ 'Contact Us' }}</a>
 								</li>

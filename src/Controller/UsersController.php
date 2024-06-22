@@ -12,8 +12,10 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UsersController extends AbstractController
 {
@@ -103,7 +105,7 @@ class UsersController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $user->setIsVerified(false);
+            $user->setIsVerified(true);
             $role = $user->getRole();
             switch ($role) {
                 case 'client':
@@ -213,5 +215,51 @@ class UsersController extends AbstractController
             flash()->addError('User not deleted');
         }
         return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/account/delete', name: 'app_account_delete', methods: ['POST'])]
+    public function deleteAccount(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, TokenStorageInterface $tokenStorage): Response
+    {
+        $user = $this->getUser();
+
+        if ($this->isCsrfTokenValid('delete_account', $request->request->get('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+            flash()->addSuccess('Account Deleted successfully');
+
+            $session->invalidate();
+            $tokenStorage->setToken(null);
+        } else {
+            flash()->addError('Account not deleted');
+        }
+
+        return $this->redirectToRoute('app_home_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/profile/update', name: 'app_profile_update', methods: ['POST'])]
+    public function updateProfile(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        if ($user instanceof Users) {
+
+            $firstName = $request->request->get('first_name');
+            $lastName = $request->request->get('last_name');
+            $dateOfBirth = $request->request->get('dob');
+            $email = $request->request->get('email');
+            $address = $request->request->get('address');
+            $phoneNumber = $request->request->get('phone_number');
+
+            $user->setPrenom($firstName);
+            $user->setNom($lastName);
+            $user->setDateDeNaissance(new \DateTime($dateOfBirth));
+            $user->setEmail($email);
+            $user->setAdresse($address);
+            $user->setNumTelephone($phoneNumber);
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_profile_index', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
     }
 }

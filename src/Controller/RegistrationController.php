@@ -52,8 +52,13 @@ class RegistrationController extends AbstractController
                     $extension = 'bin';
                 }
                 $filename = rand(1, 99999) . '.' . $extension;
-                $file->move($this->getParameter('kernel.project_dir') . "/public/img/users", $filename);
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/users";
+                $file->move($destination, $filename);
                 $user->setPhotoDeProfil("/img/users/" . $filename);
+
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\users";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
 
             if ($user->getRole() == 'client')
@@ -61,7 +66,7 @@ class RegistrationController extends AbstractController
             else if ($user->getRole() == 'responsable de cinema')
                 $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
 
-            $user->setIsVerified(false);
+            $user->setIsVerified(true);
             $entityManager->persist($user);
             $entityManager->flush();
 

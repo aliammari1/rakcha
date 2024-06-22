@@ -31,6 +31,7 @@ class FilmController extends AbstractController
     #[Route('/new', name: 'app_film_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
+        
         $updateForms = array();
         for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
             $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
@@ -42,15 +43,19 @@ class FilmController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form['image']->getData();
             if ($file) {
-
                 $extension = $file->guessExtension();
                 if (!$extension) {
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
                 $filename = rand(1, 99999) . '.' . $extension;
-                $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
-                $film->setImage("/img/films/" . $filename);
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
+                $file->move($destination, $filename);
+                $film->setimage("/img/films/" . $filename);
+    
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->persist($film); //creation the query of create 
             $entityManager->flush(); //execute the query
@@ -98,8 +103,13 @@ class FilmController extends AbstractController
                     $extension = 'bin';
                 }
                 $filename = rand(1, 99999) . '.' . $extension;
-                $file->move($this->getParameter('kernel.project_dir') . "/public/img/films", $filename);
-                $film->setImage("/img/films/" . $filename);
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
+                $file->move($destination, $filename);
+                $film->setimage("/img/films/" . $filename);
+    
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->flush();
             $this->addFlash('films', 'film edited successfully');
