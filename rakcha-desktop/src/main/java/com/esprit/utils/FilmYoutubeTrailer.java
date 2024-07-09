@@ -9,7 +9,7 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchResult;
 
 public class FilmYoutubeTrailer {
-    private final String API_KEY = "[REDACTED]";
+    private final String API_KEY = System.getenv("YOUTUBE_API_KEY");
 
     /**
      * @param filmNom
