@@ -19,5 +19,9 @@
     ],
     "docwriter.style": "Auto-detect",
     "docwriter.progress.trackClasses": true,
-    "docwriter.progress.trackTypes": true
+    "docwriter.progress.trackTypes": true,
+    "sonarlint.connectedMode.project": {
+        "connectionId": "aliammari1",
+        "projectKey": "aliammari1_Rakcha"
+    }
 }
