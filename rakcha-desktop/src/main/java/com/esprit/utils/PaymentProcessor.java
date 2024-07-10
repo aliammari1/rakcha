@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PaymentProcessor {
-    private static final String STRIPE_API_KEY = "[REDACTED]";
+    private static final String STRIPE_API_KEY = System.getenv("STRIPE_API_KEY");
     private static final Logger LOGGER = Logger.getLogger(PaymentProcessor.class.getName());
 
     /**
