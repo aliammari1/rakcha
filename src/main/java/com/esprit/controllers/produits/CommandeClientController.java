@@ -63,8 +63,8 @@ import java.util.logging.Logger;
  * Movie and Serie client interactions.
  */
 public class CommandeClientController implements Initializable {
-    private static final String CLIENT_ID = "Ac_87vQSawIKlwhFFCBiYH0VYygxg5MWi0xakK3w0FyJirTITgf5CqfaE65WLUlia16-D5deHq6XKWo8";
-    private static final String CLIENT_SECRET = "[REDACTED]";
+    private static final String CLIENT_ID = System.getenv("PAYPAL_CLIENT_ID");
+    private static final String CLIENT_SECRET = System.getenv("PAYPAL_CLIENT_SECRET");
     private static final String SUCCESS_URL = CommandeClientController.class.getResource("/success.html")
             .toExternalForm();
     private static final String CANCEL_URL = CommandeClientController.class.getResource("/cancel.html")
