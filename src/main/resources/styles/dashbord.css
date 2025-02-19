@@ -295,3 +295,69 @@
     -fx-text-fill: black;
     -fx-alignment: center;
 }
+
+.content-area {
+    -fx-background-color: transparent;
+}
+
+.content-area > .viewport {
+    -fx-background-color: transparent;
+}
+
+.profile-header {
+    -fx-padding: 20px;
+    -fx-background-color: #252525;
+    -fx-background-radius: 10px;
+}
+
+.profile-image-circle {
+    -fx-fill: #333333;
+    -fx-stroke: #e74141;
+    -fx-stroke-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(231, 65, 65, 0.4), 10, 0, 0, 0);
+}
+
+.profile-form {
+    -fx-background-color: #252525;
+    -fx-padding: 20px;
+    -fx-background-radius: 10px;
+}
+
+.form-label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.primary-button {
+    -fx-background-color: #e74141;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 20px;
+}
+
+.danger-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #e74141;
+    -fx-text-fill: #e74141;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+}
+
+.window-button {
+    -fx-background-radius: 50%;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+.window-button:hover {
+    -fx-background-color: rgba(255,255,255,0.2);
+}
+
+.window-button.close:hover {
+    -fx-background-color: #e74141;
+}
