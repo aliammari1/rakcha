@@ -2,14 +2,14 @@
 
 namespace App\Form;
 
-use App\Entity\Produit;
 use App\Entity\CategorieProduit;
+use App\Entity\Produit;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProduitType extends AbstractType
 {
@@ -17,31 +17,31 @@ class ProduitType extends AbstractType
     {
         $builder
             ->add('nom', null, [
-                'label'=> 'Name',
+                'label' => 'Name',
                 'attr' => [
                     'placeholder' => 'Enter your name',
                 ],
             ])
             ->add('prix', null, [
-                
-                'label'=> 'Price',
+
+                'label' => 'Price',
 
                 'attr' => [
                     'placeholder' => 'Enter your Price she must be a number',
                 ],
             ])
             ->add('description', TextareaType::class, [
-                
 
-                'label'=> 'Description',
+
+                'label' => 'Description',
                 'attr' => [
                     'placeholder' => 'Enter your description she must be more than 20 characters',
                 ],
             ])
             ->add('quantitep', null, [
-              
 
-                'label'=> 'Qantity',
+
+                'label' => 'Qantity',
                 'attr' => [
                     'placeholder' => 'Enter your quantity she must be a number',
                 ],
@@ -50,9 +50,9 @@ class ProduitType extends AbstractType
                 'class' => CategorieProduit::class,
                 'choice_label' => 'nomcategorie',
                 'placeholder' => 'Choisir une catégorie',
-                
 
-                'label'=> 'Category',
+
+                'label' => 'Category',
                 'attr' => [
                     'placeholder' => 'Shoose your category',
                 ],
@@ -66,7 +66,7 @@ class ProduitType extends AbstractType
                     'placeholder' => 'shoose your picture',
                 ],
 
-   
+
             ]);
     }
 

@@ -1,20 +1,3 @@
 knpu_oauth2_client:
     clients:
-        google:
-            # must be "google" - it activates that type!
-            type: google
-            # add and set these environment variables in your .env files
-            client_id: '%env(GOOGLE_ID)%'
-            client_secret: '%env(GOOGLE_SECRET)%'
-            # a route name you'll create
-            redirect_route: connect_google_check
-            redirect_params: {}
-        microsoft:
-            # must be "microsoft" - it activates that type!
-            type: microsoft
-            # add and set these environment variables in your .env files
-            client_id: '%env(MICROSOFT_LIVE_ID)%'
-            client_secret: '%env(MICROSOFT_LIVE_SECRET)%'
-            # a route name you'll create
-            redirect_route: connect_microsoft_check
-            redirect_params: {}
+        # configure your clients as described here: https://github.com/knpuniversity/oauth2-client-bundle#configuration

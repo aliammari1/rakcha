@@ -3,9 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Cinema;
+use App\Entity\Film;
 use App\Entity\Salle;
 use App\Entity\Seance;
-use App\Entity\Film;
 use App\Repository\CinemaRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -86,7 +86,6 @@ class SeanceType extends AbstractType
                 'label' => 'Film'
             ]);
         };
-
 
 
         $builder->get('idCinema')->addEventListener(

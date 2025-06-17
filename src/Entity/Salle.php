@@ -33,22 +33,20 @@ class Salle
         max: 10,
         minMessage: 'The room name must be at least {{ limit }} characters long.',
         maxMessage: 'The room name cannot exceed {{ limit }} characters.'
-    )]      private string $nomSalle;
+    )] private string $nomSalle;
 
-    #[ORM\Column(name: 'id_cinema', type: 'integer',  nullable: false)]
+    #[ORM\Column(name: 'id_cinema', type: 'integer', nullable: false)]
     private int $idCinema;
 
-  
 
-    
     #[ORM\ManyToOne(targetEntity: Cinema::class, inversedBy: "salles")]
-    #[ORM\JoinColumn(name: "id_cinema", referencedColumnName: "id_cinema" , nullable: false, onDelete: "CASCADE")]
+    #[ORM\JoinColumn(name: "id_cinema", referencedColumnName: "id_cinema", nullable: false, onDelete: "CASCADE")]
     private $cinema;
 
     #[ORM\OneToMany(mappedBy: 'salle', targetEntity: Seat::class)]
     private Collection $seats;
-  
-  /**
+
+    /**
      * @return Collection<int, Seat>
      */
     public function getSeats(): Collection
@@ -79,7 +77,6 @@ class Salle
     }
 
 
-
     public function getIdSalle(): ?int
     {
         return $this->idSalle;
@@ -90,16 +87,16 @@ class Salle
         return $this->nbPlaces;
     }
 
-    public function getIdCinema(): ?int
-    {
-        return $this->idCinema;
-    }
-
     public function setNbPlaces(int $nbPlaces): static
     {
         $this->nbPlaces = $nbPlaces;
 
         return $this;
+    }
+
+    public function getIdCinema(): ?int
+    {
+        return $this->idCinema;
     }
 
     public function setIdCinema(int $idCinema): static

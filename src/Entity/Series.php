@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SeriesRepository;
-use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\Categories;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: SeriesRepository::class)]
@@ -185,12 +183,12 @@ class Series
         return $this->idcategorie;
     }
 
-    public function setIdcategorie( ?Categories $idcategorie): static
+    public function setIdcategorie(?Categories $idcategorie): static
     {
         $this->idcategorie = $idcategorie;
 
         return $this;
     }
 
-    
+
 }

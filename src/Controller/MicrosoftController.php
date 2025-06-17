@@ -17,7 +17,7 @@ class MicrosoftController extends AbstractController
             ->getClient('microsoft') // key used in config/packages/knpu_oauth2_client.yaml
             ->redirect([
                 'wl.basic', 'wl.signin', 'wl.birthday',
-                 'wl.emails','wl.phone_numbers', 'wl.postal_addresses'
+                'wl.emails', 'wl.phone_numbers', 'wl.postal_addresses'
             ], []);
     }
 

@@ -1,105 +1,39 @@
 security:
-  # https://symfony.com/doc/current/security/authenticator_manager.html
-  enable_authenticator_manager: true
-  hide_user_not_found: false
-  access_denied_url: /
-  role_hierarchy:
-    ROLE_ADMIN: ["ROLE_USER", "ROLE_ALLOWED_TO_SWITCH"]
-    ROLE_CLIENT: ["ROLE_USER"]
-    ROLE_RESPONSABLE_DE_CINEMA: ["ROLE_USER"]
-  # https://symfony.com/doc/current/security.html#c-hashing-passwords
-  password_hashers:
-    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
-  # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
-  providers:
-    # used to reload user from session & other features (e.g. switch_user)
-    app_user_provider:
-      entity:
-        class: App\Entity\Users
-        property: email
-  firewalls:
-    dev:
-      pattern: ^/(_(profiler|wdt)|css|images|js)/
-      security: false
-    main:
-      lazy: true
-      login_throttling: true
-      two_factor:
-        auth_form_path: 2fa_login
-        check_path: 2fa_login_check
-      provider: app_user_provider
-      entry_point: form_login
-      form_login:
-        login_path: app_login
-        check_path: app_login
-        username_parameter: email
-        password_parameter: password
-        enable_csrf: true
-      custom_authenticator:
-        - App\Security\LoginFormAuthenticator
-        - App\Security\GoogleAuthenticator
-        - App\Security\MicrosoftAuthenticator
-      logout:
-        target: /
-      remember_me:
-        secret: "%kernel.secret%"
-        signature_properties: [password]
-        always_remember_me: true
-      # activate different ways to authenticate
-      # https://symfony.com/doc/current/security.html#the-firewall
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers:
+        users_in_memory: { memory: null }
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: users_in_memory
 
-      # https://symfony.com/doc/current/security/impersonating_user.html
-      switch_user: true
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
 
-  # Easy way to control access for large sections of your site
-  # Note: Only the *first* access control that matches will be used
-  access_control:
-    - { path: ^/login, roles: PUBLIC_ACCESS }
-    - { path: ^/register, roles: PUBLIC_ACCESS }
-    - { path: ^/connect, roles: PUBLIC_ACCESS }
-    - { path: ^/logout, role: PUBLIC_ACCESS }
-    - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
-    - { path: ^/users/profile, roles: ROLE_USER }
-    - { path: ^/usersDash, roles: ROLE_ADMIN }
-    - { path: ^/users, roles: PUBLIC_ACCESS }
-    - { path: ^/cinema/listecinema, roles: ROLE_USER }
-    - { path: ^/cinema/listeCinemaAdmin, roles: ROLE_ADMIN }
-    - { path: ^/cinema/location, roles: ROLE_USER }
-    - { path: ^/cinema/Accept, roles: ROLE_ADMIN }
-    - { path: ^/cinema/reject, roles: ROLE_ADMIN }
-    - { path: ^/cinema, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/commentairecinema, roles: ROLE_USER }
-    - { path: ^/seanceSeats, roles: ROLE_USER }
-    - { path: ^/seance, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/categorie/produit, roles: ROLE_ADMIN }
-    - { path: ^/produit/listeproduit, roles: ROLE_USER }
-    - { path: ^/produit/show, roles: ROLE_USER }
-    - { path: ^/produit, roles: ROLE_ADMIN }
-    - { path: ^/panier/listepanier, roles: ROLE_USER }
-    - { path: ^/panier, roles: ROLE_USER }
-    - { path: ^/listfilms, roles: ROLE_USER }
-    - { path: ^/filShow, roles: ROLE_USER }
-    - { path: ^/filmHome, roles: PUBLIC_ACCESS }
-    - { path: ^/film, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/category, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/actor, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/series/listeSeries, roles: ROLE_USER }
-    - { path: ^/series, roles: ROLE_USER }
-    - { path: ^/episodes/listeEpisodes, roles: ROLE_USER }
-    - { path: ^/episodes/series, roles: ROLE_USER }
-    - { path: ^/episodes, roles: ROLE_USER }
-    - { path: ^/categories, roles: ROLE_USER }
-    - { path: ^/, roles: PUBLIC_ACCESS }
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
-  security:
-    password_hashers:
-      # By default, password hashers are resource intensive and take time. This is
-      # important to generate secure password hashes. In tests however, secure hashes
-      # are not important, waste resources and increase test times. The following
-      # reduces the work factor to the lowest possible values.
-      Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
-        algorithm: auto
-        cost: 4 # Lowest possible value for bcrypt
-        time_cost: 3 # Lowest possible value for argon
-        memory_cost: 10 # Lowest possible value for argon
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

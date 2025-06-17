@@ -26,8 +26,7 @@ class CinemaType extends AbstractType
             ->add('logo', FileType::class, [
                 'label' => 'Choose an image',
                 'required' => true,
-            ])
-        ;
+            ]);
 
         // Ajouter un view transformer pour convertir la chaîne de chemin d'accès en objet SymfonyFile
         $builder->get('logo')->addModelTransformer(new class() implements DataTransformerInterface {
@@ -36,7 +35,7 @@ class CinemaType extends AbstractType
                 // transforme l'objet SymfonyFile en chaîne de chemin d'accès
                 return null;
             }
-        
+
             public function reverseTransform($value)
             {
                 // transforme la chaîne de chemin d'accès en objet SymfonyFile
@@ -50,7 +49,7 @@ class CinemaType extends AbstractType
                         throw new TransformationFailedException(sprintf('An error occurred: %s', $e->getMessage()));
                     }
                 }
-        
+
                 return $value;
             }
         });

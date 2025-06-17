@@ -25,7 +25,7 @@ class FilmType extends AbstractType
             ->add('image', FileType::class, [
                 'label' => 'Image',
                 'mapped' => false,
-                
+
             ])
             ->add('duree', TimeType::class, [
                 'widget' => 'single_text',
@@ -53,8 +53,7 @@ class FilmType extends AbstractType
                 'choice_label' => 'nom',
                 'multiple' => true,
                 'expanded' => true,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

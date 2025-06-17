@@ -71,7 +71,7 @@ class ActorfilmController extends AbstractController
     #[Route('/{idactor}', name: 'app_actorfilm_delete', methods: ['POST'])]
     public function delete(Request $request, Actorfilm $actorfilm, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$actorfilm->getIdactor(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $actorfilm->getIdactor(), $request->request->get('_token'))) {
             $entityManager->remove($actorfilm);
             $entityManager->flush();
         }

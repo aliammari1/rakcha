@@ -97,7 +97,7 @@ class CategoryController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->request->get('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
-            $this->addFlash('categorys','category deleted successfully');
+            $this->addFlash('categorys', 'category deleted successfully');
         }
 
         return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);

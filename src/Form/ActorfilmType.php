@@ -13,8 +13,7 @@ class ActorfilmType extends AbstractType
     {
         $builder
             ->add('idactor')
-            ->add('idfilm')
-        ;
+            ->add('idfilm');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

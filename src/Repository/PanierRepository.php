@@ -5,10 +5,9 @@ namespace App\Repository;
 use App\Entity\Panier;
 use App\Entity\Produit;
 use App\Entity\Users;
-
-
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
 
 /**
  * @extends ServiceEntityRepository<Panier>
@@ -50,7 +49,7 @@ class PanierRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-/**
+    /**
      * Calcule la quantité de produit dans le panier pour un utilisateur donné.
      *
      * @param Produit $produit Le produit pour lequel calculer la quantité dans le panier
@@ -84,17 +83,16 @@ class PanierRepository extends ServiceEntityRepository
             ->andWhere('p.idclient = :user')
             ->groupBy('p.idproduit')
             ->setParameter('user', $user);
-    
+
         $results = $qb->getQuery()->getResult();
-    
+
         $quantitesParProduit = [];
         foreach ($results as $result) {
             $quantitesParProduit[$result['id_produit']] = (int)$result['quantite'];
         }
-    
+
         return $quantitesParProduit;
     }
 
-    
 
 }

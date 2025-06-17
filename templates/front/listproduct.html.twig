@@ -1,707 +1,733 @@
 {% extends 'baseFront.html.twig' %}
 
 {% block pageStyle %}
-	<link href="{{ asset('/css/produit.css') }}" rel="stylesheet">
-
-
-	<style>
-
-
-		.button-card {
-			--width: 40px;
-			--height: 40px;
-			--tooltip-height: 35px;
-			--tooltip-width: 90px;
-			--gap-between-tooltip-to-button: 18px;
-			--button-color: #520f0f;
-			--tooltip-color: #520f0f;
-			width: var(--width);
-			height: var(--height);
-			background: var(--button-color);
-			position: relative;
-			text-align: center;
-			border-radius: 0.5em;
-			font-family: "Arial";
-			border-radius: 50%; /* Rend le bouton en forme de cercle */
-			transition: background 0.7s;
-		}
-
-
-		.button-card::before {
-			position: absolute;
-			content: attr(data-tooltip);
-			width: var(--tooltip-width);
-			height: var(--tooltip-height);
-			background-color: #760404;
-			font-size: 0.9rem;
-			color: #fff;
-			border-radius: 0.25em;
-			line-height: var(--tooltip-height);
-			bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) + 10px);
-			left: calc(50% - var(--tooltip-width) / 2);
-		}
-
-		.button-card::after {
-			position: absolute;
-			content: "";
-			width: 0;
-			height: 0;
-			border: 10px solid transparent;
-			border-top-color: #555;
-			left: calc(50% - 10px);
-			bottom: calc(100% + var(--gap-between-tooltip-to-button) - 10px);
-		}
-
-		.button-card::after,
-		.button-card::before {
-			opacity: 0;
-			visibility: hidden;
-			transition: all 0.5s;
-		}
-
-		.text {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.button-card-wrapper,
-		.text,
-		.icon {
-			overflow: hidden;
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			left: 0;
-			color: #fff;
-		}
-
-		.text {
-			top: 0;
-		}
-
-		.text,
-		.icon {
-			transition: top 0.5s;
-		}
-
-		.icon {
-			color: #fff;
-			top: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.icon svg {
-			width: 24px;
-			height: 24px;
-		}
-
-		.button-card:hover {
-			background: #b30000;
-		}
-
-		.button-card:hover .text {
-			top: -100%;
-		}
-
-		.button-card:hover .icon {
-			top: 0;
-		}
-
-		.button-card:hover:before,
-		.button-card:hover:after {
-			opacity: 1;
-			visibility: visible;
-		}
-
-		.button-card:hover:after {
-			bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) - 20px);
-		}
-
-		.button-card:hover:before {
-			bottom: calc(var(--height) + var(--gap-between-tooltip-to-button));
-		}
-
-		/* Rating */
-
-
-		.rating:not(:checked) > input {
-			position: absolute;
-			appearance: none;
-		}
-
-		.rating:not(:checked) > label {
-			float: right;
-			cursor: pointer;
-			font-size: 18px;
-			color: #666;
-		}
-
-		.rating:not(:checked) > label:before {
-			content: '★';
-		}
-
-		.rating > input:checked + label:hover,
-		.rating > input:checked + label:hover ~ label,
-		.rating > input:checked ~ label:hover,
-		.rating > input:checked ~ label:hover ~ label,
-		.rating > label:hover ~ input:checked ~ label {
-			color: #e58e09;
-		}
-
-		.rating:not(:checked) > label:hover,
-		.rating:not(:checked) > label:hover ~ label {
-			color: #ff9e0b;
-		}
-
-		.rating > input:checked ~ label {
-			color: #ffa723;
-		}
-
-
-		.btn-plus-circle {
-			border-radius: 50%;
-			width: 30px;
-			height: 30px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 0;
-		}
-
-		.btn-plus-circle:hover {
-			background-color: red;
-			color: white;
-		}
-
-		/*heart */
-
-		.heart-container {
-			--heart-color: rgb(200, 0, 20, 20);
-			position: relative;
-			width: 40px;
-			height: 40px;
-			transition: 0.3s;
-
-		}
-
-		.heart-container .checkbox {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			opacity: 0;
-			z-index: 20;
-			cursor: pointer;
-		}
-
-		.heart-container .svg-container {
-			width: 100%;
-			height: 100%;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
-
-		.heart-container .svg-outline,
-		.heart-container .svg-filled {
-			fill: var(--heart-color);
-			position: absolute;
-		}
-
-		.heart-container .svg-filled {
-			animation: keyframes-svg-filled 1s;
-			display: none;
-		}
-
-		.heart-container .svg-celebrate {
-			position: absolute;
-			animation: keyframes-svg-celebrate 0.5s;
-			animation-fill-mode: forwards;
-			display: none;
-			stroke: var(--heart-color);
-			fill: var(--heart-color);
-			stroke-width: 2px;
-		}
-
-		.heart-container .checkbox:checked~.svg-container .svg-filled {
-			display: block
-		}
-
-		.heart-container .checkbox:checked~.svg-container .svg-celebrate {
-			display: block
-		}
-
-		@keyframes keyframes-svg-filled {
-			0% {
-				transform: scale(0);
-			}
-
-			25% {
-				transform: scale(1.2);
-			}
-
-			50% {
-				transform: scale(1);
-				filter: brightness(1.5);
-			}
-		}
-
-		@keyframes keyframes-svg-celebrate {
-			0% {
-				transform: scale(0);
-			}
-
-			50% {
-				opacity: 1;
-				filter: brightness(1.5);
-			}
-
-			100% {
-				transform: scale(1.4);
-				opacity: 0;
-				display: none;
-			}
-		}
-
-		/*card*/
-
-		.cardproduct {
-			width: 350px;
-			height: 420px;
-			padding: 0.8em;
-			background: black;
-			position: relative;
-			overflow: visible;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-			--main-color: #240902;
-			border: 1px solid var(--main-color);
-			box-shadow: 2px 2px var(--main-color);
-			border-radius: 10px;
-
-		}
-
-		.cardproduct-img {
-			background-color: #ffcaa6;
-			height: 50%;
-			width: 100%;
-			border-radius: 0.5rem;
-			transition: 0.3s ease;
-		}
-
-		.cardproduct-info {
-			padding-top: 10%;
-		}
-
-		svg {
-			width: 20px;
-			height: 20px;
-		}
-
-		.cardproduct-footer {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding-top: 10px;
-			border-top: 1px solid #ddd;
-		}
-
-
-		.textproduct-title {
-			font-weight: 900;
-			font-size: 1.2em;
-			line-height: 1.5;
-
-		}
-
-		.textproduct-body {
-			font-size: 0.9em;
-			word-wrap: break-word;
-			overflow: hidden;
-			display: -webkit-box;
-			-webkit-line-clamp: 2; /* Limite le nombre de lignes à 2 */
-			-webkit-box-orient: vertical;
-			text-overflow: ellipsis; /* Affiche des points de suspension pour le texte dépassant de la ligne */
-
-		}
-
-
-		.cardproduct-button {
-			border: 1px solid #252525;
-			display: flex;
-			padding: 0.3em;
-			cursor: pointer;
-			border-radius: 50px;
-			transition: 0.3s ease-in-out;
-		}
-
-
-		.cardproduct-img:hover {
-			transform: translateY(-25%);
-			box-shadow: rgba(226, 196, 63, 0.25) 0 13px 47px -5px, rgba(180, 71, 71, 0.3) 0 8px 16px -8px;
-		}
-
-		.cardproduct-button:hover {
-			border: 1px solid #ffcaa6;
-			background-color: #ffcaa6;
-		}
-	</style>
+    <link href="{{ asset('/css/produit.css') }}" rel="stylesheet">
+
+
+    <style>
+
+
+        .button-card {
+            --width: 40px;
+            --height: 40px;
+            --tooltip-height: 35px;
+            --tooltip-width: 90px;
+            --gap-between-tooltip-to-button: 18px;
+            --button-color: #520f0f;
+            --tooltip-color: #520f0f;
+            width: var(--width);
+            height: var(--height);
+            background: var(--button-color);
+            position: relative;
+            text-align: center;
+            border-radius: 0.5em;
+            font-family: "Arial";
+            border-radius: 50%; /* Rend le bouton en forme de cercle */
+            transition: background 0.7s;
+        }
+
+
+        .button-card::before {
+            position: absolute;
+            content: attr(data-tooltip);
+            width: var(--tooltip-width);
+            height: var(--tooltip-height);
+            background-color: #760404;
+            font-size: 0.9rem;
+            color: #fff;
+            border-radius: 0.25em;
+            line-height: var(--tooltip-height);
+            bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) + 10px);
+            left: calc(50% - var(--tooltip-width) / 2);
+        }
+
+        .button-card::after {
+            position: absolute;
+            content: "";
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-top-color: #555;
+            left: calc(50% - 10px);
+            bottom: calc(100% + var(--gap-between-tooltip-to-button) - 10px);
+        }
+
+        .button-card::after,
+        .button-card::before {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s;
+        }
+
+        .text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-card-wrapper,
+        .text,
+        .icon {
+            overflow: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            color: #fff;
+        }
+
+        .text {
+            top: 0;
+        }
+
+        .text,
+        .icon {
+            transition: top 0.5s;
+        }
+
+        .icon {
+            color: #fff;
+            top: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .button-card:hover {
+            background: #b30000;
+        }
+
+        .button-card:hover .text {
+            top: -100%;
+        }
+
+        .button-card:hover .icon {
+            top: 0;
+        }
+
+        .button-card:hover:before,
+        .button-card:hover:after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .button-card:hover:after {
+            bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) - 20px);
+        }
+
+        .button-card:hover:before {
+            bottom: calc(var(--height) + var(--gap-between-tooltip-to-button));
+        }
+
+        /* Rating */
+
+
+        .rating:not(:checked) > input {
+            position: absolute;
+            appearance: none;
+        }
+
+        .rating:not(:checked) > label {
+            float: right;
+            cursor: pointer;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .rating:not(:checked) > label:before {
+            content: '★';
+        }
+
+        .rating > input:checked + label:hover,
+        .rating > input:checked + label:hover ~ label,
+        .rating > input:checked ~ label:hover,
+        .rating > input:checked ~ label:hover ~ label,
+        .rating > label:hover ~ input:checked ~ label {
+            color: #e58e09;
+        }
+
+        .rating:not(:checked) > label:hover,
+        .rating:not(:checked) > label:hover ~ label {
+            color: #ff9e0b;
+        }
+
+        .rating > input:checked ~ label {
+            color: #ffa723;
+        }
+
+
+        .btn-plus-circle {
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .btn-plus-circle:hover {
+            background-color: red;
+            color: white;
+        }
+
+        /*heart */
+
+        .heart-container {
+            --heart-color: rgb(200, 0, 20, 20);
+            position: relative;
+            width: 40px;
+            height: 40px;
+            transition: 0.3s;
+
+        }
+
+        .heart-container .checkbox {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            z-index: 20;
+            cursor: pointer;
+        }
+
+        .heart-container .svg-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .heart-container .svg-outline,
+        .heart-container .svg-filled {
+            fill: var(--heart-color);
+            position: absolute;
+        }
+
+        .heart-container .svg-filled {
+            animation: keyframes-svg-filled 1s;
+            display: none;
+        }
+
+        .heart-container .svg-celebrate {
+            position: absolute;
+            animation: keyframes-svg-celebrate 0.5s;
+            animation-fill-mode: forwards;
+            display: none;
+            stroke: var(--heart-color);
+            fill: var(--heart-color);
+            stroke-width: 2px;
+        }
+
+        .heart-container .checkbox:checked ~ .svg-container .svg-filled {
+            display: block
+        }
+
+        .heart-container .checkbox:checked ~ .svg-container .svg-celebrate {
+            display: block
+        }
+
+        @keyframes keyframes-svg-filled {
+            0% {
+                transform: scale(0);
+            }
+
+            25% {
+                transform: scale(1.2);
+            }
+
+            50% {
+                transform: scale(1);
+                filter: brightness(1.5);
+            }
+        }
+
+        @keyframes keyframes-svg-celebrate {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 1;
+                filter: brightness(1.5);
+            }
+
+            100% {
+                transform: scale(1.4);
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        /*card*/
+
+        .cardproduct {
+            width: 350px;
+            height: 420px;
+            padding: 0.8em;
+            background: black;
+            position: relative;
+            overflow: visible;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            --main-color: #240902;
+            border: 1px solid var(--main-color);
+            box-shadow: 2px 2px var(--main-color);
+            border-radius: 10px;
+
+        }
+
+        .cardproduct-img {
+            background-color: #ffcaa6;
+            height: 50%;
+            width: 100%;
+            border-radius: 0.5rem;
+            transition: 0.3s ease;
+        }
+
+        .cardproduct-info {
+            padding-top: 10%;
+        }
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .cardproduct-footer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+
+        .textproduct-title {
+            font-weight: 900;
+            font-size: 1.2em;
+            line-height: 1.5;
+
+        }
+
+        .textproduct-body {
+            font-size: 0.9em;
+            word-wrap: break-word;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Limite le nombre de lignes à 2 */
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis; /* Affiche des points de suspension pour le texte dépassant de la ligne */
+
+        }
+
+
+        .cardproduct-button {
+            border: 1px solid #252525;
+            display: flex;
+            padding: 0.3em;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: 0.3s ease-in-out;
+        }
+
+
+        .cardproduct-img:hover {
+            transform: translateY(-25%);
+            box-shadow: rgba(226, 196, 63, 0.25) 0 13px 47px -5px, rgba(180, 71, 71, 0.3) 0 8px 16px -8px;
+        }
+
+        .cardproduct-button:hover {
+            border: 1px solid #ffcaa6;
+            background-color: #ffcaa6;
+        }
+    </style>
 
 {% endblock %}
 
 
 {% block body %}
-	<body>
+    <body>
 
-		{{ block("header") }}
-
-
-		<section id="center" class="center_o pt-2 pb-2">
-			<div class="container-xl">
-				<div class="row center_o1">
-					<div class="col-md-5">
-						<div class="center_o1l">
-							<h2 class="mb-0">Products</h2>
-						</div>
-					</div>
-					<div class="col-md-7">
-						<div class="center_o1r text-end">
-							<h6 class="mb-0 col_red">
-
-								<a href="{{ path('app_produit_liste')}}">home</a>
-								<a href="{{ path('app_produit_liste')}}">home</a>
+    {{ block("header") }}
 
 
-								<span class="me-2 ms-2 text-light">
+    <section id="center" class="center_o pt-2 pb-2">
+        <div class="container-xl">
+            <div class="row center_o1">
+                <div class="col-md-5">
+                    <div class="center_o1l">
+                        <h2 class="mb-0">Products</h2>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="center_o1r text-end">
+                        <h6 class="mb-0 col_red">
+
+                            <a href="{{ path('app_produit_liste') }}">home</a>
+                            <a href="{{ path('app_produit_liste') }}">home</a>
+
+
+                            <span class="me-2 ms-2 text-light">
 									<i class="fa fa-caret-right align-middle"></i>
 								</span>
-								Products
-							</h6>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+                            Products
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-		<section id="about_pg">
-			<div class="about_pgm">
-				<div class="container-xl">
-					<div class="row about_pg1">
-						<div class="col-md-12">
-							<h2></h2>
-							<p class="mt-3 w-50">Cinéphile products cater to the passionate movie enthusiast, offering a diverse range of items designed to enhance the movie-watching experience. These products often include collectibles such as limited edition DVDs or Blu-rays, movie posters, and memorabilia featuring iconic scenes or characters from beloved films. Additionally, cinéphile products may extend to sophisticated home theater systems, comfortable seating arrangements, and ambient lighting solutions to recreate the immersive atmosphere of a cinema in the comfort of one's home. For the avid cinephile, these products serve as more than just possessions; they symbolize a deep appreciation for the art of filmmaking and a desire to surround oneself with the magic of cinema.</p>
-							<h6 class="mb-0">
-								<a class="button" href="#">Learn More</a>
-							</h6>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<div id="liveAlertPlaceholder"></div>
+    <section id="about_pg">
+        <div class="about_pgm">
+            <div class="container-xl">
+                <div class="row about_pg1">
+                    <div class="col-md-12">
+                        <h2></h2>
+                        <p class="mt-3 w-50">Cinéphile products cater to the passionate movie enthusiast, offering a
+                            diverse range of items designed to enhance the movie-watching experience. These products
+                            often include collectibles such as limited edition DVDs or Blu-rays, movie posters, and
+                            memorabilia featuring iconic scenes or characters from beloved films. Additionally,
+                            cinéphile products may extend to sophisticated home theater systems, comfortable seating
+                            arrangements, and ambient lighting solutions to recreate the immersive atmosphere of a
+                            cinema in the comfort of one's home. For the avid cinephile, these products serve as more
+                            than just possessions; they symbolize a deep appreciation for the art of filmmaking and a
+                            desire to surround oneself with the magic of cinema.</p>
+                        <h6 class="mb-0">
+                            <a class="button" href="#">Learn More</a>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="liveAlertPlaceholder"></div>
 
 
-		<section id="trend" class="pt-4 pb-5">
-			<div class="container">
-				<div
-					class="row">
-					<!-- Bloc de menu des catégories -->
-					<div class="col-md-4">
-						<div class="blog_1r">
-							<div class="blog_1r1 p-4">
-								<h4>Products
-									<span class="col_red">Menu</span>
-								</h4>
-								<hr class="line mb-4">
-								{% for categorie, nombreProduits in nombreProduitsParCategorie %}
-									<h6>
-										<i class="fa fa-chevron-right me-1 col_red font_12"></i>
-										{{ categorie }}
-										<span class="pull-right">({{ nombreProduits }})</span>
-									</h6>
-									<hr>
-								{% endfor %}
+    <section id="trend" class="pt-4 pb-5">
+        <div class="container">
+            <div
+                    class="row">
+                <!-- Bloc de menu des catégories -->
+                <div class="col-md-4">
+                    <div class="blog_1r">
+                        <div class="blog_1r1 p-4">
+                            <h4>Products
+                                <span class="col_red">Menu</span>
+                            </h4>
+                            <hr class="line mb-4">
+                            {% for categorie, nombreProduits in nombreProduitsParCategorie %}
+                                <h6>
+                                    <i class="fa fa-chevron-right me-1 col_red font_12"></i>
+                                    {{ categorie }}
+                                    <span class="pull-right">({{ nombreProduits }})</span>
+                                </h6>
+                                <hr>
+                            {% endfor %}
 
-							</div>
+                        </div>
 
-							<div class="blog_1r1 p-4 mt-4">
-								<h4>Price</h4>
-								<div class="mb-3">
-									<label for="priceRange" class="form-label">Price Range:</label>
-									<input
-									type="range" class="form-range" min="0" max="{{ maxPrice }}" id="priceRange" name="priceRange">
-									<!-- Affichage dynamique du prix min -->
-									<div class="d-flex justify-content-between mt-2">
-										<span id="minPriceDisplay">0 DT</span>
-										<span id="maxPriceDisplay">{{ maxPrice }}
+                        <div class="blog_1r1 p-4 mt-4">
+                            <h4>Price</h4>
+                            <div class="mb-3">
+                                <label for="priceRange" class="form-label">Price Range:</label>
+                                <input
+                                        type="range" class="form-range" min="0" max="{{ maxPrice }}" id="priceRange"
+                                        name="priceRange">
+                                <!-- Affichage dynamique du prix min -->
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span id="minPriceDisplay">0 DT</span>
+                                    <span id="maxPriceDisplay">{{ maxPrice }}
 											DT</span>
-									</div>
-								</div>
-							</div>
+                                </div>
+                            </div>
+                        </div>
 
-						</div>
-					</div>
+                    </div>
+                </div>
 
-					<!-- Section des produits -->
-					<div class="col-md-8">
-						<section
-							class="pt-4 pb-4 bg_black">
-							<!-- Champ de recherche -->
-							<input type="text" id="search-input" placeholder="Search Product">
-						</section>
+                <!-- Section des produits -->
+                <div class="col-md-8">
+                    <section
+                            class="pt-4 pb-4 bg_black">
+                        <!-- Champ de recherche -->
+                        <input type="text" id="search-input" placeholder="Search Product">
+                    </section>
 
 
-						<div class="row trend_2 mt-4">
-							<div class="carousel-inner">
-								<div id="productContainer" class="row m-6">
-									{% set i = 0  %}
+                    <div class="row trend_2 mt-4">
+                        <div class="carousel-inner">
+                            <div id="productContainer" class="row m-6">
+                                {% set i = 0 %}
 
-									{% for chunk in produit|batch(2) %}
-										{% for pro in chunk %}
-											<div class="col-md-6 mb-4">
-												<div class="cardproduct" data-name={{ pro.nom|lower }}>
+                                {% for chunk in produit|batch(2) %}
+                                    {% for pro in chunk %}
+                                        <div class="col-md-6 mb-4">
+                                            <div class="cardproduct" data-name={{ pro.nom|lower }}>
 
-													<a href="{{ path('app_produit_show', {'idProduit': pro.idProduit}) }}"><img class="cardproduct-img" src="{{ asset(pro.image) }}"></a>
-													<div class="cardproduct-info">
-														<div
-															class="d-flex justify-content-between">
-															<!-- Utilisez display: flex pour mettre les éléments sur la même ligne -->
-															<p class="textproduct-title" style="color: #A7001E">{{ pro.nom }}</p>
+                                                <a href="{{ path('app_produit_show', {'idProduit': pro.idProduit}) }}"><img
+                                                            class="cardproduct-img" src="{{ asset(pro.image) }}"></a>
+                                                <div class="cardproduct-info">
+                                                    <div
+                                                            class="d-flex justify-content-between">
+                                                        <!-- Utilisez display: flex pour mettre les éléments sur la même ligne -->
+                                                        <p class="textproduct-title"
+                                                           style="color: #A7001E">{{ pro.nom }}</p>
 
-															<div
-																class="rating">
-																<!-- Déplacez le code HTML du rating ici -->
-																<input value="5" name="rate" id="star5" type="radio">
-																<label title="text" for="star5"></label>
-																<input value="4" name="rate" id="star4" type="radio">
-																<label title="text" for="star4"></label>
-																<input value="3" name="rate" id="star3" type="radio">
-																<label title="text" for="star3"></label>
-																<input value="2" name="rate" id="star2" type="radio">
-																<label title="text" for="star2"></label>
-																<input value="1" name="rate" id="star1" type="radio">
-																<label title="text" for="star1"></label>
-															</div>
-														</div>
-														<p class="textproduct-body">{{ pro.description }}</p>
-													</div>
-													<div class="cardproduct-footer">
+                                                        <div
+                                                                class="rating">
+                                                            <!-- Déplacez le code HTML du rating ici -->
+                                                            <input value="5" name="rate" id="star5" type="radio">
+                                                            <label title="text" for="star5"></label>
+                                                            <input value="4" name="rate" id="star4" type="radio">
+                                                            <label title="text" for="star4"></label>
+                                                            <input value="3" name="rate" id="star3" type="radio">
+                                                            <label title="text" for="star3"></label>
+                                                            <input value="2" name="rate" id="star2" type="radio">
+                                                            <label title="text" for="star2"></label>
+                                                            <input value="1" name="rate" id="star1" type="radio">
+                                                            <label title="text" for="star1"></label>
+                                                        </div>
+                                                    </div>
+                                                    <p class="textproduct-body">{{ pro.description }}</p>
+                                                </div>
+                                                <div class="cardproduct-footer">
 														<span class="textproduct-title">{{ pro.prix }}
 															DT</span>
 
-														<!-- Button trigger modal -->
-														{% set i = i + 1 %}
+                                                    <!-- Button trigger modal -->
+                                                    {% set i = i + 1 %}
 
-														<div class="button-card " data-bs-toggle="modal" data-bs-target="#exampleModal{{i}}" data-tooltip=" Price {{pro.prix}} DT ">
-															<div class="button-card-wrapper">
-																<div class="text">
+                                                    <div class="button-card " data-bs-toggle="modal"
+                                                         data-bs-target="#exampleModal{{ i }}"
+                                                         data-tooltip=" Price {{ pro.prix }} DT ">
+                                                        <div class="button-card-wrapper">
+                                                            <div class="text">
 																	<span class="">
-																		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewbox="0 0 16 16">
+																		<svg xmlns="http://www.w3.org/2000/svg"
+                                                                             width="16" height="16" fill="currentColor"
+                                                                             class="bi bi-cart2" viewbox="0 0 16 16">
 
 																			<path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"></path>
 																		</svg>
 																	</span>
-																</div>
-																<span class="icon">
-																	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart2" viewbox="0 0 16 16">
+                                                            </div>
+                                                            <span class="icon">
+																	<svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                         height="16" fill="currentColor"
+                                                                         class="bi bi-cart2" viewbox="0 0 16 16">
 
 																		<path d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"></path>
 																	</svg>
 																</span>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-											<!-- Modal -->
-											<div class="modal fade" id="exampleModal{{i}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-												<div class="modal-dialog">
-													<div class="modal-content" style="background-color: #191a1d;">
-														<div class="modal-header">
-															<h5 class="modal-title fs-5" id="exampleModalLabel" style="color: red;">{{ pro.nom }}</h5>
-															<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color:white;"></button>
-														</div>
-														<div class="modal-body">
-															<div class="row">
-																<div class="col-md-6">
-																	<img src="{{ asset(pro.image) }}" height="200" width="200" alt="Product Image">
-																</div>
-																<div class="col-md-6">
-																	<p style="color: white; font-size: 15px;word-wrap: break-word;overflow: hidden;">{{ pro.description }}</p>
-																	<p class="product-price" style="color: red;font-family: Arial;font-size: 20px;">{{ pro.prix }}
-																		DT</p>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal{{ i }}" tabindex="-1"
+                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content" style="background-color: #191a1d;">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title fs-5" id="exampleModalLabel"
+                                                            style="color: red;">{{ pro.nom }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close" style="color:white;"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <img src="{{ asset(pro.image) }}" height="200"
+                                                                     width="200" alt="Product Image">
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <p style="color: white; font-size: 15px;word-wrap: break-word;overflow: hidden;">{{ pro.description }}</p>
+                                                                <p class="product-price"
+                                                                   style="color: red;font-family: Arial;font-size: 20px;">{{ pro.prix }}
+                                                                    DT</p>
 
-																</div>
-															</div>
-														</div>
-														<div class="modal-footer">
-															<form action="{{ path('panier_add', { 'idProduit': pro.idProduit }) }}" method="post" onsubmit="return checkQuantity()">
-																<input
-																type="hidden" name="quantite" value="1">
-																<!-- Valeur de la quantité fixée à 1 -->
-																<button type="submit" class="btn btn-primary" data-quantite="{{ pro.quantiteP }}" data-quantite-panier="" style="background: #520f0f; border-color: red;">Add To Cart</button>
-															</form>
-														</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <form action="{{ path('panier_add', { 'idProduit': pro.idProduit }) }}"
+                                                              method="post" onsubmit="return checkQuantity()">
+                                                            <input
+                                                                    type="hidden" name="quantite" value="1">
+                                                            <!-- Valeur de la quantité fixée à 1 -->
+                                                            <button type="submit" class="btn btn-primary"
+                                                                    data-quantite="{{ pro.quantiteP }}"
+                                                                    data-quantite-panier=""
+                                                                    style="background: #520f0f; border-color: red;">Add
+                                                                To Cart
+                                                            </button>
+                                                        </form>
+                                                    </div>
 
-													</div>
-												</div>
-											</div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-										{% endfor %}
-									{% endfor %}
-								</div>
-							</div>
-						</div>
-					</div>
+                                    {% endfor %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				</section>
-
-
-				{{ block("footer") }}
-
-
-			 <script>
-						function showAlert(message) {
-						// Créer un nouvel élément div pour l'alerte
-						var alertDiv = document.createElement('div');
-						alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
-						alertDiv.setAttribute('role', 'alert');
-						
-						// Ajouter le message à l'alerte
-						alertDiv.innerHTML = '<strong>Attention !</strong> ' + message;
-						
-						// Créer le bouton de fermeture de l'alerte
-						var closeButton = document.createElement('button');
-						closeButton.setAttribute('type', 'button');
-						closeButton.classList.add('btn-close');
-						closeButton.setAttribute('data-bs-dismiss', 'alert');
-						closeButton.setAttribute('aria-label', 'Close');
-						
-						// Ajouter le bouton de fermeture à l'alerte
-						alertDiv.appendChild(closeButton);
-						
-						// Ajouter l'alerte au placeholder
-						var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-						alertPlaceholder.innerHTML = ''; // Nettoyer le placeholder avant d'ajouter une nouvelle alerte
-						alertPlaceholder.appendChild(alertDiv);
-						}
-						
-						
-						/// Empêcher la soumission du formulaire par défaut
-						document.getElementById('myForm').addEventListener('submit', function(event) {
-						event.preventDefault(); // Empêcher la soumission du formulaire par défaut
-						
-						// Récupérer la quantité demandée dans le formulaire
-						var quantiteDemandee = parseInt(document.getElementById('quantite').value);
-						
-						// Récupérer la quantité disponible du produit
-						var quantiteP = parseInt(document.querySelector('.btn-primary').getAttribute('data-quantite'));
-						
-						// Récupérer la quantité dans le panier du produit
-						var quantiteDansPanier = parseInt(document.querySelector('.btn-primary').getAttribute('data-quantite-panier'));
-						
-						// Calculer la quantité totale du produit (quantité disponible + quantité dans le panier)
-						var quantiteTotale = quantiteP + quantiteDansPanier;
-						
-						// Comparer la quantité demandée avec la quantité totale disponible
-						if (quantiteTotale < quantiteDemandee || quantiteTotale < 0) {
-						// Afficher une alerte si la quantité demandée est invalide
-						showAlert('Stock insuffisant.');
-						} else {
-						// Envoyer la requête AJAX si la quantité est valide
-						addToPanier();
-						}
-						});
-						
-						
-						
-						
-						</script>
+    </section>
 
 
-				 <script>
-								window.onscroll = function () {
-								myFunction()
-								};
-								
-								var navbar_sticky = document.getElementById("navbar_sticky");
-								var sticky = navbar_sticky.offsetTop;
-								var navbar_height = document.querySelector('.navbar').offsetHeight;
-								
-								function myFunction() {
-								if (window.pageYOffset >= sticky + navbar_height) {
-								navbar_sticky.classList.add("sticky")
-								document.body.style.paddingTop = navbar_height + 'px';
-								} else {
-								navbar_sticky.classList.remove("sticky");
-								document.body.style.paddingTop = '0'
-								}
-								}
-								</script>
+    {{ block("footer") }}
 
 
-				 <script>
-								
-								// Fonction de recherche
-								document.getElementById('search-input').addEventListener('input', function() {
-								var searchText = this.value.toLowerCase();
-								var cards = document.querySelectorAll('.cardproduct');
-								
-								cards.forEach(function(cardproduct) {
-								var productName = cardproduct.dataset.name;
-								if (productName.includes(searchText)) {
-								cardproduct.style.display = 'block';
-								} else {
-								cardproduct.style.display = 'none';
-								}
-								});
-								});
-								
-								</script>
+    <script>
+        function showAlert(message) {
+            // Créer un nouvel élément div pour l'alerte
+            var alertDiv = document.createElement('div');
+            alertDiv.classList.add('alert', 'alert-danger', 'alert-dismissible', 'fade', 'show');
+            alertDiv.setAttribute('role', 'alert');
 
-				 <script>
-								document.getElementById('priceRange').addEventListener('input', function () {
-								var minPrice = document.getElementById('priceRange').value;
-								var maxPrice = {{ maxPrice }}; 
-								var url = "{{ path('product_filter') }}" + "?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
-								
-								fetch(url)
-								.then(response => response.json())
-								.then(data => updateProductView(data.produits))
-								.catch(error => console.error('Error fetching product list:', error));
-								});
-								
-								function updateProductView(produits) {
-								var productContainer = document.getElementById('productContainer');
-								productContainer.innerHTML = '';
-								
-								produits.forEach(function (pro) {
-								var productHtml = '<div class="col-md-6 mb-4">' +
-								'<div class="trend_2im clearfix position-relative">' +
-								'<div class="trend_2im1 clearfix">' +
-								'<div class="grid">' +
-								'<figure class="effect-jazz mb-0">' +
-								'<a href="#"><img src="' + pro.image + '" height="200" width="320"></a>' +
-								'</figure>' +
-								'</div>' +
-								'</div>' +
-								'</div>' +
-								'<div class="trend_2ilast bg_grey p-3 clearfix" style="height: 250px">' +
-								'<h5><a class="col_red" href="#">' + pro.nom + '</a></h5>' +
-								'<p class=" " style=" font-size: 15px;font-family: Arial, sans-serif;word-wrap: break-word;overflow: hidden;text-overflow: ellipsis; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">' + pro.description + '</p>' +
-								'<span class="col_red"><p class="">' + pro.prix + ' DT</p></span>' +
-								'<a href="#" class="btn btn-primary">Order</a>' +
-								'</div>' +
-								'</div>';
-								
-								productContainer.innerHTML += productHtml;
-								});
-								}
-								</script>
+            // Ajouter le message à l'alerte
+            alertDiv.innerHTML = '<strong>Attention !</strong> ' + message;
+
+            // Créer le bouton de fermeture de l'alerte
+            var closeButton = document.createElement('button');
+            closeButton.setAttribute('type', 'button');
+            closeButton.classList.add('btn-close');
+            closeButton.setAttribute('data-bs-dismiss', 'alert');
+            closeButton.setAttribute('aria-label', 'Close');
+
+            // Ajouter le bouton de fermeture à l'alerte
+            alertDiv.appendChild(closeButton);
+
+            // Ajouter l'alerte au placeholder
+            var alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+            alertPlaceholder.innerHTML = ''; // Nettoyer le placeholder avant d'ajouter une nouvelle alerte
+            alertPlaceholder.appendChild(alertDiv);
+        }
 
 
-			</body>
-		{% endblock %}
+        /// Empêcher la soumission du formulaire par défaut
+        document.getElementById('myForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Empêcher la soumission du formulaire par défaut
+
+            // Récupérer la quantité demandée dans le formulaire
+            var quantiteDemandee = parseInt(document.getElementById('quantite').value);
+
+            // Récupérer la quantité disponible du produit
+            var quantiteP = parseInt(document.querySelector('.btn-primary').getAttribute('data-quantite'));
+
+            // Récupérer la quantité dans le panier du produit
+            var quantiteDansPanier = parseInt(document.querySelector('.btn-primary').getAttribute('data-quantite-panier'));
+
+            // Calculer la quantité totale du produit (quantité disponible + quantité dans le panier)
+            var quantiteTotale = quantiteP + quantiteDansPanier;
+
+            // Comparer la quantité demandée avec la quantité totale disponible
+            if (quantiteTotale < quantiteDemandee || quantiteTotale < 0) {
+                // Afficher une alerte si la quantité demandée est invalide
+                showAlert('Stock insuffisant.');
+            } else {
+                // Envoyer la requête AJAX si la quantité est valide
+                addToPanier();
+            }
+        });
+
+
+    </script>
+
+
+    <script>
+        window.onscroll = function () {
+            myFunction()
+        };
+
+        var navbar_sticky = document.getElementById("navbar_sticky");
+        var sticky = navbar_sticky.offsetTop;
+        var navbar_height = document.querySelector('.navbar').offsetHeight;
+
+        function myFunction() {
+            if (window.pageYOffset >= sticky + navbar_height) {
+                navbar_sticky.classList.add("sticky")
+                document.body.style.paddingTop = navbar_height + 'px';
+            } else {
+                navbar_sticky.classList.remove("sticky");
+                document.body.style.paddingTop = '0'
+            }
+        }
+    </script>
+
+
+    <script>
+
+        // Fonction de recherche
+        document.getElementById('search-input').addEventListener('input', function () {
+            var searchText = this.value.toLowerCase();
+            var cards = document.querySelectorAll('.cardproduct');
+
+            cards.forEach(function (cardproduct) {
+                var productName = cardproduct.dataset.name;
+                if (productName.includes(searchText)) {
+                    cardproduct.style.display = 'block';
+                } else {
+                    cardproduct.style.display = 'none';
+                }
+            });
+        });
+
+    </script>
+
+    <script>
+        document.getElementById('priceRange').addEventListener('input', function () {
+            var minPrice = document.getElementById('priceRange').value;
+            var maxPrice = {{ maxPrice }};
+            var url = "{{ path('product_filter') }}" + "?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => updateProductView(data.produits))
+                .catch(error => console.error('Error fetching product list:', error));
+        });
+
+        function updateProductView(produits) {
+            var productContainer = document.getElementById('productContainer');
+            productContainer.innerHTML = '';
+
+            produits.forEach(function (pro) {
+                var productHtml = '<div class="col-md-6 mb-4">' +
+                    '<div class="trend_2im clearfix position-relative">' +
+                    '<div class="trend_2im1 clearfix">' +
+                    '<div class="grid">' +
+                    '<figure class="effect-jazz mb-0">' +
+                    '<a href="#"><img src="' + pro.image + '" height="200" width="320"></a>' +
+                    '</figure>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="trend_2ilast bg_grey p-3 clearfix" style="height: 250px">' +
+                    '<h5><a class="col_red" href="#">' + pro.nom + '</a></h5>' +
+                    '<p class=" " style=" font-size: 15px;font-family: Arial, sans-serif;word-wrap: break-word;overflow: hidden;text-overflow: ellipsis; display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;">' + pro.description + '</p>' +
+                    '<span class="col_red"><p class="">' + pro.prix + ' DT</p></span>' +
+                    '<a href="#" class="btn btn-primary">Order</a>' +
+                    '</div>' +
+                    '</div>';
+
+                productContainer.innerHTML += productHtml;
+            });
+        }
+    </script>
+
+
+    </body>
+{% endblock %}

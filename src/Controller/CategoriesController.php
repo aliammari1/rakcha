@@ -6,9 +6,8 @@ use App\Entity\Categories;
 use App\Form\CategoriesType;
 use App\Repository\CategoriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -81,7 +80,7 @@ class CategoriesController extends AbstractController
     #[Route('/{idcategorie}', name: 'app_categories_delete', methods: ['POST'])]
     public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$category->getIdcategorie(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $category->getIdcategorie(), $request->request->get('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
         }

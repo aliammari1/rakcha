@@ -20,8 +20,7 @@ class ActorType extends AbstractType
                 'mapped' => false,
                 'required' => false,
             ])
-            ->add('biographie',TextareaType::class)
-        ;
+            ->add('biographie', TextareaType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

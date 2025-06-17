@@ -14,8 +14,7 @@ class FilmcomentType extends AbstractType
         $builder
             ->add('comment')
             ->add('userId')
-            ->add('filmId')
-        ;
+            ->add('filmId');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

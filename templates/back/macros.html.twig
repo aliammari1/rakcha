@@ -1,58 +1,58 @@
 {% macro render_modal_form(modalForm,actionPath,formModalTitle) %}
-	<div class="modal-content">
-		{{ form_start(modalForm, {'action': actionPath,'attr': {'novalidate': 'novalidate'}}) }}
-		<div class="modal-header">
-			<h5 class="modal-title" id="staticBackdropLabel">{{ formModalTitle}}</h5>
-			<button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-		</div>
-		<div class="modal-body">*
-			{% for field in modalForm %}
-				<div class=" {% if field.vars.name != '_token' %} mb-3 {% endif %} {% if field.vars.name == 'agreeTerms' %} form-check {% endif %}">
-					{% if  field.vars.name != '_token'  %}
-						{{ form_label(field, field.vars.label , {'label_attr': {'class':'col-form-label'}}) }}
-					{% endif %}
-					{{ form_widget(field, {'attr': {'class':field.vars.name == 'agreeTerms' ? 'form-check-input' : 'form-control'}}) }}
-					{{ form_errors(field) }}
-				</div>
-			{% endfor %}
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-			<button class="btn btn-primary" type="submit">{{ button_label|default('Save') }}</button>
-		</div>
-		{{ form_end(modalForm) }}
-	</div>
+    <div class="modal-content">
+        {{ form_start(modalForm, {'action': actionPath,'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">{{ formModalTitle }}</h5>
+            <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+        </div>
+        <div class="modal-body">*
+            {% for field in modalForm %}
+                <div class=" {% if field.vars.name != '_token' %} mb-3 {% endif %} {% if field.vars.name == 'agreeTerms' %} form-check {% endif %}">
+                    {% if  field.vars.name != '_token' %}
+                        {{ form_label(field, field.vars.label , {'label_attr': {'class':'col-form-label'}}) }}
+                    {% endif %}
+                    {{ form_widget(field, {'attr': {'class':field.vars.name == 'agreeTerms' ? 'form-check-input' : 'form-control'}}) }}
+                    {{ form_errors(field) }}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+            <button class="btn btn-primary" type="submit">{{ button_label|default('Save') }}</button>
+        </div>
+        {{ form_end(modalForm) }}
+    </div>
 {% endmacro %}
 
 
 {% macro display_notifications_noty(errorType,flashBag) %}
-	{% for flash in flashBag %}
-		<script>
-			new Noty({
-type: '{{ errorType }}',
-layout: 'topRight',
-text: '{{ flash }}',
-theme: 'sunset',
-timeout: 5000
-}).show();
-		</script>
-	{% endfor %}
+    {% for flash in flashBag %}
+        <script>
+            new Noty({
+                type: '{{ errorType }}',
+                layout: 'topRight',
+                text: '{{ flash }}',
+                theme: 'sunset',
+                timeout: 5000
+            }).show();
+        </script>
+    {% endfor %}
 {% endmacro %}
 
 {% macro display_form_notifications_noty(form) %}
-	{% for field in form %}
-		{% if field.vars.errors|length > 0 %}
+    {% for field in form %}
+        {% if field.vars.errors|length > 0 %}
             {% for flash in field.vars.errors %}
                 <script>
                     new Noty({
-        type: 'error',
-        layout: 'topRight',
-        text: '{{ flash.message }}',
-        theme: 'sunset',
-        timeout: 5000
-        }).show();
+                        type: 'error',
+                        layout: 'topRight',
+                        text: '{{ flash.message }}',
+                        theme: 'sunset',
+                        timeout: 5000
+                    }).show();
                 </script>
-            {% endfor %}            
-		{% endif %}
-	{% endfor %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
 {% endmacro %}

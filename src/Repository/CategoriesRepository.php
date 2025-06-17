@@ -49,5 +49,4 @@ class CategoriesRepository extends ServiceEntityRepository
 // Dans votre méthode ou service
 
 
-
 }

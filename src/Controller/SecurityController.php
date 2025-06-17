@@ -8,12 +8,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Totp\TotpAuthenticatorInterface;
 use Scheb\TwoFactorBundle\Security\TwoFactor\QrCode\QrCodeGenerator;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
 
@@ -27,8 +27,8 @@ class SecurityController extends AbstractController
     }
 
     #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils,UsersRepository $usersRepository,Request $request): Response
-    {        
+    public function login(AuthenticationUtils $authenticationUtils, UsersRepository $usersRepository, Request $request): Response
+    {
         $email = $request->query->get('email');
         $password = $request->query->get('password');
 
@@ -41,8 +41,8 @@ class SecurityController extends AbstractController
 
                 return $this->redirectToRoute('app_home_index');
             }
-            $user = $usersRepository->findOneBy(['email' => $email,'password' => $password]);
-            if($user) {
+            $user = $usersRepository->findOneBy(['email' => $email, 'password' => $password]);
+            if ($user) {
                 $token = new PostAuthenticationToken($user, 'main', $user->getRoles());
                 $this->get('security.token_storage')->setToken($token);
                 $this->get('session')->set('_security_main', serialize($token));

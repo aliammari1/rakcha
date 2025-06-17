@@ -13,41 +13,40 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-
 #[Route('/cinema')]
 class CinemaController extends AbstractController
 {
     #[Route('/', name: 'app_cinema_index', methods: ['GET', 'POST'])]
     public function index(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
-{
-    // Get the currently logged-in user
-    $user = $this->getUser()->getId();
-    
-    // Fetch cinemas where the responsible ID matches the ID of the current user
-    $userCinemas = $cinemaRepository->findBy(['responsable' => $user]);
-    
-    // Create form for adding a new cinema
-    $form = $this->createForm(CinemaType::class, new Cinema());
-    
-    // Create forms for updating existing cinemas
-    $updateForms = [];
-    foreach ($userCinemas as $cinema) {
-        $updateForms[] = $this->createForm(CinemaType::class, $cinema)->createView();
+    {
+        // Get the currently logged-in user
+        $user = $this->getUser()->getId();
+
+        // Fetch cinemas where the responsible ID matches the ID of the current user
+        $userCinemas = $cinemaRepository->findBy(['responsable' => $user]);
+
+        // Create form for adding a new cinema
+        $form = $this->createForm(CinemaType::class, new Cinema());
+
+        // Create forms for updating existing cinemas
+        $updateForms = [];
+        foreach ($userCinemas as $cinema) {
+            $updateForms[] = $this->createForm(CinemaType::class, $cinema)->createView();
+        }
+
+        // Handle errors (if any)
+        if (!empty($errors)) {
+            // Afficher une alerte avec l'erreur
+            $errorMessage = $errors[0]->getMessage();
+            $this->addFlash('error', $errorMessage);
+        }
+
+        return $this->render('back/CinemasTable.html.twig', [
+            'cinemas' => $userCinemas,
+            'form' => $form->createView(),
+            'updateForms' => $updateForms,
+        ]);
     }
-    
-    // Handle errors (if any)
-    if (!empty($errors)) {
-        // Afficher une alerte avec l'erreur
-        $errorMessage = $errors[0]->getMessage();
-        $this->addFlash('error', $errorMessage);
-    }
-    
-    return $this->render('back/CinemasTable.html.twig', [
-        'cinemas' => $userCinemas,
-        'form' => $form->createView(),
-        'updateForms' => $updateForms,
-    ]);
-}
 
 
     #[Route('/location/{idCinema}', name: 'app_cinema_location', methods: ['GET', 'POST'])]
@@ -81,7 +80,6 @@ class CinemaController extends AbstractController
         }
 
 
-
         if (!empty($errors)) {
             $errorMessage = $errors[0]->getMessage();
             $this->addFlash('error', $errorMessage);
@@ -103,9 +101,8 @@ class CinemaController extends AbstractController
     }
 
 
-
     #[Route('/new', name: 'app_cinema_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,CinemaRepository $cinemaRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository): Response
     {
 
         $cinema = new Cinema();

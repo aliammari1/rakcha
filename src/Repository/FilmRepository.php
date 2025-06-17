@@ -5,8 +5,8 @@ namespace App\Repository;
 use App\Entity\Film;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 
 /**
@@ -21,6 +21,7 @@ class FilmRepository extends ServiceEntityRepository
 {
     private $client;
     private $serializer;
+
     public function __construct(ManagerRegistry $registry, HttpClientInterface $client, SerializerInterface $serializer)
     {
         parent::__construct($registry, Film::class);

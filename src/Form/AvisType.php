@@ -15,8 +15,7 @@ class AvisType extends AbstractType
             ->add('note')
             ->add('avis')
             ->add('idusers')
-            ->add('idProduit')
-        ;
+            ->add('idProduit');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -50,8 +50,7 @@ class SalleController extends AbstractController
     }
 
     #[Route('/{idCinema}/new', name: 'app_salle_new', methods: ['GET', 'POST'])]
-
-    public function new(int $idCinema, Request $request, EntityManagerInterface $entityManager, SalleRepository  $salleRepository): Response
+    public function new(int $idCinema, Request $request, EntityManagerInterface $entityManager, SalleRepository $salleRepository): Response
     {
         $cinema = $entityManager->find(Cinema::class, $idCinema);
         if (!$cinema) {

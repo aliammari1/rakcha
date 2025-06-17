@@ -47,14 +47,14 @@ class ProduitRepository extends ServiceEntityRepository
 //    }
 
 
-public function findByPriceRange($minPrice, $max)
-{
-    return $this->createQueryBuilder('p')
-        ->andWhere('p.prix >= :minPrice')
-        ->andWhere('p.prix <= :maxPrice')
-        ->setParameter('minPrice', $minPrice)
-        ->setParameter('maxPrice', $max)
-        ->getQuery()
-        ->getResult();
-}
+    public function findByPriceRange($minPrice, $max)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.prix >= :minPrice')
+            ->andWhere('p.prix <= :maxPrice')
+            ->setParameter('minPrice', $minPrice)
+            ->setParameter('maxPrice', $max)
+            ->getQuery()
+            ->getResult();
+    }
 }

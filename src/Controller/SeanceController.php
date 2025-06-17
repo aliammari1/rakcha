@@ -27,7 +27,7 @@ class SeanceController extends AbstractController
         }
         return $this->render('back/SeancesTable.html.twig', [
             'seances' => $seanceRepository->findAll(),
-            'cinemas' =>  $cinemaRepository->findAll(),
+            'cinemas' => $cinemaRepository->findAll(),
             'films' => $filmRepository->findAll(),
             'salles' => $salleRepository->findAll(),
             'form' => $form->createView(),
@@ -36,7 +36,7 @@ class SeanceController extends AbstractController
     }
 
     #[Route('/new', name: 'app_seance_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SeanceRepository  $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
         $seance = new Seance();
         $updateForms = array();
@@ -56,7 +56,7 @@ class SeanceController extends AbstractController
         $hasErrorsCreate = true;
         return $this->render('back/SeancesTable.html.twig', [
             'seances' => $seanceRepository->findAll(),
-            'cinemas' =>  $cinemaRepository->findAll(),
+            'cinemas' => $cinemaRepository->findAll(),
             'films' => $filmRepository->findAll(),
             'salles' => $salleRepository->findAll(),
             'form' => $form->createView(),
@@ -95,7 +95,7 @@ class SeanceController extends AbstractController
         $entityManager->refresh($seance);
         return $this->render('back/SeancesTable.html.twig', [
             'seances' => $seanceRepository->findAll(),
-            'cinemas' =>  $cinemaRepository->findAll(),
+            'cinemas' => $cinemaRepository->findAll(),
             'films' => $filmRepository->findAll(),
             'salles' => $salleRepository->findAll(),
             'form' => $form->createView(),

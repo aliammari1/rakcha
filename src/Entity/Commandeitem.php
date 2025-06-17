@@ -30,10 +30,6 @@ class Commandeitem
     private ?Produit $idProduit = null;
 
 
-
-
-
-
     public function getIdcommandeitem(): ?int
     {
         return $this->idcommandeitem;

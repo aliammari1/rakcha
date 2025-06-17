@@ -48,7 +48,7 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
                 $microsoftUser = $client->fetchUserFromToken($accessToken);
                 //dd($microsoftUser);
                 $email = $microsoftUser->getEmail();
-                
+
                 // 1) have they logged in with Microsoft before? Easy!
                 $existingUser = $this->entityManager->getRepository(Users::class)->findOneBy(['id' => $microsoftUser->getId()]);
 

@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'fk_salle_seance', columns: ['id_salle'])]
 class Seance
 {
-    #[ORM\Column(name: 'id_seance', type: 'integer', nullable:  false)]
+    #[ORM\Column(name: 'id_seance', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idSeance;
@@ -103,7 +103,7 @@ class Seance
             // Si la date est nulle, vous pouvez attribuer une date par défaut ou gérer le cas selon vos besoins
             $this->hd = new DateTime(); // Exemple d'attribution d'une nouvelle instance de DateTime
         }
-    
+
         return $this;
     }
 
@@ -120,7 +120,7 @@ class Seance
             // Si la date est nulle, vous pouvez attribuer une date par défaut ou gérer le cas selon vos besoins
             $this->hf = new DateTime(); // Exemple d'attribution d'une nouvelle instance de DateTime
         }
-    
+
         return $this;
     }
 
@@ -130,16 +130,16 @@ class Seance
     }
 
     public function setDate(?DateTimeInterface $date): static
-{
-    if ($date !== null) {
-        $this->date = $date;
-    } else {
-        // Si la date est nulle, vous pouvez attribuer une date par défaut ou gérer le cas selon vos besoins
-        $this->date = new DateTime(); // Exemple d'attribution d'une nouvelle instance de DateTime
-    }
+    {
+        if ($date !== null) {
+            $this->date = $date;
+        } else {
+            // Si la date est nulle, vous pouvez attribuer une date par défaut ou gérer le cas selon vos besoins
+            $this->date = new DateTime(); // Exemple d'attribution d'une nouvelle instance de DateTime
+        }
 
-    return $this;
-}
+        return $this;
+    }
 
 
     public function getPrix(): ?float

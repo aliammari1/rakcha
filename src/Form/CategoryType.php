@@ -14,8 +14,7 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('description', TextareaType::class)
-        ;
+            ->add('description', TextareaType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

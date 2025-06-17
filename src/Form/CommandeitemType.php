@@ -14,8 +14,7 @@ class CommandeitemType extends AbstractType
         $builder
             ->add('quantity')
             ->add('idcommande')
-            ->add('idProduit')
-        ;
+            ->add('idProduit');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

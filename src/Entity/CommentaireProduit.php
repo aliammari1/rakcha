@@ -14,7 +14,6 @@ class CommentaireProduit
     private ?int $id = null;
 
 
-
     #[ORM\ManyToOne(targetEntity: Users::class)]
     #[ORM\JoinColumn(name: 'id_client_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Users $idClient;
@@ -36,7 +35,6 @@ class CommentaireProduit
     {
         return $this->id;
     }
-
 
 
     public function getIdClient(): ?Users

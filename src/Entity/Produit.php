@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
-use App\Entity\CategorieProduit;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -58,6 +57,8 @@ class Produit
      */
 
     private Collection $idClient;
+    private Collection $paniers;
+    private Collection $commentaires;
 
     /**
      * Constructor
@@ -65,11 +66,6 @@ class Produit
     public function __construct()
     {
         $this->idClient = new ArrayCollection();
-    }
-
-    public function getIdProduit(): ?int
-    {
-        return $this->idProduit;
     }
 
     public function getNom(): ?string
@@ -161,18 +157,14 @@ class Produit
         return $this;
     }
 
+    /* #[ORM\OneToMany(targetEntity:Panier::class, mappedBy:"idproduit")]*/
+
     public function removeIdClient(Users $idClient): static
     {
         $this->idClient->removeElement($idClient);
 
         return $this;
     }
-
-    /* #[ORM\OneToMany(targetEntity:Panier::class, mappedBy:"idproduit")]*/
-
-    private Collection $paniers;
-
-
 
     /**
      * @return Collection<int, Panier>
@@ -204,20 +196,19 @@ class Produit
         return $this;
     }
 
-   
-    private Collection $commentaires;
+    public function getIdProduit(): ?int
+    {
+        return $this->idProduit;
+    }
 
-    
     /**
      * @return Collection<int, Commentaire>
      */
-        public function getCommentaires(): Collection
-        {
-            
-            return $this->commentaires;
-        }
+    public function getCommentaires(): Collection
+    {
 
-
+        return $this->commentaires;
+    }
 
 
 }

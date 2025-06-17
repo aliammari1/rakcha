@@ -13,8 +13,7 @@ class FilmcategoryType extends AbstractType
     {
         $builder
             ->add('filmId')
-            ->add('categoryId')
-        ;
+            ->add('categoryId');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

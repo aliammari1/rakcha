@@ -14,8 +14,7 @@ class RatingfilmType extends AbstractType
         $builder
             ->add('idFilm')
             ->add('idUser')
-            ->add('rate')
-        ;
+            ->add('rate');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

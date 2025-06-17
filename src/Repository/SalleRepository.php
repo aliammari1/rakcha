@@ -46,7 +46,7 @@ class SalleRepository extends ServiceEntityRepository
 //        ;
 //    }
 
- /**
+    /**
      * Récupère la liste des salles d'un cinéma donné.
      *
      * @param int $idCinema L'ID du cinéma

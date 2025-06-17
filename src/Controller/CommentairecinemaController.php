@@ -2,19 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Cinema;
 use App\Entity\Commentairecinema;
 use App\Form\CommentairecinemaType;
 use App\Repository\CommentairecinemaRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sentiment\Analyzer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Cinema;
-use Sentiment\Analyzer;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
-
 
 
 #[Route('/commentairecinema')]
@@ -64,7 +63,6 @@ class CommentairecinemaController extends AbstractController
                 ],
             ],
         ]);
-
 
 
         return $this->render('front/commentCinema.html.twig', [

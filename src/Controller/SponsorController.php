@@ -24,7 +24,8 @@ class SponsorController extends AbstractController
             'sponsors' => $sponsors,
         ]);
     }
- #[Route('/backaffich', name: 'app_sponsor_backaffich', methods: ['GET'])]
+
+    #[Route('/backaffich', name: 'app_sponsor_backaffich', methods: ['GET'])]
     public function backaffich(EntityManagerInterface $entityManager): Response
     {
         $sponsors = $entityManager
@@ -35,6 +36,7 @@ class SponsorController extends AbstractController
             'sponsors' => $sponsors,
         ]);
     }
+
     #[Route('/new', name: 'app_sponsor_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -84,7 +86,7 @@ class SponsorController extends AbstractController
     #[Route('/{id}', name: 'app_sponsor_delete', methods: ['POST'])]
     public function delete(Request $request, Sponsor $sponsor, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$sponsor->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $sponsor->getId(), $request->request->get('_token'))) {
             $entityManager->remove($sponsor);
             $entityManager->flush();
         }

@@ -1,8 +1,9 @@
 # Rakcha Web
 
-Rakcha Web is a web application built primarily using Symfony 5.4. 
+Rakcha Web is a web application built primarily using Symfony 5.4.
 
 ## Table of Contents
+
 - [Introduction](#introduction)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -10,9 +11,12 @@ Rakcha Web is a web application built primarily using Symfony 5.4.
 - [License](#license)
 
 ## Introduction
-Rakcha Web is designed to provide a robust web application framework. It leverages the Twig templating engine along with Bootstrap 5 for styling, and Symfony for backend functionality.
+
+Rakcha Web is designed to provide a robust web application framework. It leverages the Twig templating engine along with
+Bootstrap 5 for styling, and Symfony for backend functionality.
 
 ## Installation
+
 To install and set up Rakcha Web, follow these steps:
 
 1. Clone the repository:
@@ -37,9 +41,11 @@ To install and set up Rakcha Web, follow these steps:
    ```
 
 ## Usage
-Start the application and navigate to `http://localhost:8000` to see the application in action. 
+
+Start the application and navigate to `http://localhost:8000` to see the application in action.
 
 ## Contributing
+
 We welcome contributions to Rakcha Web. To contribute, please follow these steps:
 
 1. Fork the repository.
@@ -58,4 +64,5 @@ We welcome contributions to Rakcha Web. To contribute, please follow these steps
 5. Open a pull request on GitHub.
 
 ## License
+
 This project does not currently specify a license. Please contact the repository owner for more information.

@@ -52,7 +52,7 @@ class ActorController extends AbstractController
                 $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
                 $file->move($destination, $filename);
                 $actor->setimage("/img/actors/" . $filename);
-    
+
                 // Copy the file to another location
                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
@@ -110,7 +110,7 @@ class ActorController extends AbstractController
                 $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
                 $file->move($destination, $filename);
                 $actor->setimage("/img/actors/" . $filename);
-    
+
                 // Copy the file to another location
                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
@@ -137,7 +137,7 @@ class ActorController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $actor->getId(), $request->request->get('_token'))) {
             $entityManager->remove($actor);
             $entityManager->flush();
-            $this->addFlash('actors','actor deleted successfully');
+            $this->addFlash('actors', 'actor deleted successfully');
         }
 
         return $this->redirectToRoute('app_actor_index', [], Response::HTTP_SEE_OTHER);

@@ -6,7 +6,6 @@ use App\Repository\FavorisRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 
-
 #[ORM\Entity(repositoryClass: FavorisRepository::class)]
 #[ORM\Table(name: 'favoris')]
 #[ORM\Index(name: 'fk_fav_serie', columns: ['id_serie'])]

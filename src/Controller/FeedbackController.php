@@ -71,7 +71,7 @@ class FeedbackController extends AbstractController
     #[Route('/{id}', name: 'app_feedback_delete', methods: ['POST'])]
     public function delete(Request $request, Feedback $feedback, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$feedback->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $feedback->getId(), $request->request->get('_token'))) {
             $entityManager->remove($feedback);
             $entityManager->flush();
         }

@@ -33,7 +33,7 @@ class Friendships
         return $this->id;
     }
 
-   
+
     public function getReceiver(): ?Users
     {
         return $this->receiver;

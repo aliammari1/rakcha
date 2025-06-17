@@ -13,8 +13,7 @@ class SponsorType extends AbstractType
     {
         $builder
             ->add('nomsociete')
-            ->add('logo')
-        ;
+            ->add('logo');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

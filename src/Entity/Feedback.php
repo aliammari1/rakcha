@@ -9,7 +9,6 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 
-
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
 #[ORM\Table(name: 'feedback')]
 #[ORM\Index(name: 'fk_feedback_episode', columns: ['id_episode'])]
@@ -96,9 +95,6 @@ class Feedback
     }
 
 
-
-
-
     public function getSentiment(): ?string
     {
         return $this->sentiment;
@@ -110,8 +106,6 @@ class Feedback
 
         return $this;
     }
-
- 
 
 
 }
