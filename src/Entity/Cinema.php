@@ -30,7 +30,6 @@ class Cinema
     private string $nom;
 
 
-
     #[ORM\Column(name: 'adresse', type: 'string', length: 100, nullable: false)]
     #[Assert\NotBlank(message: 'The cinema adresse is required.')]
     #[Assert\Length(
@@ -41,7 +40,6 @@ class Cinema
 
 
     #[ORM\Column(name: 'responsable', type: 'integer', nullable: false)]
-
     private int $responsable;
 
 
@@ -86,7 +84,6 @@ class Cinema
         $this->salles = new ArrayCollection();
         $this->films = new ArrayCollection();
     }
-
 
 
     public function getIdCinema(): ?int

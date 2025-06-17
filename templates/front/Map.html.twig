@@ -2,12 +2,13 @@
 
 {% block pageStyle %}
     <link href="{{ asset('/css/about.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"/>
     <style>
-        #maCarte { 
-            height: 700px; 
+        #maCarte {
+            height: 700px;
             width: 1500px;
             margin-left: 200px;
         }
@@ -36,7 +37,7 @@
                             <span class="me-2 ms-2 text-light">
                                 <i class="fa fa-caret-right align-middle"></i>
                             </span> Cinema Location
-                            </h6>
+                        </h6>
                     </div>
                 </div>
             </div>
@@ -47,14 +48,15 @@
 
     {{ block("footer") }}
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         var carte = L.map('maCarte');
         var userPosition = null;
 
         // Get user's current location
         if ('geolocation' in navigator) {
-            navigator.geolocation.getCurrentPosition(function(position) {
+            navigator.geolocation.getCurrentPosition(function (position) {
                 userPosition = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
@@ -65,12 +67,12 @@
 
         // Function to get coordinates from address
         function getCoordinates(address) {
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURI(address) + '&format=json&limit=1')
                     .then(response => response.json())
                     .then(data => {
                         if (data && data.length > 0) {
-                            resolve({ latitude: parseFloat(data[0].lat), longitude: parseFloat(data[0].lon) });
+                            resolve({latitude: parseFloat(data[0].lat), longitude: parseFloat(data[0].lon)});
                         } else {
                             reject("Address not found");
                         }
@@ -83,10 +85,10 @@
 
         // Call function to get coordinates of cinema address
         getCoordinates(adresseCinema)
-            .then(function(coordinates) {
+            .then(function (coordinates) {
                 initializeMap(coordinates.latitude, coordinates.longitude);
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 console.error("Error getting coordinates:", error);
             });
 

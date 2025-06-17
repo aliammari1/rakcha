@@ -1,125 +1,133 @@
 <!DOCTYPE html>
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8"/>
-		<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-		<link href="{{ asset('img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
-		<link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png"/>
-		<title>
-			Rakcha
-		</title>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
-		 <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
-		 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-		<!--     Fonts and icons     -->
-		<link
-		href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"> <!-- Nucleo Icons -->
-		<link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet">
-		<link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
-		<!-- Font Awesome Icons -->
-		 <script crossorigin="anonymous" src="https://kit.fontawesome.com/42d5adcbca.js"></script>
-		<link
-		href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
-		<link
-		href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
-		<!-- in the <head> section -->
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
-		 <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
-		 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-		<link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet"/> <link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
-		<!-- Font Awesome Icons -->
-		 <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-		<link
-		href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
-		<link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css"/>
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <link href="{{ asset('img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
+    <link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png"/>
+    <title>
+        Rakcha
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--     Fonts and icons     -->
+    <link
+            href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
+    <!-- Font Awesome Icons -->
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/42d5adcbca.js"></script>
+    <link
+            href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
+    <link
+            href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
+    <!-- in the <head> section -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <link
+            href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css"/>
 
-	</head>
-	<body class="g-sidenav-show bg-gray-100"> {% block backContent %}{% endblock %}
-		<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4" data-color="danger" id="sidenav-main">
-			<div class="sidenav-header">
-				<i aria-hidden="true" class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" id="iconSidenav"></i>
-				<a class="navbar-brand m-0" href="{{ path('app_home_index') }}">
-					<img alt="main_logo" class="navbar-brand-img h-100" src="{{ asset('img/Logo.png') }}"/>
-					<span class="ms-1 font-weight-bold">Rakcha</span>
-				</a>
-			</div>
-			<hr class="horizontal dark mt-0"/>
-			<div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
-				<ul class="navbar-nav">
-					{% set items = [] %}
-					{% set paths = [] %}
-					{% if is_granted('ROLE_RESPONSABLE_DE_CINEMA') %}
-						{% set items = ['cinema', 'Seances', 'film','category','actor','logout'] %}
-						{% set paths = [path('app_cinema_index'), path('app_seance_index'),path('app_film_index'),path('app_category_index'),path('app_actor_index'),path('app_logout_index')] %}
-					{% elseif is_granted('ROLE_ADMIN') %}
-						{% set items = ['users','Cinema','produit','categorie Produit', 'series','episodes','categories','logout'] %}
-						{% set paths = [path('app_users_index'),path('app_cinemaAdmin_index'), path('app_produit_index'), path('app_categorie_produit_index'),path('app_series_index'),path('app_episodes_index'),path('app_categories_index'),path('app_logout_index')] %}
-					{% endif %}
-					{% for item in items %}
-						<li class="nav-item ms-4 my-1">
-							<a class="nav-link {% if item == 'billing' %}active{% endif %}" href="{{ paths[loop.index0] }}">
-								<div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-									{% set iconClass %}
-									{% if item == 'film' %}
-										fa fa-film text-primary
-									{% elseif item == 'actor' %}
-										ni-user-run text-primary
-									{% elseif item == 'category' %}
-										fa fa-shapes text-primary
-									{% elseif item == 'cinema' %}
-										fa fa-video text-primary
-									{% elseif item == 'Seances' %}
-										fa fa-calendar text-primary
-									{% elseif item == 'Cinema' %}
-										ni-credit-card text-success
-									{% elseif item == 'produit' %}
-										ni-credit-card text-success
-									{% elseif item == 'categorie Produit' %}
-										ni-credit-card text-success
-									{% elseif item == 'logout' %}
-										fa fa-arrow-left text-primary
-									{% endif %}
-									{% endset %}
-									<i class="ni {{ iconClass }} text-sm opacity-10"></i>
-									<span class="nav-link-text ms-2">{{ item|capitalize }}</span>
-								</div>
-							</a>
-						</li>
-					{% endfor %}
-				</ul>
-			</div>
-		</aside>
-		{% block body %}
-			{% block footer %}
-				<footer class="footer pt-3">
-					<div class="container-fluid">
-						<div class="row align-items-center justify-content-lg-between">
-							<div class="col-lg-6 mb-lg-0 mb-4">
-								<div class="copyright text-center text-sm text-muted text-lg-start">©
-									 <script>
-																																																																																																																																																																																																																																																																																																																																																															                                document.write(new Date().getFullYear())
-																																																																																																																																																																																																																																																																																																																																																															                            </script>
-									,
-																																																																																																																																																																																																																																																																																																																																																															                            made with<i class="fa fa-heart"></i>by<a class="font-weight-bold" href="https://www.creative-tim.com" target="_blank">Creative
-																																																																																																																																																																																																																																																																																																																																																																																																						                                Tim</a>for a better web.
-								</div>
-							</div>
-							<div class="col-lg-6">
-								<ul class="nav nav-footer justify-content-center justify-content-lg-end">
-									{% for item in ['Creative Tim', 'About Us', 'Blog', 'License'] %}
-										<li class="nav-item">
-											<a class="nav-link text-muted" href="https://www.creative-tim.com" target="_blank">{{ item }}</a>
-										</li>
-									{% endfor %}
-								</ul>
-							</div>
-						</div>
-					</div>
-				</footer>
-			{% endblock %}
-		{% endblock %}
-	</body>
+</head>
+<body class="g-sidenav-show bg-gray-100"> {% block backContent %}{% endblock %}
+<aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4"
+       data-color="danger" id="sidenav-main">
+    <div class="sidenav-header">
+        <i aria-hidden="true"
+           class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+           id="iconSidenav"></i>
+        <a class="navbar-brand m-0" href="{{ path('app_home_index') }}">
+            <img alt="main_logo" class="navbar-brand-img h-100" src="{{ asset('img/Logo.png') }}"/>
+            <span class="ms-1 font-weight-bold">Rakcha</span>
+        </a>
+    </div>
+    <hr class="horizontal dark mt-0"/>
+    <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+        <ul class="navbar-nav">
+            {% set items = [] %}
+            {% set paths = [] %}
+            {% if is_granted('ROLE_RESPONSABLE_DE_CINEMA') %}
+                {% set items = ['cinema', 'Seances', 'film','category','actor','logout'] %}
+                {% set paths = [path('app_cinema_index'), path('app_seance_index'),path('app_film_index'),path('app_category_index'),path('app_actor_index'),path('app_logout_index')] %}
+            {% elseif is_granted('ROLE_ADMIN') %}
+                {% set items = ['users','Cinema','produit','categorie Produit', 'series','episodes','categories','logout'] %}
+                {% set paths = [path('app_users_index'),path('app_cinemaAdmin_index'), path('app_produit_index'), path('app_categorie_produit_index'),path('app_series_index'),path('app_episodes_index'),path('app_categories_index'),path('app_logout_index')] %}
+            {% endif %}
+            {% for item in items %}
+                <li class="nav-item ms-4 my-1">
+                    <a class="nav-link {% if item == 'billing' %}active{% endif %}" href="{{ paths[loop.index0] }}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            {% set iconClass %}
+                                {% if item == 'film' %}
+                                    fa fa-film text-primary
+                                {% elseif item == 'actor' %}
+                                    ni-user-run text-primary
+                                {% elseif item == 'category' %}
+                                    fa fa-shapes text-primary
+                                {% elseif item == 'cinema' %}
+                                    fa fa-video text-primary
+                                {% elseif item == 'Seances' %}
+                                    fa fa-calendar text-primary
+                                {% elseif item == 'Cinema' %}
+                                    ni-credit-card text-success
+                                {% elseif item == 'produit' %}
+                                    ni-credit-card text-success
+                                {% elseif item == 'categorie Produit' %}
+                                    ni-credit-card text-success
+                                {% elseif item == 'logout' %}
+                                    fa fa-arrow-left text-primary
+                                {% endif %}
+                            {% endset %}
+                            <i class="ni {{ iconClass }} text-sm opacity-10"></i>
+                            <span class="nav-link-text ms-2">{{ item|capitalize }}</span>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</aside>
+{% block body %}
+    {% block footer %}
+        <footer class="footer pt-3">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-lg-between">
+                    <div class="col-lg-6 mb-lg-0 mb-4">
+                        <div class="copyright text-center text-sm text-muted text-lg-start">©
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script>
+                            ,
+                            made with<i class="fa fa-heart"></i>by<a class="font-weight-bold"
+                                                                     href="https://www.creative-tim.com"
+                                                                     target="_blank">Creative
+                                Tim</a>for a better web.
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+                            {% for item in ['Creative Tim', 'About Us', 'Blog', 'License'] %}
+                                <li class="nav-item">
+                                    <a class="nav-link text-muted" href="https://www.creative-tim.com"
+                                       target="_blank">{{ item }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    {% endblock %}
+{% endblock %}
+</body>
 </html>

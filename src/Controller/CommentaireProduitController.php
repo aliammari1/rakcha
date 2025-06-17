@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\Produit;
 use App\Entity\CommentaireProduit;
-use App\Repository\UsersRepository;
+use App\Entity\Produit;
 use App\Form\CommentaireProduitType;
+use App\Repository\CommentaireProduitRepository;
 use App\Repository\ProduitRepository;
+use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\CommentaireProduitRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/commentaire')]
 class CommentaireProduitController extends AbstractController
@@ -54,8 +54,6 @@ class CommentaireProduitController extends AbstractController
 
             $entityManager->persist($commentaireProduit);
             $entityManager->flush();
-
-
 
 
             return $this->redirectToRoute('app_commentaire_produit_show', ['id' => $id]);
@@ -129,7 +127,6 @@ class CommentaireProduitController extends AbstractController
     }
 
 
-
     #[Route('/produit/{id}/commentaire', name: 'app_commentaire_produit_show', methods: ['GET'])]
     public function show(EntityManagerInterface $entityManager, Produit $produit, CommentaireProduitRepository $commentaireRepository, Request $request): Response
     {
@@ -161,7 +158,6 @@ class CommentaireProduitController extends AbstractController
     }
 
 
-
     #[Route('/commentaireproduit/{id}/edit', name: 'app_edit_commentaire', methods: ['POST'])]
     public function edit(Request $request, $id, EntityManagerInterface $entityManager, CommentaireProduitRepository $commentaireRepository): Response
     {
@@ -178,14 +174,14 @@ class CommentaireProduitController extends AbstractController
 
         if (!isset($data['contenu'])) {
             return $this->json(['error' => 'Le champ "contenu" est manquant dans les données JSON.'], 200);
+        } else {
+
+            $correctedText = $this->autoCorrect($data['contenu']);
+            $commentaireProduit->setCommentaire($correctedText);
+
+
+            $entityManager->flush();
         }
-        else{
-
-        $correctedText = $this->autoCorrect($data['contenu']);
-        $commentaireProduit->setCommentaire($correctedText);
-
-
-        $entityManager->flush();}
 
 
         return $this->json(['message' => 'Commentaire mis à jour avec succès', 'commentaire' => $commentaireProduit]);

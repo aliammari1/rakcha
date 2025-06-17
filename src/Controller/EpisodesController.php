@@ -3,25 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Episodes;
-use App\Form\EpisodesType;
 use App\Entity\Feedback;
 use App\Entity\Users;
+use App\Form\EpisodesType;
 use App\Form\FeedbackType;
-use Symfony\Component\Security\Core\Security;
 use App\Repository\EpisodesRepository;
-use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Sentiment\Analyzer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Twilio\Rest\Client;
-use Sentiment\Analyzer;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
-
-
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
+use Twilio\Rest\Client;
 
 
 #[Route('/episodes')]
@@ -41,6 +37,7 @@ class EpisodesController extends AbstractController
             'updateForms' => $updateForms,
         ]);
     }
+
     #[Route('/listeEpisodes', name: 'app_episodes_liste', methods: ['GET'])]
     public function listeEpisodes(EpisodesRepository $episodesRepository): Response
     {
@@ -58,7 +55,7 @@ class EpisodesController extends AbstractController
     }
 
     #[Route('/new', name: 'app_episodes_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager,EpisodesRepository $episodesRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, EpisodesRepository $episodesRepository): Response
     {
         $episode = new Episodes();
         $form = $this->createForm(EpisodesType::class, $episode);
@@ -69,24 +66,24 @@ class EpisodesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-             // Traitement de l'image
-             $file = $form['image']->getData();
-             if ($file) {
-                 $extension = $file->guessExtension();
-                 if (!$extension) {
-                     // extension cannot be guessed
-                     $extension = 'bin';
-                 }
-                 $filename = rand(1, 99999) . '.' . $extension;
-                 $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
-                 $file->move($destination, $filename);
-                 $episode->setImage("/img/series/" . $filename);
- 
-                 // Copy the file to another location
-                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
-             }
-            
+            // Traitement de l'image
+            $file = $form['image']->getData();
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
+                }
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                $file->move($destination, $filename);
+                $episode->setImage("/img/series/" . $filename);
+
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+            }
+
             //Traitement du video 
             $videoFile = $form->get('video')->getData();
             // Vérifier si un fichier vidéo a été téléchargé
@@ -113,10 +110,10 @@ class EpisodesController extends AbstractController
 
             $entityManager->persist($episode);
             $entityManager->flush();
-        
+
             return $this->redirectToRoute('app_episodes_index', [], Response::HTTP_SEE_OTHER);
         }
-    
+
 
         return $this->render('back/episodesTables.html.twig', [
             'episodes' => $episodesRepository->findAll(),
@@ -142,23 +139,23 @@ class EpisodesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-             // Traitement de l'image
-             $file = $form['image']->getData();
-             if ($file) {
-                 $extension = $file->guessExtension();
-                 if (!$extension) {
-                     // extension cannot be guessed
-                     $extension = 'bin';
-                 }
-                 $filename = rand(1, 99999) . '.' . $extension;
-                 $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
-                 $file->move($destination, $filename);
-                 $episode->setImage("/img/series/" . $filename);
- 
-                 // Copy the file to another location
-                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
-             }
+            // Traitement de l'image
+            $file = $form['image']->getData();
+            if ($file) {
+                $extension = $file->guessExtension();
+                if (!$extension) {
+                    // extension cannot be guessed
+                    $extension = 'bin';
+                }
+                $filename = rand(1, 99999) . '.' . $extension;
+                $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                $file->move($destination, $filename);
+                $episode->setImage("/img/series/" . $filename);
+
+                // Copy the file to another location
+                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
+                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+            }
             //Traitement du video 
             $videoFile = $form->get('video')->getData();
             // Vérifier si un fichier vidéo a été téléchargé
@@ -217,7 +214,7 @@ class EpisodesController extends AbstractController
     }
 
     #[Route('/episodes/{idEpisode}/watch', name: 'app_episode_watch')]
-    public function watch(Request $request, int $idEpisode,  SessionInterface $session): Response
+    public function watch(Request $request, int $idEpisode, SessionInterface $session): Response
     {
         // Récupérer les données de l'épisode depuis la base de données
         $episode = $this->getDoctrine()->getRepository(Episodes::class)->find($idEpisode);
@@ -229,7 +226,7 @@ class EpisodesController extends AbstractController
         // Récupérer un utilisateur spécifique de la base de données
 
         $photoDeProfil = $this->getUser()->getPhotoDeProfil();
-        
+
         // Récupérer les feedbacks associés à l'épisode depuis la base de données
         $feedbacks = $this->getDoctrine()->getRepository(Feedback::class)->findBy(['idEpisode' => $idEpisode]);
         $users = [];
@@ -259,7 +256,7 @@ class EpisodesController extends AbstractController
             // Définir la description saisie par l'utilisateur dans l'objet Feedback
             $feedback->setDescription($description);
             // Analyse de sentiment avec php-sentiment-analyzer
-            $commentText =  $feedback->getDescription(); // Supposons que vous avez une méthode getComment() dans votre entité Commentairecinema
+            $commentText = $feedback->getDescription(); // Supposons que vous avez une méthode getComment() dans votre entité Commentairecinema
             $sentiment = $this->analyseSentiment($commentText);
 
             // Le sentiment est retourné sous forme de chaîne ('positive', 'negative', 'neutral')

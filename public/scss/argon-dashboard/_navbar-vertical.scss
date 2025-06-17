@@ -10,6 +10,7 @@
     max-width: 100%;
     max-height: 2rem;
   }
+
   // Navbar navigaton
   .navbar-nav {
     // Navbar link
@@ -24,6 +25,7 @@
         font-size: 0.9375rem;
         line-height: ($font-size-base * $line-height-base);
       }
+
       // Dropdown
       .dropdown-menu {
         border: none;
@@ -32,6 +34,7 @@
           margin-left: $dropdown-item-padding-x * 0.5;
         }
       }
+
       .icon {
         padding: 10px;
       }
@@ -43,12 +46,14 @@
       }
     }
   }
+
   // Navbar navigation
   .navbar-nav .nav-link {
     display: flex;
     align-items: center;
     white-space: nowrap;
   }
+
   // Navbar heading
   .navbar-heading {
     padding-top: $nav-link-padding-y;
@@ -57,6 +62,7 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
   }
+
   // Expanded navbar specific styles
   &.navbar-expand {
     @each $breakpoint, $dimension in $grid-breakpoints {
@@ -185,12 +191,14 @@
     }
   }
 }
+
 // Sidenav + Main content transition
 
 .main-content,
 .sidenav {
   transition: $transition-base;
 }
+
 //
 // Sidenav
 //
@@ -202,6 +210,7 @@
   .navbar-heading {
     display: block;
   }
+
   @include media-breakpoint-up(xl) {
     &:hover {
       max-width: $navbar-vertical-open-width;
@@ -246,6 +255,7 @@
     }
   }
 }
+
 // Sidenav states
 
 .g-sidenav-show {
@@ -261,6 +271,7 @@
     }
   }
 }
+
 // Media fixes for iPhone 5 like resolutions
 @include media-breakpoint-down(xl) {
   .g-sidenav-show {
@@ -277,7 +288,7 @@
     }
 
     .sidenav {
-      &.fixed-start+.main-content {
+      &.fixed-start + .main-content {
         margin-left: 0 !important;
       }
     }
@@ -329,6 +340,7 @@
     margin-top: 7.1875rem !important;
   }
 }
+
 // Navbar Vertical Extend
 .navbar-vertical {
   .navbar-nav .nav-link[data-bs-toggle="collapse"] {
@@ -342,9 +354,10 @@
       font-weight: 700;
       content: "\f107";
       margin-left: auto;
-      color: rgba($dark-gradient-state,0.5);
+      color: rgba($dark-gradient-state, 0.5);
       @include transition($transition-base);
     }
+
     // Expanded
     &[aria-expanded="true"] {
       &:after {
@@ -366,9 +379,9 @@
               position: relative;
               background-color: transparent;
               box-shadow: none;
-              color: rgba($dark-gradient-state,0.5);
+              color: rgba($dark-gradient-state, 0.5);
               margin-left: $navbar-vertical-collapse-margin-left;
-              
+
               &.active {
                 color: $dark-gradient-state;
               }
@@ -379,6 +392,7 @@
                 color: $dark-gradient-state;
               }
             }
+
             // Third level
             .nav-item {
               .nav-link {
@@ -402,6 +416,7 @@
     }
   }
 }
+
 // Styles for minimized sidenav
 .navbar-vertical {
   .navbar-brand {
@@ -444,6 +459,7 @@
                 color: $white;
                 opacity: .8;
               }
+
               &.active {
                 .nav-link.active {
                   color: $white;
@@ -459,16 +475,19 @@
         }
       }
     }
+
     .sidenav-header {
       .navbar-brand {
         color: $white;
       }
     }
+
     .sidenav-footer {
       h6 {
         color: $white;
       }
     }
+
     hr {
       background-image: $hr-horizontal-bg-image-light !important;
     }
@@ -586,6 +605,7 @@
           height: 0;
         }
       }
+
       // Hover style on sidenav minimized
       &:hover {
         max-width: $navbar-vertical-open-width !important;

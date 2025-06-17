@@ -15,10 +15,20 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
 {
 
     private RouterInterface $router;
+
     public function __construct(RouterInterface $router)
     {
         $this->router = $router;
     }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            CheckPassportEvent::class => ['onCheckPassport', -10],
+            LoginFailureEvent::class => 'onLoginFailure',
+        ];
+    }
+
     public function onCheckPassport(CheckPassportEvent $event)
     {
         $passport = $event->getPassport();
@@ -45,13 +55,5 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
             $this->router->generate('app_verify_resend_email')
         );
         $event->setResponse($response);
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            CheckPassportEvent::class => ['onCheckPassport', -10],
-            LoginFailureEvent::class => 'onLoginFailure',
-        ];
     }
 }

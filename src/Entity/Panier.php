@@ -3,11 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PanierRepository;
-use App\Entity\Produit;
-use App\Entity\Users;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PanierRepository::class)]
 #[ORM\Index(name: 'FK_pro', columns: ['id_produit'])]
@@ -16,7 +14,6 @@ class Panier
 {
     #[ORM\Column(name: 'idpanier', type: 'integer', nullable: false)]
     #[ORM\Id]
-
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idpanier;
 
@@ -30,12 +27,20 @@ class Panier
 
     #[ORM\Column(name: 'quantite', type: 'integer', nullable: true)]
     private ?int $quantite = null;
+    private Collection $idClient;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->idClient = new ArrayCollection();
+    }
 
     public function getIdpanier(): ?int
     {
         return $this->idpanier;
     }
-
 
     public function getIdproduit(): ?Produit
     {
@@ -71,16 +76,6 @@ class Panier
         $this->quantite = $quantite;
 
         return $this;
-    }
-
-    private Collection $idClient;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->idClient = new ArrayCollection();
     }
 
     /**

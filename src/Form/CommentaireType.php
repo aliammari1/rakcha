@@ -13,8 +13,7 @@ class CommentaireType extends AbstractType
     {
         $builder
             ->add('commentaire')
-            ->add('idclient')
-        ;
+            ->add('idclient');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -41,9 +41,10 @@
 </head>
 <body>
 
-<div class="main-content position-relative max-height-vh-100 h-100 dark-version" style="background-color: #191a1d !important">
+<div class="main-content position-relative max-height-vh-100 h-100 dark-version"
+     style="background-color: #191a1d !important">
     <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg bg-transparent shadow-none position-absolute px-4 w-100 z-index-2 mt-n11"  >
+    <nav class="navbar navbar-main navbar-expand-lg bg-transparent shadow-none position-absolute px-4 w-100 z-index-2 mt-n11">
         <div class="container-fluid py-1">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 ps-2 me-sm-6 me-5">
@@ -119,7 +120,8 @@
                             <li class="nav-item">
                                 <a aria-selected="false"
                                    class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center"
-                                   data-bs-toggle="tab" href="{{ path('app_logout') }}" role="tab" style="color:white">{{ 'Logout' }}</a>
+                                   data-bs-toggle="tab" href="{{ path('app_logout') }}" role="tab"
+                                   style="color:white">{{ 'Logout' }}</a>
                             </li>
                         </ul>
                     </div>
@@ -128,7 +130,7 @@
         </div>
     </div>
     <div class="container-fluid py-4">
-        <div class="row"  style="justify-content: center">
+        <div class="row" style="justify-content: center">
             <div class="col-md-8">
                 <div class="card" style="background: #010102 !important">
                     <div class="card-header pb-0">
@@ -138,31 +140,36 @@
                     </div>
                     <div class="card-body">
                         <p class="text-uppercase text-sm">{{ 'User Information' }}</p>
-                        <form action="{{ path('app_profile_update')}}" method="post">
+                        <form action="{{ path('app_profile_update') }}" method="post">
                             <input name="_token" type="hidden" value="{{ csrf_token('update_profile') }}"/>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="first_name">First name</label>
-                                        <input class="form-control" type="text" name="first_name" value="{{ app.user.prenom ?? '' }}" style="background: #191a1d"/>
+                                        <input class="form-control" type="text" name="first_name"
+                                               value="{{ app.user.prenom ?? '' }}" style="background: #191a1d"/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="last_name">Last name</label>
-                                        <input class="form-control" type="text" name="last_name" value="{{ app.user.nom ?? '' }}"  style="background: #191a1d"/>
+                                        <input class="form-control" type="text" name="last_name"
+                                               value="{{ app.user.nom ?? '' }}" style="background: #191a1d"/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="dob">Date of Birth</label>
-                                        <input class="form-control" type="date" name="dob" value="{{ app.user.dateDeNaissance|date('Y-m-d') }}" style="background: #191a1d"/>
-                                     </div>
+                                        <input class="form-control" type="date" name="dob"
+                                               value="{{ app.user.dateDeNaissance|date('Y-m-d') }}"
+                                               style="background: #191a1d"/>
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="form-control-label" for="email">Email address</label>
-                                        <input class="form-control" type="email" name="email" value="{{ app.user.email ?? '' }}"  style="background: #191a1d"/>
+                                        <input class="form-control" type="email" name="email"
+                                               value="{{ app.user.email ?? '' }}" style="background: #191a1d"/>
                                     </div>
                                 </div>
                             </div>
@@ -172,28 +179,35 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="form-control-label" for="address">Address</label>
-                                        <input class="form-control" type="text" name="address" value="{{ app.user.adresse ?? 'No address provided' }}"  style="background: #191a1d"/>
+                                        <input class="form-control" type="text" name="address"
+                                               value="{{ app.user.adresse ?? 'No address provided' }}"
+                                               style="background: #191a1d"/>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="form-control-label" for="phone_number">numero de telephone</label>
-                                        <input class="form-control" type="text" name="phone_number" value="{{ app.user.numTelephone ?? 'No phone number provided' }}"  style="background: #191a1d"/>
+                                        <input class="form-control" type="text" name="phone_number"
+                                               value="{{ app.user.numTelephone ?? 'No phone number provided' }}"
+                                               style="background: #191a1d"/>
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-primary" type="submit" style="background: #191a1d">Update Profile</button>
+                            <button class="btn btn-primary" type="submit" style="background: #191a1d">Update Profile
+                            </button>
                         </form>
                     </div>
                     <div class="card-footer pb-0">
                         <div class="d-flex align-items-center">
-                            <button class="btn btn-danger btn-sm" style="background: #de1002;height: 40px;font-size: 15px;margin-right: 50px;">
+                            <button class="btn btn-danger btn-sm"
+                                    style="background: #de1002;height: 40px;font-size: 15px;margin-right: 50px;">
                                 <a class="text-white" href="{{ path('app_2fa_enable') }}">enable 2fa</a>
                             </button>
-                            <form action="{{ path('app_account_delete')}}" method="post"
+                            <form action="{{ path('app_account_delete') }}" method="post"
                                   id="delete">
                                 <input name="_token" type="hidden" value="{{ csrf_token('delete_account') }}"/>
-                                <button class="btn btn-danger" onclick="showSweetAlert('delete')" style="background: #de1002">
+                                <button class="btn btn-danger" onclick="showSweetAlert('delete')"
+                                        style="background: #de1002">
                                     Delete Account
                                 </button>
                             </form>
@@ -201,7 +215,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
         <footer class="footer pt-3">
             <div class="container-fluid">
@@ -249,7 +263,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-                    <div class="nav-wrapper position-relative end-0" >
+                    <div class="nav-wrapper position-relative end-0">
                         <div id="friendRequestContainer" class="d-flex align-items-center">
                             <button id="sendFriendRequestBtn"
                                     class="btn btn-danger btn-sm ms-auto 										me-4">

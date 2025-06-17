@@ -4,13 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Commande;
 use App\Entity\Commandeitem;
-use App\Entity\Panier;;
-
+use App\Entity\Panier;
 use App\Form\CommandeType;
 use App\Repository\CommandeRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-
 use Omnipay\Omnipay;
 use Payum\Core\Request\GetHumanStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,10 +17,30 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+;
+
 #[Route('/commande')]
 class CommandeController extends AbstractController
 {
 
+
+    private $passerelle;
+
+    //Page d'accueil
+    private $manager;
+
+    public function __construct(EntityManagerInterface $manager)
+    {
+        $this->passerelle = Omnipay::create('PayPal_Rest');
+        $this->passerelle->initialize([
+            'clientId' => $_ENV['PAYPAL_CLIENT_ID'],
+            'secret' => $_ENV['PAYPAL_SECRET_KEY'],
+            'testMode' => true,
+        ]);
+        $this->manager = $manager;
+    }
+
+    //Page d'error de la transaction
 
     #[Route('/', name: 'app_commande')]
     public function index(): Response
@@ -31,7 +49,6 @@ class CommandeController extends AbstractController
             'controller_name' => 'CommandeController',
         ]);
     }
-    //Page d'accueil
 
     #[Route('/payment', name: 'app_payment', methods: ['POST'])]
     public function payment(Request $request): Response
@@ -81,6 +98,7 @@ class CommandeController extends AbstractController
             ]);
         }
     }
+
     #[Route('/success', name: 'app_success')]
     public function success(Request $request, CommandeRepository $commandeRepository, EntityManagerInterface $em): Response
     {
@@ -115,7 +133,6 @@ class CommandeController extends AbstractController
         }
     }
 
-    //Page d'error de la transaction
     #[Route('/error', name: 'app_error')]
     public function error(): Response
     {
@@ -153,12 +170,7 @@ class CommandeController extends AbstractController
         $entityManager->flush();
 
 
-
-
-
-
         $selectedItemIdsArray = $selectedItemIds ? explode(',', $selectedItemIds) : [];
-
 
 
         foreach ($selectedItemIdsArray as $itemId) {
@@ -172,8 +184,6 @@ class CommandeController extends AbstractController
                 $commandeItem->setQuantity($panierItem->getQuantite());
 
 
-
-
                 $entityManager->persist($commandeItem);
             }
 
@@ -184,12 +194,8 @@ class CommandeController extends AbstractController
         $entityManager->flush();
 
 
-
-
-
         return $this->redirectToRoute('app_commande_form', ['idcommande' => $commande->getIdcommande()]);
     }
-
 
     #[Route('/order/form/', name: 'app_commande_form', methods: ['GET'])]
     public function form(Request $request): Response
@@ -203,7 +209,6 @@ class CommandeController extends AbstractController
         //  $selectedItemIdsArray = $produitSelectionnes ? explode(',', $produitSelectionnes) : [];
 
 
-
         $commande = new Commande();
         $form = $this->createForm(CommandeType::class, $commande);
 
@@ -213,7 +218,6 @@ class CommandeController extends AbstractController
             'commandeId' => $commandeId
         ]);
     }
-
 
     #[Route('/{idcommande}', name: 'app_commande_show', methods: ['GET'])]
     public function show(Commande $commande): Response
@@ -250,19 +254,5 @@ class CommandeController extends AbstractController
         }
 
         return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    private $passerelle;
-    private $manager;
-
-    public function __construct(EntityManagerInterface $manager)
-    {
-        $this->passerelle = Omnipay::create('PayPal_Rest');
-        $this->passerelle->initialize([
-            'clientId' => $_ENV['PAYPAL_CLIENT_ID'],
-            'secret' => $_ENV['PAYPAL_SECRET_KEY'],
-            'testMode' => true,
-        ]);
-        $this->manager = $manager;
     }
 }

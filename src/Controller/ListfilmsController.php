@@ -79,6 +79,23 @@ class ListfilmsController extends AbstractController
             //'qrCodes' => $qrCodes
         ]);
     }
+
+    #[Route('/search', name: 'app_search_film')]
+    public function search(Request $request, FilmRepository $filmRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $films = $filmRepository->createQueryBuilder('f')
+            ->select('f.id')
+            ->andWhere('f.nom LIKE :nom')
+            ->setParameter('nom', '%' . ($data['search'] ?? '') . '%')
+            ->getQuery()
+            ->getResult();
+
+        $films = array_column($films, 'id');
+        return $this->json(["success" => true, 'films' => $films, 'data' => $data]);
+    }
+
     #[Route('/listfilms/bookmarks', name: 'app_film_bookmarks_index')]
     public function bookmarks(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
     {
@@ -134,7 +151,6 @@ class ListfilmsController extends AbstractController
         ]);
     }
 
-
     public function generateQRCode($url)
     {
         $renderer = new ImageRenderer(
@@ -173,11 +189,6 @@ class ListfilmsController extends AbstractController
         // return new Response($result->getString(), 200, ['Content-Type' => 'image/png']);
     }
 
-    #[Route('/qrcodeurl/{filmName}', name: 'app_qrcodeurl_film')]
-    public function qrcodeurl($filmName, FilmRepository $filmRepository, EntityManagerInterface $entityManager): Response
-    {
-        return new Response();
-    }
     function searchImdb($filmName): string
     {
         $search = new \Imdb\TitleSearch(null /* config */, null /* logger */, null);
@@ -185,21 +196,13 @@ class ListfilmsController extends AbstractController
         $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
         return $url;
     }
-    #[Route('/search', name: 'app_search_film')]
-    public function search(Request $request, FilmRepository $filmRepository): Response
+
+    #[Route('/qrcodeurl/{filmName}', name: 'app_qrcodeurl_film')]
+    public function qrcodeurl($filmName, FilmRepository $filmRepository, EntityManagerInterface $entityManager): Response
     {
-        $data = json_decode($request->getContent(), true);
-
-        $films = $filmRepository->createQueryBuilder('f')
-            ->select('f.id')
-            ->andWhere('f.nom LIKE :nom')
-            ->setParameter('nom', '%' . ($data['search'] ?? '') . '%')
-            ->getQuery()
-            ->getResult();
-
-        $films = array_column($films, 'id');
-        return $this->json(["success" => true, 'films' => $films, 'data' => $data]);
+        return new Response();
     }
+
     #[Route('/reserve', name: 'app_reserve_film')]
     public function reserve(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository): Response
     {
@@ -244,6 +247,7 @@ class ListfilmsController extends AbstractController
 
         return $this->json(["success" => true, 'filmsCategorized' => $filmsCategorized, 'data' => $data["checkboxes"], 'ids' => array_column($filmRepository->findAll(), 'id')]);
     }
+
     #[Route('/filmHome', name: 'app_listhome_index')]
     public function indexHome(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
@@ -270,6 +274,7 @@ class ListfilmsController extends AbstractController
             'averageRatings' => $averageRatings
         ]);
     }
+
     #[Route('/listactors', name: 'app_listactors_index')]
     public function indexactor(ActorRepository $actorRepository): Response
     {

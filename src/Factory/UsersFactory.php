@@ -48,6 +48,7 @@ final class UsersFactory extends ModelFactory
 {
 
     private UserPasswordHasherInterface $passwordHasher;
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      *
@@ -57,6 +58,11 @@ final class UsersFactory extends ModelFactory
     {
         parent::__construct();
         $this->passwordHasher = $passwordHasher;
+    }
+
+    protected static function getClass(): string
+    {
+        return Users::class;
     }
 
     /**
@@ -108,10 +114,5 @@ final class UsersFactory extends ModelFactory
                     $user->setPhotoDeProfil(str_replace("./public/", "./", $user->getPhotoDeProfil()));
                 }
             });
-    }
-
-    protected static function getClass(): string
-    {
-        return Users::class;
     }
 }

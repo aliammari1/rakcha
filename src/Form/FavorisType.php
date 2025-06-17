@@ -13,8 +13,7 @@ class FavorisType extends AbstractType
     {
         $builder
             ->add('idUser')
-            ->add('idSerie')
-        ;
+            ->add('idSerie');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

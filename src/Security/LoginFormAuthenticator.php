@@ -22,8 +22,10 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
+
     private UsersRepository $usersRepository;
     private RouterInterface $router;
+
     public function __construct(UsersRepository $usersRepository, RouterInterface $router)
     {
         $this->usersRepository = $usersRepository;
@@ -71,5 +73,5 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     {
         return $this->router->generate('app_login');
     }
-    
+
 }

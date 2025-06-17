@@ -21,8 +21,7 @@ class FriendshipsType extends AbstractType
             ->add('sender', EntityType::class, [
                 'class' => Users::class,
                 'choice_label' => 'username',
-            ]);
-        ;
+            ]);;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

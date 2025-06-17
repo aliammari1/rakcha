@@ -11,20 +11,22 @@
     }
 
     .dropdown-toggle {
-      &:after{
+      &:after {
         content: "\f107";
         font: normal normal normal 14px/1 FontAwesome;
         border: none;
         vertical-align: middle;
         font-weight: $font-weight-bold;
       }
-      &.show{
-        &:after{
+
+      &.show {
+        &:after {
           transform: $dropdown-toggle-arrow-transform;
         }
       }
-      &:after{
-         transition: $dropdown-toggle-arrow-transition;
+
+      &:after {
+        transition: $dropdown-toggle-arrow-transition;
       }
     }
   }
@@ -39,7 +41,7 @@
       animation: $dropdown-animation;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
-      will-change: animation,box-shadow;
+      will-change: animation, box-shadow;
     }
 
     &.dropdown-hover:hover > .dropdown-menu .dropdown-hover:hover > .dropdown-menu,
@@ -107,7 +109,7 @@
         transition: $dropdown-transition;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
-        will-change: transform,box-shadow;
+        will-change: transform, box-shadow;
         box-shadow: $dropdown-box-shadow;
 
         &:before {
@@ -138,6 +140,7 @@
         }
       }
     }
+
     .dropdown.nav-item .dropdown-menu {
       background-color: transparent;
       overflow: scroll;
@@ -154,7 +157,7 @@
       transition: $dropdown-transition;
       -webkit-backface-visibility: hidden;
       backface-visibility: hidden;
-      will-change: animation,box-shadow;
+      will-change: animation, box-shadow;
       box-shadow: $dropdown-box-shadow;
 
       &:before {
@@ -169,6 +172,7 @@
         transition: $dropdown-animation-arrow-transition;
       }
     }
+
     &:not(.dropdown-hover) .dropdown-menu {
       margin-top: $dropdown-mt !important;
     }
@@ -190,7 +194,6 @@
       }
     }
   }
-
 
 
   .dropdown.nav-item .dropdown-menu-animation {
@@ -229,10 +232,12 @@
       z-index: -1;
       transition: left .35s ease;
     }
-    &.dropdown-menu-end{
+
+    &.dropdown-menu-end {
       right: 0 !important;
       left: auto !important;
-      &:before{
+
+      &:before {
         right: $dropdown-animation-arrow-left-position;
         left: auto;
       }
@@ -250,11 +255,12 @@
   }
 }
 
-.dropdown .dropdown-menu .dropdown-item+.dropdown-menu {
+.dropdown .dropdown-menu .dropdown-item + .dropdown-menu {
   right: $dropdown-subitem-position-right;
   left: auto;
   top: 0;
 }
+
 // End MultiLevel Dropdown Style
 
 .dropdown-image {
@@ -276,9 +282,9 @@
 }
 
 @include media-breakpoint-down(xl) {
- .dropdown-lg-responsive {
-   min-width: $dropdown-lg-width-responsive;
- }
+  .dropdown-lg-responsive {
+    min-width: $dropdown-lg-width-responsive;
+  }
 }
 
 // Keyframes

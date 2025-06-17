@@ -2,20 +2,19 @@
 
 namespace App\Controller;
 
-use App\Entity\Produit;
-use App\Form\ProduitType;
 use App\Entity\CommentaireProduit;
+use App\Entity\Produit;
 use App\Form\CommentaireProduitType;
+use App\Form\ProduitType;
+use App\Repository\CommentaireProduitRepository;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\CommentaireProduitRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-
 
 
 #[Route('/produit')]
@@ -37,8 +36,6 @@ class ProduitController extends AbstractController
             'updateForms' => $updateForms,
         ]);
     }
-
-
 
 
     #[Route('/listeproduit', name: 'app_produit_liste', methods: ['GET', 'POST'])]
@@ -81,8 +78,6 @@ class ProduitController extends AbstractController
             'maxPrice' => $maxPrice,
         ]);
     }
-
-
 
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
@@ -162,9 +157,6 @@ class ProduitController extends AbstractController
     }
 
 
-
-
-
     #[Route('/{idProduit}/edit/{formUpdateNumber}/', name: 'app_produit_edit', methods: ['GET', 'POST'])]
     public function edit($formUpdateNumber, Request $request, Produit $produit, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
@@ -223,9 +215,7 @@ class ProduitController extends AbstractController
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    /**
-     * @Route("/product/filter", name="product_filter", methods={"GET"})
-     */
+    #[Route('/product/filter', name: 'product_filter', methods: ['GET'])]
     public function filterProducts(Request $request, ProduitRepository $produitRepository): JsonResponse
     {
 
@@ -241,7 +231,7 @@ class ProduitController extends AbstractController
 
         foreach ($filteredProducts as $produit) {
 
-            $imagePath =  $this->getParameter('kernel.project_dir') . '/public/img/produit/' . $produit->getImage();
+            $imagePath = $this->getParameter('kernel.project_dir') . '/public/img/produit/' . $produit->getImage();
 
 
             $formattedProducts[] = [
