@@ -40,9 +40,9 @@ class Film
 
     #[Assert\NotBlank(message: 'The film duration is required.')]
     // #[Assert\Expression(
-    //     "value instanceof DateTimeInterface && value->format('H:i:s') !== '00:00:00'",
-    //     message: 'The film duration must be a valid time.'
-    // )]
+        //     "value instanceof DateTimeInterface && value->format('H:i:s') !== '00:00:00'",
+        //     message: 'The film duration must be a valid time.'
+        // )]
     #[Assert\Range(
         min: 'first day of January -54 years + 30 minutes',
         max: 'first day of January -54 years +4 hours',
@@ -99,6 +99,7 @@ class Film
     {
         return $this->id;
     }
+
     public function getIsBookmarked(): ?bool
     {
         return $this->isBookmarked;
@@ -111,6 +112,7 @@ class Film
 
         return $this;
     }
+
     public function getNom(): ?string
     {
         return $this->nom;
@@ -170,6 +172,7 @@ class Film
 
         return $this;
     }
+
     /**
      * @return Collection<int, Actor>
      */

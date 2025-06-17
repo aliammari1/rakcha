@@ -28,10 +28,11 @@ class FilmController extends AbstractController
             'updateForms' => $updateForms,
         ]);
     }
+
     #[Route('/new', name: 'app_film_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
-        
+
         $updateForms = array();
         for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
             $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
@@ -52,7 +53,7 @@ class FilmController extends AbstractController
                 $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
                 $file->move($destination, $filename);
                 $film->setimage("/img/films/" . $filename);
-    
+
                 // Copy the file to another location
                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
@@ -106,7 +107,7 @@ class FilmController extends AbstractController
                 $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
                 $file->move($destination, $filename);
                 $film->setimage("/img/films/" . $filename);
-    
+
                 // Copy the file to another location
                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);

@@ -71,7 +71,7 @@ class CommandeitemController extends AbstractController
     #[Route('/{idcommandeitem}', name: 'app_commandeitem_delete', methods: ['POST'])]
     public function delete(Request $request, Commandeitem $commandeitem, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$commandeitem->getIdcommandeitem(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $commandeitem->getIdcommandeitem(), $request->request->get('_token'))) {
             $entityManager->remove($commandeitem);
             $entityManager->flush();
         }

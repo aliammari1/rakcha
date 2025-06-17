@@ -1,225 +1,229 @@
 {% extends 'baseFront.html.twig' %}
 
 {% block pageStyle %}
-	{{ parent() }}
-	<link href="{{ asset('/css/about.css') }}" rel="stylesheet">
-	<style>
-		/* Ajoutez votre propre style pour le titre "Regarder l'épisode" */
-		.watch-title {
-			text-align: center;
-			font-size: 24px;
-			font-weight: bold;
-			margin-bottom: 20px;
-			color: #ff4500; /* Couleur orange vif */
-		}
+    {{ parent() }}
+    <link href="{{ asset('/css/about.css') }}" rel="stylesheet">
+    <style>
+        /* Ajoutez votre propre style pour le titre "Regarder l'épisode" */
+        .watch-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ff4500; /* Couleur orange vif */
+        }
 
-		.feedback {
-			display: flex;
-			border: 1px solid #ccc;
-			margin-bottom: 20px;
-			padding: 10px;
-		}
+        .feedback {
+            display: flex;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
 
-		.user-info img {
-			width: 50px;
-			height: 50px;
-			border-radius: 50%;
-			margin-right: 10px;
-		}
+        .user-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
 
-		.username {
-			font-weight: bold;
-			margin-bottom: 5px;
-		}
+        .username {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
 
-		.feedback-content {
-			flex-grow: 1;
-		}
+        .feedback-content {
+            flex-grow: 1;
+        }
 
-		.date {
-			color: #fff; /* Couleur blanche */
-		}
-		/* Ajoutez une marge supérieure à la liste des feedbacks */
-		.feedback-list {
-			margin-top: 20px;
-		}
-		/* Ajustez les dimensions de la vidéo */
-		#videoPlayer {
-			width: 100%; /* Utilisez la largeur maximale disponible */
-			height: auto; /* Ajustez la hauteur en conséquence */
-		}
-		.btn-netflix {
-			background-color: #E50914;
-			border-color: #E50914;
-		}
+        .date {
+            color: #fff; /* Couleur blanche */
+        }
 
-		.btn-netflix:hover {
-			background-color: #b2070d;
-			border-color: #b2070d;
-		}
+        /* Ajoutez une marge supérieure à la liste des feedbacks */
+        .feedback-list {
+            margin-top: 20px;
+        }
 
-		/* Styles for the modal */
-		.modal {
-			display: none;
-			position: fixed;
-			z-index: 1000;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			overflow: auto;
-			background-color: rgba(0, 0, 0, 0.8);
-		}
+        /* Ajustez les dimensions de la vidéo */
+        #videoPlayer {
+            width: 100%; /* Utilisez la largeur maximale disponible */
+            height: auto; /* Ajustez la hauteur en conséquence */
+        }
 
-		.modal-content {
-			background-color: #000;
-			margin: 10% auto;
-			padding: 20px;
-			border-radius: 10px;
-			box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-			width: 40%;
-			max-width: 800px;
-			height: 40%; /* Hauteur du modal */
-			max-height: 600px; /* Hauteur maximale */
-			color: #333; /* Couleur de texte gris plus sombre */
-		}
+        .btn-netflix {
+            background-color: #E50914;
+            border-color: #E50914;
+        }
 
-		.close {
-			color: #aaa;
-			float: right;
-			font-size: 28px;
-			font-weight: bold;
-			cursor: pointer;
-		}
+        .btn-netflix:hover {
+            background-color: #b2070d;
+            border-color: #b2070d;
+        }
 
-		.close:hover,
-		.close:focus {
-			color: #fff;
-			text-decoration: none;
-			cursor: pointer;
-		}
+        /* Styles for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
 
-		/* Styles pour le formulaire de feedback */
-		.feedback-form {
-			text-align: center; /* Centrer le contenu du formulaire */
-		}
+        .modal-content {
+            background-color: #000;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 40%;
+            max-width: 800px;
+            height: 40%; /* Hauteur du modal */
+            max-height: 600px; /* Hauteur maximale */
+            color: #333; /* Couleur de texte gris plus sombre */
+        }
 
-		.feedback-form input[type="text"],
-		.feedback-form textarea {
-			width: calc(100% - 22px); /* Largeur du formulaire moins les marges */
-			padding: 12px; /* Augmentez légèrement le padding */
-			margin: 10px 0; /* Ajoute de l'espace autour des champs */
-			border: none; /* Supprimez la bordure */
-			border-radius: 5px;
-			box-sizing: border-box; /* Garantit que la largeur inclut le padding et la bordure */
-			background-color: #141414; /* Fond noir légèrement plus sombre */
-			color: #fff; /* Texte blanc */
-			font-size: 16px; /* Taille de la police légèrement réduite */
-		}
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-		.feedback-form textarea {
-			height: 150px; /* Hauteur de la zone de texte augmentée */
-		}
+        .close:hover,
+        .close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
-		.feedback-form button {
-			background-color: #E50914; /* Couleur du bouton */
-			border: none;
-			color: #fff;
-			padding: 15px 30px; /* Augmentez le padding */
-			margin-top: 20px; /* Augmentez l'espace en haut du bouton */
-			border-radius: 5px;
-			cursor: pointer;
-			font-size: 18px;
-			transition: background-color 0.3s; /* Ajoute une transition fluide pour le changement de couleur */
-		}
+        /* Styles pour le formulaire de feedback */
+        .feedback-form {
+            text-align: center; /* Centrer le contenu du formulaire */
+        }
 
-		.feedback-form button:hover {
-			background-color: #b2070d; /* Couleur au survol */
-		}
-	</style>
+        .feedback-form input[type="text"],
+        .feedback-form textarea {
+            width: calc(100% - 22px); /* Largeur du formulaire moins les marges */
+            padding: 12px; /* Augmentez légèrement le padding */
+            margin: 10px 0; /* Ajoute de l'espace autour des champs */
+            border: none; /* Supprimez la bordure */
+            border-radius: 5px;
+            box-sizing: border-box; /* Garantit que la largeur inclut le padding et la bordure */
+            background-color: #141414; /* Fond noir légèrement plus sombre */
+            color: #fff; /* Texte blanc */
+            font-size: 16px; /* Taille de la police légèrement réduite */
+        }
+
+        .feedback-form textarea {
+            height: 150px; /* Hauteur de la zone de texte augmentée */
+        }
+
+        .feedback-form button {
+            background-color: #E50914; /* Couleur du bouton */
+            border: none;
+            color: #fff;
+            padding: 15px 30px; /* Augmentez le padding */
+            margin-top: 20px; /* Augmentez l'espace en haut du bouton */
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s; /* Ajoute une transition fluide pour le changement de couleur */
+        }
+
+        .feedback-form button:hover {
+            background-color: #b2070d; /* Couleur au survol */
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-	{{ block("header") }}
-	<section id="watch" class="pt-4 pb-4">
-		<div class="container-xl">
-			<h2 class="watch-title">Watch the Episode of
-				{{ episode.titre }}
-				Now
-			</h2>
-			<div class="video-container">
-				<div class="video-player">
-					<video id="videoPlayer" controls>
-						<source src="{{ asset(episode.video) }}" type="video/mp4">
-					</video>
-				</div>
-			</div>
-			<div class="feedback-form-toggle">
-				<button class="btn btn-primary btn-netflix" id="openFeedbackModal">Give Feedback</button>
-			</div>
-			<div class="feedback-list">
-				{% if feedbacks is not empty %}
-					<ul>
-						{% for feedback in feedbacks %}
-							{% set user = users[loop.index0] %}
-							<li>
-								<div class="user-info">
-									<img src="{{ asset(user.photoDeProfil) }}" alt="{{ user.nom }}">
-									<span class="username">{{ user.nom }}</span>
-									<span class="username">{{ user.prenom }}</span>
-								</div>
-								<div class="feedback-content">
-									<p>{{ feedback.description }}</p>
-									<span class="date">{{ feedback.date|date('Y-m-d H:i:s') }}</span>
-								</div>
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<p>No feedbacks yet.</p>
-				{% endif %}
-			</div>
-			<!-- Afficher les messages flash de succès -->
-			{% for message in app.flashes('success') %}
-				<div class="alert alert-success">{{ message }}</div>
-			{% endfor %}
+    {{ block("header") }}
+    <section id="watch" class="pt-4 pb-4">
+        <div class="container-xl">
+            <h2 class="watch-title">Watch the Episode of
+                {{ episode.titre }}
+                Now
+            </h2>
+            <div class="video-container">
+                <div class="video-player">
+                    <video id="videoPlayer" controls>
+                        <source src="{{ asset(episode.video) }}" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+            <div class="feedback-form-toggle">
+                <button class="btn btn-primary btn-netflix" id="openFeedbackModal">Give Feedback</button>
+            </div>
+            <div class="feedback-list">
+                {% if feedbacks is not empty %}
+                    <ul>
+                        {% for feedback in feedbacks %}
+                            {% set user = users[loop.index0] %}
+                            <li>
+                                <div class="user-info">
+                                    <img src="{{ asset(user.photoDeProfil) }}" alt="{{ user.nom }}">
+                                    <span class="username">{{ user.nom }}</span>
+                                    <span class="username">{{ user.prenom }}</span>
+                                </div>
+                                <div class="feedback-content">
+                                    <p>{{ feedback.description }}</p>
+                                    <span class="date">{{ feedback.date|date('Y-m-d H:i:s') }}</span>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No feedbacks yet.</p>
+                {% endif %}
+            </div>
+            <!-- Afficher les messages flash de succès -->
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
 
-			<!-- Modal -->
-			<div id="myModal" class="modal">
-				<div class="modal-content">
-					<span class="close">&times;</span>
-					<h3 style="font-size: 40px; text-align: center; color: red;">Leave your feedback</h3>
-					<h3 style="font-size: 20px; color: #666; font-weight: 300;">Your Comments are important for Us and are crucial in helping us provide the best service</h3>
+            <!-- Modal -->
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3 style="font-size: 40px; text-align: center; color: red;">Leave your feedback</h3>
+                    <h3 style="font-size: 20px; color: #666; font-weight: 300;">Your Comments are important for Us and
+                        are crucial in helping us provide the best service</h3>
 
-					<div id="feedbackFormContainer">
-						{{ form_start(feedbackForm) }}
-						<div class="feedback-form">
-							{{ form_widget(feedbackForm.description, {'attr': {'rows': '4'}}) }}
-							<!-- Ajustez le nombre de lignes ici -->
-							{{ form_widget(feedbackForm.date) }}
-							<!-- Champ de formulaire pour la date -->
+                    <div id="feedbackFormContainer">
+                        {{ form_start(feedbackForm) }}
+                        <div class="feedback-form">
+                            {{ form_widget(feedbackForm.description, {'attr': {'rows': '4'}}) }}
+                            <!-- Ajustez le nombre de lignes ici -->
+                            {{ form_widget(feedbackForm.date) }}
+                            <!-- Champ de formulaire pour la date -->
 
-						</div>
-						<button class="btn btn-primary btn-netflix">Send Feedback</button>
-						{{ form_end(feedbackForm) }}
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	{{ block("footer") }}
-	 <script>
-				        // Show modal when "Give Feedback" button is clicked
-				        document.getElementById('openFeedbackModal').addEventListener('click', function() {
-				            document.getElementById('myModal').style.display = 'block'; // Show the modal
-				        });
-				
-				        // Close the modal when anywhere outside of it is clicked
-				        window.onclick = function(event) {
-				            var modal = document.getElementById('myModal');
-				            if (event.target == modal) {
-				                modal.style.display = "none";
-				            }
-				        }
-				    </script>
+                        </div>
+                        <button class="btn btn-primary btn-netflix">Send Feedback</button>
+                        {{ form_end(feedbackForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {{ block("footer") }}
+    <script>
+        // Show modal when "Give Feedback" button is clicked
+        document.getElementById('openFeedbackModal').addEventListener('click', function () {
+            document.getElementById('myModal').style.display = 'block'; // Show the modal
+        });
+
+        // Close the modal when anywhere outside of it is clicked
+        window.onclick = function (event) {
+            var modal = document.getElementById('myModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
 {% endblock %}

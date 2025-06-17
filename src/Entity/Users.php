@@ -96,8 +96,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     private Collection $idComm;
 
 
-    
-
     /**
      * @var Collection<int, Cinema>
      */
@@ -114,38 +112,21 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     private Collection $idSeance;
 
 
-
     #[ORM\Column(name: 'is_verified', type: 'boolean')]
     private bool $isVerified;
-
-    public function getIsVerified(): ?bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setIsVerified(bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
-
-        return $this;
-    }
-
     #[Assert\NotBlank(message: 'The password cannot be blank')]
     #[Assert\NotNull(message: 'The password cannot be null')]
     #[Assert\Length(min: 8, max: 180, minMessage: 'The password must have at least {{ limit }} characters', maxMessage: 'The password cannot exceed {{ limit }} characters')]
     #[Assert\Type(type: 'string', message: 'The password must be a string')]
     private string $plainPassword;
-    public function getPlainPassword(): string
-    {
-        return $this->plainPassword;
-    }
-
-    public function setPlainPassword(string $plainPassword): static
-    {
-        $this->plainPassword = $plainPassword;
-
-        return $this;
-    }
+    #[ORM\Column]
+    private array $roles = [];
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private $totpSecret;
+    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Friendships::class)]
+    private Collection $incomingFriendRequests;
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Friendships::class)]
+    private Collection $sentFriendRequests;
 
     public function __construct()
     {
@@ -157,6 +138,35 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
         $this->idSeance = new ArrayCollection();
         $this->incomingFriendRequests = new ArrayCollection();
         $this->sentFriendRequests = new ArrayCollection();
+    }
+
+    public function getIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): static
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
     }
 
     /**
@@ -229,7 +239,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
 
         return $this;
     }
-
 
     public function getRole(): ?string
     {
@@ -342,30 +351,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
         return $this;
     }
 
-
-
-
-    #[ORM\Column]
-    private array $roles = [];
-
-
-
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
-
     /**
      * @deprecated since Symfony 5.3, use getUserIdentifier instead
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -422,23 +413,11 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
         // $this->plainPassword = null;
     }
 
-    public function isVerified(): bool
-    {
-        return $this->isVerified;
-    }
-
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
-    private $totpSecret;
-
-    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Friendships::class)]
-    private Collection $incomingFriendRequests;
-
-    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Friendships::class)]
-    private Collection $sentFriendRequests;
     public function getTotpSecret(): ?string
     {
         return $this->totpSecret;
     }
+
     public function setTotpSecret(?string $totpSecret): self
     {
         $this->totpSecret = $totpSecret;
@@ -449,10 +428,22 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     {
         return $this->totpSecret ? true : false;
     }
+
     public function getTotpAuthenticationUsername(): string
     {
         return $this->getUserIdentifier();
     }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string)$this->email;
+    }
+
     public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
     {
         return new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA1, 30, 6);

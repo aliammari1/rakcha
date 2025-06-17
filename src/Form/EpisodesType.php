@@ -1,15 +1,16 @@
 <?php
 
 namespace App\Form;
+
 use App\Entity\Episodes;
 use App\Entity\Series;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank; 
 use Symfony\Component\Validator\Constraints\File;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType; 
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 
 class EpisodesType extends AbstractType
@@ -42,12 +43,12 @@ class EpisodesType extends AbstractType
             ])
             ->add('idserie', EntityType::class, [
                 'class' => Series::class,
-                'choice_label' => 'nom', 
-                'placeholder' => 'Sélectionnez une série', 
-                'constraints' =>[
+                'choice_label' => 'nom',
+                'placeholder' => 'Sélectionnez une série',
+                'constraints' => [
                     new NotBlank(),
                 ],
-            ])        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

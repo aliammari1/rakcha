@@ -1,10 +1,14 @@
-<div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-    <h1 style="color: red; font-size: 24px; margin-bottom: 20px; text-align: center;">Hi! Please confirm your email!</h1>
+<div class="container"
+     style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+    <h1 style="color: red; font-size: 24px; margin-bottom: 20px; text-align: center;">Hi! Please confirm your
+        email!</h1>
 
     <p style="font-size: 16px; line-height: 1.5; margin-bottom: 10px;">
         Please confirm your email address by clicking the following link:
         <br><br>
-        <a href="{{ signedUrl|raw }}" style="color: red; text-decoration: none; font-weight: bold; display: block; text-align: center; padding: 10px; background-color: #ffcccc; border-radius: 5px;">Confirm my Email</a>.
+        <a href="{{ signedUrl|raw }}"
+           style="color: red; text-decoration: none; font-weight: bold; display: block; text-align: center; padding: 10px; background-color: #ffcccc; border-radius: 5px;">Confirm
+            my Email</a>.
         <br><br>
         This link will expire in
         {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.

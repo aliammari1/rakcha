@@ -21,8 +21,7 @@ class CommentairecinemaType extends AbstractType
                     'class' => 'form-control'
                 ]
             ])
-            ->add('Send', SubmitType::class)
-        ;
+            ->add('Send', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

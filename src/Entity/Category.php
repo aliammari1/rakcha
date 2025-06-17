@@ -28,7 +28,6 @@ class Category
         pattern: "/^[A-Z][a-zA-Z0-9\s]*$/",
         message: 'The category name must start with an uppercase letter .'
     )]
-
     private string $nom;
 
 

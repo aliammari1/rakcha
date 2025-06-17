@@ -33,9 +33,23 @@ class Ratingfilm
         return $this->idFilm;
     }
 
+    public function setIdFilm(?int $idFilm): static
+    {
+        $this->idFilm = $idFilm;
+
+        return $this;
+    }
+
     public function getIdUser(): ?int
     {
         return $this->idUser;
+    }
+
+    public function setIdUser(?int $idUser): static
+    {
+        $this->idUser = $idUser;
+
+        return $this;
     }
 
     public function getRate(): ?int
@@ -46,22 +60,6 @@ class Ratingfilm
     public function setRate(?int $rate): static
     {
         $this->rate = $rate;
-
-        return $this;
-    }
-
-
-
-    public function setIdFilm(?int $idFilm): static
-    {
-        $this->idFilm = $idFilm;
-
-        return $this;
-    }
-
-    public function setIdUser(?int $idUser): static
-    {
-        $this->idUser = $idUser;
 
         return $this;
     }

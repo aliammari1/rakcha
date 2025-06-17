@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Friendships;
-use App\Form\FriendshipsType;
 use App\Repository\FriendshipsRepository;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;

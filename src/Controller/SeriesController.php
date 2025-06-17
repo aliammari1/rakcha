@@ -2,21 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Categories;
 use App\Entity\Series;
 use App\Form\SeriesType;
-use App\Entity\Categories;
-use App\Entity\Favoris;
 use App\Repository\SeriesRepository;
-use App\Repository\FavorisRepository;
-use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Twilio\Rest\Client;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 
 #[Route('/series')]
@@ -39,6 +36,7 @@ class SeriesController extends AbstractController
         ]);
 
     }
+
     #[Route('/listeSeries', name: 'app_series_liste', methods: ['GET'])]
     public function listeSeries(SeriesRepository $seriesRepository, Request $request, EntityManagerInterface $entityManager): Response
     {

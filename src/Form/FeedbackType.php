@@ -13,8 +13,7 @@ class FeedbackType extends AbstractType
     {
         $builder
             ->add('description')
-            ->add('date')
-        ;
+            ->add('date');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
