@@ -1152,10 +1152,8 @@ class _AddFilmWidgetState extends State<AddFilmWidget> {
                                           (DateTime.fromMicrosecondsSinceEpoch(
                                                   642117600000000) ??
                                               DateTime(1900)),
-                                      lastDate:
-                                          (DateTime.fromMicrosecondsSinceEpoch(
-                                                  1746655200000000) ??
-                                              DateTime(2050)),
+                                      lastDate: (getCurrentTimestamp ??
+                                          DateTime(2050)),
                                       builder: (context, child) {
                                         return wrapInMaterialDatePickerTheme(
                                           context,
