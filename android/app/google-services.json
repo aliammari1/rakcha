@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "916850713175",
+    "project_id": "rakcha-hn94a9",
+    "storage_bucket": "rakcha-hn94a9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916850713175:android:f262599f25edacf0743912",
+        "android_client_info": {
+          "package_name": "com.esprit.rakcha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916850713175-2c5a4d1pj9q58ea6lb6fnj3thfkqfenh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.esprit.rakcha",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "916850713175-co2gjo407ihl0ptpiajf6bg45c1cnlt4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.esprit.rakcha",
+            "certificate_hash": "164dc79c307bd9a4b2836eda6d41687d1f3e2377"
+          }
+        },
+        {
+          "client_id": "916850713175-6b15r69srqb74018i0ql11si5q1kb455.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0vydZbK-gBS7qE_4giHlkE_Gq6IAc-9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "916850713175-6b15r69srqb74018i0ql11si5q1kb455.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "916850713175-dpmudo13sogggub8303bfuaf36iab1qk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.esprit.rakcha"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
