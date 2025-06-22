@@ -1179,9 +1179,7 @@ class _UpdateFilmWidgetState extends State<UpdateFilmWidget> {
                                                 642117600000000) ??
                                             DateTime(1900)),
                                     lastDate:
-                                        (DateTime.fromMicrosecondsSinceEpoch(
-                                                1746655200000000) ??
-                                            DateTime(2050)),
+                                        (getCurrentTimestamp ?? DateTime(2050)),
                                     builder: (context, child) {
                                       return wrapInMaterialDatePickerTheme(
                                         context,
