@@ -1,68 +1,139 @@
-# Rakcha Web
+# rakcha-web
 
-Rakcha Web is a web application built primarily using Symfony 5.4.
+![Twig](https://img.shields.io/badge/Twig-informational?style=flat&logo=twig&logoColor=white&color=blue) ![node.js](https://img.shields.io/badge/Node.js-informational?style=flat&logo=node.js&logoColor=white&color=339933) ![Stars](https://img.shields.io/github/stars/aliammari1/rakcha-web?style=social) ![Forks](https://img.shields.io/github/forks/aliammari1/rakcha-web?style=social)
 
-## Table of Contents
+A advanced cli tool
 
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+## ✨ Features
 
-## Introduction
+- ⚡ Fast command-line interface
+- 📝 Comprehensive help documentation
+- 🔧 Configurable options
+- 📊 Progress indicators
+- 🏗️ Scalable architecture
+- 🧪 Comprehensive testing suite
+- 🔄 Continuous integration/deployment
 
-Rakcha Web is designed to provide a robust web application framework. It leverages the Twig templating engine along with
-Bootstrap 5 for styling, and Symfony for backend functionality.
 
-## Installation
+## 🛠️ Tech Stack
 
-To install and set up Rakcha Web, follow these steps:
+**Core:** Twig
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/aliammari1/rakcha-web.git
+**Backend:** node.js
+
+**Tools:** webpack
+
+
+
+## 📦 Installation
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm package manager
+
+### Installation Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/aliammari1/REPO_NAME.git
+   cd REPO_NAME
    ```
-2. Navigate to the project directory:
-   ```sh
-   cd rakcha-web
-   ```
-3. Install the dependencies:
-   ```sh
-   composer install
-   ```
-4. Set up the environment variables by copying the `.env.example` to `.env` and configuring the values as needed:
-   ```sh
-   cp .env.example .env
-   ```
-5. Run the application:
-   ```sh
-   symfony server:start
+
+2. **Install dependencies**
+   ```bash
+   npm install
    ```
 
-## Usage
-
-Start the application and navigate to `http://localhost:8000` to see the application in action.
-
-## Contributing
-
-We welcome contributions to Rakcha Web. To contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix:
-   ```sh
-   git checkout -b feature/your-feature-name
+3. **Start the development server**
+   ```bash
+   npm start
    ```
-3. Commit your changes:
-   ```sh
-   git commit -m "Add feature: your feature name"
-   ```
-4. Push to your branch:
-   ```sh
-   git push origin feature/your-feature-name
-   ```
-5. Open a pull request on GitHub.
 
-## License
 
-This project does not currently specify a license. Please contact the repository owner for more information.
+
+## 🚀 Usage
+
+1. **Basic Usage**
+   ```bash
+   ./tool-name [options] [arguments]
+   ```
+
+2. **Get Help**
+   ```bash
+   ./tool-name --help
+   ```
+
+
+
+## 📁 Project Structure
+
+```
+├── src/                 # Source code
+├── docs/                # Documentation
+├── tests/               # Test files
+├── assets/              # Static assets
+└── README.md            # Project documentation
+```
+
+
+
+## 📜 Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run test` | Run tests |
+
+
+## 🤝 Contributing
+
+Contributions are always welcome! Here's how you can help:
+
+1. **Fork the repository**
+2. **Create your feature branch**
+   ```bash
+   git checkout -b feature/AmazingFeature
+   ```
+3. **Commit your changes**
+   ```bash
+   git commit -m 'Add some AmazingFeature'
+   ```
+4. **Push to the branch**
+   ```bash
+   git push origin feature/AmazingFeature
+   ```
+5. **Open a Pull Request**
+
+### Guidelines
+
+- Follow the existing code style
+- Add tests for new features
+- Update documentation as needed
+- Write clear commit messages
+
+
+## 👨‍💻 Author
+
+**Ali Ammari**
+- GitHub: [@aliammari1](https://github.com/aliammari1)
+- Website: [aliammari.netlify.app](https://aliammari.netlify.app)
+- Email: ammari.ali.0001@gmail.com
+
+## 💖 Support
+
+If you find this project helpful, please consider:
+- ⭐ Starring the repository
+- 🍴 Forking the project
+- 📢 Sharing it with others
+- 🐛 Reporting issues
+- 💡 Suggesting improvements
+
+---
+
+<div align="center">
+  <strong>⭐ Star this repository if you find it helpful!</strong>
+</div>
