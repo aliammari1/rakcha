@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\DomCrawler\Crawler;
 
 
 /**
@@ -45,7 +46,7 @@ class FilmRepository extends ServiceEntityRepository
                 ]
             ]);
             $html = $response->getContent();
-            $crawler = new \Symfony\Component\DomCrawler\Crawler($html);
+            $crawler = new Crawler($html);
             // Use the new selector for the first result's link
             $link = $crawler->filter('li.ipc-metadata-list-summary-item a.ipc-lockup-overlay')->first();
             if ($link->count() > 0) {
