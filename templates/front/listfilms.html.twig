@@ -2,7 +2,7 @@
 
 {% block pageStyle %}
     <link
-            href="{{ asset('/css/about.css') }}" rel="stylesheet">
+            href="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public//css/about.css') }}" rel="stylesheet">
     <script>
         var BookMarkArray = [];
         var filmArray = [];
@@ -525,11 +525,11 @@
                                                         for (let i = 0; i < data.seatsArray.length; i++) {
                                                             const seat = data.seatsArray[i];
                                                             if (seat.status == 'vide') {
-                                                                document.getElementById("seatContainer{{ j }}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/armchair.png") }}" width="100" />';
+                                                                document.getElementById("seatContainer{{ j }}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/seats/armchair.png") }}" width="100" />';
                                                             } else if (seat.status == 'reserve') {
-                                                                document.getElementById("seatContainer{{ j }}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/couch.png") }}" width="100" />';
+                                                                document.getElementById("seatContainer{{ j }}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/seats/couch.png") }}" width="100" />';
                                                             } else {
-                                                                document.getElementById("seatContainer{{ j }}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("img/seats/sofa.png") }}" width="100" />';
+                                                                document.getElementById("seatContainer{{ j }}").innerHTML += '<img id="seat-' + seat.id + '" class="seat" src="{{ asset("https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/seats/sofa.png") }}" width="100" />';
                                                             }
                                                         }
                                                         for (let i = 0; i < data.seatsArray.length; i++) {
@@ -537,7 +537,7 @@
                                                             if (seat.status != 'reserve') {
                                                                 let click = 0;
                                                                 document.getElementById('seat-' + seat.id).addEventListener("click", function () {
-                                                                    this.src = !click ? "{{ asset('img/seats/sofa.png') }}" : "{{ asset('img/seats/armchair.png') }}";
+                                                                    this.src = !click ? "{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/seats/sofa.png') }}" : "{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/seats/armchair.png') }}";
                                                                     if (!click) {
                                                                         seatIds{{ j }}.push(seat.id);
                                                                     } else {
