@@ -2,15 +2,7 @@
   "devDependencies": {
     "@babel/core": "^7.17.0",
     "@babel/preset-env": "^7.16.0",
-    "@hotwired/stimulus": "^3.0.0",
-    "@hotwired/turbo": "^7.1.1 || ^8.0",
     "@splidejs/splide": "^4.1.4",
-    "@swup/debug-plugin": "^3.0",
-    "@swup/fade-theme": "^1.0",
-    "@swup/forms-plugin": "^2.0",
-    "@swup/slide-theme": "^1.0",
-    "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
-    "@symfony/webpack-encore": "^5.0.0",
     "animate.css": "^4.1.1",
     "aos": "^2.3.4",
     "chart.js": "^3.4.1 || ^4.0",
@@ -23,12 +15,7 @@
     "rellax": "^1.12.1",
     "scrollmagic": "^2.0.8",
     "smooth-scrollbar": "^8.8.4",
-    "swup": "^3.0",
-    "three.js": "^0.77.1",
-    "typed.js": "^2.1.0",
-    "vanilla-tilt": "^1.8.1",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^5.1.0"
+    "vanilla-tilt": "^1.8.1"
   },
   "license": "UNLICENSED",
   "private": true,
@@ -36,7 +23,7 @@
     "dev-server": "encore dev-server",
     "dev": "encore dev",
     "watch": "encore dev --watch",
-    "build": "encore production --progress"
+    "build": "npm i"
   },
   "dependencies": {
     "@studio-freight/lenis": "^1.0.42",
