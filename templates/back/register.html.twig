@@ -4,21 +4,21 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-    <link href="{{ asset('img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
-    <link href="{{ asset('img/favicon.png') }}" rel="icon" type="image/png"/>
+    <link href="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/apple-icon.png') }}" rel="apple-touch-icon" sizes="76x76"/>
+    <link href="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/favicon.png') }}" rel="icon" type="image/png"/>
     <title>Rakcha</title>
     <!--     Fonts and icons     -->
     <link
             href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <!-- Nucleo Icons -->
-    <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/css/nucleo-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/css/nucleo-svg.css') }}" rel="stylesheet"/>
     <!-- Font Awesome Icons -->
     <script crossorigin="anonymous" src="https://kit.fontawesome.com/42d5adcbca.js"></script>
     <link
-            href="{{ asset('css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
-    <link href="{{ asset('css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
-    <link href="{{ asset('css/loading.css') }}" rel="stylesheet">
+            href="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/css/nucleo-svg.css') }}" rel="stylesheet"/> <!-- CSS Files -->
+    <link href="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/css/argon-dashboard.css?v=2.0.4') }}" id="pagestyle" rel="stylesheet"/>
+    <link href="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/css/loading.css') }}" rel="stylesheet">
 </head>
 <body class="">
 <div id="loading">
@@ -194,7 +194,7 @@
                                 {% if field.vars.name == 'agreeTerms' %}
                                     {{ form_widget(field, {'attr': {'class': 'form-check-input', 'id': 'flexCheckDefault'}}) }}
                                 {% elseif field.vars.name == 'photoDeProfil' %}
-                                    <img src="{{ asset('img/users/empty.jpg') }}" alt=""
+                                    <img src="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/empty.jpg') }}" alt=""
                                          class="img-thumbnail img-fluid mb-2" id="photoDeProfilImage">
                                     {{ form_widget(field, { 'attr': {'class': 'form-control'}}) }}
                                 {% else %}
@@ -250,10 +250,10 @@
 </footer>
 <!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
 <!--   Core JS Files   -->
-<script src="{{ asset('js/core/popper.min.js') }}"></script>
-<script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
-<script src="{{ asset('js/plugins/perfect-scrollbar.min.js') }}"></script>
-<script src="{{ asset('js/plugins/smooth-scrollbar.min.js') }}"></script>
+<script src="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/js/core/popper.min.js') }}"></script>
+<script src="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/js/core/bootstrap.min.js') }}"></script>
+<script src="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/js/plugins/perfect-scrollbar.min.js') }}"></script>
+<script src="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/js/plugins/smooth-scrollbar.min.js') }}"></script>
 <script>
     let photoDeProfilImage = document.getElementById('photoDeProfilImage');
     let photoDeProfilInput = document.getElementById('registration_form_photoDeProfil');
@@ -276,6 +276,6 @@
 <!-- Github buttons -->
 <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="{{ asset('js/argon-dashboard.min.js?v=2.0.4') }}"></script>
+<script src="{{ asset('https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/js/argon-dashboard.min.js?v=2.0.4') }}"></script>
 </body>
 </html>
