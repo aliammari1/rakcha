@@ -19,7 +19,6 @@
     "endroid/qr-code": "^5.0",
     "endroid/qr-code-bundle": "^5.0",
     "guzzlehttp/guzzle": "^7.8",
-    "imdbphp/imdbphp": "^8.2",
     "intervention/image": "^2.7",
     "kartik-v/bootstrap-star-rating": "@dev",
     "knplabs/knp-paginator-bundle": "^5.9",
