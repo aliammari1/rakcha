@@ -11,12 +11,12 @@ class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        return '/tmp/cache';
+        return sys_get_temp_dir() . '/cache';
     }
 
     public function getLogDir(): string
     {
-        return '/tmp/log';
+        return sys_get_temp_dir() . '/log';
     }
 
 }
