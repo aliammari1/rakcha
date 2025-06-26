@@ -18,6 +18,8 @@ use Endroid\QrCodeBundle\Response\QrCodeResponse;
 use Exception;
 use Madcoda\Youtube\Youtube;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,32 +37,14 @@ class ListfilmsController extends AbstractController
         $ratings = array();
         $seanceFilmMatrix = array();
         $categorys = $categoryRepository->findAll();
-        $urls = array();;
-        // dd(phpinfo());
-        //$qrCodes = array();
+        $urls = array();
         foreach ($films as $film) {
-            // Instantiate the IMDbPHP Title class
-            $config = new \Imdb\Config();
-            $config->cachedir = sys_get_temp_dir() . '/imdbphp';
-            $search = new \Imdb\TitleSearch(null, null, null);
-            $firstResultTitle = $search->search($film->getNom())[0];
-            $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
-            // // If movie found, redirect to IMDb URL
-            // // $imdbId = $search[0]['imdbid'];
-            // // $url = "https://www.imdb.com/title/$imdbId/";
+            // Use web scraping to get IMDb URL
+            $url = $filmRepository->getImdbUrlByFilmName($film->getNom());
             $urls[] = $url;
-            // $qrCodeData = $this->generateQRCode($url);
-
-            // Encode QR code as base64
-            // $base64QrCode = base64_encode($qrCodeData);
-            // $urls[$film->getId()] = $url;
-            // $qrCodes[$film->getId()] = $base64QrCode;
-
-            // $qrCodes[] = $base64QrCode;
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
             if ($this->getUser()) {
-                // Check if the user is logged in before fetching the rating
                 $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $this->getUser()->getId()]);
             } else {
                 $ratings[] = 0;
@@ -73,7 +57,6 @@ class ListfilmsController extends AbstractController
             }
             $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
         }
-        // dd($averageRatings);
         return $this->render('front/listfilms.html.twig', [
             'films' => $films,
             'videoUrl' => $videoUrls,
@@ -83,7 +66,6 @@ class ListfilmsController extends AbstractController
             'seances' => $seanceFilmMatrix,
             'urls' => $urls,
             'stripe_key' => $_ENV["STRIPE_KEY"],
-            //'qrCodes' => $qrCodes
         ]);
     }
 
@@ -113,26 +95,11 @@ class ListfilmsController extends AbstractController
         $ratings = array();
         $seanceFilmMatrix = array();
         $categorys = $categoryRepository->findAll();
-        $urls = array();;
-        // dd(phpinfo());
-        //$qrCodes = array();
+        $urls = array();
         foreach ($films as $film) {
-            // Instantiate the IMDbPHP Title class
-            $search = new \Imdb\TitleSearch(null, null, null);
-            $firstResultTitle = $search->search($film->getNom())[0];
-            $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
-            // // If movie found, redirect to IMDb URL
-            // // $imdbId = $search[0]['imdbid'];
-            // // $url = "https://www.imdb.com/title/$imdbId/";
+            // Use web scraping to get IMDb URL
+            $url = $filmRepository->getImdbUrlByFilmName($film->getNom());
             $urls[] = $url;
-            // $qrCodeData = $this->generateQRCode($url);
-
-            // Encode QR code as base64
-            // $base64QrCode = base64_encode($qrCodeData);
-            // $urls[$film->getId()] = $url;
-            // $qrCodes[$film->getId()] = $base64QrCode;
-
-            // $qrCodes[] = $base64QrCode;
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
             $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $this->getUser()->getId()]);
@@ -144,7 +111,6 @@ class ListfilmsController extends AbstractController
             }
             $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
         }
-        // dd($averageRatings);
         return $this->render('front/listfilms.html.twig', [
             'films' => $films,
             'videoUrl' => $videoUrls,
@@ -154,7 +120,6 @@ class ListfilmsController extends AbstractController
             'seances' => $seanceFilmMatrix,
             'urls' => $urls,
             'stripe_key' => $_ENV["STRIPE_KEY"],
-            //'qrCodes' => $qrCodes
         ]);
     }
 
@@ -187,21 +152,11 @@ class ListfilmsController extends AbstractController
     #[Route('/qrcode/{filmName}', name: 'app_qrcode_film')]
     public function qrcode($filmName, FilmRepository $filmRepository, EntityManagerInterface $entityManager): Response
     {
-
         $result = Builder::create()
-            ->data($this->searchImdb($filmName))
+            ->data($filmRepository->getImdbUrlByFilmName($filmName))
             ->size(150)
             ->build();
         return new QrCodeResponse($result);
-        // return new Response($result->getString(), 200, ['Content-Type' => 'image/png']);
-    }
-
-    function searchImdb($filmName): string
-    {
-        $search = new \Imdb\TitleSearch(null /* config */, null /* logger */, null);
-        $firstResultTitle = $search->search($filmName)[0];
-        $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
-        return $url;
     }
 
     #[Route('/qrcodeurl/{filmName}', name: 'app_qrcodeurl_film')]
@@ -295,9 +250,7 @@ class ListfilmsController extends AbstractController
     {
         $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
         $film = $filmRepository->find($id);
-        $search = new \Imdb\TitleSearch(null, null, null);
-        $firstResultTitle = $search->search($film->getNom())[0];
-        $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
+        $url = $filmRepository->getImdbUrlByFilmName($film->getNom());
         $averageRating = $ratingfilmRepository->getAverageRating($film->getId());
         $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
         if (!empty($videoList)) {

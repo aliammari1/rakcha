@@ -30,6 +30,36 @@ class FilmRepository extends ServiceEntityRepository
         $this->serializer = $serializer;
     }
 
+    /**
+     * Scrape IMDb search to get the first result's URL for a film name using the /search/title endpoint and the new selector.
+     */
+    public function getImdbUrlByFilmName(string $filmName): ?string
+    {
+        try {
+            $query = urlencode($filmName);
+            $url = "https://www.imdb.com/search/title/?title={$query}&title_type=feature,tv_movie";
+            $response = $this->client->request('GET', $url, [
+                'headers' => [
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                ]
+            ]);
+            $html = $response->getContent();
+            $crawler = new \Symfony\Component\DomCrawler\Crawler($html);
+            // Use the new selector for the first result's link
+            $link = $crawler->filter('li.ipc-metadata-list-summary-item a.ipc-lockup-overlay')->first();
+            if ($link->count() > 0) {
+                $href = $link->attr('href');
+                return 'https://www.imdb.com' . $href;
+            }
+            // Optionally log HTML for debugging
+            // file_put_contents(__DIR__.'/imdb_debug.html', $html);
+        } catch (\Exception $e) {
+            // Optionally log: error_log($e->getMessage());
+        }
+        return "";
+    }
+
     //    /**
 //     * @return Film[] Returns an array of Film objects
 //     */
@@ -54,38 +84,4 @@ class FilmRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
-    public function getIMDBUrlByNom(string $query): string
-    {
-        try {
-            $encodedQuery = urlencode($query);
-            $scriptUrl = "https://script.google.com/macros/s/AKfycbyeuvvPJ2jljewXKStVhiOrzvhMPkAEj5xT_cun3IRWc9XEF4F64d-jimDvK198haZk/exec?query=" . $encodedQuery;
-
-            $response = $this->client->request('GET', $scriptUrl);
-
-            $statusCode = $response->getStatusCode();
-            while ($statusCode !== 123) {
-                // Retry until statusCode is 123
-                $response = $this->client->request('GET', $scriptUrl);
-                $statusCode = $response->getStatusCode();
-                echo "Status Code: $statusCode\n";
-            }
-
-            $content = $response->getContent();
-            $jsonResponse = $this->serializer->decode($content, 'json');
-            $results = $jsonResponse['results'] ?? [];
-
-            if (!empty($results)) {
-                $firstResult = $results[0];
-                $imdbUrl = $firstResult['imdb'] ?? 'imdb.com';
-                echo "IMDb URL of the first result: $imdbUrl\n";
-                return $imdbUrl;
-            } else {
-                echo "No results found.\n";
-            }
-        } catch (\Exception $e) {
-            echo $e->getMessage() . "\n";
-        }
-        return 'imdb.com';
-    }
 }
