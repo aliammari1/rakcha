@@ -31,9 +31,6 @@
     "madcoda/php-youtube-api": "^1.2",
     "nyholm/psr7": "^1.8",
     "omnipay/paypal": "^3.0",
-    "php-ai/php-ml": "^0.10.0",
-    "php-flasher/flasher-noty-symfony": "^1.15",
-    "php-flasher/flasher-symfony": "^1.15",
     "phpdocumentor/reflection-docblock": "^5.3",
     "phpstan/phpdoc-parser": "^1.24",
     "scheb/2fa-bundle": "^6.0",
@@ -121,12 +118,6 @@
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     },
-    "vercel": 
-     [
-      "composer install --no-dev --optimize-autoloader",
-      "@php -v",
-      "npm -v"
-    ],
     "post-install-cmd": [
       "@auto-scripts"
     ],
