@@ -28,8 +28,3 @@ yarn-error.log
 ###> liip/imagine-bundle ###
 /public/media/cache/
 ###< liip/imagine-bundle ###
-
-/composer.lock
-/package-lock.json
-/yarn.lock
-/symfony.lock
