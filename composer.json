@@ -51,6 +51,7 @@
     "symfony/google-mailer": "6.4.*",
     "symfony/http-client": "6.4.*",
     "symfony/intl": "6.4.*",
+    "symfony/lock": "6.4.*",
     "symfony/mailer": "6.4.*",
     "symfony/mime": "6.4.*",
     "symfony/monolog-bundle": "^3.0",
@@ -110,6 +111,11 @@
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     },
+    "vercel": [
+      "@php bin/console doctrine:database:drop --force",
+      "@php bin/console doctrine:database:create",
+      "@php bin/console doctrine:schema:update --force --complete"
+    ],
     "post-install-cmd": [
       "@auto-scripts"
     ],
