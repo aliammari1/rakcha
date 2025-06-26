@@ -26,6 +26,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Install PHP dependencies
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 # Copy nginx config
