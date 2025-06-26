@@ -40,6 +40,8 @@ class ListfilmsController extends AbstractController
         //$qrCodes = array();
         foreach ($films as $film) {
             // Instantiate the IMDbPHP Title class
+            $config = new \Imdb\Config();
+            $config->cachedir = sys_get_temp_dir() . '/imdbphp';
             $search = new \Imdb\TitleSearch(null, null, null);
             $firstResultTitle = $search->search($film->getNom())[0];
             $url = "https://www.imdb.com/title/tt" . $firstResultTitle->imdbid();
@@ -57,7 +59,12 @@ class ListfilmsController extends AbstractController
             // $qrCodes[] = $base64QrCode;
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $this->getUser()->getId()]);
+            if ($this->getUser()) {
+                // Check if the user is logged in before fetching the rating
+                $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $this->getUser()->getId()]);
+            } else {
+                $ratings[] = 0;
+            }
             $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
             if (!empty($videoList)) {
                 $firstVideo = $videoList[0]['id']['videoId'];
