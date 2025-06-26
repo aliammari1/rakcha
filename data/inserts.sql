@@ -1,13 +1,13 @@
 INSERT INTO `actor` (`id`, `nom`, `image`, `biographie`)
-VALUES (1, 'RyuKyungsoo', '/img/actors/30425.jpg', 'Traduit de l''anglais-Ryu Kyung-soo est un acteur sud-coréen. Il est connu pour ses rôles dans les séries dramatiques Confession et Itaewon Class'),
-(2, 'Tom Holland', '/img/actors/97434.jpg', 'Thomas Stanley Holland, dit Tom Holland, né le 1ᵉʳ juin 1996 à Kingston upon Thames'),
-(3, 'Zendaya', '/img/actors/3033.jpg', 'Zendaya Coleman, dite simplement Zendaya, est une actrice, productrice, mannequin.'),
-(4, 'Tobey Maguire', '/img/actors/40317.jpg', 'Tobey Maguire, de son vrai nom Tobias Vincent Maguire, né le 27 juin 1975 à Santa Monica'),
-(5, 'Robert Downey Jr', '/img/actors/15329.jpg', 'Robert Downey Jr. /ˈɹɑbɚt ˈdaʊni ˈd͡ʒunjɚ/, né le 4 avril 1965 à New York, est un acteur et scénariste américain.'),
-(6, 'Chris Hemsworth', '/img/actors/30524.jpg', 'Christopher Hemsworth, dit Chris, né le 11 août 1983 à Melbourne, est un acteur australien.'),
-(7, 'Chris Evans', '/img/actors/43656.jpg', 'Christopher Robert Evans est un acteur américain, né le 13 juin 1981 à Boston'),
-(8, 'Cillian Murphy', '/img/actors/85261.jpg', 'Cillian Murphy, né le 25 mai 1976 à Douglas, est un acteur et musicien irlandais.'),
-(9, 'Tom Hardy', '/img/actors/23056.jpg', 'Edward Hardy, dit Tom Hardy, né le 15 septembre 1977 à Hammersmith en Angleterre, est un acteur et producteur britannique');
+VALUES (1, 'RyuKyungsoo', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/30425.jpg', 'Traduit de l''anglais-Ryu Kyung-soo est un acteur sud-coréen. Il est connu pour ses rôles dans les séries dramatiques Confession et Itaewon Class'),
+(2, 'Tom Holland', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/97434.jpg', 'Thomas Stanley Holland, dit Tom Holland, né le 1ᵉʳ juin 1996 à Kingston upon Thames'),
+(3, 'Zendaya', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/3033.jpg', 'Zendaya Coleman, dite simplement Zendaya, est une actrice, productrice, mannequin.'),
+(4, 'Tobey Maguire', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/40317.jpg', 'Tobey Maguire, de son vrai nom Tobias Vincent Maguire, né le 27 juin 1975 à Santa Monica'),
+(5, 'Robert Downey Jr', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/15329.jpg', 'Robert Downey Jr. /ˈɹɑbɚt ˈdaʊni ˈd͡ʒunjɚ/, né le 4 avril 1965 à New York, est un acteur et scénariste américain.'),
+(6, 'Chris Hemsworth', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/30524.jpg', 'Christopher Hemsworth, dit Chris, né le 11 août 1983 à Melbourne, est un acteur australien.'),
+(7, 'Chris Evans', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/43656.jpg', 'Christopher Robert Evans est un acteur américain, né le 13 juin 1981 à Boston'),
+(8, 'Cillian Murphy', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/85261.jpg', 'Cillian Murphy, né le 25 mai 1976 à Douglas, est un acteur et musicien irlandais.'),
+(9, 'Tom Hardy', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/actors/23056.jpg', 'Edward Hardy, dit Tom Hardy, né le 15 septembre 1977 à Hammersmith en Angleterre, est un acteur et producteur britannique');
 INSERT INTO `categories` (`idcategorie`, `nom`, `description`) VALUES
 (1, 'Drama', 'serie drama'),
 (2, 'Horreur', 'serie horreur'),
@@ -35,17 +35,17 @@ VALUES (1, 'Action', 'Des films remplis d''aventures, de combats, de cascades et
 (14, 'Biography', 'Films based on the lives of real people, exploring their achievements, struggles, and significant moments, often offering insights into their personal and professional journeys.'),
 (15, 'Historical', 'Movies set in the past, depicting historical events, figures, or periods, often blending factual accuracy with dramatic storytelling to recreate historical moments.');
 INSERT INTO `cinema` (`id_cinema`, `nom`, `adresse`, `responsable`, `logo`, `Statut`)
-VALUES (13, 'Cinema l''étoile', 'Tunis', 104, 'img/cinemas/etoile.png-6634a60d82254.png', 'Accepted'),
-(14, 'cinemaAli', 'Tunis', 104, 'img/cinemas/pathe.png-6634a9490827b.png', 'Accepted'),
-(15, 'veo', 'Tunis', 104, 'img/cinemas/veo_cinema.png-66384172ce206.png', 'Accepted'),
-(16, 'L''AGORA', 'Sousse', 104, 'img/cinemas/agora-logo.png-6638419a730b9.png', 'Pending'),
-(18, 'ABC Cinema', 'Monastir', 104, 'img/cinemas/5db23739-d572-4b26-9031-996a1e6b49a4.jpeg-663841e1de710.jpg', 'Pending'),
-(19, 'palace', 'monastir, rue habib bourguiba', 104, 'img/cinemas/palace.jpeg-6638427a8c005.jpg', 'Pending'),
-(20, 'Coliser', 'Tunis', 104, 'img/cinemas/coliser.jpeg-6638429673906.jpg', 'Pending'),
-(21, 'pathé sousse', 'mall of sousse', 118, 'img/cinemas/path.png-663877fde00c5.png', 'Accepted'),
-(22, 'Lagora', 'monastir, rue habib bourguiba', 118, 'img/cinemas/agora-logo.png-66388b4f90f8e.png', 'Pending'),
-(23, 'ABC Cinema', 'Tunis', 118, 'img/cinemas/abc.jpeg-66388b7ecd789.jpg', 'Pending'),
-(25, 'VEO', 'monastir, rue habib bourguiba', 118, 'img/cinemas/veo_cinema.png-66388c3bb00d5.png', 'Accepted');
+VALUES (13, 'Cinema l''étoile', 'Tunis', 104, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/etoile.png-6634a60d82254.png', 'Accepted'),
+(14, 'cinemaAli', 'Tunis', 104, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/pathe.png-6634a9490827b.png', 'Accepted'),
+(15, 'veo', 'Tunis', 104, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/veo_cinema.png-66384172ce206.png', 'Accepted'),
+(16, 'L''AGORA', 'Sousse', 104, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/agora-logo.png-6638419a730b9.png', 'Pending'),
+(18, 'ABC Cinema', 'Monastir', 104, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/5db23739-d572-4b26-9031-996a1e6b49a4.jpeg-663841e1de710.jpg', 'Pending'),
+(19, 'palace', 'monastir, rue habib bourguiba', 104, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/palace.jpeg-6638427a8c005.jpg', 'Pending'),
+(20, 'Coliser', 'Tunis', 104, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/coliser.jpeg-6638429673906.jpg', 'Pending'),
+(21, 'pathé sousse', 'mall of sousse', 118, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/path.png-663877fde00c5.png', 'Accepted'),
+(22, 'Lagora', 'monastir, rue habib bourguiba', 118, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/agora-logo.png-66388b4f90f8e.png', 'Pending'),
+(23, 'ABC Cinema', 'Tunis', 118, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/abc.jpeg-66388b7ecd789.jpg', 'Pending'),
+(25, 'VEO', 'monastir, rue habib bourguiba', 118, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/cinemas/veo_cinema.png-66388c3bb00d5.png', 'Accepted');
 INSERT INTO `commande` (`idCommande`, `dateCommande`, `statu`, `num_telephone`, `adresse`, `idClient`)
 VALUES (52, '2024-05-06', 'en cours', 29201398, 'Bennane', 113),
        (53, '2024-05-06', 'en cours', 29201398, 'Bennane', 113),
@@ -69,11 +69,11 @@ VALUES (2, 113, 1, 'Good product'),
        (3, 113, 1, 'Love');
 INSERT INTO `episodes` (`idepisode`, `idserie`, `titre`, `numeroepisode`, `saison`, `image`, `video`)
 VALUES (4, 13, 'Fake friends', 1, 2,
-        'img/series/aaaabd0brbfrfhksln3x8p89bmxakxbjk65vki3gnqui4urylpurc6fzyf4wxhvx4jfsytmdhxmz_mkofj9pkubgjf0abk5eouj8uq4vwt6f3v3suqt7o6bc2n4p-6637f85119072.jpg',
-        'img/series/3413033377-preview-6637f85119b42.mp4'),
+        'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/aaaabd0brbfrfhksln3x8p89bmxakxbjk65vki3gnqui4urylpurc6fzyf4wxhvx4jfsytmdhxmz_mkofj9pkubgjf0abk5eouj8uq4vwt6f3v3suqt7o6bc2n4p-6637f85119072.jpg',
+        'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/3413033377-preview-6637f85119b42.mp4'),
        (5, 13, 'Masculine Feminine', 2, 1,
-        'img/series/aaaabrfb3dy2tyofrz8blnqrghfouufgaptipyaoonhlmecrp_vawzjo5i_zukdm-ks2h-du2giwgnywilpe-hhdert-6weu55q2wrk3xz07ubtw5u_csozhqu59-6637f8bba3e68.jpg',
-        'img/series/3413033377-preview-6637f8bba4a7b.mp4');
+        'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/aaaabrfb3dy2tyofrz8blnqrghfouufgaptipyaoonhlmecrp_vawzjo5i_zukdm-ks2h-du2giwgnywilpe-hhdert-6weu55q2wrk3xz07ubtw5u_csozhqu59-6637f8bba3e68.jpg',
+        'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/3413033377-preview-6637f8bba4a7b.mp4');
 INSERT INTO `favoris` (`id`, `id_user`, `id_serie`)
 VALUES (1, 1, 1),
        (2, 1, 2),
@@ -85,15 +85,15 @@ VALUES (1, 1, 'ahla nourhene', '2019-01-01', 2),
        (4, 108, 'Excellent !!', '2019-01-01', 4),
        (5, 108, 'j''adore', '2019-01-01', 4);
 INSERT INTO `film` (`id`, `nom`, `image`, `duree`, `description`, `annederalisation`, `isBookmarked`) VALUES
-(6, 'Spider', '/img/films/90101.jpg', '02:10:45', 'description ddd', 2008, 0),
-(7, 'SpiderMan No Way Home', '/img/films/61459.jpg', '02:28:30', 'Avec l''identité de Spiderman désormais révélée, celui-ci est démasqué', 2021, 1),
-(8, 'Avengers Infinity War', '/img/films/6794.jpg', '02:29:41', 'Alors que les Avengers et leurs alliés ont continué de protéger le monde face à des menaces bien trop grande', 2018, 1),
-(9, 'Oppenheimer', '/img/films/46637.jpg', '03:00:48', 'En 1942, convaincus que l''Allemagne nazie est en train de développer une arme nucléaire', 2024, 1),
-(10, 'Venom Let There Be Carnage', '/img/films/62047.jpg', '01:37:42', 'Après leur triomphe sur Riot, Eddie Brock et son parasite extraterrestre se sont mis d''accord sur quelques règles de conduite', 2021, 0),
-(11, 'LIdee detre avec toi', '/img/films/79595.jpg', '01:55:36', 'Lorsque Solène, une mère célibataire de 40 ans, doit chaperonner le voyage de sa fille adolescente au festival de musique de Coachella,', 2024, 0),
-(12, 'Dachra', '/img/films/39862.jpg', '01:32:56', 'Dachra est un film d''horreur tunisien écrit et réalisé par Abdelhamid Bouchnak et sorti en 2018', 2018, 0),
-(13, 'Titanic', '/img/films/43943.jpg', '03:23:40', 'Southampton, 10 avril 1912. Le paquebot le plus grand et le plus moderne du monde, réputé pour son insubmersibilité, le « Titanic »', 2008, 0),
-(14, 'En eaux tres troubles', '/img/films/82547.jpg', '01:58:15', 'Une équipe de chercheurs en pleine opération d''extraction minière illégale dans l''océan se retrouve en péril.', 2023, 0);
+(6, 'Spider', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/90101.jpg', '02:10:45', 'description ddd', 2008, 0),
+(7, 'SpiderMan No Way Home', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/61459.jpg', '02:28:30', 'Avec l''identité de Spiderman désormais révélée, celui-ci est démasqué', 2021, 1),
+(8, 'Avengers Infinity War', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/6794.jpg', '02:29:41', 'Alors que les Avengers et leurs alliés ont continué de protéger le monde face à des menaces bien trop grande', 2018, 1),
+(9, 'Oppenheimer', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/46637.jpg', '03:00:48', 'En 1942, convaincus que l''Allemagne nazie est en train de développer une arme nucléaire', 2024, 1),
+(10, 'Venom Let There Be Carnage', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/62047.jpg', '01:37:42', 'Après leur triomphe sur Riot, Eddie Brock et son parasite extraterrestre se sont mis d''accord sur quelques règles de conduite', 2021, 0),
+(11, 'LIdee detre avec toi', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/79595.jpg', '01:55:36', 'Lorsque Solène, une mère célibataire de 40 ans, doit chaperonner le voyage de sa fille adolescente au festival de musique de Coachella,', 2024, 0),
+(12, 'Dachra', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/39862.jpg', '01:32:56', 'Dachra est un film d''horreur tunisien écrit et réalisé par Abdelhamid Bouchnak et sorti en 2018', 2018, 0),
+(13, 'Titanic', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/43943.jpg', '03:23:40', 'Southampton, 10 avril 1912. Le paquebot le plus grand et le plus moderne du monde, réputé pour son insubmersibilité, le « Titanic »', 2008, 0),
+(14, 'En eaux tres troubles', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/films/82547.jpg', '01:58:15', 'Une équipe de chercheurs en pleine opération d''extraction minière illégale dans l''océan se retrouve en péril.', 2023, 0);
 INSERT INTO `film_actor` (`film_id`, `actor_id`) VALUES
 (6, 1),
 (7, 2),
@@ -166,12 +166,12 @@ INSERT INTO `panier` (`id_produit`, `idpanier`, `quantite`, `idClient`) VALUES
 (1, 8, 6, 113),
 (19, 9, 2, 113);
 INSERT INTO `produit` (`id_produit`, `nom`, `prix`, `image`, `description`, `quantiteP`, `id_categorieProduit`) VALUES
-(1, 'Smoking Joker Pop Art', 50, 'img/produit/smokingjoker.jpg-6633cbcd85b2d.jpg', 'Printed on thick paper (250 g/m²)\nMaximum color brilliance and high UV resistance', 88, 2),
-(2, 'Le Parrain', 170, 'img/produit/leparrain.jpg-6633cbee570e0.jpg', 'Printing on thick paper (250 g/m²)\r\nÉclat maximal des couleurs et haute résistance aux UV', 92, 2),
-(3, 'OLD TIMES', 150, 'img/produit/oldtimes.jpg-6633cbff937c8.jpg', 'Limited edition (n°2/5) Sculpture, Bronze on stone\r\nDimensions Height 30cm, Width 18cm/3.00', 94, 3),
-(4, 'Harry Potter', 30, 'img/produit/harrypotter1.jpg-6633cc2332708.jpg', 'Discover or rediscover the full text of J.K. Rowling with sublime color illustrations', 100, 4),
-(18, 'tableau conan', 30, 'img/produit/conan.jpg-6633cc4ac1b1c.jpg', 'Printed on thick paper (250 g/m²), this artwork boasts maximum color brilliance and high UV resistan', 0, 3),
-(19, 'tableau naruto', 50, 'img/produit/naruto.jpg-6633cc6096f96.jpg', 'Printed on thick paper (250 g/m²)\r\nMaximum color brilliance and high UV resistance', 0, 8);
+(1, 'Smoking Joker Pop Art', 50, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/produit/smokingjoker.jpg-6633cbcd85b2d.jpg', 'Printed on thick paper (250 g/m²)\nMaximum color brilliance and high UV resistance', 88, 2),
+(2, 'Le Parrain', 170, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/produit/leparrain.jpg-6633cbee570e0.jpg', 'Printing on thick paper (250 g/m²)\r\nÉclat maximal des couleurs et haute résistance aux UV', 92, 2),
+(3, 'OLD TIMES', 150, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/produit/oldtimes.jpg-6633cbff937c8.jpg', 'Limited edition (n°2/5) Sculpture, Bronze on stone\r\nDimensions Height 30cm, Width 18cm/3.00', 94, 3),
+(4, 'Harry Potter', 30, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/produit/harrypotter1.jpg-6633cc2332708.jpg', 'Discover or rediscover the full text of J.K. Rowling with sublime color illustrations', 100, 4),
+(18, 'tableau conan', 30, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/produit/conan.jpg-6633cc4ac1b1c.jpg', 'Printed on thick paper (250 g/m²), this artwork boasts maximum color brilliance and high UV resistan', 0, 3),
+(19, 'tableau naruto', 50, 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/produit/naruto.jpg-6633cc6096f96.jpg', 'Printed on thick paper (250 g/m²)\r\nMaximum color brilliance and high UV resistance', 0, 8);
 INSERT INTO `ratingfilm` (`id_film`, `id_user`, `rate`) VALUES
 (2, 105, 4),
 (6, 105, 3),
@@ -473,17 +473,17 @@ INSERT INTO `seat` (`id`, `id_salle`, `statut`) VALUES
 (5252, 23, 'vide'),
 (5253, 23, 'vide');
 INSERT INTO `series` (`idserie`, `nom`, `resume`, `directeur`, `pays`, `image`, `liked`, `nbLikes`, `disliked`, `nbDislikes`, `idcategorie`) VALUES
-(2, 'Peaky blinders', 'A gangster family epic set in 1900s England', 'Matt and Ross Duffer', 'Birmingham, England, ', 'img/series/wmunrwzmgkgfrclabhrrzd1jf49-scaled-6634cf69d1c6b.jpg', 0, 1, 0, 1, 1),
-(4, 'Stranger Things', 'Centers around the residents of the fictional town', 'Matt and Ross Duffer', 'United States', 'img/series/9781532143892-66360efa12050.jpg', 0, 0, 0, 0, 3),
-(5, 'Friends', 'navigates romantic relationships, career challenge', 'Julie Andem', 'United States', 'img/series/2e98c58c758e3080a2cc84682cd66e4b-66360f93123fb.jpg', 0, 1, 0, 0, 4),
-(6, 'Riverdale', 'the teenagers grapple with issues such friendship', 'Roberto Aguirre-Sacasa', 'United States', 'img/series/138995-663612e9c46b3.jpg', 0, 0, 0, 0, 1),
-(7, 'You', 'he show explores themes of privacy, social media', 'Greg Berlanti', 'United States', 'img/series/you-6636107863249.webp', 0, 0, 0, 0, 1),
-(8, 'Lucifer', 'blends elements of crime procedural and fantasy', 'Baran bo Odar', 'United States', 'img/series/lucifer-663610fac8633.jpg', 0, 0, 0, 0, 1),
-(9, 'Skam France', 'five high-school girls who learn about friendship', 'Julie Andem', 'French', 'img/series/images_2-663611407eedd.jpg', 0, 0, 0, 0, 1),
-(11, 'Fraiser', 'Frasier\" revolves around Frasier''s  pretentiousnes', 'David Lee.', 'United States.', 'img/series/1697025-663611d3c4350.webp', 0, 0, 0, 0, 3),
-(12, 'Glitch', 'The series follows local police officer James', 'Tony Krawitz', 'Australia', 'img/series/glitch_tv_show_australian_series_netflix-6636122661186.jpg', 0, 0, 0, 0, 3),
+(2, 'Peaky blinders', 'A gangster family epic set in 1900s England', 'Matt and Ross Duffer', 'Birmingham, England, ', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/wmunrwzmgkgfrclabhrrzd1jf49-scaled-6634cf69d1c6b.jpg', 0, 1, 0, 1, 1),
+(4, 'Stranger Things', 'Centers around the residents of the fictional town', 'Matt and Ross Duffer', 'United States', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/9781532143892-66360efa12050.jpg', 0, 0, 0, 0, 3),
+(5, 'Friends', 'navigates romantic relationships, career challenge', 'Julie Andem', 'United States', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/2e98c58c758e3080a2cc84682cd66e4b-66360f93123fb.jpg', 0, 1, 0, 0, 4),
+(6, 'Riverdale', 'the teenagers grapple with issues such friendship', 'Roberto Aguirre-Sacasa', 'United States', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/138995-663612e9c46b3.jpg', 0, 0, 0, 0, 1),
+(7, 'You', 'he show explores themes of privacy, social media', 'Greg Berlanti', 'United States', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/you-6636107863249.webp', 0, 0, 0, 0, 1),
+(8, 'Lucifer', 'blends elements of crime procedural and fantasy', 'Baran bo Odar', 'United States', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/lucifer-663610fac8633.jpg', 0, 0, 0, 0, 1),
+(9, 'Skam France', 'five high-school girls who learn about friendship', 'Julie Andem', 'French', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/images_2-663611407eedd.jpg', 0, 0, 0, 0, 1),
+(11, 'Fraiser', 'Frasier\" revolves around Frasier''s  pretentiousnes', 'David Lee.', 'United States.', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/1697025-663611d3c4350.webp', 0, 0, 0, 0, 3),
+(12, 'Glitch', 'The series follows local police officer James', 'Tony Krawitz', 'Australia', 'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/glitch_tv_show_australian_series_netflix-6636122661186.jpg', 0, 0, 0, 0, 3),
         (13, 'Emily in Paris', 'an American college graduate and moves to paris', 'Andrew Fleming', 'United States',
-         'img/series/season-1-663614ad62916.jpg', 0, 0, 0, 0, 4);
+         'https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/series/season-1-663614ad62916.jpg', 0, 0, 0, 0, 4);
 INSERT INTO `sponsor` (`ID`, `nomSociete`, `Logo`)
 VALUES (1, 'Apple',
         'https://images.unsplash.com/photo-1612994370726-5d4d609fca1b?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
@@ -492,23 +492,23 @@ VALUES (1, 'Apple',
 INSERT INTO `users` (`id`, `nom`, `prenom`, `num_telephone`, `password`, `role`, `adresse`, `date_de_naissance`,
                      `email`, `photo_de_profil`, `is_verified`, `roles`, `totp_secret`)
 VALUES (111, 'ALI', 'AMMARI', NULL, '$2y$13$ipImRVOd141Q5olJ3nR19eF8VZRAdvZnuDDyX0fK8e9FHVyR5MBYe', 'client', NULL,
-        NULL, 'aliammari862002@gmail.com', '/img/users/27266.jpg', 1, '[\"ROLE_CLIENT\"]', NULL),
+        NULL, 'aliammari862002@gmail.com', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/27266.jpg', 1, '[\"ROLE_CLIENT\"]', NULL),
        (112, 'ghaya', 'Ghaya', 29201398, '$2y$13$JP2NutiDRtCIiz0TkVXzc.umKhnIkjJ32.8bNV1BZyYzkzBX0UU9G', 'client',
-        'bennane', '2001-12-08', 'ghaya.sassi2@gmail.tn', '/img/users/92890.jpg', 0, '[\"ROLE_CLIENT\"]', NULL),
+        'bennane', '2001-12-08', 'ghaya.sassi2@gmail.tn', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/92890.jpg', 0, '[\"ROLE_CLIENT\"]', NULL),
        (113, 'Sassi', 'Ghaya', 29201398, '$2y$13$Zi2JyIWyaeB7pAgtWEKK6uGkXynQOxmpZ53BRolmEWPXHOgYJMh36', 'client',
-        'bennane', '2001-12-08', 'ghaya.sassi3@gmail.tn', '/img/users/27266.jpg', 1, '[\"ROLE_CLIENT\"]', NULL),
+        'bennane', '2001-12-08', 'ghaya.sassi3@gmail.tn', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/27266.jpg', 1, '[\"ROLE_CLIENT\"]', NULL),
        (114, 'hajlaoui', 'loujain', 98962361, '$2y$13$x9ygtL0sZQbOwy2nI9ZDdOyCyYKwKxhjk7MdXMgVJ7doHWRfIpb/6',
         'responsable de cinema', 'lycee 9 avril sidi bouzid', '2023-02-06', 'loujainhajlaoui@gmail.com',
-        '/img/users/70865.jpg', 0, '[\"ROLE_RESPONSABLE_DE_CINEMA\"]', NULL),
+        '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/70865.jpg', 0, '[\"ROLE_RESPONSABLE_DE_CINEMA\"]', NULL),
        (115, 'Hajkacem', 'Ahmed', 21000000, '$2y$13$Fn1PeeCzYbSXA2wrlQkykex8SYzkHJ/Fiz.EYCr4akuHDsz/E3UdG', 'client',
-        'ariana soghra', '2024-02-14', 'ahmed.hajkacem1@gmail.com', '/img/users/53594.jpg', 0, '[\"ROLE_CLIENT\"]',
+        'ariana soghra', '2024-02-14', 'ahmed.hajkacem1@gmail.com', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/53594.jpg', 0, '[\"ROLE_CLIENT\"]',
         NULL),
        (116, 'Wolfe', 'Darius', 109, '$2y$13$sBqkFSq6u7IM5QJX5ZCFJu4CY9FYt0BhMsTNoHn3wpclbvLwUR6Fq', 'admin',
-        'Qui odio dolor conse', '2002-07-27', 'ammari.ali.0001@gmail.com', '/img/users/ali.jpg', 1, '[\"ROLE_ADMIN\"]',
+        'Qui odio dolor conse', '2002-07-27', 'ammari.ali.0001@gmail.com', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/ali.jpg', 1, '[\"ROLE_ADMIN\"]',
         NULL),
        (117, 'Hajkasem', 'Ahmad', 22000000, '$2y$13$XXjW32GWOt63g.1aAMfHaeb00FCzQLrd8bnzN7inijq6w3BO49IFC',
-        'responsable de cinema', 'ariana soghra', '2024-04-18', 'ahmed.haj.kacem1@gmail.com', '/img/users/91514.jpg', 0,
+        'responsable de cinema', 'ariana soghra', '2024-04-18', 'ahmed.haj.kacem1@gmail.com', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/91514.jpg', 0,
         '[\"ROLE_RESPONSABLE_DE_CINEMA\"]', NULL),
        (118, 'ghaya', 'sassi', 29201398, '$2y$13$jaAhU7vaQQLd8XGa6/MBZuGqtI8CVh00aCgYXdnCTNm9FeBB6Wv7S',
-        'responsable de cinema', 'Bennane', '2001-12-08', 'gh@gmail.com', '/img/users/22881.jpg', 1,
+        'responsable de cinema', 'Bennane', '2001-12-08', 'gh@gmail.com', '/https://cdn.jsdelivr.net/gh/aliammari1/rakcha-jsdelivr-cdn/public/img/users/22881.jpg', 1,
         '[\"ROLE_RESPONSABLE_DE_CINEMA\"]', NULL);
