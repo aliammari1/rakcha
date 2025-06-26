@@ -87,12 +87,6 @@
             "./config/routes/liip_imagine.yaml"
         ]
     },
-    "php-flasher/flasher-noty-symfony": {
-        "version": "v1.15.14"
-    },
-    "php-flasher/flasher-symfony": {
-        "version": "v1.15.14"
-    },
     "php-http/discovery": {
         "version": "1.20",
         "recipe": {
