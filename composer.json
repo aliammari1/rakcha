@@ -121,6 +121,9 @@
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     },
+    "vercel": {
+      "build": "composer install --no-dev --optimize-autoloader && npm run build"
+    },
     "post-install-cmd": [
       "@auto-scripts"
     ],
