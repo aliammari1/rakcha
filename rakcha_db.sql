@@ -1494,7 +1494,7 @@ ALTER TABLE `messenger_messages`
 ALTER TABLE `panier`
     ADD PRIMARY KEY (`idpanier`),
   ADD KEY `FK_pro` (`id_produit`),
-  ADD KEY `FK_user` (`idClient`);
+  ADD KEY `fk_user_panier` (`idClient`);
 
 --
 -- Indexes for table `participation_evenement`
