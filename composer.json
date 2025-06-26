@@ -64,15 +64,12 @@
     "symfony/runtime": "6.4.*",
     "symfony/security-bundle": "6.4.*",
     "symfony/serializer": "6.4.*",
-    "symfony/stimulus-bundle": "^2.0",
     "symfony/string": "6.4.*",
     "symfony/translation": "6.4.*",
     "symfony/twig-bundle": "6.4.*",
     "symfony/validator": "6.4.*",
     "symfony/web-link": "6.4.*",
-    "symfony/webpack-encore-bundle": "^2.0",
     "symfony/yaml": "6.4.*",
-    "symfonycasts/dynamic-forms": "^0.1.2",
     "symfonycasts/reset-password-bundle": "^1.21",
     "symfonycasts/verify-email-bundle": "^1.17",
     "twig/extra-bundle": "^2.12|^3.0",
@@ -82,7 +79,6 @@
   "config": {
     "allow-plugins": {
       "composer/package-versions-deprecated": true,
-      "dg/composer-cleaner": true,
       "endroid/installer": true,
       "php-http/discovery": true,
       "symfony/flex": true,
