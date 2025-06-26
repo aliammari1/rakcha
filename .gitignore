@@ -15,4 +15,3 @@
 /public/media/cache/
 ###< liip/imagine-bundle ###
 node_modules
-*.db
