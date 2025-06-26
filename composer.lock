@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1631a2f1d1d3175af46e59cebe2471d2",
+    "content-hash": "93606e03d60e26fadaa0365156d367a6",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -302,58 +302,6 @@
                 "source": "https://github.com/davmixcool/php-sentiment-analyzer/tree/1.2.2"
             },
             "time": "2020-09-17T13:50:06+00:00"
-        },
-        {
-            "name": "dg/composer-cleaner",
-            "version": "v2.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dg/composer-cleaner.git",
-                "reference": "b0fc3d177a9da6c61b5176e57025654391de600c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dg/composer-cleaner/zipball/b0fc3d177a9da6c61b5176e57025654391de600c",
-                "reference": "b0fc3d177a9da6c61b5176e57025654391de600c",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^1.0 || ^2.0",
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "composer/composer": "^1.10 || ^2.0",
-                "nette/tester": "^2.2",
-                "phpstan/phpstan": "^0.12"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "DG\\ComposerCleaner\\Plugin"
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "David Grudl",
-                    "homepage": "https://davidgrudl.com"
-                }
-            ],
-            "description": "Victor The Cleaner: removes unnecessary files from vendor directory.",
-            "keywords": [
-                "composer"
-            ],
-            "support": {
-                "issues": "https://github.com/dg/composer-cleaner/issues",
-                "source": "https://github.com/dg/composer-cleaner/tree/v2.2.1"
-            },
-            "time": "2022-04-02T16:11:52+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -14865,6 +14813,6 @@
         "ext-gd": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
