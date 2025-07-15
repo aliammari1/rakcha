@@ -34,7 +34,6 @@ class SeriesController extends AbstractController
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
-
     }
 
     #[Route('/listeSeries', name: 'app_series_liste', methods: ['GET'])]
@@ -62,7 +61,7 @@ class SeriesController extends AbstractController
 
         // Récupérer toutes les séries
         $allSeries = $seriesRepository->findAll();
-        $categories = $this->getDoctrine()->getRepository(Categories::class)->findAll();
+        $categories = $entityManager->getRepository(Categories::class)->findAll();
         // Récupérer les recommandations de séries les plus likées
         $recommendations = $seriesRepository->createQueryBuilder('s')
             ->orderBy('s.nblikes', 'DESC')
@@ -205,16 +204,15 @@ class SeriesController extends AbstractController
     }
 
     #[Route('/series/{idserie}/like', name: 'app_like_series', methods: ['GET'])]
-    public function likeSeries(int $idserie): RedirectResponse
+    public function likeSeries(int $idserie, EntityManagerInterface $entityManager): RedirectResponse
     {
         // Récupérer la série depuis la base de données en fonction de l'ID
-        $series = $this->getDoctrine()->getRepository(Series::class)->find($idserie);
+        $series = $entityManager->getRepository(Series::class)->find($idserie);
 
         // Incrémenter le nombre de likes
         $series->setNblikes($series->getNblikes() + 1);
 
         // Enregistrer les modifications
-        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($series);
         $entityManager->flush();
 
@@ -224,16 +222,15 @@ class SeriesController extends AbstractController
 
 
     #[Route('/series/{idserie}/dislike', name: 'app_dislike_series', methods: ['GET'])]
-    public function dislikeSeries(int $idserie): RedirectResponse
+    public function dislikeSeries(int $idserie, EntityManagerInterface $entityManager): RedirectResponse
     {
         // Récupérer la série depuis la base de données en fonction de l'ID
-        $series = $this->getDoctrine()->getRepository(Series::class)->find($idserie);
+        $series = $entityManager->getRepository(Series::class)->find($idserie);
 
         // Incrémenter le nombre de dislikes
         $series->setNbDislikes($series->getNbDislikes() + 1);
 
         // Enregistrer les modifications
-        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($series);
         $entityManager->flush();
 
@@ -250,11 +247,11 @@ class SeriesController extends AbstractController
 
     /*
     #[Route('/{idSerie}/toggle-favorite', name: 'app_toggle_favorite', methods: ['POST'])]
-    public function toggleFavorite(int $idSerie, FavorisRepository $favorisRepository): Response
+    public function toggleFavorite(int $idSerie, FavorisRepository $favorisRepository, EntityManagerInterface $entityManager): Response
     {
         $idUser = 1; // Remplacez 1 par l'ID de l'utilisateur connecté
-        $user = $this->getDoctrine()->getRepository(Users::class)->find($idUser);
-        
+        $user = $entityManager->getRepository(Users::class)->find($idUser);
+
         // Récupérer le favori correspondant à l'utilisateur et à la série
         $favoris = $favorisRepository->findOneBy([
             'idUser' => $user->getId(),
@@ -262,7 +259,6 @@ class SeriesController extends AbstractController
         ]);
 
         // Si le favori existe, le supprimer. Sinon, l'ajouter.
-        $entityManager = $this->getDoctrine()->getManager();
         if ($favoris) {
             $entityManager->remove($favoris);
         } else {
