@@ -119,7 +119,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Length(min: 8, max: 180, minMessage: 'The password must have at least {{ limit }} characters', maxMessage: 'The password cannot exceed {{ limit }} characters')]
     #[Assert\Type(type: 'string', message: 'The password must be a string')]
     private string $plainPassword;
-    #[ORM\Column]
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $totpSecret;

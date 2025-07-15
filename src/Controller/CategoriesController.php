@@ -18,7 +18,7 @@ class CategoriesController extends AbstractController
     #[Route('/', name: 'app_categories_index', methods: ['GET'])]
     public function index(CategoriesRepository $categoriesRepository): Response
     {
-        flash()->addSuccess("successfully added category");
+
         $form = $this->createForm(CategoriesType::class, new Categories());
         $updateForms = array();
         for ($i = 0; $i < count($categoriesRepository->findAll()); $i++) {

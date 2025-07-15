@@ -187,10 +187,8 @@ class UsersController extends AbstractController
                 $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
 
             $entityManager->flush();
-            flash()->addSuccess('User updated successfully');
             return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
         } else {
-            flash()->addError('User not updated');
         }
 
         $entityManager->refresh($user);
@@ -210,9 +208,7 @@ class UsersController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
-            flash()->addSuccess('User Deleted successfully');
         } else {
-            flash()->addError('User not deleted');
         }
         return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
     }
@@ -225,12 +221,11 @@ class UsersController extends AbstractController
         if ($this->isCsrfTokenValid('delete_account', $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
-            flash()->addSuccess('Account Deleted successfully');
+
 
             $session->invalidate();
             $tokenStorage->setToken(null);
         } else {
-            flash()->addError('Account not deleted');
         }
 
         return $this->redirectToRoute('app_home_index', [], Response::HTTP_SEE_OTHER);

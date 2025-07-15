@@ -41,7 +41,6 @@ class EpisodesController extends AbstractController
     #[Route('/listeEpisodes', name: 'app_episodes_liste', methods: ['GET'])]
     public function listeEpisodes(EpisodesRepository $episodesRepository): Response
     {
-        flash()->addSuccess("successfully added category");
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
         for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
@@ -214,10 +213,10 @@ class EpisodesController extends AbstractController
     }
 
     #[Route('/episodes/{idEpisode}/watch', name: 'app_episode_watch')]
-    public function watch(Request $request, int $idEpisode, SessionInterface $session): Response
+    public function watch(Request $request, int $idEpisode, SessionInterface $session, EntityManagerInterface $entityManager): Response
     {
         // Récupérer les données de l'épisode depuis la base de données
-        $episode = $this->getDoctrine()->getRepository(Episodes::class)->find($idEpisode);
+        $episode = $entityManager->getRepository(Episodes::class)->find($idEpisode);
         // Vérifier si l'épisode existe
         if (!$episode) {
             throw $this->createNotFoundException('Episode not found');
@@ -228,11 +227,11 @@ class EpisodesController extends AbstractController
         $photoDeProfil = $this->getUser()->getPhotoDeProfil();
 
         // Récupérer les feedbacks associés à l'épisode depuis la base de données
-        $feedbacks = $this->getDoctrine()->getRepository(Feedback::class)->findBy(['idEpisode' => $idEpisode]);
+        $feedbacks = $entityManager->getRepository(Feedback::class)->findBy(['idEpisode' => $idEpisode]);
         $users = [];
         foreach ($feedbacks as $feedback) {
             $userId = $feedback->getIdUser();
-            $user = $this->getDoctrine()->getRepository(Users::class)->find($userId);
+            $user = $entityManager->getRepository(Users::class)->find($userId);
             $users[] = $user;
         }
 
@@ -264,7 +263,6 @@ class EpisodesController extends AbstractController
             $feedback->setSentiment($sentiment);
 
             // Enregistrer le feedback en base de données
-            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($feedback);
 
             /*     
