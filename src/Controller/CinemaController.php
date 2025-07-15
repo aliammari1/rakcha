@@ -50,9 +50,8 @@ class CinemaController extends AbstractController
 
 
     #[Route('/location/{idCinema}', name: 'app_cinema_location', methods: ['GET', 'POST'])]
-    public function localiser(int $idCinema): Response
+    public function localiser(int $idCinema, EntityManagerInterface $entityManager): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
         $cinemaRepository = $entityManager->getRepository(Cinema::class);
         $cinema = $cinemaRepository->find($idCinema);
 
