@@ -54,42 +54,42 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    - { path: ^/login, roles: PUBLIC_ACCESS }
-    - { path: ^/register, roles: PUBLIC_ACCESS }
-    - { path: ^/connect, roles: PUBLIC_ACCESS }
-    - { path: ^/logout, role: PUBLIC_ACCESS }
-    - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
-    - { path: ^/users/profile, roles: ROLE_USER }
-    - { path: ^/usersDash, roles: ROLE_ADMIN }
-    - { path: ^/users, roles: PUBLIC_ACCESS }
-    - { path: ^/cinema/listecinema, roles: ROLE_USER }
-    - { path: ^/cinema/listeCinemaAdmin, roles: ROLE_ADMIN }
-    - { path: ^/cinema/location, roles: ROLE_USER }
-    - { path: ^/cinema/Accept, roles: ROLE_ADMIN }
-    - { path: ^/cinema/reject, roles: ROLE_ADMIN }
-    - { path: ^/cinema, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/commentairecinema, roles: ROLE_USER }
-    - { path: ^/seanceSeats, roles: ROLE_USER }
-    - { path: ^/seance, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/categorie/produit, roles: ROLE_ADMIN }
-    - { path: ^/produit/listeproduit, roles: ROLE_USER }
-    - { path: ^/produit/show, roles: ROLE_USER }
-    - { path: ^/produit, roles: ROLE_ADMIN }
-    - { path: ^/panier/listepanier, roles: ROLE_USER }
-    - { path: ^/panier, roles: ROLE_USER }
-    - { path: ^/listfilms, roles: ROLE_USER }
-    - { path: ^/filShow, roles: ROLE_USER }
-    - { path: ^/filmHome, roles: PUBLIC_ACCESS }
-    - { path: ^/film, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/category, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/actor, roles: ROLE_RESPONSABLE_DE_CINEMA }
-    - { path: ^/series/listeSeries, roles: ROLE_USER }
-    - { path: ^/series, roles: ROLE_USER }
-    - { path: ^/episodes/listeEpisodes, roles: ROLE_USER }
-    - { path: ^/episodes/series, roles: ROLE_USER }
-    - { path: ^/episodes, roles: ROLE_USER }
-    - { path: ^/categories, roles: ROLE_USER }
-    - { path: ^/, roles: PUBLIC_ACCESS }
+    # - { path: ^/login, roles: PUBLIC_ACCESS }
+    # - { path: ^/register, roles: PUBLIC_ACCESS }
+    # - { path: ^/connect, roles: PUBLIC_ACCESS }
+    # - { path: ^/logout, role: PUBLIC_ACCESS }
+    # - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
+    # - { path: ^/users/profile, roles: ROLE_USER }
+    # - { path: ^/usersDash, roles: ROLE_ADMIN }
+    # - { path: ^/users, roles: PUBLIC_ACCESS }
+    # - { path: ^/cinema/listecinema, roles: ROLE_USER }
+    # - { path: ^/cinema/listeCinemaAdmin, roles: ROLE_ADMIN }
+    # - { path: ^/cinema/location, roles: ROLE_USER }
+    # - { path: ^/cinema/Accept, roles: ROLE_ADMIN }
+    # - { path: ^/cinema/reject, roles: ROLE_ADMIN }
+    # - { path: ^/cinema, roles: ROLE_RESPONSABLE_DE_CINEMA }
+    # - { path: ^/commentairecinema, roles: ROLE_USER }
+    # - { path: ^/seanceSeats, roles: ROLE_USER }
+    # - { path: ^/seance, roles: ROLE_RESPONSABLE_DE_CINEMA }
+    # - { path: ^/categorie/produit, roles: ROLE_ADMIN }
+    # - { path: ^/produit/listeproduit, roles: ROLE_USER }
+    # - { path: ^/produit/show, roles: ROLE_USER }
+    # - { path: ^/produit, roles: ROLE_ADMIN }
+    # - { path: ^/panier/listepanier, roles: ROLE_USER }
+    # - { path: ^/panier, roles: ROLE_USER }
+    # - { path: ^/listfilms, roles: ROLE_USER }
+    # - { path: ^/filShow, roles: ROLE_USER }
+    # - { path: ^/filmHome, roles: PUBLIC_ACCESS }
+    # - { path: ^/film, roles: ROLE_RESPONSABLE_DE_CINEMA }
+    # - { path: ^/category, roles: ROLE_RESPONSABLE_DE_CINEMA }
+    # - { path: ^/actor, roles: ROLE_RESPONSABLE_DE_CINEMA }
+    # - { path: ^/series/listeSeries, roles: ROLE_USER }
+    # - { path: ^/series, roles: ROLE_USER }
+    # - { path: ^/episodes/listeEpisodes, roles: ROLE_USER }
+    # - { path: ^/episodes/series, roles: ROLE_USER }
+    # - { path: ^/episodes, roles: ROLE_USER }
+    # - { path: ^/categories, roles: ROLE_USER }
+    # - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
   security:

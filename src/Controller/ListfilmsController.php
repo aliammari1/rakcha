@@ -8,13 +8,11 @@ use App\Repository\CategoryRepository;
 use App\Repository\FilmRepository;
 use App\Repository\RatingfilmRepository;
 use App\Repository\SeanceRepository;
-use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Doctrine\ORM\EntityManagerInterface;
-use Endroid\QrCode\Builder\Builder;
-use Endroid\QrCodeBundle\Response\QrCodeResponse;
 use Exception;
 use Madcoda\Youtube\Youtube;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -127,10 +125,10 @@ class ListfilmsController extends AbstractController
     {
         $renderer = new ImageRenderer(
             new RendererStyle(400),
-            new ImagickImageBackEnd()
+            new SvgImageBackEnd()
         );
         $writer = new Writer($renderer);
-        // Generate QR code image
+        // Generate QR code SVG
         return $writer->writeString($url);
     }
 
@@ -152,11 +150,12 @@ class ListfilmsController extends AbstractController
     #[Route('/qrcode/{filmName}', name: 'app_qrcode_film')]
     public function qrcode($filmName, FilmRepository $filmRepository, EntityManagerInterface $entityManager): Response
     {
-        $result = Builder::create()
-            ->data($filmRepository->getImdbUrlByFilmName($filmName))
-            ->size(150)
-            ->build();
-        return new QrCodeResponse($result);
+        $url = $filmRepository->getImdbUrlByFilmName($filmName);
+        $svgContent = $this->generateQRCode($url);
+
+        return new Response($svgContent, 200, [
+            'Content-Type' => 'image/svg+xml'
+        ]);
     }
 
     #[Route('/qrcodeurl/{filmName}', name: 'app_qrcodeurl_film')]
