@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class OrderItemService implements IService<OrderItem> {
 
     private static final Logger LOGGER = Logger.getLogger(OrderItemService.class.getName());
@@ -364,9 +364,9 @@ public class OrderItemService implements IService<OrderItem> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.getSortBy());
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.sortBy());
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -394,11 +394,11 @@ public class OrderItemService implements IService<OrderItem> {
                 }
             }
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.error("Error retrieving paginated order items: {}", e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
     }
 

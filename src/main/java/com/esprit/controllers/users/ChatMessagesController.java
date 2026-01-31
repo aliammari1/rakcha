@@ -1,12 +1,16 @@
 package com.esprit.controllers.users;
 
-import com.esprit.models.users.ChatMessage;
-import com.esprit.models.users.User;
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.users.Message;
+import com.esprit.models.users.User;
 import com.esprit.services.users.MessageService;
 import com.esprit.services.users.UserService;
 import com.esprit.utils.SessionManager;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,13 +18,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,9 +47,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for in-app messaging between users.
- */
+@Log4j2
 public class ChatMessagesController {
 
     private static final Logger LOGGER = Logger.getLogger(ChatMessagesController.class.getName());
@@ -43,6 +55,12 @@ public class ChatMessagesController {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy");
     private final MessageService messageService;
     private final UserService userService;
+
+    // FormsFX properties
+    private final StringProperty messageContentProperty = new SimpleStringProperty("");
+    private final ObservableList<User> conversations;
+    private final ObservableList<Message> messages;
+    private Form messageForm;
     @FXML
     private VBox chatContainer;
     @FXML
@@ -73,8 +91,6 @@ public class ChatMessagesController {
     private VBox noConversationBox;
     @FXML
     private ProgressIndicator loadingIndicator;
-    private ObservableList<User> conversations;
-    private ObservableList<Message> messages;
     private User currentUser;
     private User selectedRecipient;
     private Timer refreshTimer;
@@ -99,6 +115,53 @@ public class ChatMessagesController {
         setupControls();
         loadConversations();
         startMessageRefresh();
+
+        // Initialize FormsFX
+        setupFormsFX();
+        setupBidirectionalBindings();
+    }
+
+    /**
+     * Configures FormsFX for message form validation.
+     */
+    private void setupFormsFX() {
+        messageForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(messageContentProperty)
+                    .label("Message")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Message cannot be empty")
+                    )
+            )
+        );
+    }
+
+    /**
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        if (messageInput != null) {
+            messageInput.textProperty().bindBidirectional(messageContentProperty);
+        }
+    }
+
+    /**
+     * Validates the message form using FormsFX.
+     *
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validateMessageForm() {
+        messageForm.persist();
+        return messageForm.isValid();
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        if (messageInput != null) {
+            messageInput.textProperty().unbindBidirectional(messageContentProperty);
+        }
     }
 
     private void setupControls() {
@@ -320,7 +383,7 @@ public class ChatMessagesController {
         HBox container = new HBox();
         container.getStyleClass().add("message-container");
 
-        boolean isSent = message.getSenderId() == currentUser.getId();
+        boolean isSent = message.getSender().getId() == currentUser.getId();
 
         VBox bubble = new VBox(4);
         bubble.getStyleClass().add("message-bubble");
@@ -408,16 +471,20 @@ public class ChatMessagesController {
     private void handleSendMessage() {
         if (selectedRecipient == null || messageInput == null) return;
 
-        String content = messageInput.getText().trim();
+        // Validate using FormsFX
+        if (!validateMessageForm()) return;
+
+        String content = messageContentProperty.get().trim();
         if (content.isEmpty()) return;
 
-        messageInput.clear();
+        // Clear the message input using the property
+        messageContentProperty.set("");
 
         new Thread(() -> {
             try {
                 Message message = new Message();
-                message.setSenderId(currentUser.getId());
-                message.setRecipientId(selectedRecipient.getId());
+                message.setSender(currentUser);
+                message.setRecipient(selectedRecipient);
                 message.setContent(content);
                 message.setCreatedAt(LocalDateTime.now());
 

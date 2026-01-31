@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="520.0"
       prefWidth="929.0"
-      stylesheets="@../styles/auth.css"
+      stylesheets="@../styles/rakcha-unified.css"
       xmlns="http://javafx.com/javafx/21"
       fx:controller="com.esprit.controllers.users.VerifyWithMicrosoft">
 
@@ -32,8 +32,7 @@
           <Font name="Arial" size="16.0"/>
         </font>
       </Label>
-      <TextField fx:id="verification_code_textField" styleClass="text-input"
-                 promptText="Enter authentication code"/>
+      <VBox fx:id="verificationFormContainer" spacing="10"/>
       <Label fx:id="verification_error_label" styleClass="error-label"/>
     </VBox>
 
@@ -68,3 +67,4 @@
     </ImageView>
   </VBox>
 </HBox>
+

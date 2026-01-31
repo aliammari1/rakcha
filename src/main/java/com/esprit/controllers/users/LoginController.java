@@ -1,5 +1,11 @@
 package com.esprit.controllers.users;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.enums.UserRole;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserSecurityService;
@@ -17,6 +23,8 @@ import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -29,17 +37,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.net.URL;
@@ -49,14 +57,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller class for the RAKCHA application. Handles UI interactions
- * and manages view logic using FXML.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class LoginController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
@@ -92,22 +93,20 @@ public class LoginController implements Initializable {
         "Everything Everywhere All at Once"
     };
     private final UserSecurityService securityService = new UserSecurityService();
+    // FormsFX properties for declarative form handling
+    private final StringProperty emailProperty = new SimpleStringProperty("");
+    private final StringProperty passwordProperty = new SimpleStringProperty("");
+    private final int maxDynamicElements = 15; // Number of dynamic elements to create
     @FXML
     private StackPane rootContainer;
     @FXML
     private AnchorPane anchorPane;
     @FXML
-    private Label emailErrorLabel;
-    @FXML
-    private TextField emailTextField;
+    private VBox loginFormContainer;
     @FXML
     private Hyperlink forgetPasswordEmailHyperlink;
     @FXML
     private Hyperlink forgetPasswordHyperlink;
-    @FXML
-    private Label passwordErrorLabel;
-    @FXML
-    private PasswordField passwordTextField;
     @FXML
     private Button signInButton;
     @FXML
@@ -143,7 +142,7 @@ public class LoginController implements Initializable {
     private Circle[] dynamicParticles;
     private Polygon[] dynamicShapes;
     private Rectangle[] dynamicRectangles;
-    private int maxDynamicElements = 15; // Number of dynamic elements to create
+    private Form loginForm;
 
     /**
      * @param event
@@ -189,17 +188,24 @@ public class LoginController implements Initializable {
      */
     @FXML
     void login(final ActionEvent event) throws IOException {
+        // Validate form first
+        if (!loginForm.isValid()) {
+            if (errorLabel != null) {
+                errorLabel.setText("Please correct the form errors before submitting.");
+                errorLabel.setVisible(true);
+            }
+            return;
+        }
+
         final UserService userService = new UserService();
 
-        String email = this.emailTextField.getText();
-        String password = this.passwordTextField.getText();
+        String email = this.emailProperty.get();
+        String password = this.passwordProperty.get();
 
         // Reset error styling
         if (errorLabel != null) {
             errorLabel.setVisible(false);
         }
-        this.emailTextField.setStyle("-fx-border-color: #ccc;");
-        this.passwordTextField.setStyle("-fx-border-color: #ccc;");
 
         // Security Check 1: Account Lockout
         if (securityService.isAccountLocked(email)) {
@@ -329,6 +335,9 @@ public class LoginController implements Initializable {
      * called automatically by JavaFX after loading the FXML file.
      */
     public void initialize(final URL location, final ResourceBundle resources) {
+        // Setup FormsFX for declarative form handling with FormRenderer
+        this.setupFormsFX();
+
         this.forgetPasswordHyperlink.setOnAction(new EventHandler<>() {
             @Override
             public void handle(final ActionEvent event) {
@@ -666,6 +675,34 @@ public class LoginController implements Initializable {
             move.play();
         });
         delay.play();
+    }
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules and renders it.
+     */
+    private void setupFormsFX() {
+        this.loginForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.emailProperty)
+                    .label("Email")
+                    .placeholder("Enter your email")
+                    .validate(RegexValidator.forPattern(
+                        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
+                        "Please enter a valid email address")),
+                Field.ofStringType(this.passwordProperty)
+                    .label("Password")
+                    .placeholder("Enter your password")
+                    .required("Password is required")
+                    .validate(StringLengthValidator.atLeast(4, "Password must be at least 4 characters"))
+            )
+        ).title("Sign In");
+
+        // Render the form into the container
+        if (this.loginFormContainer != null) {
+            FormRenderer formRenderer = new FormRenderer(this.loginForm);
+            this.loginFormContainer.getChildren().clear();
+            this.loginFormContainer.getChildren().add(formRenderer);
+        }
     }
 
     /**

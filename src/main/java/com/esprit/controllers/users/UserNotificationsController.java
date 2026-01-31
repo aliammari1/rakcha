@@ -24,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -33,15 +34,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for managing user notifications and preferences.
- */
+@Log4j2
 public class UserNotificationsController {
 
     private static final Logger LOGGER = Logger.getLogger(UserNotificationsController.class.getName());
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy");
     private final NotificationService notificationService;
+    private final ObservableList<Notification> notifications;
     @FXML
     private VBox notificationsContainer;
     @FXML
@@ -74,7 +74,6 @@ public class UserNotificationsController {
     private ProgressIndicator loadingIndicator;
     @FXML
     private VBox emptyStateBox;
-    private ObservableList<Notification> notifications;
     private User currentUser;
     private boolean showUnreadOnly = false;
 
@@ -164,8 +163,7 @@ public class UserNotificationsController {
         List<Notification> filtered = notifications.stream()
             .filter(n -> {
                 if (showUnreadOnly && n.isRead()) return false;
-                if (filter != null && !"All Types".equals(filter) && !matchesType(n, filter)) return false;
-                return true;
+                return filter == null || "All Types".equals(filter) || matchesType(n, filter);
             })
             .toList();
 

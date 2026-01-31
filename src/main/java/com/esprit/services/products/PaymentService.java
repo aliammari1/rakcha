@@ -1,11 +1,16 @@
 package com.esprit.services.products;
 
-import com.esprit.models.products.Payment;
 import com.esprit.models.products.Order;
+import com.esprit.models.products.Payment;
 import com.esprit.utils.DataSource;
 import lombok.extern.log4j.Log4j2;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +18,7 @@ import java.util.List;
 /**
  * Service for managing payments and payment processing.
  */
+
 @Log4j2
 public class PaymentService {
 
@@ -60,7 +66,7 @@ public class PaymentService {
      * Confirm a payment as completed.
      */
     public boolean confirmPayment(Payment payment) {
-        if (payment == null || payment.getPaymentId() <= 0) {
+        if (payment == null || payment.getId() == null || payment.getId() <= 0) {
             log.warn("Invalid payment");
             return false;
         }
@@ -72,12 +78,12 @@ public class PaymentService {
 
             pstmt.setString(1, "COMPLETED");
             pstmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-            pstmt.setInt(3, payment.getPaymentId());
+            pstmt.setLong(3, payment.getId());
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (SQLException e) {
-            log.error("Error confirming payment {}: {}", payment.getPaymentId(), e.getMessage(), e);
+            log.error("Error confirming payment {}: {}", payment.getId(), e.getMessage(), e);
         }
 
         return false;
@@ -87,7 +93,7 @@ public class PaymentService {
      * Refund a payment.
      */
     public boolean refundPayment(Payment payment, String reason) {
-        if (payment == null || payment.getPaymentId() <= 0) {
+        if (payment == null || payment.getId() == null || payment.getId() <= 0) {
             log.warn("Invalid payment");
             return false;
         }
@@ -100,12 +106,12 @@ public class PaymentService {
             pstmt.setString(1, "REFUNDED");
             pstmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
             pstmt.setString(3, reason != null ? reason : "");
-            pstmt.setInt(4, payment.getPaymentId());
+            pstmt.setLong(4, payment.getId());
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         } catch (SQLException e) {
-            log.error("Error refunding payment {}: {}", payment.getPaymentId(), e.getMessage(), e);
+            log.error("Error refunding payment {}: {}", payment.getId(), e.getMessage(), e);
         }
 
         return false;
@@ -252,8 +258,14 @@ public class PaymentService {
      */
     private Payment mapResultSetToPayment(ResultSet rs) throws SQLException {
         Payment payment = new Payment();
-        payment.setPaymentId(rs.getInt("payment_id"));
-        payment.setOrderId(rs.getInt("order_id"));
+        payment.setId(rs.getLong("payment_id"));
+
+        // Create Order reference with ID only
+        int orderId = rs.getInt("order_id");
+        if (!rs.wasNull()) {
+            payment.setOrder(Order.builder().id((long) orderId).build());
+        }
+
         payment.setAmount(rs.getDouble("amount"));
         payment.setPaymentMethod(rs.getString("payment_method"));
         payment.setStatus(rs.getString("status"));

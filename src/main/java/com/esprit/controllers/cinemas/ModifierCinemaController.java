@@ -1,7 +1,14 @@
 package com.esprit.controllers.cinemas;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.models.cinemas.Cinema;
 import com.esprit.services.cinemas.CinemaService;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,59 +16,65 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * Controller for modifying cinema details in a GUI application using JavaFX.
- *
- * <p>
- * This controller provides functionality to modify cinema information such as
- * name,
- * address, and logo. It handles form validation, file selection for logos, and
- * database updates through the CinemaService.
- * </p>
- *
- * <p>
- * The controller implements the Initializable interface to set up the UI
- * components
- * when the FXML is loaded.
- * </p>
- *
- * @author Esprit Team
- * @version 1.0
- * @see javafx.fxml.Initializable
- * @see com.esprit.models.cinemas.Cinema
- * @see com.esprit.services.cinemas.CinemaService
- * @since 1.0
- */
+@Log4j2
 public class ModifierCinemaController implements Initializable {
 
+    // FormsFX properties for declarative form handling
+    private final StringProperty cinemaNameProperty = new SimpleStringProperty("");
+    private final StringProperty cinemaAddressProperty = new SimpleStringProperty("");
     @FXML
-    private TextField tfNom;
-    @FXML
-    private TextField tfAdresse;
+    private VBox cinemaFormContainer;
     @FXML
     private ImageView tfLogo;
     private Cinema cinema;
     private File selectedFile;
+    private Form cinemaForm;
 
     /**
-     * Called by the JavaFX runtime after the FXML is loaded; performs no additional initialization.
+     * Called by the JavaFX runtime after the FXML is loaded; initializes FormsFX.
      *
      * @param location  the location used to resolve relative paths for the root object, or null if unknown
      * @param resources the resources used to localize the root object, or null if not localized
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setupFormsFX();
+    }
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules and renders it.
+     */
+    private void setupFormsFX() {
+        this.cinemaForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.cinemaNameProperty)
+                    .label("Cinema Name")
+                    .placeholder("Enter cinema name")
+                    .validate(StringLengthValidator.atLeast(2, "Name must be at least 2 characters")),
+                Field.ofStringType(this.cinemaAddressProperty)
+                    .label("Cinema Address")
+                    .placeholder("Enter cinema address")
+                    .validate(StringLengthValidator.atLeast(5, "Address must be at least 5 characters"))
+            )
+        );
+
+        // Render form using pure FormsFX
+        if (this.cinemaFormContainer != null) {
+            FormRenderer formRenderer = new FormRenderer(this.cinemaForm);
+            this.cinemaFormContainer.getChildren().add(formRenderer);
+        }
     }
 
 
@@ -74,8 +87,8 @@ public class ModifierCinemaController implements Initializable {
      */
     public void initData(Cinema cinema) {
         this.cinema = cinema;
-        tfNom.setText(cinema.getName());
-        tfAdresse.setText(cinema.getAddress());
+        cinemaNameProperty.set(cinema.getName());
+        cinemaAddressProperty.set(cinema.getAddress());
         String logo = cinema.getLogoUrl();
         if (logo != null && !logo.isEmpty()) {
             Image image = new Image(logo);
@@ -104,8 +117,8 @@ public class ModifierCinemaController implements Initializable {
         }
 
         // Récupérer les nouvelles valeurs des champs
-        String nouveauNom = tfNom.getText();
-        String nouvelleAdresse = tfAdresse.getText();
+        String nouveauNom = cinemaNameProperty.get();
+        String nouvelleAdresse = cinemaAddressProperty.get();
         // Vérifier si les champs obligatoires sont remplis
         if (nouveauNom.isEmpty() || nouvelleAdresse.isEmpty()) {
             showAlert("Veuillez remplir tous les champs obligatoires.");

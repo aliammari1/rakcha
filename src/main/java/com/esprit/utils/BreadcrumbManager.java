@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class BreadcrumbManager {
 
@@ -49,13 +50,13 @@ public class BreadcrumbManager {
             BreadcrumbItem item = breadcrumbs[i];
 
             // Add breadcrumb button
-            Button breadcrumbButton = new Button(item.getName());
+            Button breadcrumbButton = new Button(item.name());
             breadcrumbButton.setStyle(BREADCRUMB_BUTTON_STYLE);
             breadcrumbButton.setFont(new Font(12));
             breadcrumbButton.setCursor(javafx.scene.Cursor.HAND);
 
-            if (item.getAction() != null) {
-                breadcrumbButton.setOnAction(event -> item.getAction().run());
+            if (item.action() != null) {
+                breadcrumbButton.setOnAction(event -> item.action().run());
             }
 
             breadcrumbContainer.getChildren().add(breadcrumbButton);
@@ -146,10 +147,7 @@ public class BreadcrumbManager {
     /**
      * Represents a single breadcrumb item with name and optional action.
      */
-    public static class BreadcrumbItem {
-
-        private final String name;
-        private final Runnable action;
+    public record BreadcrumbItem(String name, Runnable action) {
 
         /**
          * Creates a breadcrumb item.
@@ -157,9 +155,7 @@ public class BreadcrumbManager {
          * @param name   the display name
          * @param action the action to run when clicked, or null
          */
-        public BreadcrumbItem(String name, Runnable action) {
-            this.name = name;
-            this.action = action;
+        public BreadcrumbItem {
         }
 
         /**
@@ -167,7 +163,8 @@ public class BreadcrumbManager {
          *
          * @return the name
          */
-        public String getName() {
+        @Override
+        public String name() {
             return name;
         }
 
@@ -176,7 +173,8 @@ public class BreadcrumbManager {
          *
          * @return the action or null
          */
-        public Runnable getAction() {
+        @Override
+        public Runnable action() {
             return action;
         }
     }

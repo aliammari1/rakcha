@@ -6,13 +6,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.Date;
 
-/**
- * Cinema Manager entity extending User with Hibernate annotations
- */
-
+@Log4j2
 @Data
 @NoArgsConstructor
 @SuperBuilder
@@ -26,6 +24,7 @@ import java.sql.Date;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 
 public class CinemaManager extends User {
 

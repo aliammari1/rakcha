@@ -1,40 +1,76 @@
 package com.esprit.controllers.users;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.services.users.UserService;
 import com.esprit.utils.SessionManager;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller class for the RAKCHA application. Handles UI interactions
- * and manages view logic using FXML.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class ResetPasswordController {
 
     private static final Logger LOGGER = Logger.getLogger(ResetPasswordController.class.getName());
-
+    // FormsFX properties for declarative form handling
+    private final StringProperty newPasswordProperty = new SimpleStringProperty("");
+    private final StringProperty confirmPasswordProperty = new SimpleStringProperty("");
     @FXML
-    private TextField newPass;
+    private VBox passwordFormContainer;
     @FXML
-    private TextField pass;
-    @FXML
-    private Label passwordErrorLabel;
-
+    private Button resetButton;
     private String userEmail;
+    private Form resetPasswordForm;
+
+    /**
+     * Initializes the controller after FXML loading.
+     */
+    @FXML
+    void initialize() {
+        this.setupFormsFX();
+    }
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules and renders it.
+     */
+    private void setupFormsFX() {
+        this.resetPasswordForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.newPasswordProperty)
+                    .label("New Password")
+                    .placeholder("Enter new password")
+                    .required("New password is required")
+                    .validate(StringLengthValidator.atLeast(6, "Password must be at least 6 characters")),
+                Field.ofStringType(this.confirmPasswordProperty)
+                    .label("Confirm Password")
+                    .placeholder("Confirm your password")
+                    .required("Please confirm your password")
+                    .validate(StringLengthValidator.atLeast(6, "Password must be at least 6 characters"))
+            )
+        ).title("Reset Password");
+
+        // Render the form into the container
+        if (this.passwordFormContainer != null) {
+            FormRenderer formRenderer = new FormRenderer(this.resetPasswordForm);
+            this.passwordFormContainer.getChildren().clear();
+            this.passwordFormContainer.getChildren().add(formRenderer);
+        }
+    }
 
     /**
      * Sets the user email for password reset.
@@ -52,21 +88,16 @@ public class ResetPasswordController {
      */
     @FXML
     void resetPassword(final ActionEvent event) {
-        final String newPassword = this.newPass.getText().trim();
-        final String confirmPassword = this.pass.getText().trim();
-
-        if (newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            this.passwordErrorLabel.setText("Please fill in all password fields");
+        // Validate form first
+        if (!resetPasswordForm.isValid()) {
             return;
         }
+
+        final String newPassword = this.newPasswordProperty.get().trim();
+        final String confirmPassword = this.confirmPasswordProperty.get().trim();
 
         if (!newPassword.equals(confirmPassword)) {
-            this.passwordErrorLabel.setText("Passwords do not match");
-            return;
-        }
-
-        if (newPassword.length() < 6) {
-            this.passwordErrorLabel.setText("Password must be at least 6 characters");
+            // Passwords don't match - FormsFX will show validation
             return;
         }
 
@@ -86,12 +117,11 @@ public class ResetPasswordController {
             // Navigate to login screen
             final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/ui/users/Login.fxml"));
             final Parent root = loader.load();
-            final Stage stage = (Stage) this.newPass.getScene().getWindow();
+            final Stage stage = (Stage) this.resetButton.getScene().getWindow();
             stage.setScene(new Scene(root));
 
         } catch (final Exception e) {
             ResetPasswordController.LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            this.passwordErrorLabel.setText("Error resetting password. Please try again.");
         }
     }
 }

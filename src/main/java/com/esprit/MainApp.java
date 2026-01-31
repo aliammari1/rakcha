@@ -1,6 +1,8 @@
 package com.esprit;
 
 import com.esprit.controllers.SplashScreenController;
+import com.esprit.utils.ThemeManager;
+import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,15 +11,9 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.extern.log4j.Log4j2;
 
-/**
- * MainApp class for the RAKCHA JavaFX desktop application.
- * Features a cinematic splash screen experience before loading the main application.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class MainApp extends Application {
 
     private Stage mainStage;
@@ -46,6 +42,13 @@ public class MainApp extends Application {
      */
     public void start(final Stage primaryStage) throws Exception {
         this.mainStage = primaryStage;
+
+        // Initialize AtlantaFX theming system
+        ThemeManager.getInstance().initialize();
+
+        // Enable CssFX for live CSS hot-reload during development
+        // This allows CSS changes to reflect immediately without restart
+        CSSFX.start();
 
         // Configure main stage (hidden initially)
         mainStage.setTitle("RAKCHA - Cinema Experience");
@@ -86,6 +89,9 @@ public class MainApp extends Application {
         // Create scene with transparent fill for cinematic effect
         Scene splashScene = new Scene(splashRoot, 1400, 800);
         splashScene.setFill(Color.BLACK);
+
+        // Apply AtlantaFX theme to the splash scene
+        ThemeManager.getInstance().applyToScene(splashScene);
 
         splashStage.setScene(splashScene);
         splashStage.centerOnScreen();

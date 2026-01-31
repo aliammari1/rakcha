@@ -33,6 +33,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -42,9 +43,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Controller for displaying user's review history.
- */
+@Log4j2
 public class UserReviewHistoryController {
 
     private static final Logger LOGGER = Logger.getLogger(UserReviewHistoryController.class.getName());
@@ -52,6 +51,7 @@ public class UserReviewHistoryController {
     private final ReviewService reviewService;
     private final FilmService filmService;
     private final SeriesService seriesService;
+    private final ObservableList<Review> reviews;
     @FXML
     private VBox historyContainer;
     @FXML
@@ -78,7 +78,6 @@ public class UserReviewHistoryController {
     private VBox statsBox;
     @FXML
     private HBox ratingDistribution;
-    private ObservableList<Review> reviews;
     private User currentUser;
 
     public UserReviewHistoryController() {
@@ -155,8 +154,8 @@ public class UserReviewHistoryController {
             if ("film".equals(review.getContentType())) {
                 Film film = filmService.getFilmById(review.getContentId());
                 if (film != null) {
-                    review.setContentTitle(film.getNom());
-                    review.setContentImage(film.getImage());
+                    review.setContentTitle(film.getTitle());
+                    review.setContentImage(film.getImageUrl());
                 }
             } else {
                 Series series = seriesService.getSeriesById(review.getContentId());
@@ -411,8 +410,7 @@ public class UserReviewHistoryController {
 
     private void viewContent(Review review) {
         try {
-            String fxml = "film".equals(review.getContentType()) ?
-                "/com/esprit/views/ReviewsAndRatings.fxml" : "/com/esprit/views/ReviewsAndRatings.fxml";
+            String fxml = "/com/esprit/views/ReviewsAndRatings.fxml";
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Parent root = loader.load();

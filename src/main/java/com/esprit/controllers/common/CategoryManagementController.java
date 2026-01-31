@@ -1,5 +1,9 @@
 package com.esprit.controllers.common;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.enums.CategoryType;
 import com.esprit.models.common.Category;
 import com.esprit.models.users.Admin;
@@ -8,7 +12,12 @@ import com.esprit.models.users.User;
 import com.esprit.services.common.CategoryService;
 import com.esprit.utils.PageRequest;
 import com.esprit.utils.SessionManager;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,9 +35,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.extern.log4j.Log4j2;
 
@@ -38,18 +47,24 @@ import java.util.ResourceBundle;
 
 /**
  * Unified controller for managing all category types (MOVIE, SERIE, PRODUCT).
- * Provides role-based filtering so admins see all categories while cinema managers
- * only see movie and series categories.
+ * Uses pure FormsFX with FormRenderer for form generation.
  *
  * @author RAKCHA Team
- * @version 1.0.0
+ * @version 2.0.0
  */
+
 @Log4j2
 public class CategoryManagementController implements Initializable {
 
     private final CategoryService categoryService = new CategoryService();
+    // FormsFX properties
+    private final StringProperty categoryNameProperty = new SimpleStringProperty("");
+    private final StringProperty categoryDescriptionProperty = new SimpleStringProperty("");
+    private final ListProperty<CategoryType> typeListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObjectProperty<CategoryType> selectedTypeProperty = new SimpleObjectProperty<>();
     private User currentUser;
     private CategoryType selectedType = null; // null means all types
+    private Form categoryForm;
 
     // FXML Components
     @FXML
@@ -66,11 +81,7 @@ public class CategoryManagementController implements Initializable {
     private TableColumn<Category, Void> actionsColumn;
 
     @FXML
-    private TextField nameField;
-    @FXML
-    private TextArea descriptionField;
-    @FXML
-    private ComboBox<CategoryType> typeComboBox;
+    private VBox formContainer;
     @FXML
     private ComboBox<CategoryType> filterTypeComboBox;
 
@@ -94,8 +105,62 @@ public class CategoryManagementController implements Initializable {
         setupTypeComboBoxes();
         setupSearch();
         loadCategories();
+
+        // Initialize FormsFX with FormRenderer
+        setupFormsFX();
+
         log.info("CategoryManagementController initialized for user: {}",
             currentUser != null ? currentUser.getEmail() : "unknown");
+    }
+
+    /**
+     * Configures FormsFX for category form with FormRenderer.
+     */
+    private void setupFormsFX() {
+        // Setup available types based on user role
+        ObservableList<CategoryType> availableTypes = FXCollections.observableArrayList();
+        if (currentUser instanceof Admin) {
+            availableTypes.addAll(CategoryType.MOVIE, CategoryType.SERIE, CategoryType.PRODUCT);
+        } else if (currentUser instanceof CinemaManager) {
+            availableTypes.addAll(CategoryType.MOVIE, CategoryType.SERIE);
+        } else {
+            availableTypes.addAll(CategoryType.values());
+        }
+        typeListProperty.setAll(availableTypes);
+        if (!availableTypes.isEmpty()) {
+            selectedTypeProperty.set(availableTypes.get(0));
+        }
+
+        categoryForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(categoryNameProperty)
+                    .label("Name")
+                    .placeholder("Enter category name")
+                    .required("Category name is required")
+                    .validate(
+                        StringLengthValidator.between(2, 50, "Name must be between 2 and 50 characters")
+                    ),
+                Field.ofSingleSelectionType(typeListProperty, selectedTypeProperty)
+                    .label("Type")
+                    .required("Please select a category type"),
+                Field.ofStringType(categoryDescriptionProperty)
+                    .label("Description")
+                    .placeholder("Enter category description")
+                    .multiline(true)
+                    .required("Description is required")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Description is required")
+                    )
+            )
+        ).title("Category Details");
+
+        // Render the form into the container
+        if (formContainer != null) {
+            FormRenderer renderer = new FormRenderer(categoryForm);
+            renderer.getStyleClass().add("formsfx-form");
+            formContainer.getChildren().clear();
+            formContainer.getChildren().add(renderer);
+        }
     }
 
     /**
@@ -153,18 +218,12 @@ public class CategoryManagementController implements Initializable {
         ObservableList<CategoryType> availableTypes = FXCollections.observableArrayList();
 
         if (currentUser instanceof Admin) {
-            // Admin can manage all category types
             availableTypes.addAll(CategoryType.MOVIE, CategoryType.SERIE, CategoryType.PRODUCT);
         } else if (currentUser instanceof CinemaManager) {
-            // Cinema manager can only manage movie and series categories
             availableTypes.addAll(CategoryType.MOVIE, CategoryType.SERIE);
         } else {
-            // Default: show all (read-only for clients, but they shouldn't access this screen)
             availableTypes.addAll(CategoryType.values());
         }
-
-        typeComboBox.setItems(availableTypes);
-        typeComboBox.getSelectionModel().selectFirst();
 
         // Filter combo box includes "All" option
         ObservableList<CategoryType> filterTypes = FXCollections.observableArrayList();
@@ -208,16 +267,14 @@ public class CategoryManagementController implements Initializable {
      */
     private void loadCategories() {
         ObservableList<Category> categories = FXCollections.observableArrayList();
-        PageRequest pageRequest = PageRequest.defaultPage(); // Load up to 100 categories
+        PageRequest pageRequest = PageRequest.defaultPage();
 
         if (selectedType != null) {
             categories.addAll(categoryService.readByType(selectedType, pageRequest).getContent());
         } else {
-            // Filter based on user role when showing all
             if (currentUser instanceof Admin) {
                 categories.addAll(categoryService.read(pageRequest).getContent());
             } else if (currentUser instanceof CinemaManager) {
-                // Only show MOVIE and SERIE for cinema managers
                 categories.addAll(categoryService.getAllByType(CategoryType.MOVIE));
                 categories.addAll(categoryService.getAllByType(CategoryType.SERIE));
             }
@@ -250,9 +307,9 @@ public class CategoryManagementController implements Initializable {
      */
     private void populateForm(Category category) {
         selectedCategory = category;
-        nameField.setText(category.getName());
-        descriptionField.setText(category.getDescription());
-        typeComboBox.setValue(category.getType());
+        categoryNameProperty.set(category.getName());
+        categoryDescriptionProperty.set(category.getDescription());
+        selectedTypeProperty.set(category.getType());
         addButton.setText("Update");
     }
 
@@ -262,11 +319,18 @@ public class CategoryManagementController implements Initializable {
     @FXML
     private void clearForm() {
         selectedCategory = null;
-        nameField.clear();
-        descriptionField.clear();
-        typeComboBox.getSelectionModel().selectFirst();
+        categoryNameProperty.set("");
+        categoryDescriptionProperty.set("");
+        if (!typeListProperty.isEmpty()) {
+            selectedTypeProperty.set(typeListProperty.get(0));
+        }
         addButton.setText("Add");
         categoryTable.getSelectionModel().clearSelection();
+
+        // Reset form validation state
+        if (categoryForm != null) {
+            categoryForm.reset();
+        }
     }
 
     /**
@@ -274,23 +338,17 @@ public class CategoryManagementController implements Initializable {
      */
     @FXML
     private void saveCategory(ActionEvent event) {
-        String name = nameField.getText().trim();
-        String description = descriptionField.getText().trim();
-        CategoryType type = typeComboBox.getValue();
+        // Validate using FormsFX
+        if (!categoryForm.isValid()) {
+            categoryForm.persist();
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Please fix the validation errors before saving.");
+            return;
+        }
 
-        // Validation
-        if (name.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", "Category name is required.");
-            return;
-        }
-        if (name.length() < 2 || name.length() > 50) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", "Category name must be between 2 and 50 characters.");
-            return;
-        }
-        if (description.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", "Description is required.");
-            return;
-        }
+        String name = categoryNameProperty.get().trim();
+        String description = categoryDescriptionProperty.get().trim();
+        CategoryType type = selectedTypeProperty.get();
+
         if (type == null) {
             showAlert(Alert.AlertType.WARNING, "Validation Error", "Please select a category type.");
             return;
@@ -298,7 +356,6 @@ public class CategoryManagementController implements Initializable {
 
         try {
             if (selectedCategory != null) {
-                // Update existing category
                 selectedCategory.setName(name);
                 selectedCategory.setDescription(description);
                 selectedCategory.setType(type);
@@ -306,7 +363,6 @@ public class CategoryManagementController implements Initializable {
                 updateStatus("Category updated successfully");
                 log.info("Updated category: {}", selectedCategory.getId());
             } else {
-                // Create new category
                 Category newCategory = new Category(name, description, type);
                 categoryService.create(newCategory);
                 updateStatus("Category created successfully");
@@ -397,7 +453,7 @@ public class CategoryManagementController implements Initializable {
     }
 
     /**
-     * Set the initial category type filter (used when navigating from specific context).
+     * Set the initial category type filter.
      */
     public void setInitialType(CategoryType type) {
         this.selectedType = type;
@@ -413,6 +469,7 @@ public class CategoryManagementController implements Initializable {
     public void setCurrentUser(User user) {
         this.currentUser = user;
         setupTypeComboBoxes();
+        setupFormsFX(); // Rebuild form with correct types
         loadCategories();
     }
 }

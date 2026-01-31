@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j2
 /**
  * Service class providing business logic for cinema halls in the RAKCHA
  * application.
@@ -27,6 +26,7 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class CinemaHallService implements IService<CinemaHall> {
 
     // Allowed columns for sorting to prevent SQL injection
@@ -146,9 +146,9 @@ public class CinemaHallService implements IService<CinemaHall> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.getSortBy());
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.sortBy());
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
 
@@ -173,11 +173,11 @@ public class CinemaHallService implements IService<CinemaHall> {
             }
 
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.error("Error retrieving paginated cinema halls: {}", e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
 
     }

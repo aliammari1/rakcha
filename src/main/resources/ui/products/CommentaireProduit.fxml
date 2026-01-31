@@ -8,7 +8,8 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="855.0"
       prefWidth="1507.0"
       xmlns="http://javafx.com/javafx/21"
-      fx:controller="com.esprit.controllers.products.CommentProductController">
+      fx:controller="com.esprit.controllers.products.CommentProductController"
+      stylesheets="@../styles/rakcha-unified.css">
 
   <HBox VBox.vgrow="ALWAYS">
     <!-- SideBar -->
@@ -38,3 +39,4 @@
     </HBox>
   </HBox>
 </VBox>
+

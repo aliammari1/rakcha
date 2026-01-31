@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -35,9 +34,11 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class OrderService implements IService<Order> {
 
     private static final Logger LOGGER = Logger.getLogger(OrderService.class.getName());
+    private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(OrderService.class);
     // Allowed columns for sorting to prevent SQL injection
     private static final String[] ALLOWED_SORT_COLUMNS = {
         "id", "order_date", "status", "phone_number", "address"
@@ -64,7 +65,7 @@ public class OrderService implements IService<Order> {
         try {
             final PreparedStatement pst = this.connection.prepareStatement(req);
             pst.setTimestamp(1, java.sql.Timestamp.valueOf(order.getOrderDate()));
-            pst.setString(2, null != order.getStatus() ? order.getStatus() : "PENDING");
+            pst.setString(2, null != order.getStatus() ? order.getStatus().getValue() : "pending");
             pst.setLong(3, order.getClient().getId());
             pst.setString(4, order.getPhoneNumber());
             pst.setString(5, order.getShippingAddress());
@@ -86,7 +87,7 @@ public class OrderService implements IService<Order> {
         final String req = "INSERT into orders(order_date, status, user_id, phone_number, shipping_address, total_amount) values (?, ?, ?, ?, ?, ?)";
         final PreparedStatement pst = this.connection.prepareStatement(req, Statement.RETURN_GENERATED_KEYS);
         pst.setTimestamp(1, java.sql.Timestamp.valueOf(order.getOrderDate()));
-        pst.setString(2, null != order.getStatus() ? order.getStatus() : "PENDING");
+        pst.setString(2, null != order.getStatus() ? order.getStatus().getValue() : "pending");
         pst.setLong(3, order.getClient().getId());
         pst.setString(4, order.getPhoneNumber());
         pst.setString(5, order.getShippingAddress());
@@ -114,7 +115,7 @@ public class OrderService implements IService<Order> {
             final UserService us = new UserService();
             while (rs.next()) {
                 final Order order = Order.builder().id(rs.getLong("id")).orderDate(rs.getTimestamp("order_date").toLocalDateTime())
-                    .status(rs.getString("status")).client((Client) us.getUserById(rs.getLong("user_id")))
+                    .status(OrderStatus.fromValue(rs.getString("status"))).client((Client) us.getUserById(rs.getLong("user_id")))
                     .phoneNumber(rs.getString("phone_number")).shippingAddress(rs.getString("shipping_address"))
                     .totalAmount(rs.getDouble("total_amount"))
                     .orderItems(orderItemService.readOrderItem(rs.getLong("id"))).build();
@@ -141,7 +142,7 @@ public class OrderService implements IService<Order> {
             final UserService us = new UserService();
             while (rs.next()) {
                 final Order order = Order.builder().id(rs.getLong("id")).orderDate(rs.getTimestamp("order_date").toLocalDateTime())
-                    .status(rs.getString("status")).client((Client) us.getUserById(rs.getLong("user_id")))
+                    .status(OrderStatus.fromValue(rs.getString("status"))).client((Client) us.getUserById(rs.getLong("user_id")))
                     .phoneNumber(rs.getString("phone_number")).shippingAddress(rs.getString("shipping_address"))
                     .totalAmount(rs.getDouble("total_amount"))
                     .orderItems(orderItemService.readOrderItem(rs.getLong("id"))).build();
@@ -165,7 +166,7 @@ public class OrderService implements IService<Order> {
         try {
             final PreparedStatement pst = this.connection.prepareStatement(req);
             pst.setTimestamp(1, java.sql.Timestamp.valueOf(order.getOrderDate()));
-            pst.setString(2, order.getStatus());
+            pst.setString(2, order.getStatus() != null ? order.getStatus().getValue() : "pending");
             pst.setString(3, order.getPhoneNumber());
             pst.setString(4, order.getShippingAddress());
             pst.setDouble(5, order.getTotalAmount() != null ? order.getTotalAmount() : 0.0);
@@ -211,7 +212,7 @@ public class OrderService implements IService<Order> {
             final ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 order = Order.builder().id(rs.getLong("id")).orderDate(rs.getTimestamp("order_date").toLocalDateTime())
-                    .status(rs.getString("status"))
+                    .status(OrderStatus.fromValue(rs.getString("status")))
                     .client((Client) usersService.getUserById(rs.getLong("user_id")))
                     .phoneNumber(rs.getString("phone_number")).shippingAddress(rs.getString("shipping_address"))
                     .totalAmount(rs.getDouble("total_amount")).build();
@@ -238,7 +239,7 @@ public class OrderService implements IService<Order> {
             final OrderItemService orderItemService = new OrderItemService();
             while (rs.next()) {
                 final Order order = Order.builder().id(rs.getLong("id")).orderDate(rs.getTimestamp("order_date").toLocalDateTime())
-                    .status(rs.getString("status"))
+                    .status(OrderStatus.fromValue(rs.getString("status")))
                     .client((Client) usersService.getUserById(rs.getLong("user_id")))
                     .phoneNumber(rs.getString("phone_number")).shippingAddress(rs.getString("shipping_address"))
                     .totalAmount(rs.getDouble("total_amount"))
@@ -280,9 +281,9 @@ public class OrderService implements IService<Order> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.getSortBy());
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.sortBy());
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -303,7 +304,7 @@ public class OrderService implements IService<Order> {
                         final Order order = Order.builder()
                             .id(rs.getLong("id"))
                             .orderDate(rs.getTimestamp("order_date").toLocalDateTime())
-                            .status(rs.getString("status"))
+                            .status(OrderStatus.fromValue(rs.getString("status")))
                             .client((Client) userService.getUserById(rs.getLong("user_id")))
                             .phoneNumber(rs.getString("phone_number"))
                             .shippingAddress(rs.getString("shipping_address"))
@@ -317,11 +318,11 @@ public class OrderService implements IService<Order> {
                 }
             }
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.error("Error retrieving paginated orders: {}", e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
     }
 
@@ -347,7 +348,7 @@ public class OrderService implements IService<Order> {
         }
 
         // Get current status
-        OrderStatus currentStatus = OrderStatus.fromValue(order.getStatus());
+        OrderStatus currentStatus = order.getStatus();
 
         // Validate transition
         if (!currentStatus.canTransitionTo(newStatus)) {
@@ -394,7 +395,7 @@ public class OrderService implements IService<Order> {
             throw new InvalidStatusTransitionException("Order not found with ID: " + orderId);
         }
 
-        OrderStatus currentStatus = OrderStatus.fromValue(order.getStatus());
+        OrderStatus currentStatus = order.getStatus();
 
         // Validate that order can be cancelled
         if (!currentStatus.canTransitionTo(OrderStatus.CANCELLED)) {
@@ -595,7 +596,7 @@ public class OrderService implements IService<Order> {
         return Order.builder()
             .id(rs.getLong("id"))
             .orderDate(rs.getTimestamp("order_date") != null ? rs.getTimestamp("order_date").toLocalDateTime() : null)
-            .status(rs.getString("status"))
+            .status(OrderStatus.fromValue(rs.getString("status")))
             .client((Client) usersService.getUserById(rs.getLong("user_id")))
             .phoneNumber(rs.getString("phone_number"))
             .shippingAddress(rs.getString("shipping_address"))

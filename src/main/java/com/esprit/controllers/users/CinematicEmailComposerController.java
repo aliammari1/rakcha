@@ -1,9 +1,16 @@
 package com.esprit.controllers.users;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.utils.UserMail;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -13,27 +20,23 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-/**
- * Controller for the Cinematic Email Composer UI.
- * Provides a film-like interface for composing and sending professional emails.
- * Supports both HTML and plain text email formats with real-time preview.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 2.0.0
- */
+@Log4j2
 public class CinematicEmailComposerController {
 
     private static final Logger LOGGER = Logger.getLogger(CinematicEmailComposerController.class.getName());
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private static final int MAX_CHARACTERS = 5000;
-
+    // FormsFX properties for declarative form handling
+    private final StringProperty recipientEmailProperty = new SimpleStringProperty("");
+    private final StringProperty subjectProperty = new SimpleStringProperty("");
+    private final StringProperty messageContentProperty = new SimpleStringProperty("");
     @FXML
     private TextField recipientEmailField;
     @FXML
@@ -54,12 +57,15 @@ public class CinematicEmailComposerController {
     private Label statusLabel;
     @FXML
     private Label charCountLabel;
+    private Form emailForm;
 
     /**
      * Initializes the controller and sets up event listeners.
      */
     @FXML
     public void initialize() {
+        setupFormsFX();
+        setupEasyBindings();
         setupEmailTypeCombo();
         setupEventListeners();
         applyAnimations();
@@ -72,6 +78,58 @@ public class CinematicEmailComposerController {
         emailTypeCombo.getItems().addAll("Plain Text", "HTML");
         emailTypeCombo.setValue("Plain Text");
         emailTypeCombo.setOnAction(e -> updatePreview());
+    }
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules.
+     */
+    private void setupFormsFX() {
+        this.emailForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.recipientEmailProperty)
+                    .label("Recipient Email")
+                    .validate(RegexValidator.forPattern(
+                        "^[A-Za-z0-9+_.-]+@(.+)$",
+                        "Please enter a valid email address")),
+                Field.ofStringType(this.subjectProperty)
+                    .label("Subject")
+                    .validate(StringLengthValidator.atLeast(1, "Subject is required")),
+                Field.ofStringType(this.messageContentProperty)
+                    .label("Message")
+                    .validate(StringLengthValidator.atLeast(1, "Message content is required"))
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind subscriptions to sync text fields with FormsFX properties.
+     */
+    private void setupEasyBindings() {
+        if (this.recipientEmailField != null) {
+            this.recipientEmailField.textProperty().bindBidirectional(this.recipientEmailProperty);
+        }
+        if (this.subjectField != null) {
+            this.subjectField.textProperty().bindBidirectional(this.subjectProperty);
+        }
+        if (this.messageContentArea != null) {
+            this.messageContentArea.textProperty().bindBidirectional(this.messageContentProperty);
+        }
+    }
+
+    /**
+     * Cleanup method to unbind properties when the view is closed.
+     */
+    public void cleanup() {
+        // Unbind bidirectional bindings
+        if (this.recipientEmailField != null) {
+            this.recipientEmailField.textProperty().unbindBidirectional(this.recipientEmailProperty);
+        }
+        if (this.subjectField != null) {
+            this.subjectField.textProperty().unbindBidirectional(this.subjectProperty);
+        }
+        if (this.messageContentArea != null) {
+            this.messageContentArea.textProperty().unbindBidirectional(this.messageContentProperty);
+        }
     }
 
     /**
@@ -125,14 +183,13 @@ public class CinematicEmailComposerController {
      * Updates the preview area with formatted content.
      */
     private void updatePreview() {
-        StringBuilder preview = new StringBuilder();
-        preview.append("TO: ").append(recipientEmailField.getText().isEmpty() ? "[recipient email]" : recipientEmailField.getText()).append("\n\n");
-        preview.append("SUBJECT: ").append(subjectField.getText().isEmpty() ? "[subject line]" : subjectField.getText()).append("\n\n");
-        preview.append("FORMAT: ").append(emailTypeCombo.getValue()).append("\n\n");
-        preview.append("---\n\n");
-        preview.append(messageContentArea.getText().isEmpty() ? "[message content]" : messageContentArea.getText());
+        String preview = "TO: " + (recipientEmailField.getText().isEmpty() ? "[recipient email]" : recipientEmailField.getText()) + "\n\n" +
+            "SUBJECT: " + (subjectField.getText().isEmpty() ? "[subject line]" : subjectField.getText()) + "\n\n" +
+            "FORMAT: " + emailTypeCombo.getValue() + "\n\n" +
+            "---\n\n" +
+            (messageContentArea.getText().isEmpty() ? "[message content]" : messageContentArea.getText());
 
-        previewArea.setText(preview.toString());
+        previewArea.setText(preview);
     }
 
     /**

@@ -4,39 +4,33 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
 
-/**
- * Model class representing user achievements/badges.
- * Used for gamification and rewarding user engagement.
- */
+@Log4j2
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class Achievement {
 
+    // Points/rewards
+    @Builder.Default
+    private final int points = 0;
+    // Rarity
+    @Builder.Default
+    private final AchievementRarity rarity = AchievementRarity.COMMON;
     private Long id;
-
     // Achievement definition
     private String name;
     private String description;
     private String icon; // Emoji or icon identifier
     private String category; // "watching", "reviewing", "social", "shopping", etc.
-
     // Requirements
     private int requiredCount; // Number of actions required
     private String requirementType; // "films_watched", "reviews_written", etc.
-
-    // Points/rewards
-    @Builder.Default
-    private int points = 0;
-
-    // Rarity
-    @Builder.Default
-    private AchievementRarity rarity = AchievementRarity.COMMON;
-
     // User-specific unlock status
     @Builder.Default
     private boolean unlocked = false;

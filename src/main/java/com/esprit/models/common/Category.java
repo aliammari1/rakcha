@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Data
 @NoArgsConstructor
 @Builder
@@ -13,13 +15,10 @@ import lombok.NoArgsConstructor;
 
 public class Category {
 
+    private  String name;
+    private  String description;
+    private  CategoryType type;
     private Long id;
-
-    private String name;
-
-    private String description;
-
-    private CategoryType type;
 
     /**
      * Creates a Category with the given name and description and initializes film and actor lists as empty.

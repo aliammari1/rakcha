@@ -1,5 +1,8 @@
 package com.esprit.controllers.films;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.cinemas.MovieSession;
 import com.esprit.models.common.Review;
 import com.esprit.models.films.Actor;
@@ -14,7 +17,6 @@ import com.esprit.services.search.SearchService;
 import com.esprit.services.search.SearchService.EntityType;
 import com.esprit.services.search.SearchService.SearchResult;
 import com.esprit.services.search.SearchService.UserRole;
-import com.esprit.services.users.UserService;
 import com.esprit.utils.PageRequest;
 import com.esprit.utils.SessionManager;
 import com.google.zxing.BarcodeFormat;
@@ -24,6 +26,8 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -64,6 +68,7 @@ import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.extern.log4j.Log4j2;
 import org.controlsfx.control.Rating;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -77,18 +82,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Is responsible for handling user interactions related to viewing and
- * commenting on films within a cinema website. It displays a scrolling pane
- * containing all comments for a given film, and allows users to add new
- * comments or view previous comments by clicking buttons in the interface. The
- * controller also provides methods for retrieving all comments for a specific
- * film and displaying them in the scrolling pane.
- */
+@Log4j2
 public class FilmUserController {
 
     private static final Logger LOGGER = Logger.getLogger(FilmUserController.class.getName());
     private static final long SEARCH_DEBOUNCE_MS = 150;
+
+    // FormsFX properties
+    private final StringProperty commentProperty = new SimpleStringProperty("");
     // Remove unused fields
     // private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
     private final List<CheckBox> yearsCheckBoxes = new ArrayList<>();
@@ -96,6 +97,7 @@ public class FilmUserController {
     public Button closeDetailFilm2;
     FlowPane flowpaneFilm;
     FlowPane flowPaneactors;
+    private Form commentForm;
     @FXML
     private Button closeDetailFilm1;
     @FXML
@@ -217,13 +219,13 @@ public class FilmUserController {
      *                  the
      *                  function.
      * @returns a list of `Film` objects that contain the searched string in their
-     *          name.
-     *          <p>
-     *          - The list of films is filtered based on the search query, resulting
-     *          in a subset of films that match the query. - The list contains only
-     *          films with a non-null `nom` attribute and containing the search
-     *          query in their name. - The list is returned as a new list of films,
-     *          which can be used for further processing or analysis.
+     * name.
+     * <p>
+     * - The list of films is filtered based on the search query, resulting
+     * in a subset of films that match the query. - The list contains only
+     * films with a non-null `nom` attribute and containing the search
+     * query in their name. - The list is returned as a new list of films,
+     * which can be used for further processing or analysis.
      */
     @FXML
     /**
@@ -332,8 +334,55 @@ public class FilmUserController {
         // Initialize basic UI components first
         setupBasicUI();
 
+        // Initialize FormsFX
+        setupFormsFX();
+        setupBidirectionalBindings();
+
         // Defer loading recommendations until scene is ready
         Platform.runLater(this::setupRecommendations);
+    }
+
+    /**
+     * Configures FormsFX for comment validation.
+     */
+    private void setupFormsFX() {
+        commentForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(commentProperty)
+                    .label("Comment")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Comment cannot be empty")
+                    )
+            )
+        );
+    }
+
+    /**
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        if (txtAreaComments != null) {
+            txtAreaComments.textProperty().bindBidirectional(commentProperty);
+        }
+    }
+
+    /**
+     * Validates the comment form using FormsFX.
+     *
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validateCommentForm() {
+        commentForm.persist();
+        return commentForm.isValid();
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        if (txtAreaComments != null) {
+            txtAreaComments.textProperty().unbindBidirectional(commentProperty);
+        }
     }
 
     /**
@@ -422,7 +471,7 @@ public class FilmUserController {
                 if (filmTitle != null && !filmTitle.isEmpty()) {
                     String shareText = "Check out \"" + filmTitle + "\" on RAKCHA!";
                     java.awt.Toolkit.getDefaultToolkit().getSystemClipboard()
-                            .setContents(new java.awt.datatransfer.StringSelection(shareText), null);
+                        .setContents(new java.awt.datatransfer.StringSelection(shareText), null);
                     showShareNotification(filmTitle);
                 }
             });
@@ -571,8 +620,8 @@ public class FilmUserController {
         final List<Integer> selectedYears = this.getSelectedYears();
         // Filtrer les films en fonction des années de réalisation sélectionnées
         final List<Film> filteredCinemas = this.l1.stream()
-                .filter(cinema -> selectedYears.isEmpty() || selectedYears.contains(cinema.getReleaseYear()))
-                .collect(Collectors.toList());
+            .filter(cinema -> selectedYears.isEmpty() || selectedYears.contains(cinema.getReleaseYear()))
+            .collect(Collectors.toList());
         // Afficher les films filtrés
         this.flowpaneFilm.getChildren().clear();
         this.createfilmCards(filteredCinemas);
@@ -585,13 +634,13 @@ public class FilmUserController {
      * Parses the text of each selected checkbox as an integer and returns them.
      *
      * @return a list of integers corresponding to the selected year checkboxes;
-     *         empty if none are selected
+     * empty if none are selected
      */
     private List<Integer> getSelectedYears() {
         // Récupérer les années de réalisation sélectionnées dans l'AnchorPane de
         // filtrage
         return this.yearsCheckBoxes.stream().filter(CheckBox::isSelected)
-                .map(checkBox -> Integer.parseInt(checkBox.getText())).collect(Collectors.toList());
+            .map(checkBox -> Integer.parseInt(checkBox.getText())).collect(Collectors.toList());
     }
 
     /**
@@ -621,7 +670,7 @@ public class FilmUserController {
     public void switchtevent(final ActionEvent event) {
         try {
             final FXMLLoader fxmlLoader = new FXMLLoader(
-                    this.getClass().getResource("/ui/AffichageEvenementClient.fxml"));
+                this.getClass().getResource("/ui/AffichageEvenementClient.fxml"));
             final AnchorPane root = fxmlLoader.load();
             final Stage stage = (Stage) this.event_button.getScene().getWindow();
             final Scene scene = new Scene(root, 1280, 700);
@@ -641,7 +690,7 @@ public class FilmUserController {
     public void switchtcinemaaa(final ActionEvent event) {
         try {
             final FXMLLoader fxmlLoader = new FXMLLoader(
-                    this.getClass().getResource("/ui/cinemas/DashboardClientCinema.fxml"));
+                this.getClass().getResource("/ui/cinemas/DashboardClientCinema.fxml"));
             final AnchorPane root = fxmlLoader.load();
             final Stage stage = (Stage) this.Cinema_Button.getScene().getWindow();
             final Scene scene = new Scene(root, 1280, 700);
@@ -661,7 +710,7 @@ public class FilmUserController {
     public void switchtoajouterproduct(final ActionEvent event) {
         try {
             final FXMLLoader fxmlLoader = new FXMLLoader(
-                    this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
+                this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
             final AnchorPane root = fxmlLoader.load();
             final Stage stage = (Stage) this.product.getScene().getWindow();
             final Scene scene = new Scene(root, 1280, 700);
@@ -704,21 +753,22 @@ public class FilmUserController {
      */
     @FXML
     void addCommentaire() {
-        final String message = this.txtAreaComments.getText();
-        if (message.isEmpty()) {
+        // Validate using FormsFX
+        if (!validateCommentForm()) {
             final Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Commentaire vide");
             alert.setContentText("Add Comment");
             alert.showAndWait();
-        } else {
-            final Review commentaire = new Review(message, (Client) SessionManager.getCurrentUser(),
-                    new FilmService().getFilm(this.filmId));
-            FilmUserController.LOGGER.info(commentaire + " " + SessionManager.getCurrentUser());
-            final ReviewService cinemaCommentService = new ReviewService();
-            cinemaCommentService.create(commentaire);
-            this.txtAreaComments.clear();
+            return;
         }
 
+        final String message = commentProperty.get();
+        final Review commentaire = new Review(message, (Client) SessionManager.getCurrentUser(),
+            new FilmService().getFilm(this.filmId));
+        FilmUserController.LOGGER.info(commentaire + " " + SessionManager.getCurrentUser());
+        final ReviewService cinemaCommentService = new ReviewService();
+        cinemaCommentService.create(commentaire);
+        this.txtAreaComments.clear();
     }
 
     /**
@@ -738,7 +788,7 @@ public class FilmUserController {
      * @param commentaire the FilmComment whose author, profile image, and text will
      *                    be displayed
      * @return an HBox containing the profile image and a VBox with the commenter
-     *         name and comment text
+     * name and comment text
      */
     private HBox addCommentToView(final Review commentaire) {
         // Création du cercle pour l'image de l'utilisateur
@@ -790,11 +840,11 @@ public class FilmUserController {
         // Création du conteneur pour la carte du commentaire
         final HBox cardContainer = new HBox();
         cardContainer.setStyle(
-                "-fx-background-color: white; -fx-padding: 5px ; -fx-border-radius: 8px; -fx-border-color: #000; -fx-background-radius: 8px; ");
+            "-fx-background-color: white; -fx-padding: 5px ; -fx-border-radius: 8px; -fx-border-color: #000; -fx-background-radius: 8px; ");
 
         // Nom de l'utilisateur
         final Text userName = new Text(
-                commentaire.getUser().getFirstName() + " " + commentaire.getUser().getLastName());
+            commentaire.getUser().getFirstName() + " " + commentaire.getUser().getLastName());
         userName.setStyle("-fx-font-family: 'Arial Rounded MT Bold'; -fx-font-style: bold;");
 
         // Commentaire
@@ -927,8 +977,8 @@ public class FilmUserController {
             // Show current year films
             int currentYear = java.time.Year.now().getValue();
             List<Film> filtered = this.l1.stream()
-                    .filter(f -> f.getReleaseYear() == currentYear || f.getReleaseYear() == currentYear - 1)
-                    .collect(Collectors.toList());
+                .filter(f -> f.getReleaseYear() == currentYear || f.getReleaseYear() == currentYear - 1)
+                .collect(Collectors.toList());
             for (final Film film : filtered) {
                 this.flowpaneFilm.getChildren().add(this.createFilmCard(film));
             }
@@ -936,8 +986,8 @@ public class FilmUserController {
             // Show future films
             int currentYear = java.time.Year.now().getValue();
             List<Film> filtered = this.l1.stream()
-                    .filter(f -> f.getReleaseYear() > currentYear)
-                    .collect(Collectors.toList());
+                .filter(f -> f.getReleaseYear() > currentYear)
+                .collect(Collectors.toList());
             for (final Film film : filtered) {
                 this.flowpaneFilm.getChildren().add(this.createFilmCard(film));
             }
@@ -945,11 +995,11 @@ public class FilmUserController {
             // Show top rated films
             ReviewService ratingService = new ReviewService();
             List<Film> sorted = this.l1.stream()
-                    .sorted((f1, f2) -> Double.compare(
-                            ratingService.getAverageRating(f2.getId()),
-                            ratingService.getAverageRating(f1.getId())))
-                    .limit(10)
-                    .collect(Collectors.toList());
+                .sorted((f1, f2) -> Double.compare(
+                    ratingService.getAverageRating(f2.getId()),
+                    ratingService.getAverageRating(f1.getId())))
+                .limit(10)
+                .collect(Collectors.toList());
             for (final Film film : sorted) {
                 this.flowpaneFilm.getChildren().add(this.createFilmCard(film));
             }
@@ -957,11 +1007,11 @@ public class FilmUserController {
             // Filter by genre/category name
             FilmCategoryService filmCategoryService = new FilmCategoryService();
             List<Film> filtered = this.l1.stream()
-                    .filter(f -> {
-                        String categories = filmCategoryService.getCategoryNames(f.getId());
-                        return categories != null && categories.toLowerCase().contains(category.toLowerCase());
-                    })
-                    .collect(Collectors.toList());
+                .filter(f -> {
+                    String categories = filmCategoryService.getCategoryNames(f.getId());
+                    return categories != null && categories.toLowerCase().contains(category.toLowerCase());
+                })
+                .collect(Collectors.toList());
             for (final Film film : filtered) {
                 this.flowpaneFilm.getChildren().add(this.createFilmCard(film));
             }
@@ -1031,11 +1081,11 @@ public class FilmUserController {
 
         if (this.featuredFilm != null) {
             String shareText = "🎬 Check out \"" + this.featuredFilm.getTitle() + "\" on RAKCHA Cinema!\n"
-                    + "Year: " + this.featuredFilm.getReleaseYear() + "\n"
-                    + "Duration: " + this.featuredFilm.getDurationMin();
+                + "Year: " + this.featuredFilm.getReleaseYear() + "\n"
+                + "Duration: " + this.featuredFilm.getDurationMin();
 
             java.awt.Toolkit.getDefaultToolkit().getSystemClipboard()
-                    .setContents(new java.awt.datatransfer.StringSelection(shareText), null);
+                .setContents(new java.awt.datatransfer.StringSelection(shareText), null);
 
             showShareNotification(this.featuredFilm.getTitle());
         }
@@ -1052,11 +1102,11 @@ public class FilmUserController {
         if (filmTitle != null && !filmTitle.isEmpty()) {
             String description = this.descriptionDETAILfilm.getText();
             String shareText = "🎬 Check out \"" + filmTitle + "\" on RAKCHA Cinema!\n"
-                    + (description != null ? description.substring(0, Math.min(100, description.length())) + "..."
-                            : "");
+                + (description != null ? description.substring(0, Math.min(100, description.length())) + "..."
+                : "");
 
             java.awt.Toolkit.getDefaultToolkit().getSystemClipboard()
-                    .setContents(new java.awt.datatransfer.StringSelection(shareText), null);
+                .setContents(new java.awt.datatransfer.StringSelection(shareText), null);
 
             showShareNotification(filmTitle);
         }
@@ -1229,11 +1279,11 @@ public class FilmUserController {
         // Create toast label
         Label toast = new Label(message);
         toast.setStyle(
-                "-fx-background-color: rgba(0, 0, 0, 0.8);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-padding: 15 25 15 25;" +
-                        "-fx-background-radius: 25;" +
-                        "-fx-font-size: 14px;");
+            "-fx-background-color: rgba(0, 0, 0, 0.8);" +
+                "-fx-text-fill: white;" +
+                "-fx-padding: 15 25 15 25;" +
+                "-fx-background-radius: 25;" +
+                "-fx-font-size: 14px;");
 
         // Find root StackPane to add toast
         if (this.inlineDetailPanel != null && this.inlineDetailPanel.getScene() != null) {
@@ -1281,12 +1331,12 @@ public class FilmUserController {
 
         searchResultsContainer = new VBox(5);
         searchResultsContainer.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(25,25,35,0.98), rgba(20,20,30,0.98));" +
-                        "-fx-background-radius: 12;" +
-                        "-fx-border-color: rgba(255,255,255,0.1);" +
-                        "-fx-border-radius: 12;" +
-                        "-fx-padding: 10;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0, 0, 5);");
+            "-fx-background-color: linear-gradient(to bottom, rgba(25,25,35,0.98), rgba(20,20,30,0.98));" +
+                "-fx-background-radius: 12;" +
+                "-fx-border-color: rgba(255,255,255,0.1);" +
+                "-fx-border-radius: 12;" +
+                "-fx-padding: 10;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0, 0, 5);");
         searchResultsContainer.setMinWidth(400);
         searchResultsContainer.setMaxWidth(500);
         searchResultsContainer.setMaxHeight(400);
@@ -1357,9 +1407,9 @@ public class FilmUserController {
             return;
 
         java.util.concurrent.CompletableFuture.supplyAsync(() -> searchEngine.search(query, UserRole.CLIENT, 10))
-                .thenAccept(results -> {
-                    Platform.runLater(() -> displaySearchResults(results, query));
-                });
+            .thenAccept(results -> {
+                Platform.runLater(() -> displaySearchResults(results, query));
+            });
     }
 
     private void displaySearchResults(List<SearchResult> results, String query) {
@@ -1370,7 +1420,7 @@ public class FilmUserController {
             noResults.setStyle("-fx-text-fill: rgba(255,255,255,0.6); -fx-padding: 20;");
             searchResultsContainer.getChildren().add(noResults);
         } else {
-            var grouped = results.stream().collect(Collectors.groupingBy(SearchResult::getType));
+            var grouped = results.stream().collect(Collectors.groupingBy(SearchResult::type));
 
             for (EntityType type : EntityType.values()) {
                 var typeResults = grouped.get(type);
@@ -1408,7 +1458,7 @@ public class FilmUserController {
         thumbnail.setPrefSize(40, 40);
         thumbnail.setMinSize(40, 40);
 
-        if (result.getImageUrl() != null && !result.getImageUrl().isEmpty()) {
+        if (result.imageUrl() != null && !result.imageUrl().isEmpty()) {
             ImageView imageView = new ImageView();
             imageView.setFitWidth(40);
             imageView.setFitHeight(40);
@@ -1421,7 +1471,7 @@ public class FilmUserController {
 
             java.util.concurrent.CompletableFuture.runAsync(() -> {
                 try {
-                    Image img = new Image(result.getImageUrl(), 40, 40, true, true, true);
+                    Image img = new Image(result.imageUrl(), 40, 40, true, true, true);
                     Platform.runLater(() -> imageView.setImage(img));
                 } catch (Exception e) {
                 }
@@ -1439,27 +1489,27 @@ public class FilmUserController {
         VBox textBox = new VBox(2);
         HBox.setHgrow(textBox, javafx.scene.layout.Priority.ALWAYS);
 
-        Label title = new Label(result.getTitle());
+        Label title = new Label(result.title());
         title.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;");
         title.setMaxWidth(280);
 
-        Label subtitle = new Label(result.getSubtitle());
+        Label subtitle = new Label(result.subtitle());
         subtitle.setStyle("-fx-text-fill: rgba(255,255,255,0.6); -fx-font-size: 11px;");
 
         textBox.getChildren().addAll(title, subtitle);
 
-        Label badge = new Label(result.getType().name.toUpperCase());
+        Label badge = new Label(result.type().name.toUpperCase());
         badge.setStyle(
-                "-fx-background-color: " + result.getColor() + "33;" +
-                        "-fx-text-fill: " + result.getColor() + ";" +
-                        "-fx-font-size: 9px;" +
-                        "-fx-padding: 2 6;" +
-                        "-fx-background-radius: 10;");
+            "-fx-background-color: " + result.getColor() + "33;" +
+                "-fx-text-fill: " + result.getColor() + ";" +
+                "-fx-font-size: 9px;" +
+                "-fx-padding: 2 6;" +
+                "-fx-background-radius: 10;");
 
         item.getChildren().addAll(thumbnail, textBox, badge);
 
         item.setOnMouseEntered(e -> item
-                .setStyle("-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 8; -fx-cursor: hand;"));
+            .setStyle("-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 8; -fx-cursor: hand;"));
         item.setOnMouseExited(e -> item.setStyle("-fx-background-radius: 8; -fx-cursor: hand;"));
 
         item.setOnMouseClicked(e -> {
@@ -1471,9 +1521,9 @@ public class FilmUserController {
     }
 
     private void handleSearchResultClick(SearchResult result) {
-        switch (result.getType()) {
+        switch (result.type()) {
             case FILM:
-                Film film = new FilmService().getFilm(result.getId());
+                Film film = new FilmService().getFilm(result.id());
                 if (film != null) {
                     showFilmDetails(film);
                     showInlineDetailPanel();
@@ -1487,16 +1537,16 @@ public class FilmUserController {
                 }
                 break;
             case ACTOR:
-                serach_film_user.setText(result.getTitle());
+                serach_film_user.setText(result.title());
                 break;
             case CINEMA:
-                showToast("Cinema: " + result.getTitle());
+                showToast("Cinema: " + result.title());
                 break;
             case PRODUCT:
-                showToast("Product: " + result.getTitle());
+                showToast("Product: " + result.title());
                 break;
             case CATEGORY:
-                filterByKeyword(result.getTitle());
+                filterByKeyword(result.title());
                 break;
         }
     }
@@ -1520,7 +1570,7 @@ public class FilmUserController {
             var bounds = serach_film_user.localToScreen(serach_film_user.getBoundsInLocal());
             if (bounds != null) {
                 searchPopup.show(serach_film_user.getScene().getWindow(),
-                        bounds.getMinX(), bounds.getMaxY() + 5);
+                    bounds.getMinX(), bounds.getMaxY() + 5);
             }
         }
     }
@@ -1641,7 +1691,7 @@ public class FilmUserController {
                     String trailerUrl = new FilmService().getTrailerFilm(film.getTitle());
 
                     if (trailerUrl != null && !trailerUrl.isEmpty() &&
-                            trailerUrl.contains("/embed/") && !trailerUrl.equals("https://www.youtube.com")) {
+                        trailerUrl.contains("/embed/") && !trailerUrl.equals("https://www.youtube.com")) {
 
                         String videoId = trailerUrl.substring(trailerUrl.lastIndexOf("/embed/") + 7);
                         if (videoId.contains("?")) {
@@ -1649,43 +1699,43 @@ public class FilmUserController {
                         }
 
                         String embedHtml = "<!DOCTYPE html><html><head>" +
-                                "<meta charset='UTF-8'>" +
-                                "<style>" +
-                                "* { margin: 0; padding: 0; box-sizing: border-box; }" +
-                                "body { background: #1a1a1a; width: 100vw; height: 100vh; display: flex; " +
-                                "       align-items: center; justify-content: center; overflow: hidden; }" +
-                                "iframe { width: 100%; height: 100%; border: none; }" +
-                                ".error-container { color: white; text-align: center; font-family: Arial, sans-serif; "
-                                +
-                                "                   display: none; padding: 40px; }" +
-                                ".error-container h2 { margin-bottom: 15px; color: #ff6b6b; }" +
-                                ".error-container p { color: #ccc; margin: 10px 0; }" +
-                                ".error-container a { color: #4dabf7; text-decoration: none; }" +
-                                "</style></head><body>" +
-                                "<iframe id='player' src='https://www.youtube.com/embed/" + videoId +
-                                "?autoplay=1&rel=0&modestbranding=1&enablejsapi=1' " +
-                                "allow='autoplay; encrypted-media' allowfullscreen></iframe>" +
-                                "<div id='error' class='error-container'>" +
-                                "<h2>🎬 Trailer Unavailable</h2>" +
-                                "<p>The trailer for '<strong>" + escapeHtml(film.getTitle())
-                                + "</strong>' cannot be played.</p>" +
-                                "<p>This may be due to regional restrictions or the video being unavailable.</p>" +
-                                "<p><a href='https://www.youtube.com/results?search_query=" +
-                                escapeHtml(film.getTitle()).replace(" ", "+") + "+trailer' target='_blank'>" +
-                                "Search on YouTube</a></p></div>" +
-                                "<script>" +
-                                "var iframe = document.getElementById('player');" +
-                                "iframe.onerror = function() {" +
-                                "  document.getElementById('player').style.display = 'none';" +
-                                "  document.getElementById('error').style.display = 'block';" +
-                                "};" +
-                                "setTimeout(function() {" +
-                                "  try { if(iframe.contentWindow.document.body.innerHTML.indexOf('Error') > -1) {" +
-                                "    document.getElementById('player').style.display = 'none';" +
-                                "    document.getElementById('error').style.display = 'block';" +
-                                "  }} catch(e) {}" +
-                                "}, 3000);" +
-                                "</script></body></html>";
+                            "<meta charset='UTF-8'>" +
+                            "<style>" +
+                            "* { margin: 0; padding: 0; box-sizing: border-box; }" +
+                            "body { background: #1a1a1a; width: 100vw; height: 100vh; display: flex; " +
+                            "       align-items: center; justify-content: center; overflow: hidden; }" +
+                            "iframe { width: 100%; height: 100%; border: none; }" +
+                            ".error-container { color: white; text-align: center; font-family: Arial, sans-serif; "
+                            +
+                            "                   display: none; padding: 40px; }" +
+                            ".error-container h2 { margin-bottom: 15px; color: #ff6b6b; }" +
+                            ".error-container p { color: #ccc; margin: 10px 0; }" +
+                            ".error-container a { color: #4dabf7; text-decoration: none; }" +
+                            "</style></head><body>" +
+                            "<iframe id='player' src='https://www.youtube.com/embed/" + videoId +
+                            "?autoplay=1&rel=0&modestbranding=1&enablejsapi=1' " +
+                            "allow='autoplay; encrypted-media' allowfullscreen></iframe>" +
+                            "<div id='error' class='error-container'>" +
+                            "<h2>🎬 Trailer Unavailable</h2>" +
+                            "<p>The trailer for '<strong>" + escapeHtml(film.getTitle())
+                            + "</strong>' cannot be played.</p>" +
+                            "<p>This may be due to regional restrictions or the video being unavailable.</p>" +
+                            "<p><a href='https://www.youtube.com/results?search_query=" +
+                            escapeHtml(film.getTitle()).replace(" ", "+") + "+trailer' target='_blank'>" +
+                            "Search on YouTube</a></p></div>" +
+                            "<script>" +
+                            "var iframe = document.getElementById('player');" +
+                            "iframe.onerror = function() {" +
+                            "  document.getElementById('player').style.display = 'none';" +
+                            "  document.getElementById('error').style.display = 'block';" +
+                            "};" +
+                            "setTimeout(function() {" +
+                            "  try { if(iframe.contentWindow.document.body.innerHTML.indexOf('Error') > -1) {" +
+                            "    document.getElementById('player').style.display = 'none';" +
+                            "    document.getElementById('error').style.display = 'block';" +
+                            "  }} catch(e) {}" +
+                            "}, 3000);" +
+                            "</script></body></html>";
 
                         webView.getEngine().loadContent(embedHtml);
                     } else {
@@ -1709,59 +1759,59 @@ public class FilmUserController {
         if (text == null)
             return "";
         return text.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;")
-                .replace("'", "&#39;");
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&#39;");
     }
 
     private void showTrailerNotAvailable(WebView webView, String filmName) {
         String html = "<!DOCTYPE html><html><head>" +
-                "<meta charset='UTF-8'>" +
-                "<style>" +
-                "body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); " +
-                "       width: 100vw; height: 100vh; display: flex; align-items: center; " +
-                "       justify-content: center; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }" +
-                ".container { text-align: center; color: white; padding: 40px; }" +
-                ".icon { font-size: 64px; margin-bottom: 20px; }" +
-                "h2 { color: #ff6b6b; margin-bottom: 15px; font-size: 28px; }" +
-                "p { color: #a0a0a0; margin: 10px 0; font-size: 16px; line-height: 1.6; }" +
-                ".film-name { color: #4dabf7; font-weight: bold; }" +
-                ".btn { display: inline-block; margin-top: 20px; padding: 12px 30px; " +
-                "       background: #e50914; color: white; text-decoration: none; " +
-                "       border-radius: 4px; font-weight: bold; transition: background 0.3s; }" +
-                ".btn:hover { background: #ff1a1a; }" +
-                "</style></head><body>" +
-                "<div class='container'>" +
-                "<div class='icon'>🎬</div>" +
-                "<h2>Trailer Not Available</h2>" +
-                "<p>Sorry, the trailer for '<span class='film-name'>" + escapeHtml(filmName)
-                + "</span>' is not available.</p>" +
-                "<p>The video may have been removed or is restricted in your region.</p>" +
-                "<a class='btn' href='https://www.youtube.com/results?search_query=" +
-                escapeHtml(filmName).replace(" ", "+") + "+official+trailer' target='_blank'>Search on YouTube</a>" +
-                "</div></body></html>";
+            "<meta charset='UTF-8'>" +
+            "<style>" +
+            "body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); " +
+            "       width: 100vw; height: 100vh; display: flex; align-items: center; " +
+            "       justify-content: center; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }" +
+            ".container { text-align: center; color: white; padding: 40px; }" +
+            ".icon { font-size: 64px; margin-bottom: 20px; }" +
+            "h2 { color: #ff6b6b; margin-bottom: 15px; font-size: 28px; }" +
+            "p { color: #a0a0a0; margin: 10px 0; font-size: 16px; line-height: 1.6; }" +
+            ".film-name { color: #4dabf7; font-weight: bold; }" +
+            ".btn { display: inline-block; margin-top: 20px; padding: 12px 30px; " +
+            "       background: #e50914; color: white; text-decoration: none; " +
+            "       border-radius: 4px; font-weight: bold; transition: background 0.3s; }" +
+            ".btn:hover { background: #ff1a1a; }" +
+            "</style></head><body>" +
+            "<div class='container'>" +
+            "<div class='icon'>🎬</div>" +
+            "<h2>Trailer Not Available</h2>" +
+            "<p>Sorry, the trailer for '<span class='film-name'>" + escapeHtml(filmName)
+            + "</span>' is not available.</p>" +
+            "<p>The video may have been removed or is restricted in your region.</p>" +
+            "<a class='btn' href='https://www.youtube.com/results?search_query=" +
+            escapeHtml(filmName).replace(" ", "+") + "+official+trailer' target='_blank'>Search on YouTube</a>" +
+            "</div></body></html>";
         webView.getEngine().loadContent(html);
     }
 
     private void showTrailerError(WebView webView) {
         String html = "<!DOCTYPE html><html><head>" +
-                "<meta charset='UTF-8'>" +
-                "<style>" +
-                "body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); " +
-                "       width: 100vw; height: 100vh; display: flex; align-items: center; " +
-                "       justify-content: center; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }" +
-                ".container { text-align: center; color: white; padding: 40px; }" +
-                ".icon { font-size: 64px; margin-bottom: 20px; }" +
-                "h2 { color: #ff6b6b; margin-bottom: 15px; font-size: 28px; }" +
-                "p { color: #a0a0a0; margin: 10px 0; font-size: 16px; }" +
-                "</style></head><body>" +
-                "<div class='container'>" +
-                "<div class='icon'>⚠️</div>" +
-                "<h2>Connection Error</h2>" +
-                "<p>Failed to load the trailer.</p>" +
-                "<p>Please check your internet connection and try again.</p>" +
-                "</div></body></html>";
+            "<meta charset='UTF-8'>" +
+            "<style>" +
+            "body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); " +
+            "       width: 100vw; height: 100vh; display: flex; align-items: center; " +
+            "       justify-content: center; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; }" +
+            ".container { text-align: center; color: white; padding: 40px; }" +
+            ".icon { font-size: 64px; margin-bottom: 20px; }" +
+            "h2 { color: #ff6b6b; margin-bottom: 15px; font-size: 28px; }" +
+            "p { color: #a0a0a0; margin: 10px 0; font-size: 16px; }" +
+            "</style></head><body>" +
+            "<div class='container'>" +
+            "<div class='icon'>⚠️</div>" +
+            "<h2>Connection Error</h2>" +
+            "<p>Failed to load the trailer.</p>" +
+            "<p>Please check your internet connection and try again.</p>" +
+            "</div></body></html>";
         webView.getEngine().loadContent(html);
     }
 
@@ -1774,8 +1824,7 @@ public class FilmUserController {
         if (trailerOverlay != null) {
             if (anchorPane_Trailer != null) {
                 anchorPane_Trailer.getChildren().forEach(node -> {
-                    if (node instanceof javafx.scene.web.WebView) {
-                        javafx.scene.web.WebView wv = (javafx.scene.web.WebView) node;
+                    if (node instanceof WebView wv) {
                         wv.getEngine().load("about:blank");
                     }
                 });
@@ -1808,8 +1857,7 @@ public class FilmUserController {
     private void setupRecommendations() {
         if (filmScrollPane.getScene() != null && filmScrollPane.getScene().getWindow() != null) {
             flowpaneFilm.getChildren().forEach(node -> {
-                if (node instanceof AnchorPane && node.getUserData() instanceof Film) {
-                    Film film = (Film) node.getUserData();
+                if (node instanceof AnchorPane && node.getUserData() instanceof Film film) {
 
                     node.setOnDragDetected(event -> {
                         Dragboard db = node.startDragAndDrop(TransferMode.COPY);
@@ -2000,7 +2048,7 @@ public class FilmUserController {
             try {
                 if (this.imagefilmDetail != null) {
                     this.imagefilmDetail.setImage(
-                            new Image(getClass().getResourceAsStream("/img/films/default.jpg")));
+                        new Image(getClass().getResourceAsStream("/img/films/default.jpg")));
                 }
             } catch (Exception e2) {
                 LOGGER.log(Level.SEVERE, "Failed to load default detail image", e2);
@@ -2020,13 +2068,13 @@ public class FilmUserController {
             this.filmRate.ratingProperty().addListener((observableValue, oldVal, newVal) -> {
                 final ReviewService ratingFilmService = new ReviewService();
                 Long currentUserId = SessionManager.getCurrentUser() != null ? SessionManager.getCurrentUser().getId()
-                        : 0L;
+                    : 0L;
                 final Review existingRating = ratingFilmService.ratingExists(film1.getId(), currentUserId);
                 if (null != existingRating) {
                     ratingFilmService.delete(existingRating);
                 }
                 ratingFilmService
-                        .create(new Review(film1, (Client) SessionManager.getCurrentUser(), newVal.intValue()));
+                    .create(new Review(film1, (Client) SessionManager.getCurrentUser(), newVal.intValue()));
                 final double newRate = new ReviewService().getAverageRating(film1.getId());
                 if (this.labelavregeRate != null) {
                     this.labelavregeRate.setText(String.format("%.1f", newRate));
@@ -2098,13 +2146,13 @@ public class FilmUserController {
         anchorPane.setPrefSize(480, 200);
         anchorPane.getStyleClass().addAll("top-film-card", "animated-button");
         anchorPane.setStyle(
-                "-fx-background-color: linear-gradient(to bottom right, rgba(139, 0, 0, 0.95), rgba(178, 34, 34, 0.85));"
-                        +
-                        "-fx-background-radius: 20;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.8), 20, 0, 0, 5);" +
-                        "-fx-border-color: rgba(255, 68, 68, 0.4);" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-border-radius: 20;");
+            "-fx-background-color: linear-gradient(to bottom right, rgba(139, 0, 0, 0.95), rgba(178, 34, 34, 0.85));"
+                +
+                "-fx-background-radius: 20;" +
+                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.8), 20, 0, 0, 5);" +
+                "-fx-border-color: rgba(255, 68, 68, 0.4);" +
+                "-fx-border-width: 1.5;" +
+                "-fx-border-radius: 20;");
 
         if (null != actor) {
             final ImageView imageView = new ImageView();
@@ -2142,8 +2190,8 @@ public class FilmUserController {
             imageView.setPreserveRatio(true);
             imageView.setSmooth(true);
             imageView.setStyle(
-                    "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.7), 15, 0, 0, 3);" +
-                            "-fx-background-radius: 12;");
+                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.7), 15, 0, 0, 3);" +
+                    "-fx-background-radius: 12;");
 
             final String actorDetailsText = actor.getName().trim() + ": Films";
             FilmUserController.LOGGER.info(actorDetailsText);
@@ -2156,8 +2204,8 @@ public class FilmUserController {
             actorDetails.setFont(new Font(18));
             actorDetails.setTextFill(Color.WHITE);
             actorDetails.setStyle(
-                    "-fx-font-weight: bold;" +
-                            "-fx-effect: dropshadow(gaussian, #ff4444, 10, 0, 1, 1);");
+                "-fx-font-weight: bold;" +
+                    "-fx-effect: dropshadow(gaussian, #ff4444, 10, 0, 1, 1);");
 
             final TextArea actorBio = new TextArea(actor.getBiography());
             actorBio.setLayoutX(160);
@@ -2167,15 +2215,15 @@ public class FilmUserController {
             actorBio.setWrapText(true);
             actorBio.setEditable(false);
             actorBio.setStyle(
-                    "-fx-control-inner-background: rgba(10, 5, 5, 0.6);" +
-                            "-fx-text-fill: rgba(255, 255, 255, 0.9);" +
-                            "-fx-background-color: transparent;" +
-                            "-fx-background-radius: 8;" +
-                            "-fx-border-color: rgba(139, 0, 0, 0.3);" +
-                            "-fx-border-width: 1;" +
-                            "-fx-border-radius: 8;" +
-                            "-fx-font-size: 12px;" +
-                            "-fx-opacity: 1;");
+                "-fx-control-inner-background: rgba(10, 5, 5, 0.6);" +
+                    "-fx-text-fill: rgba(255, 255, 255, 0.9);" +
+                    "-fx-background-color: transparent;" +
+                    "-fx-background-radius: 8;" +
+                    "-fx-border-color: rgba(139, 0, 0, 0.3);" +
+                    "-fx-border-width: 1;" +
+                    "-fx-border-radius: 8;" +
+                    "-fx-font-size: 12px;" +
+                    "-fx-opacity: 1;");
             anchorPane.getChildren().addAll(imageView, actorDetails, actorBio);
         }
 
@@ -2192,13 +2240,13 @@ public class FilmUserController {
             anchorPane.setPrefSize(420, 180);
             anchorPane.getStyleClass().addAll("top-film-card", "animated-button");
             anchorPane.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom right, rgba(139, 0, 0, 0.95), rgba(178, 34, 34, 0.85));"
-                            +
-                            "-fx-background-radius: 20;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.8), 20, 0, 0, 5);" +
-                            "-fx-border-color: rgba(255, 68, 68, 0.4);" +
-                            "-fx-border-width: 1.5;" +
-                            "-fx-border-radius: 20;");
+                "-fx-background-color: linear-gradient(to bottom right, rgba(139, 0, 0, 0.95), rgba(178, 34, 34, 0.85));"
+                    +
+                    "-fx-background-radius: 20;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.8), 20, 0, 0, 5);" +
+                    "-fx-border-color: rgba(255, 68, 68, 0.4);" +
+                    "-fx-border-width: 1.5;" +
+                    "-fx-border-radius: 20;");
 
             final Review ratingFilm = ratingFilmList.get(filmRank);
             if (ratingFilm == null || ratingFilm.getFilm() == null) {
@@ -2222,8 +2270,8 @@ public class FilmUserController {
                         imageView.setLayoutX(15);
                         imageView.setLayoutY(10);
                         imageView.setStyle(
-                                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.7), 15, 0, 0, 3);" +
-                                        "-fx-background-radius: 12;");
+                            "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.7), 15, 0, 0, 3);" +
+                                "-fx-background-radius: 12;");
                     } catch (Exception e) {
                         LOGGER.warning("Failed to load image from URL: " + imagePath + ", " + e.getMessage());
                         try {
@@ -2236,8 +2284,8 @@ public class FilmUserController {
                             imageView.setLayoutX(15);
                             imageView.setLayoutY(10);
                             imageView.setStyle(
-                                    "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.7), 15, 0, 0, 3);" +
-                                            "-fx-background-radius: 12;");
+                                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.7), 15, 0, 0, 3);" +
+                                    "-fx-background-radius: 12;");
                         } catch (Exception e2) {
                             LOGGER.severe("Failed to load default image: " + e2.getMessage());
                         }
@@ -2260,8 +2308,8 @@ public class FilmUserController {
                 nomFilm.setFont(new Font(20));
                 nomFilm.setTextFill(Color.WHITE);
                 nomFilm.setStyle(
-                        "-fx-font-weight: bold;" +
-                                "-fx-effect: dropshadow(gaussian, #ff4444, 10, 0, 1, 1);");
+                    "-fx-font-weight: bold;" +
+                        "-fx-effect: dropshadow(gaussian, #ff4444, 10, 0, 1, 1);");
 
                 final Button button = new Button("RESERVE");
                 button.setLayoutX(145);
@@ -2269,34 +2317,34 @@ public class FilmUserController {
                 button.setPrefSize(260, 38);
                 button.getStyleClass().addAll("action-button", "animated-button");
                 button.setStyle(
-                        "-fx-background-color: linear-gradient(to bottom right, #8b0000, #b22222);" +
-                                "-fx-background-radius: 18;" +
-                                "-fx-text-fill: white;" +
-                                "-fx-font-weight: bold;" +
-                                "-fx-cursor: hand;" +
-                                "-fx-font-size: 13px;" +
-                                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.9), 12, 0, 0, 3);");
+                    "-fx-background-color: linear-gradient(to bottom right, #8b0000, #b22222);" +
+                        "-fx-background-radius: 18;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.9), 12, 0, 0, 3);");
                 button.setOnMouseEntered(e -> {
                     button.setStyle(
-                            "-fx-background-color: linear-gradient(to bottom right, #ff4444, #ff6666);" +
-                                    "-fx-background-radius: 18;" +
-                                    "-fx-text-fill: white;" +
-                                    "-fx-font-weight: bold;" +
-                                    "-fx-cursor: hand;" +
-                                    "-fx-font-size: 13px;" +
-                                    "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 1.0), 18, 0, 0, 5);" +
-                                    "-fx-scale-x: 1.05;" +
-                                    "-fx-scale-y: 1.05;");
+                        "-fx-background-color: linear-gradient(to bottom right, #ff4444, #ff6666);" +
+                            "-fx-background-radius: 18;" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-font-size: 13px;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 1.0), 18, 0, 0, 5);" +
+                            "-fx-scale-x: 1.05;" +
+                            "-fx-scale-y: 1.05;");
                 });
                 button.setOnMouseExited(e -> {
                     button.setStyle(
-                            "-fx-background-color: linear-gradient(to bottom right, #8b0000, #b22222);" +
-                                    "-fx-background-radius: 18;" +
-                                    "-fx-text-fill: white;" +
-                                    "-fx-font-weight: bold;" +
-                                    "-fx-cursor: hand;" +
-                                    "-fx-font-size: 13px;" +
-                                    "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.9), 12, 0, 0, 3);");
+                        "-fx-background-color: linear-gradient(to bottom right, #8b0000, #b22222);" +
+                            "-fx-background-radius: 18;" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-font-size: 13px;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.9), 12, 0, 0, 3);");
                 });
 
                 final Rating rating = new Rating();
@@ -2305,8 +2353,8 @@ public class FilmUserController {
                 rating.setPrefSize(176, 32);
                 rating.setPartialRating(true);
                 rating.setStyle(
-                        "-fx-rating-fill: #ffaa00;" +
-                                "-fx-rating-empty-fill: rgba(255, 170, 0, 0.2);");
+                    "-fx-rating-fill: #ffaa00;" +
+                        "-fx-rating-empty-fill: rgba(255, 170, 0, 0.2);");
 
                 final double rate = new ReviewService().getAverageRating(film.getId());
                 rating.setRating(rate);
@@ -2319,8 +2367,8 @@ public class FilmUserController {
                 rateLabel.setFont(new Font(16));
                 rateLabel.setTextFill(Color.web("#ffaa00"));
                 rateLabel.setStyle(
-                        "-fx-font-weight: bold;" +
-                                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.9), 3, 0, 0, 0);");
+                    "-fx-font-weight: bold;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.9), 3, 0, 0, 0);");
 
                 anchorPane.getChildren().addAll(nomFilm, button, rating, rateLabel);
                 if (imageView.getImage() != null) {

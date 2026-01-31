@@ -1,6 +1,7 @@
 package com.esprit.controllers;
 
 import com.esprit.utils.DataSource;
+import com.esprit.utils.ThemeManager;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -24,6 +25,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.extern.log4j.Log4j2;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
@@ -32,10 +34,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Controller for the cinematic splash screen.
- * Creates an immersive movie-theater experience while loading the application.
- */
+@Log4j2
 public class SplashScreenController {
 
     // Loading messages for cinematic effect
@@ -520,10 +519,10 @@ public class SplashScreenController {
      * Update the loading progress bar and text.
      */
     private void updateLoadingProgress(int progress, String message) {
-        double width = (progress / 100.0) * 400;
+        double width = (progress / 100.0) * loadingBarBackground.getWidth();
 
         Timeline progressTimeline = new Timeline(
-            new KeyFrame(Duration.millis(50),
+            new KeyFrame(Duration.millis(100),
                 new KeyValue(loadingBar.widthProperty(), width, Interpolator.EASE_OUT)
             )
         );
@@ -564,6 +563,9 @@ public class SplashScreenController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/users/Login.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
+
+            // Apply AtlantaFX theme to the main application scene
+            ThemeManager.getInstance().applyToScene(scene);
 
             if (mainStage != null) {
                 mainStage.setScene(scene);

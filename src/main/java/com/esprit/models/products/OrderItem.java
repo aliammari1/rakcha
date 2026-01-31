@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
-/**
- * Represents an item in an order.
- */
-
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,17 +20,14 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 
+
 public class OrderItem {
 
-    private Long id;
-
     private Order order;
-
     private Product product;
-
     private int quantity;
-
     private Double unitPrice;
+    private Long id;
 
     /**
      * Create a new OrderItem with the specified quantity, product, and order; the
@@ -48,19 +43,6 @@ public class OrderItem {
         this.product = product;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
-    }
-
-    /**
-     * Legacy constructor with float unitPrice.
-     *
-     * @deprecated Use Double unitPrice constructor instead
-     */
-    @Deprecated(forRemoval = true)
-    public OrderItem(final int quantity, final Product product, final Order order, final float unitPrice) {
-        this.quantity = quantity;
-        this.product = product;
-        this.order = order;
-        this.unitPrice = Double.valueOf(unitPrice);
     }
 
     /**
@@ -88,6 +70,47 @@ public class OrderItem {
      */
     public Double getSubtotal() {
         return quantity * (unitPrice != null ? unitPrice : 0.0);
+    }
+
+    // Explicit getters (since Lombok @Data is not generating them)
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Double unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
 }

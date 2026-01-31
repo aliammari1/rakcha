@@ -5,7 +5,11 @@ import com.esprit.utils.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -19,6 +23,7 @@ import java.util.ResourceBundle;
  * Controller for the ProductWishlist.fxml screen.
  * Manages user's product wishlist functionality.
  */
+
 @Log4j2
 public class ProductWishlistController implements Initializable {
 

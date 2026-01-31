@@ -32,6 +32,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
@@ -47,10 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Controller for browsing movie sessions - allows users to find and filter
- * available movie sessions across cinemas.
- */
+@Log4j2
 public class MovieSessionBrowserController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(MovieSessionBrowserController.class.getName());
@@ -106,8 +104,8 @@ public class MovieSessionBrowserController implements Initializable {
         if (cinemaFilter != null) {
             List<Cinema> cinemas = cinemaService.getAll();
             List<String> cinemaNames = cinemas.stream()
-                    .map(Cinema::getName)
-                    .collect(Collectors.toList());
+                .map(Cinema::getName)
+                .collect(Collectors.toList());
             cinemaNames.add(0, "All Cinemas");
             cinemaFilter.setItems(FXCollections.observableArrayList(cinemaNames));
             cinemaFilter.getSelectionModel().selectFirst();
@@ -117,8 +115,8 @@ public class MovieSessionBrowserController implements Initializable {
         // Genre filter
         if (genreFilter != null) {
             List<String> genres = Arrays.asList("All Genres", "Action", "Comedy", "Drama", "Horror", "Romance",
-                    "Sci-Fi",
-                    "Thriller");
+                "Sci-Fi",
+                "Thriller");
             genreFilter.setItems(FXCollections.observableArrayList(genres));
             genreFilter.getSelectionModel().selectFirst();
             genreFilter.setOnAction(e -> applyFilters());
@@ -140,7 +138,7 @@ public class MovieSessionBrowserController implements Initializable {
     }
 
     private void setupQuickFilters() {
-        String[] filters = { "All", "Now Showing", "Coming Soon", "Today", "This Week", "IMAX", "Premieres" };
+        String[] filters = {"All", "Now Showing", "Coming Soon", "Today", "This Week", "IMAX", "Premieres"};
 
         for (String filter : filters) {
             Button chip = createFilterChip(filter);
@@ -208,24 +206,24 @@ public class MovieSessionBrowserController implements Initializable {
         String searchText = searchField.getText().toLowerCase().trim();
         if (!searchText.isEmpty()) {
             filtered = filtered.stream()
-                    .filter(s -> s.getFilm().getTitle().toLowerCase().contains(searchText))
-                    .collect(Collectors.toList());
+                .filter(s -> s.getFilm().getTitle().toLowerCase().contains(searchText))
+                .collect(Collectors.toList());
         }
 
         // Apply cinema filter
         String selectedCinema = cinemaFilter.getValue();
         if (selectedCinema != null && !selectedCinema.equals("All Cinemas")) {
             filtered = filtered.stream()
-                    .filter(s -> s.getCinemaHall().getCinema().getName().equals(selectedCinema))
-                    .collect(Collectors.toList());
+                .filter(s -> s.getCinemaHall().getCinema().getName().equals(selectedCinema))
+                .collect(Collectors.toList());
         }
 
         // Apply date filter
         LocalDate selectedDate = dateFilter.getValue();
         if (selectedDate != null) {
             filtered = filtered.stream()
-                    .filter(s -> s.getStartTime().toLocalDate().equals(selectedDate))
-                    .collect(Collectors.toList());
+                .filter(s -> s.getStartTime().toLocalDate().equals(selectedDate))
+                .collect(Collectors.toList());
         }
 
         // Apply quick filter
@@ -241,17 +239,17 @@ public class MovieSessionBrowserController implements Initializable {
 
         return switch (selectedQuickFilter) {
             case "today" -> sessions.stream()
-                    .filter(s -> s.getStartTime().toLocalDate().equals(today))
-                    .collect(Collectors.toList());
+                .filter(s -> s.getStartTime().toLocalDate().equals(today))
+                .collect(Collectors.toList());
             case "this-week" -> sessions.stream()
-                    .filter(s -> {
-                        LocalDate sessionDate = s.getStartTime().toLocalDate();
-                        return !sessionDate.isBefore(today) && !sessionDate.isAfter(today.plusDays(7));
-                    })
-                    .collect(Collectors.toList());
+                .filter(s -> {
+                    LocalDate sessionDate = s.getStartTime().toLocalDate();
+                    return !sessionDate.isBefore(today) && !sessionDate.isAfter(today.plusDays(7));
+                })
+                .collect(Collectors.toList());
             case "imax" -> sessions.stream()
-                    .filter(s -> s.getCinemaHall().getName().toLowerCase().contains("imax"))
-                    .collect(Collectors.toList());
+                .filter(s -> s.getCinemaHall().getName().toLowerCase().contains("imax"))
+                .collect(Collectors.toList());
             default -> sessions;
         };
     }
@@ -279,7 +277,7 @@ public class MovieSessionBrowserController implements Initializable {
 
         // Group sessions by film
         Map<Film, List<MovieSession>> sessionsByFilm = sessions.stream()
-                .collect(Collectors.groupingBy(MovieSession::getFilm));
+            .collect(Collectors.groupingBy(MovieSession::getFilm));
 
         for (Map.Entry<Film, List<MovieSession>> entry : sessionsByFilm.entrySet()) {
             VBox card = createSessionCard(entry.getKey(), entry.getValue());
@@ -304,8 +302,8 @@ public class MovieSessionBrowserController implements Initializable {
         poster.setPreserveRatio(false);
 
         try {
-            if (film.getImage() != null && !film.getImage().isEmpty()) {
-                poster.setImage(new Image(film.getImage(), true));
+            if (film.getImageUrl() != null && !film.getImageUrl().isEmpty()) {
+                poster.setImage(new Image(film.getImageUrl(), true));
             }
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Failed to load poster", e);
@@ -344,7 +342,7 @@ public class MovieSessionBrowserController implements Initializable {
         Label genre = new Label(film.getGenre());
         genre.getStyleClass().add("movie-genre");
 
-        Label duration = new Label(film.getDuration() + " min");
+        Label duration = new Label(film.getDurationMin() + " min");
         duration.getStyleClass().add("movie-duration");
 
         meta.getChildren().addAll(genre, new Label("•"), duration);
@@ -354,7 +352,7 @@ public class MovieSessionBrowserController implements Initializable {
         sessionTimes.getStyleClass().add("session-times");
 
         Map<Cinema, List<MovieSession>> byCinema = sessions.stream()
-                .collect(Collectors.groupingBy(s -> s.getCinemaHall().getCinema()));
+            .collect(Collectors.groupingBy(s -> s.getCinemaHall().getCinema()));
 
         for (Map.Entry<Cinema, List<MovieSession>> cinemaEntry : byCinema.entrySet()) {
             VBox cinemaBox = new VBox(8);

@@ -4,6 +4,7 @@ import com.esprit.exceptions.PasswordReusedException;
 import com.esprit.models.users.PasswordHistory;
 import com.esprit.utils.DataSource;
 import com.esprit.utils.SecurityConfig;
+import lombok.extern.log4j.Log4j2;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
@@ -17,24 +18,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Service class for user security operations including account lockout,
- * password history tracking, and account deactivation.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class UserSecurityService {
 
     private static final Logger LOGGER = Logger.getLogger(UserSecurityService.class.getName());
     private final Connection connection;
+    private final UserService userService;
 
     /**
      * Constructs a new UserSecurityService and ensures required tables exist.
      */
     public UserSecurityService() {
         this.connection = DataSource.getInstance().getConnection();
+        this.userService = new UserService();
     }
 
 
@@ -104,7 +100,7 @@ public class UserSecurityService {
         try {
             LocalDateTime lockUntil = SecurityConfig.LOCKOUT_DURATION_MINUTES > 0
                 ? LocalDateTime.now().plusMinutes(SecurityConfig.LOCKOUT_DURATION_MINUTES)
-                : null; // Permanent lock
+                : null;
 
             String sql = "UPDATE users SET is_locked = TRUE, locked_until = ? WHERE email = ?";
 
@@ -298,7 +294,7 @@ public class UserSecurityService {
                 while (rs.next()) {
                     PasswordHistory ph = PasswordHistory.builder()
                         .id(rs.getLong("id"))
-                        .userId(rs.getLong("user_id"))
+                        .user(this.userService.getById(rs.getLong("user_id")))
                         .passwordHash(rs.getString("password_hash"))
                         .createdAt(rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at") : null)
                         .build();

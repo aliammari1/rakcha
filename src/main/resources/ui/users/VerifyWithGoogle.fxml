@@ -2,11 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
-<?import org.kordamp.ikonli.javafx.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootContainer" maxWidth="1200.0" maxHeight="680.0"
            minWidth="1200.0"
            minHeight="680.0" xmlns="http://javafx.com/javafx/21"
@@ -14,7 +12,7 @@
            style="-fx-background-color: linear-gradient(to bottom right, #0a0a0a, #1a0a0a, #2a0f0f, #1a0606, #0a0a0a);
            -fx-effect: dropshadow(gaussian, #8b0000, 50, 0, 0, 0);
            -fx-background-animation: true;"
-           stylesheets="@../styles/login-animations.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Background Animations Container -->
   <AnchorPane style="-fx-background-color: transparent;" maxWidth="1200.0" maxHeight="630.0"
@@ -93,11 +91,11 @@
       </VBox>
 
       <VBox spacing="15" alignment="CENTER" maxWidth="340">
-          <Label text="Check your browser"
-                 style="-fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-          <Label text="We've opened a secure Google login page."
-                 wrapText="true" textAlignment="CENTER"
-                 style="-fx-text-fill: #cccccc; -fx-font-size: 12px;"/>
+        <Label text="Check your browser"
+               style="-fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <Label text="We've opened a secure Google login page."
+               wrapText="true" textAlignment="CENTER"
+               style="-fx-text-fill: #cccccc; -fx-font-size: 12px;"/>
       </VBox>
 
     </VBox>
@@ -145,31 +143,7 @@
                                -fx-font-family: 'Arial';
                                -fx-font-size: 13px;
                                -fx-font-weight: bold;"/>
-          <StackPane>
-
-            <Rectangle width="400" height="50"
-                       style="-fx-fill: linear-gradient(to bottom, rgba(40, 40, 40, 0.8), rgba(20, 20, 20, 0.9));
-                                   -fx-stroke: #8b0000;
-                                   -fx-stroke-width: 1;
-                                   -fx-background-radius: 12;
-                                   -fx-stroke-radius: 12;
-                                   -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 8, 0, 0, 0);"/>
-            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 0 20 0 20;">
-              <FontIcon iconLiteral="mdi2k-key-variant:16:ffffff"/>
-              <TextField fx:id="verification_code_textField"
-                         styleClass="animated-input"
-                         promptText="Paste the authorization code here"
-                         style="-fx-background-color: transparent;
-                                       -fx-text-fill: white;
-                                       -fx-font-family: 'Arial';
-                                       -fx-font-size: 14px;
-                                       -fx-border-color: transparent;
-                                       -fx-focus-color: transparent;
-                                       -fx-faint-focus-color: transparent;
-                                       -fx-prompt-text-fill: #666666;"
-                         HBox.hgrow="ALWAYS"/>
-            </HBox>
-          </StackPane>
+          <VBox fx:id="verificationFormContainer" spacing="10" maxWidth="400"/>
           <Label fx:id="verification_error_label"
                  style="-fx-text-fill: #ff4444;
                                -fx-font-family: 'Arial';
@@ -221,3 +195,4 @@
   </AnchorPane>
 
 </StackPane>
+

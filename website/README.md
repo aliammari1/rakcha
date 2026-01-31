@@ -168,6 +168,7 @@ site.
 *
 
 *
+
 Responsive
 Design
 **:
@@ -183,6 +184,7 @@ devices
 *
 
 *
+
 Modern
 UI
 **:
@@ -197,6 +199,7 @@ animations
 *
 
 *
+
 Download
 Tracking
 **:
@@ -210,6 +213,7 @@ integration
 *
 
 *
+
 SEO
 Optimized
 **:
@@ -225,6 +229,7 @@ HTML
 *
 
 *
+
 Accessibility
 **:
 Proper
@@ -243,6 +248,7 @@ labels
 *
 
 *
+
 Logo/Branding
 **:
 Modify
@@ -257,6 +263,7 @@ in
 *
 
 *
+
 Features
 **:
 Update
@@ -273,6 +280,7 @@ capabilities
 *
 
 *
+
 System
 Requirements
 **:
@@ -288,6 +296,7 @@ needs
 *
 
 *
+
 Download
 Links
 **:
@@ -305,6 +314,7 @@ buttons
 *
 
 *
+
 Colors
 **:
 Modify
@@ -324,6 +334,7 @@ section
 *
 
 *
+
 Fonts
 **:
 Change
@@ -340,6 +351,7 @@ declarations
 *
 
 *
+
 Layout
 **:
 Adjust

@@ -18,22 +18,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for viewing series seasons and episodes.
- */
+@Log4j2
 public class SeasonViewController {
 
     private static final Logger LOGGER = Logger.getLogger(SeasonViewController.class.getName());
@@ -41,6 +45,8 @@ public class SeasonViewController {
     private final SeasonService seasonService;
     private final EpisodeService episodeService;
     private final WatchProgressService watchProgressService;
+    private final ObservableList<Season> seasons;
+    private final ObservableList<Episode> episodes;
     @FXML
     private VBox seasonContainer;
     @FXML
@@ -75,8 +81,6 @@ public class SeasonViewController {
     private Button addToWatchlistBtn;
     @FXML
     private HBox genresBox;
-    private ObservableList<Season> seasons;
-    private ObservableList<Episode> episodes;
     private Series currentSeries;
     private Season currentSeason;
     private User currentUser;
@@ -124,6 +128,42 @@ public class SeasonViewController {
         }).start();
     }
 
+    /**
+     * Set the current season directly.
+     * Useful when navigating from SeasonChooser with a specific season.
+     *
+     * @param season the season to set as current
+     */
+    public void setCurrentSeason(Season season) {
+        if (season != null && seasons != null) {
+            // Find matching season in loaded list
+            for (Season s : seasons) {
+                if (s.getId().equals(season.getId())) {
+                    selectSeason(s);
+                    return;
+                }
+            }
+            // If not found, select directly
+            selectSeason(season);
+        }
+    }
+
+    /**
+     * Select a specific episode by ID after seasons are loaded.
+     *
+     * @param episodeId the episode ID to select
+     */
+    public void selectEpisode(long episodeId) {
+        // Find and highlight the episode (simple implementation)
+        for (Episode ep : episodes) {
+            if (ep.getId() == episodeId) {
+                // Could scroll to and highlight the episode
+                playEpisode(ep);
+                return;
+            }
+        }
+    }
+
     private void loadSeriesDetails() {
         if (currentSeries == null) return;
 
@@ -163,7 +203,7 @@ public class SeasonViewController {
 
         new Thread(() -> {
             try {
-                List<Season> seasonList = seasonService.getSeasonsBySeries(currentSeries.getIdserie());
+                List<Season> seasonList = seasonService.getSeasonsBySeries(currentSeries.getId());
 
                 Platform.runLater(() -> {
                     seasons.setAll(seasonList);
@@ -434,7 +474,7 @@ public class SeasonViewController {
 
         new Thread(() -> {
             try {
-                watchProgressService.addToWatchlist(currentUser.getId(), "series", currentSeries.getIdserie());
+                watchProgressService.addToWatchlist(currentUser.getId(), "series", currentSeries.getId());
                 Platform.runLater(() -> {
                     showSuccess("Added to watchlist!");
                     if (addToWatchlistBtn != null) {

@@ -1,14 +1,18 @@
 package com.esprit.controllers.products;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.common.Review;
 import com.esprit.models.products.Product;
 import com.esprit.models.users.Client;
 import com.esprit.services.common.ReviewService;
 import com.esprit.services.products.ProductService;
-import com.esprit.services.users.UserService;
 import com.esprit.utils.Chat;
 import com.esprit.utils.PageRequest;
 import com.esprit.utils.SessionManager;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,28 +41,16 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller class for managing product comments in the RAKCHA application.
- * This controller handles the display of existing comments and provides
- * functionality
- * for users to add new comments.
- *
- * <p>
- * The controller provides validation for comments, checking for inappropriate
- * content
- * before storing them in the database. It also manages navigation between
- * different
- * parts of the application.
- * </p>
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class CommentProductController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(CommentProductController.class.getName());
     private final Chat chat = new Chat();
+
+    // FormsFX properties
+    private final StringProperty commentProperty = new SimpleStringProperty("");
+    private Form commentForm;
+
     @FXML
     private FlowPane CommentFlowPane;
     @FXML
@@ -76,8 +69,13 @@ public class CommentProductController implements Initializable {
      */
     @FXML
     void addchat(final ActionEvent actionEvent) {
+        // Validate form using FormsFX
+        if (!validateCommentForm()) {
+            return;
+        }
+
         // Check for bad words and prevent further processing if found
-        final String userMessage = this.monCommentaitreText.getText();
+        final String userMessage = commentProperty.get();
         CommentProductController.LOGGER.info("User Message: " + userMessage);
         try {
             // Convertir la chaîne de texte en objet Date
@@ -99,7 +97,7 @@ public class CommentProductController implements Initializable {
             } else {
                 // Créez un objet Comment
                 final Review comment = new Review((Client) SessionManager.getCurrentUser(), userMessage,
-                        produitService.getProductById(produit.getId()));
+                    produitService.getProductById(produit.getId()));
                 final ReviewService commentService = new ReviewService();
                 // Ajoutez le comment à la base de données
                 commentService.create(comment);
@@ -129,6 +127,68 @@ public class CommentProductController implements Initializable {
      */
     public void initialize(final URL location, final ResourceBundle resources) {
         this.loadAcceptedComment();
+
+        // Initialize FormsFX
+        setupFormsFX();
+        setupBidirectionalBindings();
+    }
+
+    /**
+     * Configures FormsFX for comment form validation.
+     */
+    private void setupFormsFX() {
+        commentForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(commentProperty)
+                    .label("Comment")
+                    .validate(
+                        StringLengthValidator.atLeast(3, "Comment must be at least 3 characters long")
+                    )
+            )
+        );
+    }
+
+    /**
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        monCommentaitreText.textProperty().bindBidirectional(commentProperty);
+    }
+
+    /**
+     * Validates the comment form using FormsFX.
+     *
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validateCommentForm() {
+        commentForm.persist();
+        if (!commentForm.isValid()) {
+            StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
+            commentForm.getGroups().forEach(group ->
+                group.getElements().forEach(element -> {
+                    if (element instanceof Field<?> field) {
+                        if (!field.isValid()) {
+                            errorMessage.append("- ").append(field.getLabel()).append(": ");
+                            field.getErrorMessages().forEach(msg -> errorMessage.append(msg).append(" "));
+                            errorMessage.append("\n");
+                        }
+                    }
+                })
+            );
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Validation Error");
+            alert.setContentText(errorMessage.toString());
+            alert.showAndWait();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        monCommentaitreText.textProperty().unbindBidirectional(commentProperty);
     }
 
     /**
@@ -156,7 +216,7 @@ public class CommentProductController implements Initializable {
      * @param comm the Comment to render; the client's first and last name and the
      *             comment text are used
      * @return an HBox whose children form a styled card showing the comment
-     *         author's name and the comment text
+     * author's name and the comment text
      */
     public HBox createcommentcard(final Review comm) {
         // Créer une VBox pour chaque comment
@@ -230,7 +290,7 @@ public class CommentProductController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/AffichageEvenementClient.fxml"));
+                this.getClass().getResource("/ui/AffichageEvenementClient.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -260,7 +320,7 @@ public class CommentProductController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
+                this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);

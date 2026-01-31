@@ -1,10 +1,17 @@
 package com.esprit.controllers.users;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.enums.UserRole;
 import com.esprit.models.users.Client;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
 import com.esprit.utils.SignInMicrosoft;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,8 +19,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.awt.*;
 import java.io.IOException;
@@ -23,26 +31,39 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller class for the RAKCHA application. Handles UI interactions
- * and manages view logic using FXML.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class VerifyWithMicrosoft {
 
     private static final Logger LOGGER = Logger.getLogger(VerifyWithMicrosoft.class.getName());
+    // FormsFX properties for declarative form handling
+    private final StringProperty authCodeProperty = new SimpleStringProperty("");
+    @FXML
+    private VBox verificationFormContainer;
+    @FXML
+    private Label verification_error_label;
+    @FXML
+    private Button verifyButton;
+    private Form authForm;
 
-    @FXML
-    private TextField authTextField;
-    @FXML
-    private Label emailErrorLabel;
-    @FXML
-    private Label passwordErrorLabel;
-    @FXML
-    private Button sendButton;
+    /**
+     * Sets up the FormsFX form with declarative validation rules and renders it.
+     */
+    private void setupFormsFX() {
+        this.authForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.authCodeProperty)
+                    .label("Microsoft Authentication Code")
+                    .placeholder("Enter authentication code")
+                    .validate(StringLengthValidator.atLeast(10, "Authorization code is required"))
+            )
+        );
+
+        // Render form using pure FormsFX
+        if (this.verificationFormContainer != null) {
+            FormRenderer formRenderer = new FormRenderer(this.authForm);
+            this.verificationFormContainer.getChildren().add(formRenderer);
+        }
+    }
 
     /**
      * @throws IOException
@@ -51,6 +72,7 @@ public class VerifyWithMicrosoft {
      */
     @FXML
     void initialize() throws IOException, ExecutionException, InterruptedException {
+        setupFormsFX();
         final String link = SignInMicrosoft.SignInWithMicrosoft();
         Desktop.getDesktop().browse(URI.create(link));
     }
@@ -61,11 +83,11 @@ public class VerifyWithMicrosoft {
     @FXML
     void verifyAuthCode(final ActionEvent event) {
         try {
-            String authCode = this.authTextField.getText().trim();
+            String authCode = this.authCodeProperty.get().trim();
 
             if (authCode.isEmpty()) {
                 VerifyWithMicrosoft.LOGGER.warning("Authorization code is empty");
-                this.emailErrorLabel.setText("Please enter the authorization code");
+                this.verification_error_label.setText("Please enter the authorization code");
                 return;
             }
 
@@ -87,22 +109,22 @@ public class VerifyWithMicrosoft {
                     ProfileController controller = loader.getController();
                     controller.setData(user);
 
-                    final Stage stage = (Stage) this.sendButton.getScene().getWindow();
+                    final Stage stage = (Stage) this.verifyButton.getScene().getWindow();
                     stage.setScene(new Scene(root));
 
                     // Clear the stored user info
                     SignInMicrosoft.clearUserInfo();
                 } else {
                     VerifyWithMicrosoft.LOGGER.warning("No user information retrieved from Microsoft");
-                    this.emailErrorLabel.setText("Could not retrieve user information. Please try again.");
+                    this.verification_error_label.setText("Could not retrieve user information. Please try again.");
                 }
             } else {
                 VerifyWithMicrosoft.LOGGER.warning("Authentication verification failed");
-                this.emailErrorLabel.setText("Invalid authorization code. Please try again.");
+                this.verification_error_label.setText("Invalid authorization code. Please try again.");
             }
         } catch (final Exception e) {
             VerifyWithMicrosoft.LOGGER.log(Level.SEVERE, "Error during authentication", e);
-            this.emailErrorLabel.setText("An error occurred: " + e.getMessage());
+            this.verification_error_label.setText("An error occurred: " + e.getMessage());
         }
     }
 

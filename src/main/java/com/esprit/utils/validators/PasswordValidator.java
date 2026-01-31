@@ -1,18 +1,13 @@
 package com.esprit.utils.validators;
 
+import lombok.extern.log4j.Log4j2;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Password strength validation utility for the RAKCHA application.
- * Validates password strength based on configurable security requirements.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class PasswordValidator {
 
     public static final int MIN_LENGTH = 8;

@@ -1,14 +1,9 @@
 package com.esprit.exceptions;
 
 import com.esprit.enums.OrderStatus;
+import lombok.extern.log4j.Log4j2;
 
-/**
- * Exception thrown when an invalid order status transition is attempted.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class InvalidStatusTransitionException extends Exception {
 
     private final OrderStatus currentStatus;

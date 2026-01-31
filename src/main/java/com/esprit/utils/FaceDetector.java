@@ -17,6 +17,8 @@
 //  * @version 1.0.0
 //  * @since 1.0.0
 //  */
+// import lombok.extern.log4j.Log4j2;
+// @Log4j2
 // public class FaceDetector implements Runnable {
 //     private static final Logger LOGGER = Logger.getLogger(FaceDetector.class.getName());
 //     private static final String FRONTAL_FACE_CASCADE = "/haarcascades/haarcascade_frontalface_alt.xml";

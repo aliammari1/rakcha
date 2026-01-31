@@ -33,6 +33,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,13 +45,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Is a controller for a series client application. It manages the display of a
- * list of series in a JavaFX ListView and provides functionalities such as
- * loading the series list, filtering the list based on user input, and
- * displaying additional information about each series. The class also handles
- * menu events for categories, episodes, and series.
- */
+@Log4j2
 public class SerieClientController {
 
     private static final Logger LOGGER = Logger.getLogger(SerieClientController.class.getName());
@@ -122,12 +117,12 @@ public class SerieClientController {
      * @param recherche search query, which is used to filter the list of series and
      *                  return only the matches.
      * @returns a list of `Serie` objects that match the given search query.
-     *          <p>
-     *          - The output is a list of `Serie` objects, which represents the list
-     *          of series that match the search query. - Each element in the list
-     *          contains the `Nom` attribute, which contains the name of the series.
-     *          - If the `Nom` attribute matches the search query, the element is
-     *          included in the output list.
+     * <p>
+     * - The output is a list of `Serie` objects, which represents the list
+     * of series that match the search query. - Each element in the list
+     * contains the `Nom` attribute, which contains the name of the series.
+     * - If the `Nom` attribute matches the search query, the element is
+     * included in the output list.
      */
     public static List<Series> rechercher(final List<Series> liste, final String recherche) {
         final List<Series> resultats = new ArrayList<>();
@@ -175,15 +170,15 @@ public class SerieClientController {
      *              associated with the series. - `nbLikes`: The number of likes for
      *              the series.
      * @returns a vertical box container with a centered label, an image view, and a
-     *          label displaying the number of likes.
-     *          <p>
-     *          1/ `vbox`: A `VBox` object that contains the series information and
-     *          image. 2/ `spacing`: The spacing between the children in the `VBox`.
-     *          3/ `alignment`: The alignment of the children in the `VBox`. 4/
-     *          `padding`: The padding around the children in the `VBox`. 5/
-     *          `minSize`: The minimum size of the `VBox`. 6/ `children`: A list of
-     *          `Node` objects, including a `Label`, an `ImageView`, and another
-     *          `Label`, which contain the series information and image.
+     * label displaying the number of likes.
+     * <p>
+     * 1/ `vbox`: A `VBox` object that contains the series information and
+     * image. 2/ `spacing`: The spacing between the children in the `VBox`.
+     * 3/ `alignment`: The alignment of the children in the `VBox`. 4/
+     * `padding`: The padding around the children in the `VBox`. 5/
+     * `minSize`: The minimum size of the `VBox`. 6/ `children`: A list of
+     * `Node` objects, including a `Label`, an `ImageView`, and another
+     * `Label`, which contain the series information and image.
      */
     private VBox createSeriesVBox(final Series serie) {
         final VBox vbox = new VBox();
@@ -194,7 +189,7 @@ public class SerieClientController {
         // Créez d'abord le Label avec le nom
         final Label titleLabel = new Label(serie.getName());
         titleLabel.setStyle(
-                "-fx-font-family: 'Helvetica'; -fx-font-size: 18.0px; -fx-font-weight: bold; -fx-text-fill: #FCE19A;");
+            "-fx-font-family: 'Helvetica'; -fx-font-size: 18.0px; -fx-font-weight: bold; -fx-text-fill: #FCE19A;");
         titleLabel.setAlignment(Pos.CENTER);
         // Ensuite, ajoutez l'ImageView avec l'image
         final ImageView imageView = new ImageView();
@@ -328,23 +323,23 @@ public class SerieClientController {
                     // Issue #16: Add null checks for series properties
                     final Label nameLabel = new Label("Name: " + (item.getName() != null ? item.getName() : "N/A"));
                     nameLabel.setStyle(
-                            "-fx-font-family: 'Helvetica'; -fx-font-size: 18.0px; -fx-font-weight: bold; -fx-text-fill: #333333;"); // Couleur
+                        "-fx-font-family: 'Helvetica'; -fx-font-size: 18.0px; -fx-font-weight: bold; -fx-text-fill: #333333;"); // Couleur
                     // de
                     // texte
                     // sombre
                     final Label directorLabel = new Label(
-                            "Director: " + (item.getDirector() != null ? item.getDirector() : "N/A"));
+                        "Director: " + (item.getDirector() != null ? item.getDirector() : "N/A"));
                     directorLabel.setStyle(
-                            "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
+                        "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
                     // de
                     // texte
                     // sombre
                     // plus
                     // claire
                     final Label countryLabel = new Label(
-                            "Country: " + (item.getCountry() != null ? item.getCountry() : "N/A"));
+                        "Country: " + (item.getCountry() != null ? item.getCountry() : "N/A"));
                     countryLabel.setStyle(
-                            "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
+                        "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
                     // de
                     // texte
                     // sombre
@@ -359,7 +354,7 @@ public class SerieClientController {
                     HeartImageView.setFitHeight(10.0);
                     final Label likesLabel = new Label("Likes: " + item.getClickLikes());
                     likesLabel.setStyle(
-                            "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
+                        "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
                     // de
                     // texte
                     // sombre
@@ -460,16 +455,16 @@ public class SerieClientController {
                          */
                         public void handle(final ActionEvent event) {
                             final Client client = (Client) SessionManager.getCurrentUser();
-                            final Long id_serie = item.getId();
+                            final Series id_serie = item;
                             final FavoriteService sf = new FavoriteService();
-                            final Favorite f = new Favorite(client.getId(), id_serie);
+                            final Favorite f = new Favorite(client, id_serie);
                             item.setClickFavorites(item.getClickFavorites() + 1);
                             SerieClientController.LOGGER.info(String.valueOf(item.getClickFavorites()));
                             try {
                                 if ((0 == item.getClickFavorites()) || (0 != item.getClickFavorites() % 2)) {
                                     sf.create(f);
                                 } else {
-                                    final Favorite fav = sf.getByIdUserAndIdSerie(client.getId(), id_serie);
+                                    final Favorite fav = sf.getByIdUserAndIdSerie(client.getId(), id_serie.getId());
                                     sf.delete(fav);
                                     SerieClientController.LOGGER.info(String.valueOf(fav.getId().intValue()));
                                 }
@@ -485,18 +480,18 @@ public class SerieClientController {
                     iconImageViewWatch.setFitHeight(10.0);
                     final Button watchButton = new Button("Watch", iconImageViewWatch);
                     watchButton.setStyle("""
-                            -fx-background-color: #ae2d3c; \
-                            -fx-background-radius: 8px; \
-                            -fx-text-fill: #FCE19A; \
-                            -fx-font-size: 16px; \
-                            -fx-font-family: 'Arial Rounded MT Bold'; \
-                            -fx-cursor: hand;\
-                            """); // Set the layout constraints for the Watch Button in the AnchorPane
+                        -fx-background-color: #ae2d3c; \
+                        -fx-background-radius: 8px; \
+                        -fx-text-fill: #FCE19A; \
+                        -fx-font-size: 16px; \
+                        -fx-font-family: 'Arial Rounded MT Bold'; \
+                        -fx-cursor: hand;\
+                        """); // Set the layout constraints for the Watch Button in the AnchorPane
                     AnchorPane.setTopAnchor(watchButton, 150.0);
                     AnchorPane.setLeftAnchor(watchButton, 180.0);
                     final Label dislikesLabel = new Label("DisLikes: " + item.getClickDislikes());
                     dislikesLabel.setStyle(
-                            "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
+                        "-fx-font-family: 'Helvetica'; -fx-font-size: 14.0px; -fx-font-weight: normal; -fx-text-fill: #666666;"); // Couleur
                     // de
                     // texte
                     // sombre
@@ -509,13 +504,13 @@ public class SerieClientController {
                     // directorLabel, countryLabel, likesLabel, HeartImageView, likeButton,
                     // dislikeButton);
                     anchorPane.getChildren().addAll(imageView, nameLabel, directorLabel, countryLabel, likesLabel,
-                            HeartImageView, likeButton, dislikeButton, favButton, watchButton, dislikesLabel);
+                        HeartImageView, likeButton, dislikeButton, favButton, watchButton, dislikesLabel);
                     // Ajoutez d'autres composants selon vos besoins
                     // Définissez l'AnchorPane en tant que graphique pour la cellule
                     this.setGraphic(anchorPane);
                     watchButton.setOnAction(event -> {
                         final FXMLLoader fxmlLoader = new FXMLLoader(
-                                this.getClass().getResource("/ui/series/EpisodeClient.fxml"));
+                            this.getClass().getResource("/ui/series/EpisodeClient.fxml"));
                         final Stage stage = (Stage) watchButton.getScene().getWindow();
                         try {
                             final Parent root = fxmlLoader.load();
@@ -613,7 +608,7 @@ public class SerieClientController {
             if (0 <= newValue.intValue()) {
                 final Series selectedSerie = this.listeSerie.getItems().get(newValue.intValue());
                 final FXMLLoader fxmlLoader = new FXMLLoader(
-                        this.getClass().getResource("/ui/series/EpisodeClient.fxml"));
+                    this.getClass().getResource("/ui/series/EpisodeClient.fxml"));
                 SerieClientController.LOGGER.info("serieee " + SessionManager.getCurrentUser());
                 final Stage stage = (Stage) this.listeSerie.getScene().getWindow();
                 try {
@@ -647,7 +642,7 @@ public class SerieClientController {
     @FXML
     void Ocategories(final ActionEvent event) throws IOException {
         final Parent root = FXMLLoader
-                .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/SeriesClient.fxml")));
+            .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/SeriesClient.fxml")));
         final Scene scene = new Scene(root);
         final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
@@ -671,7 +666,7 @@ public class SerieClientController {
     @FXML
     void Oseries(final ActionEvent event) throws IOException {
         final Parent root = FXMLLoader
-                .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/SeriesClient.fxml")));
+            .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/SeriesClient.fxml")));
         final Scene scene = new Scene(root);
         final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
@@ -700,7 +695,7 @@ public class SerieClientController {
     @FXML
     void Oepisode(final ActionEvent event) throws IOException {
         final Parent root = FXMLLoader
-                .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/EpisodeClient.fxml")));
+            .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/EpisodeClient.fxml")));
         final Scene scene = new Scene(root);
         final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);

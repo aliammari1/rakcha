@@ -25,6 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Window;
+import lombok.extern.log4j.Log4j2;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.List;
@@ -32,7 +33,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 /**
  * A high-performance, beautiful search component with autocomplete,
@@ -50,9 +50,10 @@ import java.util.logging.Logger;
  * @author RAKCHA Team
  * @version 1.0.0
  */
+
+@Log4j2
 public class UniversalSearchBox extends HBox {
 
-    private static final Logger LOGGER = Logger.getLogger(UniversalSearchBox.class.getName());
     private static final long DEBOUNCE_DELAY = 150; // ms
     // Styling constants
     private static final String SEARCH_BOX_STYLE = """
@@ -271,7 +272,7 @@ public class UniversalSearchBox extends HBox {
 
         // Group results by type
         var groupedResults = results.stream()
-            .collect(java.util.stream.Collectors.groupingBy(SearchResult::getType));
+            .collect(java.util.stream.Collectors.groupingBy(SearchResult::type));
 
         boolean first = true;
         for (EntityType type : EntityType.values()) {
@@ -322,7 +323,7 @@ public class UniversalSearchBox extends HBox {
         thumbnail.setPrefSize(45, 45);
         thumbnail.setMinSize(45, 45);
 
-        if (result.getImageUrl() != null && !result.getImageUrl().isEmpty()) {
+        if (result.imageUrl() != null && !result.imageUrl().isEmpty()) {
             try {
                 ImageView imageView = new ImageView();
                 imageView.setFitWidth(45);
@@ -332,7 +333,7 @@ public class UniversalSearchBox extends HBox {
                 // Load image async
                 CompletableFuture.runAsync(() -> {
                     try {
-                        Image image = new Image(result.getImageUrl(), 45, 45, true, true, true);
+                        Image image = new Image(result.imageUrl(), 45, 45, true, true, true);
                         Platform.runLater(() -> imageView.setImage(image));
                     } catch (Exception e) {
                         // Use icon fallback
@@ -357,19 +358,19 @@ public class UniversalSearchBox extends HBox {
         VBox textContent = new VBox(2);
         HBox.setHgrow(textContent, Priority.ALWAYS);
 
-        Label titleLabel = new Label(result.getTitle());
+        Label titleLabel = new Label(result.title());
         titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;");
         titleLabel.setMaxWidth(250);
         titleLabel.setEllipsisString("...");
 
-        Label subtitleLabel = new Label(result.getSubtitle());
+        Label subtitleLabel = new Label(result.subtitle());
         subtitleLabel.setStyle("-fx-text-fill: rgba(255,255,255,0.6); -fx-font-size: 11px;");
         subtitleLabel.setMaxWidth(250);
 
         textContent.getChildren().addAll(titleLabel, subtitleLabel);
 
         // Type badge
-        Label typeBadge = new Label(result.getType().name.toUpperCase());
+        Label typeBadge = new Label(result.type().name.toUpperCase());
         typeBadge.setStyle(
             "-fx-background-color: " + result.getColor() + "33;" +
                 "-fx-text-fill: " + result.getColor() + ";" +

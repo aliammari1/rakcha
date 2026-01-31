@@ -30,6 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -39,10 +40,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for viewing user's ticket history with filtering capabilities.
- * Displays past and upcoming tickets with status tracking.
- */
+@Log4j2
 public class TicketHistoryController {
 
     private static final Logger LOGGER = Logger.getLogger(TicketHistoryController.class.getName());
@@ -52,6 +50,7 @@ public class TicketHistoryController {
     private final TicketService ticketService;
     private final FilmService filmService;
     private final CinemaService cinemaService;
+    private final ObservableList<Ticket> allTickets;
     @FXML
     private VBox ticketsContainer;
     @FXML
@@ -112,7 +111,6 @@ public class TicketHistoryController {
     private Label detailSeat;
     @FXML
     private Label detailType;
-    private ObservableList<Ticket> allTickets;
     private FilteredList<Ticket> filteredTickets;
     private User currentUser;
 
@@ -255,15 +253,12 @@ public class TicketHistoryController {
             if (!searchText.isEmpty()) {
                 String filmName = ticket.getMovieSession() != null &&
                     ticket.getMovieSession().getFilm() != null ?
-                    ticket.getMovieSession().getFilm().getNom().toLowerCase() : "";
+                    ticket.getMovieSession().getFilm().getTitle().toLowerCase() : "";
                 String cinemaName = ticket.getMovieSession() != null &&
                     ticket.getMovieSession().getCinemaHall() != null &&
                     ticket.getMovieSession().getCinemaHall().getCinema() != null ?
-                    ticket.getMovieSession().getCinemaHall().getCinema().getNom().toLowerCase() : "";
-
-                if (!filmName.contains(searchText) && !cinemaName.contains(searchText)) {
-                    return false;
-                }
+                    ticket.getMovieSession().getCinemaHall().getCinema().getName().toLowerCase() : "";
+                return filmName.contains(searchText) || cinemaName.contains(searchText);
             }
 
             return true;
@@ -308,7 +303,7 @@ public class TicketHistoryController {
 
     private String getFilmName(Ticket ticket) {
         if (ticket.getMovieSession() != null && ticket.getMovieSession().getFilm() != null) {
-            return ticket.getMovieSession().getFilm().getNom();
+            return ticket.getMovieSession().getFilm().getTitle();
         }
         return "";
     }
@@ -317,7 +312,7 @@ public class TicketHistoryController {
         if (ticket.getMovieSession() != null &&
             ticket.getMovieSession().getCinemaHall() != null &&
             ticket.getMovieSession().getCinemaHall().getCinema() != null) {
-            return ticket.getMovieSession().getCinemaHall().getCinema().getNom();
+            return ticket.getMovieSession().getCinemaHall().getCinema().getName();
         }
         return "";
     }
