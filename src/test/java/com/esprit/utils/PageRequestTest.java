@@ -1,11 +1,6 @@
 package com.esprit.utils;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,8 +33,8 @@ class PageRequestTest {
             PageRequest pageRequest = PageRequest.of(2, 20);
 
             assertThat(pageRequest).isNotNull();
-            assertThat(pageRequest.getPage()).isEqualTo(2);
-            assertThat(pageRequest.getSize()).isEqualTo(20);
+            assertThat(pageRequest.page()).isEqualTo(2);
+            assertThat(pageRequest.size()).isEqualTo(20);
         }
 
 
@@ -49,8 +44,8 @@ class PageRequestTest {
         void testCreatePageRequestPageZero() {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
-            assertThat(pageRequest.getPage()).isZero();
-            assertThat(pageRequest.getSize()).isEqualTo(10);
+            assertThat(pageRequest.page()).isZero();
+            assertThat(pageRequest.size()).isEqualTo(10);
         }
 
 
@@ -60,7 +55,7 @@ class PageRequestTest {
         void testCreatePageRequestLargePage() {
             PageRequest pageRequest = PageRequest.of(1000, 10);
 
-            assertThat(pageRequest.getPage()).isEqualTo(1000);
+            assertThat(pageRequest.page()).isEqualTo(1000);
         }
 
 
@@ -70,7 +65,7 @@ class PageRequestTest {
         void testCreatePageRequestLargeSize() {
             PageRequest pageRequest = PageRequest.of(0, 1000);
 
-            assertThat(pageRequest.getSize()).isEqualTo(1000);
+            assertThat(pageRequest.size()).isEqualTo(1000);
         }
 
     }
@@ -88,8 +83,8 @@ class PageRequestTest {
             PageRequest pageRequest = PageRequest.defaultPage();
 
             assertThat(pageRequest).isNotNull();
-            assertThat(pageRequest.getPage()).isZero();
-            assertThat(pageRequest.getSize()).isGreaterThan(0);
+            assertThat(pageRequest.page()).isZero();
+            assertThat(pageRequest.size()).isGreaterThan(0);
         }
 
 
@@ -99,7 +94,7 @@ class PageRequestTest {
         void testDefaultPageIsFirst() {
             PageRequest pageRequest = PageRequest.defaultPage();
 
-            assertThat(pageRequest.getPage()).isZero();
+            assertThat(pageRequest.page()).isZero();
         }
 
 
@@ -110,7 +105,7 @@ class PageRequestTest {
             PageRequest pageRequest = PageRequest.defaultPage();
 
             // Default size should be reasonable (typically 10-20)
-            assertThat(pageRequest.getSize()).isBetween(1, 100);
+            assertThat(pageRequest.size()).isBetween(1, 100);
         }
 
     }
@@ -127,7 +122,7 @@ class PageRequestTest {
         void testPageNumber() {
             PageRequest pageRequest = PageRequest.of(5, 10);
 
-            assertThat(pageRequest.getPage()).isEqualTo(5);
+            assertThat(pageRequest.page()).isEqualTo(5);
         }
 
 
@@ -137,7 +132,7 @@ class PageRequestTest {
         void testPageSize() {
             PageRequest pageRequest = PageRequest.of(0, 25);
 
-            assertThat(pageRequest.getSize()).isEqualTo(25);
+            assertThat(pageRequest.size()).isEqualTo(25);
         }
 
 
@@ -185,8 +180,8 @@ class PageRequestTest {
         void testMinimumValues() {
             PageRequest pageRequest = PageRequest.of(0, 1);
 
-            assertThat(pageRequest.getPage()).isZero();
-            assertThat(pageRequest.getSize()).isEqualTo(1);
+            assertThat(pageRequest.page()).isZero();
+            assertThat(pageRequest.size()).isEqualTo(1);
             assertThat(pageRequest.getOffset()).isZero();
         }
 
@@ -275,9 +270,9 @@ class PageRequestTest {
             PageRequest page1 = PageRequest.of(1, pageSize);
             PageRequest page2 = PageRequest.of(2, pageSize);
 
-            assertThat(page0.getSize()).isEqualTo(pageSize);
-            assertThat(page1.getSize()).isEqualTo(pageSize);
-            assertThat(page2.getSize()).isEqualTo(pageSize);
+            assertThat(page0.size()).isEqualTo(pageSize);
+            assertThat(page1.size()).isEqualTo(pageSize);
+            assertThat(page2.size()).isEqualTo(pageSize);
         }
 
     }
@@ -294,7 +289,7 @@ class PageRequestTest {
         void testTypicalPageSize10() {
             PageRequest pageRequest = PageRequest.of(0, 10);
 
-            assertThat(pageRequest.getSize()).isEqualTo(10);
+            assertThat(pageRequest.size()).isEqualTo(10);
         }
 
 
@@ -304,7 +299,7 @@ class PageRequestTest {
         void testTypicalPageSize20() {
             PageRequest pageRequest = PageRequest.of(0, 20);
 
-            assertThat(pageRequest.getSize()).isEqualTo(20);
+            assertThat(pageRequest.size()).isEqualTo(20);
         }
 
 
@@ -314,7 +309,7 @@ class PageRequestTest {
         void testTypicalPageSize50() {
             PageRequest pageRequest = PageRequest.of(0, 50);
 
-            assertThat(pageRequest.getSize()).isEqualTo(50);
+            assertThat(pageRequest.size()).isEqualTo(50);
         }
 
 
@@ -324,7 +319,7 @@ class PageRequestTest {
         void testTypicalPageSize100() {
             PageRequest pageRequest = PageRequest.of(0, 100);
 
-            assertThat(pageRequest.getSize()).isEqualTo(100);
+            assertThat(pageRequest.size()).isEqualTo(100);
         }
 
     }

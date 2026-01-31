@@ -7,15 +7,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.Date;
 
-/**
- * Abstract User entity representing the base user model Fixed issues:
- * phoneNumber changed from int to String for proper phone handling Added proper
- * Hibernate annotations and Lombok annotations
- */
-
+@Log4j2
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -164,6 +160,24 @@ public abstract class User {
         // For now, return 0 as a default
         // In a full system, this would calculate based on purchases or be a stored field
         return 0;
+    }
+
+    /**
+     * Get the user's ID.
+     *
+     * @return the user ID
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Set the user's ID.
+     *
+     * @param id the user ID
+     */
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

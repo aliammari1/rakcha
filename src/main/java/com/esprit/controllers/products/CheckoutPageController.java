@@ -1,27 +1,44 @@
 package com.esprit.controllers.products;
 
-import com.esprit.models.users.User;
-import com.esprit.models.products.Product;
-import com.esprit.models.products.ShoppingCart;
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.products.Order;
 import com.esprit.models.products.OrderItem;
-import com.esprit.models.products.Payment;
+import com.esprit.models.products.Product;
+import com.esprit.models.products.ShoppingCart;
+import com.esprit.models.users.User;
 import com.esprit.services.products.CartService;
 import com.esprit.services.products.OrderService;
 import com.esprit.services.products.PaymentService;
 import com.esprit.utils.SessionManager;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,15 +46,25 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for the checkout page with cart management and payment processing.
- */
+@Log4j2
 public class CheckoutPageController {
 
     private static final Logger LOGGER = Logger.getLogger(CheckoutPageController.class.getName());
     private final CartService cartService;
     private final OrderService orderService;
     private final PaymentService paymentService;
+    // FormsFX properties for declarative form handling
+    private final StringProperty fullNameProperty = new SimpleStringProperty("");
+    private final StringProperty emailProperty = new SimpleStringProperty("");
+    private final StringProperty phoneProperty = new SimpleStringProperty("");
+    private final StringProperty addressProperty = new SimpleStringProperty("");
+    private final StringProperty cityProperty = new SimpleStringProperty("");
+    private final StringProperty zipCodeProperty = new SimpleStringProperty("");
+    private final StringProperty cardNumberProperty = new SimpleStringProperty("");
+    private final StringProperty cardHolderProperty = new SimpleStringProperty("");
+    private final StringProperty expiryProperty = new SimpleStringProperty("");
+    private final StringProperty cvvProperty = new SimpleStringProperty("");
+    private final ObservableList<OrderItem> OrderItems;
     @FXML
     private VBox checkoutContainer;
     @FXML
@@ -96,12 +123,13 @@ public class CheckoutPageController {
     private ProgressIndicator loadingIndicator;
     @FXML
     private Label emptyCartLabel;
-    private ObservableList<OrderItem> OrderItems;
     private User currentUser;
     private double subtotal = 0;
     private double discount = 0;
     private double tax = 0;
     private double shipping = 0;
+    private Form checkoutForm;
+    private Form cardForm;
 
     public CheckoutPageController() {
         this.cartService = new CartService();
@@ -120,6 +148,8 @@ public class CheckoutPageController {
             return;
         }
 
+        setupFormsFX();
+        setupEasyBindings();
         setupPaymentMethods();
         setupCountries();
         prefillUserInfo();
@@ -157,6 +187,122 @@ public class CheckoutPageController {
             if (phoneField != null) {
                 phoneField.setText(currentUser.getPhoneNumber());
             }
+        }
+    }
+
+    /**
+     * Sets up the FormsFX forms with declarative validation rules.
+     */
+    private void setupFormsFX() {
+        this.checkoutForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.fullNameProperty)
+                    .label("Full Name")
+                    .validate(StringLengthValidator.atLeast(2, "Full name is required")),
+                Field.ofStringType(this.emailProperty)
+                    .label("Email")
+                    .validate(RegexValidator.forPattern(
+                        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
+                        "Please enter a valid email")),
+                Field.ofStringType(this.addressProperty)
+                    .label("Address")
+                    .validate(StringLengthValidator.atLeast(5, "Address is required")),
+                Field.ofStringType(this.cityProperty)
+                    .label("City")
+                    .validate(StringLengthValidator.atLeast(2, "City is required")),
+                Field.ofStringType(this.zipCodeProperty)
+                    .label("ZIP Code")
+                    .validate(StringLengthValidator.atLeast(3, "ZIP code is required"))
+            )
+        );
+
+        this.cardForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.cardNumberProperty)
+                    .label("Card Number")
+                    .validate(RegexValidator.forPattern("\\d{16}", "Card number must be 16 digits")),
+                Field.ofStringType(this.cardHolderProperty)
+                    .label("Card Holder")
+                    .validate(StringLengthValidator.atLeast(2, "Card holder name is required")),
+                Field.ofStringType(this.expiryProperty)
+                    .label("Expiry (MM/YY)")
+                    .validate(RegexValidator.forPattern("\\d{2}/\\d{2}", "Use format MM/YY")),
+                Field.ofStringType(this.cvvProperty)
+                    .label("CVV")
+                    .validate(RegexValidator.forPattern("\\d{3,4}", "CVV must be 3-4 digits"))
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind subscriptions to sync text fields with FormsFX properties.
+     */
+    private void setupEasyBindings() {
+        if (this.fullNameField != null) {
+            this.fullNameField.textProperty().bindBidirectional(this.fullNameProperty);
+        }
+        if (this.emailField != null) {
+            this.emailField.textProperty().bindBidirectional(this.emailProperty);
+        }
+        if (this.phoneField != null) {
+            this.phoneField.textProperty().bindBidirectional(this.phoneProperty);
+        }
+        if (this.addressField != null) {
+            this.addressField.textProperty().bindBidirectional(this.addressProperty);
+        }
+        if (this.cityField != null) {
+            this.cityField.textProperty().bindBidirectional(this.cityProperty);
+        }
+        if (this.zipCodeField != null) {
+            this.zipCodeField.textProperty().bindBidirectional(this.zipCodeProperty);
+        }
+        if (this.cardNumberField != null) {
+            this.cardNumberField.textProperty().bindBidirectional(this.cardNumberProperty);
+        }
+        if (this.cardHolderField != null) {
+            this.cardHolderField.textProperty().bindBidirectional(this.cardHolderProperty);
+        }
+        if (this.expiryField != null) {
+            this.expiryField.textProperty().bindBidirectional(this.expiryProperty);
+        }
+        if (this.cvvField != null) {
+            this.cvvField.textProperty().bindBidirectional(this.cvvProperty);
+        }
+    }
+
+    /**
+     * Cleanup method to unbind properties when the view is closed.
+     */
+    public void cleanup() {
+        if (this.fullNameField != null) {
+            this.fullNameField.textProperty().unbindBidirectional(this.fullNameProperty);
+        }
+        if (this.emailField != null) {
+            this.emailField.textProperty().unbindBidirectional(this.emailProperty);
+        }
+        if (this.phoneField != null) {
+            this.phoneField.textProperty().unbindBidirectional(this.phoneProperty);
+        }
+        if (this.addressField != null) {
+            this.addressField.textProperty().unbindBidirectional(this.addressProperty);
+        }
+        if (this.cityField != null) {
+            this.cityField.textProperty().unbindBidirectional(this.cityProperty);
+        }
+        if (this.zipCodeField != null) {
+            this.zipCodeField.textProperty().unbindBidirectional(this.zipCodeProperty);
+        }
+        if (this.cardNumberField != null) {
+            this.cardNumberField.textProperty().unbindBidirectional(this.cardNumberProperty);
+        }
+        if (this.cardHolderField != null) {
+            this.cardHolderField.textProperty().unbindBidirectional(this.cardHolderProperty);
+        }
+        if (this.expiryField != null) {
+            this.expiryField.textProperty().unbindBidirectional(this.expiryProperty);
+        }
+        if (this.cvvField != null) {
+            this.cvvField.textProperty().unbindBidirectional(this.cvvProperty);
         }
     }
 

@@ -10,7 +10,7 @@
            minHeight="700.0" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.users.ProfileController"
            style="-fx-background-color: linear-gradient(to bottom right, #0a0a0a, #1a0808, #120404, #0a0a0a);"
-           stylesheets="@../styles/profile-cinematic.css, @../styles/login-animations.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Animated Background Layer -->
   <AnchorPane styleClass="profile-animated-background" mouseTransparent="true">
@@ -368,7 +368,7 @@
                            style="-fx-text-fill: #cccccc; -fx-font-size: 11px; -fx-font-weight: bold;"/>
                   </VBox>
                 </HBox>
-                
+
                 <!-- Second Row - More Quick Actions -->
                 <HBox spacing="12">
                   <VBox onMouseClicked="#goToAccountSettings" alignment="CENTER" spacing="8" prefWidth="100"
@@ -537,3 +537,4 @@
   </AnchorPane>
 
 </StackPane>
+

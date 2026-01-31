@@ -19,6 +19,7 @@ import lombok.Setter;
  * @since 1.0.0
  */
 
+
 public class SharedData {
 
     private static SharedData instance;

@@ -66,7 +66,7 @@ class EpisodeControllerTest extends TestFXBase {
         Episode e1 = new Episode();
         e1.setTitle("Episode 1");
         e1.setEpisodeNumber(1);
-        e1.setSeasonId(1L);
+        // e1.setSeasonId(1L);
         episodes.add(e1);
         return episodes;
     }

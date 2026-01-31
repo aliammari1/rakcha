@@ -142,7 +142,7 @@ class DesignCategorieAdminControllerTest extends TestFXBase {
 
             // Verify table row count unchanged (creation prevented)
             assertThat(table.getItems().size()).as("Table row count should not change on invalid creation")
-                    .isEqualTo(initialRowCount);
+                .isEqualTo(initialRowCount);
 
             // Verify name field is still visible and responsive
             assertThat(nameField.isVisible()).isTrue();
@@ -245,11 +245,11 @@ class DesignCategorieAdminControllerTest extends TestFXBase {
 
             // Verify row count decreased
             assertThat(table.getItems().size()).as("Table should have fewer items after deletion")
-                    .isLessThanOrEqualTo(initialRowCount);
+                .isLessThanOrEqualTo(initialRowCount);
 
             // Verify the specific deleted item is no longer in the table
             boolean deletedItemStillExists = table.getItems().stream()
-                    .anyMatch(cat -> cat.getName().equals(selectedCategory.getName()));
+                .anyMatch(cat -> cat.getName().equals(selectedCategory.getName()));
             assertThat(deletedItemStillExists).as("Deleted category should not be in table").isFalse();
         }
 

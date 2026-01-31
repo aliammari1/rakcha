@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -33,6 +32,8 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
+
+@Log4j2
 public class UserService implements IService<User> {
 
     // Allowed columns for sorting to prevent SQL injection
@@ -133,9 +134,9 @@ public class UserService implements IService<User> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.getSortBy());
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.sortBy());
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -149,11 +150,11 @@ public class UserService implements IService<User> {
 
             getUsers(content, statement);
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.error("Error retrieving paginated users: {}", e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
     }
 
@@ -232,8 +233,8 @@ public class UserService implements IService<User> {
      * @param Recipient     the email address of the recipient
      * @param messageToSend the message content to send
      */
-    public void sendMail(final String Recipient, final String messageToSend) {
-        UserMail.send(Recipient, messageToSend);
+    public void sendMail(final String Recipient, final String Subject, final String messageToSend) {
+        UserMail.send(Recipient, Subject, messageToSend);
     }
 
     /**
@@ -299,12 +300,13 @@ public class UserService implements IService<User> {
                 user.setActive(resultSet.getBoolean("is_active"));
                 user.setFailedLoginAttempts(resultSet.getInt("failed_login_attempts"));
                 user.setLocked(resultSet.getBoolean("is_locked"));
-                user.setLockedUntil(resultSet.getTimestamp("locked_until") != null ?
-                    resultSet.getTimestamp("locked_until") : null);
+                user.setLockedUntil(
+                    resultSet.getTimestamp("locked_until") != null ? resultSet.getTimestamp("locked_until") : null);
                 user.setTotpSecret(resultSet.getString("totp_secret"));
                 user.setDeactivationReason(resultSet.getString("deactivation_reason"));
-                user.setDeactivatedAt(resultSet.getTimestamp("deactivated_at") != null ?
-                    resultSet.getTimestamp("deactivated_at") : null);
+                user.setDeactivatedAt(
+                    resultSet.getTimestamp("deactivated_at") != null ? resultSet.getTimestamp("deactivated_at")
+                        : null);
                 userList.add(user);
             }
         }
@@ -371,7 +373,7 @@ public class UserService implements IService<User> {
             preparedStatement.setString(1, email);
             final User user = this.getUserRow(preparedStatement);
             if (null != user) {
-                this.sendMail(user.getEmail(),
+                this.sendMail(user.getEmail(), "Password Reset Request",
                     "Your password reset request has been received. Please check your email for instructions to reset your password.");
             } else {
                 final Alert alert = new Alert(Alert.AlertType.ERROR,
@@ -418,12 +420,13 @@ public class UserService implements IService<User> {
                 user.setActive(resultSet.getBoolean("is_active"));
                 user.setFailedLoginAttempts(resultSet.getInt("failed_login_attempts"));
                 user.setLocked(resultSet.getBoolean("is_locked"));
-                user.setLockedUntil(resultSet.getTimestamp("locked_until") != null ?
-                    resultSet.getTimestamp("locked_until") : null);
+                user.setLockedUntil(
+                    resultSet.getTimestamp("locked_until") != null ? resultSet.getTimestamp("locked_until") : null);
                 user.setTotpSecret(resultSet.getString("totp_secret"));
                 user.setDeactivationReason(resultSet.getString("deactivation_reason"));
-                user.setDeactivatedAt(resultSet.getTimestamp("deactivated_at") != null ?
-                    resultSet.getTimestamp("deactivated_at") : null);
+                user.setDeactivatedAt(
+                    resultSet.getTimestamp("deactivated_at") != null ? resultSet.getTimestamp("deactivated_at")
+                        : null);
             }
             return user;
         }
@@ -635,7 +638,8 @@ public class UserService implements IService<User> {
     /**
      * Helper method to build a User from a ResultSet.
      *
-     * @param resultSet the ResultSet containing user data (already positioned at a row)
+     * @param resultSet the ResultSet containing user data (already positioned at a
+     *                  row)
      * @return the constructed User object
      * @throws SQLException if a database error occurs
      */
@@ -667,12 +671,12 @@ public class UserService implements IService<User> {
             user.setActive(resultSet.getBoolean("is_active"));
             user.setFailedLoginAttempts(resultSet.getInt("failed_login_attempts"));
             user.setLocked(resultSet.getBoolean("is_locked"));
-            user.setLockedUntil(resultSet.getTimestamp("locked_until") != null ?
-                resultSet.getTimestamp("locked_until") : null);
+            user.setLockedUntil(
+                resultSet.getTimestamp("locked_until") != null ? resultSet.getTimestamp("locked_until") : null);
             user.setTotpSecret(resultSet.getString("totp_secret"));
             user.setDeactivationReason(resultSet.getString("deactivation_reason"));
-            user.setDeactivatedAt(resultSet.getTimestamp("deactivated_at") != null ?
-                resultSet.getTimestamp("deactivated_at") : null);
+            user.setDeactivatedAt(
+                resultSet.getTimestamp("deactivated_at") != null ? resultSet.getTimestamp("deactivated_at") : null);
         }
         return user;
     }

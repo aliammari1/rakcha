@@ -23,6 +23,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class FriendService {
 
@@ -430,8 +431,8 @@ public class FriendService {
     private Friendship mapResultSetToFriendship(ResultSet rs) throws SQLException {
         return Friendship.builder()
             .id(rs.getLong("id"))
-            .requesterId(rs.getLong("requester_id"))
-            .addresseeId(rs.getLong("addressee_id"))
+            .requester(com.esprit.models.users.Client.builder().id(rs.getLong("requester_id")).build())
+            .addressee(com.esprit.models.users.Client.builder().id(rs.getLong("addressee_id")).build())
             .status(rs.getString("status"))
             .createdAt(rs.getTimestamp("created_at"))
             .build();

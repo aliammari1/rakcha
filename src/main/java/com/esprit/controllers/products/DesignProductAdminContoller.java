@@ -1,5 +1,9 @@
 package com.esprit.controllers.products;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.enums.CategoryType;
 import com.esprit.models.common.Category;
 import com.esprit.models.products.Product;
@@ -8,6 +12,8 @@ import com.esprit.services.products.ProductService;
 import com.esprit.utils.CloudinaryStorage;
 import com.esprit.utils.PageRequest;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,16 +22,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -39,6 +36,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,22 +48,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Is responsible for handling user interactions related to the "Products"
- * section of the Rakcha web application. It contains several methods that
- * handle different types of user actions, such as importing images, creating a
- * new product, and viewing a product details page. The controller also uses
- * FXML to load user interface elements from a file named
- * "/ui/produits/DesignProductAdmin.fxml".
- */
+@Log4j2
 public class DesignProductAdminContoller {
 
     private static final Logger LOGGER = Logger.getLogger(DesignProductAdminContoller.class.getName());
     private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
     private final List<CheckBox> statusCheckBoxes = new ArrayList<>();
     private final List<Product> l1 = new ArrayList<>();
+    // FormsFX properties
+    private final StringProperty productNameProperty = new SimpleStringProperty("");
+    private final StringProperty priceProperty = new SimpleStringProperty("");
+    private final StringProperty descriptionProperty = new SimpleStringProperty("");
+    private final StringProperty quantityProperty = new SimpleStringProperty("");
     private File selectedFile;
     private String cloudinaryImageUrl;
+    private Form productForm;
+
     @FXML
     private TableColumn<Product, Double> PrixP_tableC;
     @FXML
@@ -120,6 +118,89 @@ public class DesignProductAdminContoller {
         }
         this.afficher_produit();
         this.initDeleteColumn();
+
+        // Initialize FormsFX
+        setupFormsFX();
+        setupBidirectionalBindings();
+    }
+
+    /**
+     * Configures FormsFX for product form validation.
+     */
+    private void setupFormsFX() {
+        productForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(productNameProperty)
+                    .label("Product Name")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Product name is required"),
+                        RegexValidator.forPattern("[a-zA-Z0-9 ]*", "Product name must contain only letters, numbers and spaces")
+                    ),
+                Field.ofStringType(priceProperty)
+                    .label("Price")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Price is required"),
+                        RegexValidator.forPattern("\\d+", "Price must be a positive number")
+                    ),
+                Field.ofStringType(descriptionProperty)
+                    .label("Description")
+                    .validate(
+                        StringLengthValidator.atLeast(20, "Description must be at least 20 characters")
+                    ),
+                Field.ofStringType(quantityProperty)
+                    .label("Quantity")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Quantity is required"),
+                        RegexValidator.forPattern("\\d+", "Quantity must be a positive number")
+                    )
+            )
+        );
+    }
+
+    /**
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        nomP_textFiled.textProperty().bindBidirectional(productNameProperty);
+        prix_textFiled.textProperty().bindBidirectional(priceProperty);
+        descriptionP_textArea.textProperty().bindBidirectional(descriptionProperty);
+        quantiteP_textFiled.textProperty().bindBidirectional(quantityProperty);
+    }
+
+    /**
+     * Validates the product form using FormsFX.
+     *
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validateProductForm() {
+        productForm.persist();
+        if (!productForm.isValid()) {
+            StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
+            productForm.getGroups().forEach(group ->
+                group.getElements().forEach(element -> {
+                    if (element instanceof Field<?> field) {
+                        if (!field.isValid()) {
+                            errorMessage.append("- ").append(field.getLabel()).append(": ");
+                            field.getErrorMessages().forEach(msg -> errorMessage.append(msg).append(" "));
+                            errorMessage.append("\n");
+                        }
+                    }
+                })
+            );
+            showAlert(errorMessage.toString());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        nomP_textFiled.textProperty().unbindBidirectional(productNameProperty);
+        prix_textFiled.textProperty().unbindBidirectional(priceProperty);
+        descriptionP_textArea.textProperty().unbindBidirectional(descriptionProperty);
+        quantiteP_textFiled.textProperty().unbindBidirectional(quantityProperty);
     }
 
     /**
@@ -196,31 +277,23 @@ public class DesignProductAdminContoller {
             return;
         }
 
-        // Récupérer les valeurs des champs de saisie
-        final String nomProduct = this.nomP_textFiled.getText().trim();
-        final String prixText = this.prix_textFiled.getText().trim();
-        final String descriptionProduct = this.descriptionP_textArea.getText().trim();
+        // Validate form using FormsFX
+        if (!validateProductForm()) {
+            return;
+        }
+
+        // Get category (not validated by FormsFX)
         final String nomCategorie = this.nomC_comboBox.getValue();
-        final String quantiteText = this.quantiteP_textFiled.getText().trim();
-
-        // Vérifier si les champs sont vides
-        if (nomProduct.isEmpty() || prixText.isEmpty() || descriptionProduct.isEmpty() || null == nomCategorie
-            || quantiteText.isEmpty()) {
-            this.showAlert("Veuillez remplir tous les champs.");
+        if (null == nomCategorie) {
+            this.showAlert("Please select a category.");
             return;
         }
 
-        // Vérifier si le nom ne contient que des alphabets et des chiffres
-        if (!nomProduct.matches("[a-zA-Z0-9 ]*")) {
-            this.showAlert("Veuillez entrer un nom valide sans caractères spéciaux.");
-            return;
-        }
-
-        // Vérifier si la description a au moins 20 caractères
-        if (20 > descriptionProduct.length()) {
-            this.showAlert("La description du produit doit contenir au moins 20 caractères.");
-            return;
-        }
+        // Récupérer les valeurs des champs de saisie from FormsFX properties
+        final String nomProduct = productNameProperty.get().trim();
+        final String prixText = priceProperty.get().trim();
+        final String descriptionProduct = descriptionProperty.get().trim();
+        final String quantiteText = quantityProperty.get().trim();
 
         try {
             // Convertir le prix et la quantité en entiers

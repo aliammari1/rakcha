@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @version 3.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class SessionManager {
 
@@ -183,19 +184,6 @@ public class SessionManager {
     }
 
     /**
-     * Gets the stored verification code (legacy method for backward compatibility).
-     *
-     * @return the verification code or null if not set
-     * @deprecated Use {@link #getVerificationCode(String)} instead
-     */
-    @Deprecated
-    public static String getVerificationCode() {
-        // Return null for safety - this method should not be used
-        log.warn("Deprecated getVerificationCode() called without email parameter");
-        return null;
-    }
-
-    /**
      * Gets the stored user email for a given email (identity function for
      * compatibility).
      *
@@ -213,18 +201,6 @@ public class SessionManager {
         }
 
         return sessionData.getEmail();
-    }
-
-    /**
-     * Gets the stored user email (legacy method).
-     *
-     * @return null
-     * @deprecated Use {@link #getUserEmail(String)} instead
-     */
-    @Deprecated
-    public static String getUserEmail() {
-        log.warn("Deprecated getUserEmail() called without email parameter");
-        return null;
     }
 
     /**
@@ -249,19 +225,6 @@ public class SessionManager {
         }
 
         return sessionData.getVerificationCode().equals(code);
-    }
-
-    /**
-     * Legacy verify code method for backward compatibility.
-     *
-     * @param code the code to verify
-     * @return false
-     * @deprecated Use {@link #verifyCode(String, String)} instead
-     */
-    @Deprecated
-    public static boolean verifyCode(final String code) {
-        log.warn("Deprecated verifyCode() called without email parameter");
-        return false;
     }
 
     /**
@@ -304,18 +267,6 @@ public class SessionManager {
     }
 
     /**
-     * Legacy isCodeExpired method.
-     *
-     * @return true
-     * @deprecated Use {@link #isCodeExpired(String)} instead
-     */
-    @Deprecated
-    public static boolean isCodeExpired() {
-        log.warn("Deprecated isCodeExpired() called without email parameter");
-        return true;
-    }
-
-    /**
      * Cleans up expired sessions (called automatically by scheduler).
      * Public static method for manual cleanup if needed.
      */
@@ -355,10 +306,10 @@ public class SessionManager {
      */
     private void startCleanupScheduler() {
         cleanupScheduler.scheduleAtFixedRate(
-                this::cleanupExpiredSessionsInternal,
-                CLEANUP_INTERVAL_MINUTES,
-                CLEANUP_INTERVAL_MINUTES,
-                TimeUnit.MINUTES);
+            this::cleanupExpiredSessionsInternal,
+            CLEANUP_INTERVAL_MINUTES,
+            CLEANUP_INTERVAL_MINUTES,
+            TimeUnit.MINUTES);
         log.info("SessionManager cleanup scheduler started (runs every {} minutes)", CLEANUP_INTERVAL_MINUTES);
     }
 

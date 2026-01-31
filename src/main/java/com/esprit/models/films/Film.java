@@ -7,14 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a film.
- */
-
+@Log4j2
 @Data
 @NoArgsConstructor
 @Builder
@@ -27,6 +25,7 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 
 public class Film {
 
@@ -180,65 +179,11 @@ public class Film {
     }
 
     /**
-     * Get the film name/title (alias for compatibility).
-     *
-     * @return the film title
-     */
-    public String getNom() {
-        return this.title;
-    }
-
-    /**
-     * Set the film name/title (alias for compatibility).
-     *
-     * @param nom the title to set
-     */
-    public void setNom(String nom) {
-        this.title = nom;
-    }
-
-    /**
-     * Get the film duration in minutes (alias for compatibility).
-     *
-     * @return the duration in minutes
-     */
-    public int getDuree() {
-        return this.durationMin;
-    }
-
-    /**
-     * Set the film duration in minutes (alias for compatibility).
-     *
-     * @param duree the duration in minutes
-     */
-    public void setDuree(int duree) {
-        this.durationMin = duree;
-    }
-
-    /**
-     * Get the film image URL (convenience method).
-     *
-     * @return the image URL
-     */
-    public String getImage() {
-        return this.imageUrl;
-    }
-
-    /**
-     * Set the film image URL (convenience method).
-     *
-     * @param imageUrl the image URL to set
-     */
-    public void setImage(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    /**
      * Get the film rating/note (calculated from reviews or stored rating).
      *
      * @return the rating as a double
      */
-    public double getNote() {
+    public double getRating() {
         // If we have reviews, calculate average rating
         if (this.reviews != null && !this.reviews.isEmpty()) {
             return this.reviews.stream()
@@ -247,60 +192,6 @@ public class Film {
                 .orElse(0.0);
         }
         return 0.0;
-    }
-
-    /**
-     * Get the release year (alias for compatibility).
-     *
-     * @return the release year
-     */
-    public int getAnnee() {
-        return this.releaseYear;
-    }
-
-    /**
-     * Set the release year (alias for compatibility).
-     *
-     * @param annee the year to set
-     */
-    public void setAnnee(int annee) {
-        this.releaseYear = annee;
-    }
-
-    /**
-     * Get the film name/title (convenience alias).
-     *
-     * @return the film title
-     */
-    public String getName() {
-        return this.title;
-    }
-
-    /**
-     * Set the film name/title (convenience alias).
-     *
-     * @param name the title to set
-     */
-    public void setName(String name) {
-        this.title = name;
-    }
-
-    /**
-     * Get the film duration (alias for durationMin).
-     *
-     * @return the duration in minutes
-     */
-    public int getDuration() {
-        return this.durationMin;
-    }
-
-    /**
-     * Set the film duration (alias for durationMin).
-     *
-     * @param duration the duration in minutes
-     */
-    public void setDuration(int duration) {
-        this.durationMin = duration;
     }
 
     /**
@@ -314,36 +205,6 @@ public class Film {
         }
         return "Unknown";
     }
-
-    /**
-     * Get the film country (alias - may come from metadata or be extracted).
-     *
-     * @return the country
-     */
-    public String getCountry() {
-        // This is a placeholder - could be extended with a country field if needed
-        return "Unknown";
-    }
-
-    /**
-     * Get the average rating from reviews.
-     *
-     * @return the average rating
-     */
-    public double getAverageRating() {
-        // Alias for getNote()
-        return getNote();
-    }
-
-    /**
-     * Get the rating (alias for getAverageRating).
-     *
-     * @return the rating as a double
-     */
-    public double getRating() {
-        return getAverageRating();
-    }
-
 }
 
 

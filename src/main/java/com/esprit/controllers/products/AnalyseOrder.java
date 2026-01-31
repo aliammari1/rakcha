@@ -15,6 +15,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
+import lombok.extern.log4j.Log4j2;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -22,25 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-/**
- * Controller class for analyzing orders and visualizing order data in the
- * RAKCHA application.
- * This controller provides graphical representations of order statistics
- * including:
- * - Number of orders by date (completed vs. in progress)
- * - Products purchased by category over time
- *
- * <p>
- * The controller uses LineChart and StackedBarChart components to display the
- * data
- * and retrieves information from OrderService, OrderItemService, and
- * CategoryService.
- * </p>
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class AnalyseOrder implements Initializable {
 
     @FXML
@@ -106,9 +89,10 @@ public class AnalyseOrder implements Initializable {
         for (final Order order : orders) {
             final java.time.LocalDateTime dateOrder = order.getOrderDate();
             final String formattedDate = dateOrder.toLocalDate().toString();
-            if ("en cours".equalsIgnoreCase(order.getStatus())) {
+            String statusValue = order.getStatus() != null ? order.getStatus().getValue() : "";
+            if ("processing".equalsIgnoreCase(statusValue) || "pending".equalsIgnoreCase(statusValue)) {
                 enCoursByDate.put(formattedDate, enCoursByDate.get(formattedDate) + 1);
-            } else if ("payee".equalsIgnoreCase(order.getStatus())) {
+            } else if ("paid".equalsIgnoreCase(statusValue)) {
                 payeeByDate.put(formattedDate, payeeByDate.get(formattedDate) + 1);
                 // Analyse des catégories achetées
                 final Map<String, Integer> categoriesAchats = categoriesAchatsByDate.get(formattedDate);

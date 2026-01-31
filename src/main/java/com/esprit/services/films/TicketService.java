@@ -12,6 +12,7 @@ import com.esprit.utils.DataSource;
 import com.esprit.utils.Page;
 import com.esprit.utils.PageRequest;
 import com.esprit.utils.PaginationQueryBuilder;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,16 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+@Log4j2
 public class TicketService implements IService<Ticket> {
 
     private static final Logger log = Logger.getLogger(TicketService.class.getName());
     // Allowed columns for sorting to prevent SQL injection
     private static final String[] ALLOWED_SORT_COLUMNS = {
-            "id", "user_id", "screening_id", "seat_id", "price_paid", "status"
+        "id", "user_id", "screening_id", "seat_id", "price_paid", "status"
     };
-    private Connection connection;
-    private UserService userService;
-    private MovieSessionService moviesessionService;
+    private final Connection connection;
+    private final UserService userService;
+    private final MovieSessionService moviesessionService;
 
     public TicketService() {
         this.connection = DataSource.getInstance().getConnection();
@@ -57,7 +59,7 @@ public class TicketService implements IService<Ticket> {
             statement.setString(5, ticket.getQrCode());
             statement.setDouble(6, ticket.getPricePaid());
             statement.setTimestamp(7, java.sql.Timestamp.valueOf(
-                    ticket.getPurchaseTime() != null ? ticket.getPurchaseTime() : java.time.LocalDateTime.now()));
+                ticket.getPurchaseTime() != null ? ticket.getPurchaseTime() : java.time.LocalDateTime.now()));
             statement.executeUpdate();
             log.info("Ticket created successfully");
         } catch (final SQLException e) {
@@ -75,7 +77,7 @@ public class TicketService implements IService<Ticket> {
         final List<Ticket> tickets = new ArrayList<>();
         final String req = "SELECT * FROM tickets";
         try (final PreparedStatement statement = this.connection.prepareStatement(req);
-                final ResultSet rs = statement.executeQuery()) {
+             final ResultSet rs = statement.executeQuery()) {
             while (rs.next()) {
                 try {
                     Client client = (Client) userService.getUserById(rs.getLong("user_id"));
@@ -83,14 +85,14 @@ public class TicketService implements IService<Ticket> {
 
                     if (client != null && movieSession != null) {
                         tickets.add(Ticket.builder().id(rs.getLong("id")).seat(null)
-                                .client(client).movieSession(movieSession).pricePaid(rs.getDouble("price_paid"))
-                                .status(TicketStatus.valueOf(rs.getString("status"))).build());
+                            .client(client).movieSession(movieSession).pricePaid(rs.getDouble("price_paid"))
+                            .status(TicketStatus.valueOf(rs.getString("status"))).build());
                     } else {
                         log.warning("Missing required entities for ticket ID: " + rs.getLong("id"));
                     }
                 } catch (Exception e) {
                     log.warning("Error loading ticket relationships for ticket ID: " + rs.getLong("id") + " - "
-                            + e.getMessage());
+                        + e.getMessage());
                 }
             }
         } catch (final SQLException e) {
@@ -116,7 +118,7 @@ public class TicketService implements IService<Ticket> {
             statement.setString(5, ticket.getQrCode());
             statement.setDouble(6, ticket.getPricePaid());
             statement.setTimestamp(7, java.sql.Timestamp.valueOf(
-                    ticket.getPurchaseTime() != null ? ticket.getPurchaseTime() : java.time.LocalDateTime.now()));
+                ticket.getPurchaseTime() != null ? ticket.getPurchaseTime() : java.time.LocalDateTime.now()));
             statement.setLong(8, ticket.getId());
             statement.executeUpdate();
         } catch (final SQLException e) {
@@ -149,22 +151,22 @@ public class TicketService implements IService<Ticket> {
         final String query = "SELECT * FROM tickets";
 
         try (PreparedStatement stmt = connection.prepareStatement(query);
-                ResultSet rs = stmt.executeQuery()) {
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 try {
                     Client client = (Client) userService.getUserById(rs.getLong("user_id"));
                     MovieSession movieSession = moviesessionService
-                            .getMovieSessionById(rs.getLong("screening_id"));
+                        .getMovieSessionById(rs.getLong("screening_id"));
 
                     if (client != null && movieSession != null) {
                         tickets.add(Ticket.builder()
-                                .id(rs.getLong("id"))
-                                .client(client)
-                                .movieSession(movieSession)
-                                .pricePaid(rs.getDouble("price_paid"))
-                                .status(TicketStatus.valueOf(rs.getString("status")))
-                                .purchaseTime(rs.getTimestamp("purchase_time").toLocalDateTime())
-                                .build());
+                            .id(rs.getLong("id"))
+                            .client(client)
+                            .movieSession(movieSession)
+                            .pricePaid(rs.getDouble("price_paid"))
+                            .status(TicketStatus.valueOf(rs.getString("status")))
+                            .purchaseTime(rs.getTimestamp("purchase_time").toLocalDateTime())
+                            .build());
                     }
                 } catch (Exception e) {
                     log.warning("Error building ticket: " + e.getMessage());
@@ -184,9 +186,9 @@ public class TicketService implements IService<Ticket> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-                !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warning("Invalid sort column: " + pageRequest.getSortBy() + ". Using default sorting.");
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warning("Invalid sort column: " + pageRequest.sortBy() + ". Using default sorting.");
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -198,37 +200,37 @@ public class TicketService implements IService<Ticket> {
             final String paginatedQuery = PaginationQueryBuilder.buildPaginatedQuery(baseQuery, pageRequest);
 
             try (PreparedStatement stmt = connection.prepareStatement(paginatedQuery);
-                    ResultSet rs = stmt.executeQuery()) {
+                 ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     try {
                         Client client = (Client) userService.getUserById(rs.getLong("user_id"));
                         MovieSession movieSession = moviesessionService
-                                .getMovieSessionById(rs.getLong("screening_id"));
+                            .getMovieSessionById(rs.getLong("screening_id"));
 
                         if (client != null && movieSession != null) {
                             content.add(Ticket.builder()
-                                    .id(rs.getLong("id"))
-                                    .client(client)
-                                    .movieSession(movieSession)
-                                    .pricePaid(rs.getDouble("price_paid"))
-                                    .status(TicketStatus.valueOf(rs.getString("status")))
-                                    .purchaseTime(rs.getTimestamp("purchase_time").toLocalDateTime())
-                                    .build());
+                                .id(rs.getLong("id"))
+                                .client(client)
+                                .movieSession(movieSession)
+                                .pricePaid(rs.getDouble("price_paid"))
+                                .status(TicketStatus.valueOf(rs.getString("status")))
+                                .purchaseTime(rs.getTimestamp("purchase_time").toLocalDateTime())
+                                .build());
                         } else {
                             log.warning("Missing required entities for ticket ID: " + rs.getLong("id"));
                         }
                     } catch (Exception e) {
                         log.warning("Error loading ticket relationships for ticket ID: " + rs.getLong("id") + " - "
-                                + e.getMessage());
+                            + e.getMessage());
                     }
                 }
             }
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.severe("Error retrieving paginated tickets: " + e.getMessage());
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
     }
 
@@ -290,7 +292,7 @@ public class TicketService implements IService<Ticket> {
             // 3. Update ticket status
             String updateQuery = "UPDATE tickets SET status = ? WHERE id = ?";
             try (PreparedStatement pst = connection.prepareStatement(updateQuery)) {
-                pst.setString(1, refundAmount > 0 ? TicketStatus.CANCELLED.name() : TicketStatus.CANCELLED.name());
+                pst.setString(1, TicketStatus.CANCELLED.name());
                 pst.setLong(2, ticketId);
 
                 int rows = pst.executeUpdate();
@@ -544,17 +546,17 @@ public class TicketService implements IService<Ticket> {
                 if (rs.next()) {
                     Client client = (Client) userService.getUserById(rs.getLong("user_id"));
                     MovieSession movieSession = moviesessionService
-                            .getMovieSessionById(rs.getLong("screening_id"));
+                        .getMovieSessionById(rs.getLong("screening_id"));
 
                     if (client != null && movieSession != null) {
                         return Ticket.builder()
-                                .id(rs.getLong("id"))
-                                .client(client)
-                                .movieSession(movieSession)
-                                .pricePaid(rs.getDouble("price_paid"))
-                                .status(TicketStatus.valueOf(rs.getString("status")))
-                                .purchaseTime(rs.getTimestamp("purchase_time").toLocalDateTime())
-                                .build();
+                            .id(rs.getLong("id"))
+                            .client(client)
+                            .movieSession(movieSession)
+                            .pricePaid(rs.getDouble("price_paid"))
+                            .status(TicketStatus.valueOf(rs.getString("status")))
+                            .purchaseTime(rs.getTimestamp("purchase_time").toLocalDateTime())
+                            .build();
                     }
                 }
             }
@@ -600,17 +602,17 @@ public class TicketService implements IService<Ticket> {
      */
     private Ticket mapResultSetToTicket(ResultSet rs) throws SQLException {
         return Ticket.builder()
-                .id(rs.getLong("id"))
-                .client((Client) userService.getUserById(rs.getLong("user_id")))
-                .movieSession(moviesessionService.getMovieSessionById(rs.getLong("screening_id")))
-                .seatId(rs.getLong("seat_id"))
-                .status(TicketStatus.valueOf(rs.getString("status")))
-                .qrCode(rs.getString("qr_code"))
-                .pricePaid(rs.getDouble("price_paid"))
-                .purchaseTime(
-                        rs.getTimestamp("purchase_time") != null ? rs.getTimestamp("purchase_time").toLocalDateTime()
-                                : null)
-                .build();
+            .id(rs.getLong("id"))
+            .client((Client) userService.getUserById(rs.getLong("user_id")))
+            .movieSession(moviesessionService.getMovieSessionById(rs.getLong("screening_id")))
+            .seat(com.esprit.models.cinemas.Seat.builder().id(rs.getLong("seat_id")).build())
+            .status(TicketStatus.valueOf(rs.getString("status")))
+            .qrCode(rs.getString("qr_code"))
+            .pricePaid(rs.getDouble("price_paid"))
+            .purchaseTime(
+                rs.getTimestamp("purchase_time") != null ? rs.getTimestamp("purchase_time").toLocalDateTime()
+                    : null)
+            .build();
     }
 
     /**

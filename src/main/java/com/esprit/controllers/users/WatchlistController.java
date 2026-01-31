@@ -29,20 +29,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for managing user's movie watchlist.
- */
+@Log4j2
 public class WatchlistController {
 
     private static final Logger LOGGER = Logger.getLogger(WatchlistController.class.getName());
     private final WatchlistService watchlistService;
     private final FilmService filmService;
+    private final ObservableList<Film> watchlistItems;
     @FXML
     private FlowPane watchlistGrid;
     @FXML
@@ -63,7 +63,6 @@ public class WatchlistController {
     private ProgressIndicator loadingIndicator;
     @FXML
     private VBox emptyStateBox;
-    private ObservableList<Film> watchlistItems;
     private User currentUser;
     private boolean isGridView = true;
 
@@ -165,22 +164,22 @@ public class WatchlistController {
         poster.setPreserveRatio(true);
         poster.getStyleClass().add("film-poster");
 
-        if (film.getImage() != null && !film.getImage().isEmpty()) {
+        if (film.getImageUrl() != null && !film.getImageUrl().isEmpty()) {
             try {
-                poster.setImage(new Image(film.getImage(), true));
+                poster.setImage(new Image(film.getImageUrl(), true));
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Could not load poster", e);
             }
         }
 
         // Title
-        Label title = new Label(film.getNom());
+        Label title = new Label(film.getTitle());
         title.getStyleClass().add("film-title");
         title.setWrapText(true);
 
         // Year and rating
         HBox infoBox = new HBox(8);
-        Label yearLabel = new Label(String.valueOf(film.getAnnee()));
+        Label yearLabel = new Label(String.valueOf(film.getReleaseYear()));
         yearLabel.getStyleClass().add("film-year");
 
         Label ratingLabel = new Label("★ " + String.format("%.1f", film.getRating()));
@@ -216,9 +215,9 @@ public class WatchlistController {
         poster.setFitHeight(90);
         poster.setPreserveRatio(true);
 
-        if (film.getImage() != null && !film.getImage().isEmpty()) {
+        if (film.getImageUrl() != null && !film.getImageUrl().isEmpty()) {
             try {
-                poster.setImage(new Image(film.getImage(), true));
+                poster.setImage(new Image(film.getImageUrl(), true));
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Could not load poster", e);
             }
@@ -227,10 +226,10 @@ public class WatchlistController {
         VBox info = new VBox(4);
         HBox.setHgrow(info, Priority.ALWAYS);
 
-        Label title = new Label(film.getNom());
+        Label title = new Label(film.getTitle());
         title.getStyleClass().add("film-title");
 
-        Label details = new Label(film.getAnnee() + " • " + film.getDuree() + " min");
+        Label details = new Label(film.getReleaseYear() + " • " + film.getDurationMin() + " min");
         details.getStyleClass().add("film-details");
 
         Label rating = new Label("★ " + String.format("%.1f", film.getRating()));
@@ -252,16 +251,16 @@ public class WatchlistController {
 
         switch (sortBy) {
             case "Title A-Z":
-                FXCollections.sort(watchlistItems, (f1, f2) -> f1.getNom().compareToIgnoreCase(f2.getNom()));
+                FXCollections.sort(watchlistItems, (f1, f2) -> f1.getTitle().compareToIgnoreCase(f2.getTitle()));
                 break;
             case "Title Z-A":
-                FXCollections.sort(watchlistItems, (f1, f2) -> f2.getNom().compareToIgnoreCase(f1.getNom()));
+                FXCollections.sort(watchlistItems, (f1, f2) -> f2.getTitle().compareToIgnoreCase(f1.getTitle()));
                 break;
             case "Rating":
                 FXCollections.sort(watchlistItems, (f1, f2) -> Double.compare(f2.getRating(), f1.getRating()));
                 break;
             case "Release Year":
-                FXCollections.sort(watchlistItems, (f1, f2) -> Integer.compare(f2.getAnnee(), f1.getAnnee()));
+                FXCollections.sort(watchlistItems, (f1, f2) -> Integer.compare(f2.getReleaseYear(), f1.getReleaseYear()));
                 break;
             default:
                 // Date Added - keep original order
@@ -312,7 +311,7 @@ public class WatchlistController {
     private void removeFromWatchlist(Film film) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Remove from Watchlist");
-        confirm.setHeaderText("Remove \"" + film.getNom() + "\" from your watchlist?");
+        confirm.setHeaderText("Remove \"" + film.getTitle() + "\" from your watchlist?");
 
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {

@@ -2,27 +2,11 @@ package com.esprit.controllers.cinemas;
 
 import com.vader.sentiment.analyzer.SentimentAnalyzer;
 import com.vader.sentiment.analyzer.SentimentPolarities;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
 
-/**
- * Lightweight controller for analyzing text sentiment using VADER algorithm.
- *
- * <p>
- * This class uses VADER (Valence Aware Dictionary and sEntiment Reasoner) which
- * is a lexicon and rule-based sentiment analysis tool that is specifically attuned
- * to sentiments expressed in social media, but works well on other domains too.
- * </p>
- *
- * <p>
- * VADER uses a combination of qualitative and quantitative measures and doesn't
- * require manual word list definitions. It's much lighter than Stanford CoreNLP.
- * </p>
- *
- * @author Esprit Team
- * @version 2.0
- * @since 2.0
- */
+@Log4j2
 public class SentimentAnalysisController {
 
     /**
@@ -140,10 +124,10 @@ public class SentimentAnalysisController {
             SentimentPolarities polarities = SentimentAnalyzer.getScoresFor(text);
 
             HashMap<String, Float> scores = new HashMap<>();
-            scores.put("compound", (float) polarities.getCompoundPolarity());
-            scores.put("positive", (float) polarities.getPositivePolarity());
-            scores.put("negative", (float) polarities.getNegativePolarity());
-            scores.put("neutral", (float) polarities.getNeutralPolarity());
+            scores.put("compound", polarities.getCompoundPolarity());
+            scores.put("positive", polarities.getPositivePolarity());
+            scores.put("negative", polarities.getNegativePolarity());
+            scores.put("neutral", polarities.getNeutralPolarity());
 
             return scores;
         } catch (Exception e) {

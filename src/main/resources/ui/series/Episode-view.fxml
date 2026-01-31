@@ -9,23 +9,23 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import java.net.URL?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="855.0" prefWidth="1507.0"
-            stylesheets="@../styles/dashboard.css" xmlns="http://javafx.com/javafx/21"
+            stylesheets="@../styles/rakcha-unified.css" xmlns="http://javafx.com/javafx/21"
             fx:controller="com.esprit.controllers.series.EpisodeController">
   <children>
     <SplitPane layoutX="26.0" layoutY="27.0" prefHeight="591.0" prefWidth="157.0"
-               stylesheets="@../styles/dashbord.css"/>
+               stylesheets="@../styles/rakcha-unified.css"/>
     <Pane layoutX="331.0" layoutY="80.0" prefHeight="646.0" prefWidth="248.0"
           styleClass="nav-btn">
       <children>
         <Label layoutX="14.0" layoutY="167.0" prefHeight="17.0" prefWidth="68.0"
-               stylesheets="@../styles/dashbord.css"
+               stylesheets="@../styles/rakcha-unified.css"
                text="Title :" textFill="#a42121">
           <font>
             <Font name="Arial Rounded MT Bold" size="16.0"/>
           </font>
         </Label>
         <Label layoutX="12.0" layoutY="247.0" prefHeight="20.0" prefWidth="125.0"
-               stylesheets="@../styles/dashbord.css"
+               stylesheets="@../styles/rakcha-unified.css"
                text="Number :" textFill="#a42121">
           <font>
             <Font name="Arial Rounded MT Bold" size="16.0"/>
@@ -33,19 +33,19 @@
         </Label>
         <TextField fx:id="titreF" layoutX="40.0" layoutY="192.0" prefHeight="25.0"
                    prefWidth="193.0"
-                   styleClass="text-field-red" stylesheets="@../styles/dashbord.css"/>
+                   styleClass="text-field-red" stylesheets="@../styles/rakcha-unified.css"/>
         <TextField fx:id="numeroepisodeF" layoutX="40.0" layoutY="271.0" prefHeight="25.0"
                    prefWidth="193.0"
-                   styleClass="text-field-red" stylesheets="@../styles/dashbord.css"/>
+                   styleClass="text-field-red" stylesheets="@../styles/rakcha-unified.css"/>
         <Button layoutX="75.0" layoutY="612.0" mnemonicParsing="false"
                 onAction="#ajouterSerie"
                 prefHeight="25.0" prefWidth="104.0" styleClass="instert-btn"
-                stylesheets="@../styles/dashbord.css"
+                stylesheets="@../styles/rakcha-unified.css"
                 text="ADD"/>
         <Button fx:id="video" layoutX="44.0" layoutY="467.0" mnemonicParsing="false"
                 onAction="#addVideo"
                 prefHeight="23.0" prefWidth="187.0" styleClass="instert-btn-picture"
-                stylesheets="@../styles/dashbord.css"
+                stylesheets="@../styles/rakcha-unified.css"
                 text="Select"/>
         <Button fx:id="image" layoutX="43.0" layoutY="404.0" mnemonicParsing="false"
                 onAction="#importImage"
@@ -56,7 +56,7 @@
           </stylesheets>
         </Button>
         <Label layoutX="12.0" layoutY="318.0" prefHeight="20.0" prefWidth="125.0"
-               stylesheets="@../styles/dashbord.css"
+               stylesheets="@../styles/rakcha-unified.css"
                text="Season :" textFill="#a42121">
           <font>
             <Font name="Arial Rounded MT Bold" size="16.0"/>
@@ -64,16 +64,16 @@
         </Label>
         <TextField fx:id="saisonF" layoutX="41.0" layoutY="341.0" prefHeight="25.0"
                    prefWidth="193.0"
-                   styleClass="text-field-red" stylesheets="@../styles/dashbord.css"/>
+                   styleClass="text-field-red" stylesheets="@../styles/rakcha-unified.css"/>
         <Label layoutX="12.0" layoutY="384.0" prefHeight="20.0" prefWidth="125.0"
-               stylesheets="@../styles/dashbord.css"
+               stylesheets="@../styles/rakcha-unified.css"
                text="Picture :" textFill="#a42121">
           <font>
             <Font name="Arial Rounded MT Bold" size="16.0"/>
           </font>
         </Label>
         <Label layoutX="12.0" layoutY="448.0" prefHeight="20.0" prefWidth="125.0"
-               stylesheets="@../styles/dashbord.css"
+               stylesheets="@../styles/rakcha-unified.css"
                text="Video :" textFill="#a42121">
           <font>
             <Font name="Arial Rounded MT Bold" size="16.0"/>
@@ -82,14 +82,14 @@
         <ComboBox fx:id="serieF" layoutX="40.0" layoutY="539.0" prefHeight="25.0"
                   prefWidth="193.0"/>
         <Label layoutX="12.0" layoutY="514.0" prefHeight="20.0" prefWidth="125.0"
-               stylesheets="@../styles/dashbord.css"
+               stylesheets="@../styles/rakcha-unified.css"
                text="Serie :" textFill="#a42121">
           <font>
             <Font name="Arial Rounded MT Bold" size="16.0"/>
           </font>
         </Label>
         <Label layoutX="53.0" layoutY="6.0" prefHeight="43.0" prefWidth="170.0"
-               stylesheets="@../styles/dashbord.css"
+               stylesheets="@../styles/rakcha-unified.css"
                text="Add Episode" textFill="#bfd485">
           <font>
             <Font name="Arial Rounded MT Bold" size="24.0"/>
@@ -145,7 +145,7 @@
     </Pane>
     <Pane layoutX="796.0" layoutY="153.0" prefHeight="505.0" prefWidth="663.0"
           styleClass="bg-white"
-          stylesheets="@../styles/filmStyle.css">
+          stylesheets="@../styles/rakcha-unified.css">
       <children>
         <TableView fx:id="tableView" layoutX="8.0" layoutY="87.0" prefHeight="316.0"
                    prefWidth="645.0"
@@ -158,7 +158,7 @@
         <Button layoutX="371.0" layoutY="25.0" mnemonicParsing="false"
                 onAction="#ajouterSerie"
                 prefHeight="35.0" prefWidth="170.0" styleClass="sale"
-                stylesheets="@../styles/filmStyle.css"
+                stylesheets="@../styles/rakcha-unified.css"
                 text="Episodes Details" textFill="#c7d73b">
           <font>
             <Font size="14.0"/>
@@ -183,3 +183,4 @@
     <fx:include source="/ui/sidebar.fxml"/>
   </children>
 </AnchorPane>
+

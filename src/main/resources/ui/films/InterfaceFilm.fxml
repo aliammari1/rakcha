@@ -12,7 +12,7 @@
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.films.FilmController"
            styleClass="immersive-root"
-           stylesheets="@../styles/filmStyle.css, @../styles/film-animations.css, @../styles/login-animations.css, @../styles/dashboard.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Cinematic Background with Gradient Mesh -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
@@ -202,3 +202,4 @@
     </center>
   </BorderPane>
 </StackPane>
+

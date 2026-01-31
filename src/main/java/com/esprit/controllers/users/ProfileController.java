@@ -3,6 +3,11 @@ package com.esprit.controllers.users;
 import animatefx.animation.FadeIn;
 import animatefx.animation.Pulse;
 import animatefx.animation.ZoomIn;
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.controllers.SidebarController;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
@@ -13,6 +18,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,6 +50,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,28 +59,33 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller class for the RAKCHA application. Handles UI interactions
- * and manages view logic using FXML.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class ProfileController {
 
     private static final Logger LOGGER = Logger.getLogger(ProfileController.class.getName());
     // Using a more expressive avatar placeholder GIF
     private static final String DEFAULT_PROFILE_GIF = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGJhOTk0dWkzdnVtbGoxcmNnMG5ndXVsd3BpcWIwcGV6ZDV3MDBsYiZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/q217GUnfKAmJlFcjBX/giphy.gif";
     private final Random random = new Random();
+
+    // FormsFX Properties for reactive form binding
+    private final StringProperty emailProperty = new SimpleStringProperty("");
+    private final StringProperty passwordProperty = new SimpleStringProperty("");
+    private final StringProperty firstNameProperty = new SimpleStringProperty("");
+    private final StringProperty lastNameProperty = new SimpleStringProperty("");
+    private final StringProperty adresseProperty = new SimpleStringProperty("");
+    private final StringProperty phoneProperty = new SimpleStringProperty("");
+    private final ObjectProperty<LocalDate> birthdateProperty = new SimpleObjectProperty<>();
     @FXML
     public AnchorPane leftPane;
     User user;
+    // FormsFX Form with validation
+    private Form profileForm;
     private Timeline pulseAnimation;
     // Root container
     @FXML
@@ -145,6 +160,10 @@ public class ProfileController {
         setData(SessionManager.getCurrentUser());
         LOGGER.info("Initializing ProfileController with cinematic styling");
 
+        // Initialize FormsFX and EasyBind
+        setupFormsFX();
+        setupEasyBindings();
+
         // Ensure the UI components exist
         if (imageCircle == null) {
             LOGGER.warning("Image circle is null in initialize()");
@@ -175,10 +194,85 @@ public class ProfileController {
     }
 
     /**
+     * Sets up the FormsFX form with validation rules.
+     */
+    private void setupFormsFX() {
+        profileForm = Form.of(
+            Group.of(
+                Field.ofStringType(emailProperty)
+                    .label("Email")
+                    .validate(RegexValidator.forPattern("^[A-Za-z0-9+_.-]+@(.+)$", "Please enter a valid email address")),
+                Field.ofStringType(firstNameProperty)
+                    .label("First Name")
+                    .validate(StringLengthValidator.atLeast(2, "First name must be at least 2 characters")),
+                Field.ofStringType(lastNameProperty)
+                    .label("Last Name")
+                    .validate(StringLengthValidator.atLeast(2, "Last name must be at least 2 characters")),
+                Field.ofStringType(adresseProperty)
+                    .label("Address")
+                    .validate(StringLengthValidator.atLeast(5, "Address must be at least 5 characters")),
+                Field.ofStringType(phoneProperty)
+                    .label("Phone Number")
+                    .validate(RegexValidator.forPattern("^[0-9]{8,15}$", "Please enter a valid phone number"))
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind reactive subscriptions for form fields.
+     */
+    private void setupEasyBindings() {
+        // Bind text fields to properties bidirectionally
+        if (emailTextField != null) {
+            emailTextField.textProperty().bindBidirectional(emailProperty);
+        }
+        if (firstNameTextField != null) {
+            firstNameTextField.textProperty().bindBidirectional(firstNameProperty);
+        }
+        if (lastNameTextField != null) {
+            lastNameTextField.textProperty().bindBidirectional(lastNameProperty);
+        }
+        if (adresseTextField != null) {
+            adresseTextField.textProperty().bindBidirectional(adresseProperty);
+        }
+        if (phoneNumberTextField != null) {
+            phoneNumberTextField.textProperty().bindBidirectional(phoneProperty);
+        }
+        if (dateDeNaissanceDatePicker != null) {
+            dateDeNaissanceDatePicker.valueProperty().bindBidirectional(birthdateProperty);
+        }
+    }
+
+    /**
+     * Cleanup subscriptions when controller is destroyed.
+     */
+    public void cleanup() {
+        // Unbind bidirectional bindings
+        if (emailTextField != null) {
+            emailTextField.textProperty().unbindBidirectional(emailProperty);
+        }
+        if (firstNameTextField != null) {
+            firstNameTextField.textProperty().unbindBidirectional(firstNameProperty);
+        }
+        if (lastNameTextField != null) {
+            lastNameTextField.textProperty().unbindBidirectional(lastNameProperty);
+        }
+        if (adresseTextField != null) {
+            adresseTextField.textProperty().unbindBidirectional(adresseProperty);
+        }
+        if (phoneNumberTextField != null) {
+            phoneNumberTextField.textProperty().unbindBidirectional(phoneProperty);
+        }
+        if (dateDeNaissanceDatePicker != null) {
+            dateDeNaissanceDatePicker.valueProperty().unbindBidirectional(birthdateProperty);
+        }
+    }
+
+    /**
      * Initializes floating particle animations for the cinematic effect.
      */
     private void initializeParticleAnimations() {
-        Circle[] particles = { particle1, particle2, particle3, particle4, particle5 };
+        Circle[] particles = {particle1, particle2, particle3, particle4, particle5};
 
         for (Circle particle : particles) {
             if (particle != null) {
@@ -206,9 +300,9 @@ public class ProfileController {
 
         // Add pulsing opacity effect
         Timeline opacityTimeline = new Timeline(
-                new KeyFrame(Duration.ZERO, new KeyValue(particle.opacityProperty(), 0.4)),
-                new KeyFrame(Duration.seconds(durationSeconds / 2), new KeyValue(particle.opacityProperty(), 0.9)),
-                new KeyFrame(Duration.seconds(durationSeconds), new KeyValue(particle.opacityProperty(), 0.4)));
+            new KeyFrame(Duration.ZERO, new KeyValue(particle.opacityProperty(), 0.4)),
+            new KeyFrame(Duration.seconds(durationSeconds / 2), new KeyValue(particle.opacityProperty(), 0.9)),
+            new KeyFrame(Duration.seconds(durationSeconds), new KeyValue(particle.opacityProperty(), 0.4)));
         opacityTimeline.setCycleCount(Animation.INDEFINITE);
         opacityTimeline.play();
     }
@@ -307,11 +401,11 @@ public class ProfileController {
             // Create image with explicit size and background loading disabled
             LOGGER.info("Creating image object for URL: " + imageUrl);
             Image image = new Image(imageUrl,
-                    140, // width
-                    140, // height
-                    true, // preserve ratio
-                    true, // smooth
-                    false); // no background loading for immediate error detection
+                140, // width
+                140, // height
+                true, // preserve ratio
+                true, // smooth
+                false); // no background loading for immediate error detection
 
             // Wait for the image to load and check for errors
             image.progressProperty().addListener((obs, oldVal, newVal) -> {
@@ -344,9 +438,9 @@ public class ProfileController {
                     photoDeProfilImageView.setImage(image);
                     // Make the ImageView circular by setting a clip
                     Circle clip = new Circle(photoDeProfilImageView.getFitWidth() / 2,
-                            photoDeProfilImageView.getFitHeight() / 2,
-                            Math.min(photoDeProfilImageView.getFitWidth(),
-                                    photoDeProfilImageView.getFitHeight()) / 2);
+                        photoDeProfilImageView.getFitHeight() / 2,
+                        Math.min(photoDeProfilImageView.getFitWidth(),
+                            photoDeProfilImageView.getFitHeight()) / 2);
                     photoDeProfilImageView.setClip(clip);
                     photoDeProfilImageView.setPreserveRatio(true);
                     LOGGER.info("Image set to ImageView successfully");
@@ -376,9 +470,9 @@ public class ProfileController {
     private void useGradientFallback() {
         // Create a more visually appealing gradient fallback
         LinearGradient gradient = new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
-                new Stop(0, Color.valueOf("#e74141")),
-                new Stop(0.5, Color.valueOf("#F1644B")),
-                new Stop(1, Color.valueOf("#2D3A66")));
+            new Stop(0, Color.valueOf("#e74141")),
+            new Stop(0.5, Color.valueOf("#F1644B")),
+            new Stop(1, Color.valueOf("#2D3A66")));
 
         imageCircle.setFill(gradient);
 
@@ -476,11 +570,11 @@ public class ProfileController {
 
         // AI-powered insights based on user profile
         String[] insights = {
-                "Based on your profile, you might enjoy exploring new cinema experiences! Try our VIP seating for your next movie.",
-                "Your viewing preferences suggest you love action and sci-fi. Check out our upcoming blockbuster releases!",
-                "We noticed you haven't updated your preferences in a while. Complete your profile for better recommendations!",
-                "You're a valued member! Unlock exclusive discounts by keeping your profile up to date.",
-                "Based on trending movies in your area, we think you'd love the new thriller releases this month!"
+            "Based on your profile, you might enjoy exploring new cinema experiences! Try our VIP seating for your next movie.",
+            "Your viewing preferences suggest you love action and sci-fi. Check out our upcoming blockbuster releases!",
+            "We noticed you haven't updated your preferences in a while. Complete your profile for better recommendations!",
+            "You're a valued member! Unlock exclusive discounts by keeping your profile up to date.",
+            "Based on trending movies in your area, we think you'd love the new thriller releases this month!"
         };
 
         // Select a random insight for now (in real app, this would use actual user
@@ -507,8 +601,7 @@ public class ProfileController {
                     // Get it from the scene's root node properties if available
                     Object controller = sidebarPane.getProperties().get("fx:controller");
 
-                    if (controller instanceof SidebarController) {
-                        SidebarController sidebarController = (SidebarController) controller;
+                    if (controller instanceof SidebarController sidebarController) {
                         sidebarController.setCurrentUser(user);
                         LOGGER.info("Sidebar configured successfully with user role: " + user.getRole());
                     } else {
@@ -690,7 +783,7 @@ public class ProfileController {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Profile Picture");
             fileChooser.getExtensionFilters()
-                    .addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+                .addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif"));
 
             File selectedFile = fileChooser.showOpenDialog(imageCircle.getScene().getWindow());
             if (selectedFile != null) {
@@ -720,17 +813,17 @@ public class ProfileController {
                         } catch (Exception e) {
                             LOGGER.log(Level.WARNING, "Failed to update user profile in database", e);
                             showAlert("Warning", "Image uploaded but profile not saved. Please save your profile.",
-                                    Alert.AlertType.WARNING);
+                                Alert.AlertType.WARNING);
                         }
                     } else {
                         LOGGER.warning("User object is null, cannot update profile image URL");
                         showAlert("Warning", "Image uploaded but couldn't update your profile. Try again later.",
-                                Alert.AlertType.WARNING);
+                            Alert.AlertType.WARNING);
                     }
                 } catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Error uploading image to Cloudinary", e);
                     showAlert("Upload Error", "Could not upload image to cloud storage: " + e.getMessage(),
-                            Alert.AlertType.ERROR);
+                        Alert.AlertType.ERROR);
                     loadAndSetImage(DEFAULT_PROFILE_GIF);
                 }
             } else {
@@ -827,7 +920,7 @@ public class ProfileController {
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error navigating to " + screenName, e);
             showAlert("Navigation Error", "Could not open " + screenName + ": " + e.getMessage(),
-                    Alert.AlertType.ERROR);
+                Alert.AlertType.ERROR);
         }
     }
 }

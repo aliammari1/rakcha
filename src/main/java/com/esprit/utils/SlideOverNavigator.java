@@ -20,6 +20,7 @@ import java.util.Stack;
  * @author RAKCHA Team
  * @version 1.0.0
  */
+
 @Log4j2
 public class SlideOverNavigator {
 
@@ -188,15 +189,7 @@ public class SlideOverNavigator {
     /**
      * Internal state class for tracking slide-over panels.
      */
-    private static class SlideOverState {
-        final Node panel;
-        final StackPane parent;
-        final Runnable onClose;
+    private record SlideOverState(Node panel, StackPane parent, Runnable onClose) {
 
-        SlideOverState(Node panel, StackPane parent, Runnable onClose) {
-            this.panel = panel;
-            this.parent = parent;
-            this.onClose = onClose;
-        }
     }
 }
