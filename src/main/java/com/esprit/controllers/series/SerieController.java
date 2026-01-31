@@ -1,5 +1,9 @@
 package com.esprit.controllers.series;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.common.Category;
 import com.esprit.models.common.Review;
 import com.esprit.models.series.Series;
@@ -16,6 +20,11 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,37 +48,46 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
+import org.fxmisc.easybind.EasyBind;
+import org.fxmisc.easybind.Subscription;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller class for the RAKCHA application. Handles UI interactions
- * and manages view logic using FXML.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class SerieController {
 
     private static final Logger LOGGER = Logger.getLogger(SerieController.class.getName());
 
+    // FormsFX Properties for reactive form binding
+    private final StringProperty nomProperty = new SimpleStringProperty("");
+    private final StringProperty resumeProperty = new SimpleStringProperty("");
+    private final StringProperty directeurProperty = new SimpleStringProperty("");
+    private final StringProperty paysProperty = new SimpleStringProperty("");
+    private final ObjectProperty<String> categorieProperty = new SimpleObjectProperty<>();
+    private final javafx.beans.property.ListProperty<String> categorieItems =
+        new javafx.beans.property.SimpleListProperty<>(FXCollections.observableArrayList());
+    // EasyBind subscriptions for cleanup
+    private final List<Subscription> subscriptions = new ArrayList<>();
     @FXML
     public ImageView serieImageView;
     String imgpath;
+    // FormsFX Form with validation
+    private Form seriesForm;
     private String cloudinaryImageUrl;
     ///
     @FXML
@@ -110,10 +128,15 @@ public class SerieController {
         this.tableView.getItems().clear();
         this.tableView.getColumns().clear();
         this.categorieF.getItems().clear();
-        this.nomF.setText("");
-        this.resumeF.setText("");
-        this.directeurF.setText("");
-        this.paysF.setText("");
+
+        // Reset FormsFX properties
+        nomProperty.set("");
+        resumeProperty.set("");
+        directeurProperty.set("");
+        paysProperty.set("");
+        categorieProperty.set(null);
+        categorieItems.clear();
+
         this.imgpath = "";
         final CategoryService categorieserv = new CategoryService();
         final SeriesService iServiceSerie = new SeriesService();
@@ -122,6 +145,7 @@ public class SerieController {
             this.categorieList = categorieserv.read(pageRequest).getContent();
             for (final Category c : this.categorieList) {
                 this.categorieF.getItems().add(c.getName());
+                categorieItems.add(c.getName()); // Also populate FormsFX list
             }
         } catch (final Exception e) {
             throw new RuntimeException(e);
@@ -418,11 +442,105 @@ public class SerieController {
     }
 
     /**
-     * References a code resource denoted by `ref()`.
+     * Initializes the controller with FormsFX form setup and EasyBind subscriptions.
      */
     @FXML
     private void initialize() {
+        setupFormsFX();
+        setupEasyBindings();
         this.ref();
+    }
+
+    /**
+     * Sets up the FormsFX form with validation rules.
+     */
+    private void setupFormsFX() {
+        seriesForm = Form.of(
+            Group.of(
+                Field.ofStringType(nomProperty)
+                    .label("Name")
+                    .validate(StringLengthValidator.atLeast(2, "Name must be at least 2 characters")),
+                Field.ofStringType(resumeProperty)
+                    .label("Summary")
+                    .validate(StringLengthValidator.atLeast(10, "Summary must be at least 10 characters")),
+                Field.ofStringType(directeurProperty)
+                    .label("Director")
+                    .validate(StringLengthValidator.atLeast(2, "Director name must be at least 2 characters")),
+                Field.ofStringType(paysProperty)
+                    .label("Country")
+                    .validate(StringLengthValidator.atLeast(2, "Country must be at least 2 characters")),
+                Field.ofSingleSelectionType(categorieItems, categorieProperty)
+                    .label("Category")
+                    .required("Please select a category")
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind reactive subscriptions for form fields.
+     */
+    private void setupEasyBindings() {
+        // Bind text fields to properties bidirectionally
+        if (nomF != null) {
+            nomF.textProperty().bindBidirectional(nomProperty);
+        }
+        if (resumeF != null) {
+            resumeF.textProperty().bindBidirectional(resumeProperty);
+        }
+        if (directeurF != null) {
+            directeurF.textProperty().bindBidirectional(directeurProperty);
+        }
+        if (paysF != null) {
+            paysF.textProperty().bindBidirectional(paysProperty);
+        }
+
+        // Subscribe to validation changes using EasyBind
+        Subscription nomSub = EasyBind.subscribe(nomProperty, name -> {
+            if (name != null && !name.isEmpty() && name.length() >= 2) {
+                nomcheck.setText("");
+            }
+        });
+        subscriptions.add(nomSub);
+
+        Subscription resumeSub = EasyBind.subscribe(resumeProperty, summary -> {
+            if (summary != null && !summary.isEmpty() && summary.length() >= 10) {
+                resumecheck.setText("");
+            }
+        });
+        subscriptions.add(resumeSub);
+
+        Subscription directeurSub = EasyBind.subscribe(directeurProperty, director -> {
+            if (director != null && !director.isEmpty() && director.length() >= 2) {
+                directeurcheck.setText("");
+            }
+        });
+        subscriptions.add(directeurSub);
+
+        Subscription paysSub = EasyBind.subscribe(paysProperty, country -> {
+            if (country != null && !country.isEmpty() && country.length() >= 2) {
+                payscheck.setText("");
+            }
+        });
+        subscriptions.add(paysSub);
+
+        // Subscribe to category selection
+        if (categorieF != null) {
+            Subscription categorieSub = EasyBind.subscribe(categorieF.valueProperty(), category -> {
+                categorieProperty.set(category);
+                if (category != null) {
+                    categoriecheck.setText("");
+                }
+            });
+            subscriptions.add(categorieSub);
+        }
+    }
+
+    /**
+     * Cleanup subscriptions when controller is destroyed.
+     */
+    public void cleanup() {
+        subscriptions.forEach(Subscription::unsubscribe);
+        subscriptions.clear();
     }
 
     /**
@@ -536,30 +654,30 @@ public class SerieController {
     ////////////
 
     /**
-     * Checks if the user's entered name is empty, and returns `true` otherwise it
-     * sets the text to "Please enter a valid Name" and returns `false`.
+     * Validates the name field using FormsFX property validation.
      *
-     * @returns a boolean value indicating whether the input name is valid or not.
+     * @returns true if the name is valid, false otherwise.
      */
     boolean nomcheck() {
-        if (!Objects.equals(this.nomF.getText(), "")) {
+        String name = nomProperty.get();
+        if (name != null && !name.trim().isEmpty() && name.trim().length() >= 2) {
+            this.nomcheck.setText("");
             return true;
         } else {
-            this.nomcheck.setText("Please enter a valid Name");
+            this.nomcheck.setText("Please enter a valid Name (at least 2 characters)");
             return false;
         }
     }
 
     /**
-     * Verifies if a category has been selected and returns `true` if it has,
-     * otherwise it displays an error message and returns `false`.
+     * Validates the category selection using FormsFX property validation.
      *
-     * @returns `true` if a value is provided for `categorieF.getValue()`, otherwise
-     * it returns `false` and sets the `categoriecheck` text to "Please
-     * select a Category".
+     * @returns true if a category is selected, false otherwise.
      */
     boolean categoriecheck() {
-        if (null != categorieF.getValue()) {
+        String category = categorieProperty.get();
+        if (category != null && !category.trim().isEmpty()) {
+            this.categoriecheck.setText("");
             return true;
         } else {
             this.categoriecheck.setText("Please select a Category");
@@ -568,14 +686,14 @@ public class SerieController {
     }
 
     /**
-     * Verifies if a director's name is provided and returns `true` if it is valid,
-     * else it sets an error message and returns `false`.
+     * Validates the director field using FormsFX property validation.
      *
-     * @returns a boolean value indicating whether a valid director has been
-     * entered.
+     * @returns true if the director is valid, false otherwise.
      */
     boolean directeurcheck() {
-        if ("" != directeurF.getText()) {
+        String director = directeurProperty.get();
+        if (director != null && !director.trim().isEmpty() && director.trim().length() >= 2) {
+            this.directeurcheck.setText("");
             return true;
         } else {
             this.directeurcheck.setText("Please enter a valid Director");
@@ -584,15 +702,14 @@ public class SerieController {
     }
 
     /**
-     * Checks if the user has entered a valid country by comparing the inputted
-     * string to an empty string. If it is not empty, the function returns true,
-     * otherwise it displays an error message and returns false.
+     * Validates the country field using FormsFX property validation.
      *
-     * @returns a boolean value indicating whether a valid country was entered or
-     * not.
+     * @returns true if the country is valid, false otherwise.
      */
     boolean payscheck() {
-        if ("" != paysF.getText()) {
+        String country = paysProperty.get();
+        if (country != null && !country.trim().isEmpty() && country.trim().length() >= 2) {
+            this.payscheck.setText("");
             return true;
         } else {
             this.payscheck.setText("Please enter a valid Country");
@@ -601,18 +718,17 @@ public class SerieController {
     }
 
     /**
-     * Verifies if the user has entered a non-empty string in the `resumeF` field.
-     * If the field is not empty, it returns `true`. Otherwise, it sets the text of
-     * the `resumecheck` label to "Please enter a valid Summary" and returns
-     * `false`.
+     * Validates the summary field using FormsFX property validation.
      *
-     * @returns a boolean value indicating whether a summary is provided.
+     * @returns true if the summary is valid, false otherwise.
      */
     boolean resumecheck() {
-        if ("" != resumeF.getText()) {
+        String summary = resumeProperty.get();
+        if (summary != null && !summary.trim().isEmpty() && summary.trim().length() >= 10) {
+            this.resumecheck.setText("");
             return true;
         } else {
-            this.resumecheck.setText("Please enter a valid Summary");
+            this.resumecheck.setText("Please enter a valid Summary (at least 10 characters)");
             return false;
         }
     }
@@ -683,13 +799,12 @@ public class SerieController {
     void ajouterSerie(final ActionEvent event) {
         final SeriesService serieserv = new SeriesService();
         final Series serie = new Series();
-        this.nomcheck();
-        this.categoriecheck();
-        this.directeurcheck();
-        this.payscheck();
-        this.resumecheck();
-        if (this.nomcheck() && this.categoriecheck() && this.directeurcheck() && this.payscheck()
-            && this.resumecheck()) {
+
+        // Validate using FormsFX-backed validation methods
+        boolean isValid = this.nomcheck() && this.categoriecheck() && this.directeurcheck()
+            && this.payscheck() && this.resumecheck();
+
+        if (isValid) {
             try {
                 // Issue #3: Add null check before accessing image
                 if (this.serieImageView.getImage() == null) {
@@ -711,18 +826,21 @@ public class SerieController {
                 }
 
                 final URI uri = new URI(requiredPath);
-                serie.setName(this.nomF.getText());
-                serie.setSummary(this.resumeF.getText());
-                serie.setDirector(this.directeurF.getText());
-                serie.setCountry(this.paysF.getText());
+
+                // Use FormsFX properties to get form values
+                serie.setName(nomProperty.get());
+                serie.setSummary(resumeProperty.get());
+                serie.setDirector(directeurProperty.get());
+                serie.setCountry(paysProperty.get());
                 serie.setImageUrl(uri.getPath());
 
                 // Issue #6: Validate category exists in database before using it
                 // Issue #8: CRITICAL FIX - Removed serie.setId(c.getId()) which was corrupting the database
                 // The series ID should be auto-generated by the database, not set from category ID
                 boolean categoryFound = false;
+                String selectedCategory = categorieProperty.get();
                 for (final Category c : this.categorieList) {
-                    if (Objects.equals(c.getName(), this.categorieF.getValue())) {
+                    if (Objects.equals(c.getName(), selectedCategory)) {
                         categoryFound = true;
                         // Note: Category association should be handled properly in the service layer
                         // Do NOT set serie.setId(c.getId()) as it corrupts the series record
@@ -737,12 +855,21 @@ public class SerieController {
 
                 serieserv.create(serie);
                 this.showAlert("successfully", "The serie has been successfully saved");
+
+                // Clear error labels
                 this.nomcheck.setText("");
                 this.categoriecheck.setText("");
                 this.directeurcheck.setText("");
                 this.payscheck.setText("");
                 this.resumecheck.setText("");
                 this.imagechek.setText("");
+
+                // Reset FormsFX properties
+                nomProperty.set("");
+                resumeProperty.set("");
+                directeurProperty.set("");
+                paysProperty.set("");
+                categorieProperty.set(null);
 
                 // Issue #15: TODO - Replace hardcoded email with series owner or dynamic recipient
                 // Get email from user config or series subscribers instead of hardcoding
@@ -791,6 +918,44 @@ public class SerieController {
         final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
+    }
+
+    /**
+     * Opens the Season Management screen.
+     * Requires a series to be selected first.
+     *
+     * @param event the action event that triggered this method
+     */
+    @FXML
+    void manageSeasons(final ActionEvent event) {
+        Series selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a series first to manage its seasons.");
+            alert.showAndWait();
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/series/SeasonManagement.fxml"));
+            Parent root = loader.load();
+
+            SeasonManagementController controller = loader.getController();
+            controller.setSeries(selected);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error opening Season Management", e);
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not open Season Management.");
+            alert.showAndWait();
+        }
     }
 
     /**

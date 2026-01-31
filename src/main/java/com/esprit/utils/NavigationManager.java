@@ -17,11 +17,13 @@ import java.util.logging.Logger;
  * Utility class for managing navigation throughout the application.
  * Provides methods to navigate between screens based on user role and context.
  * Centralizes navigation logic to ensure consistent navigation patterns.
+ * All scenes are automatically styled with AtlantaFX themes.
  *
  * @author RAKCHA Team
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class NavigationManager {
 
@@ -71,6 +73,10 @@ public class NavigationManager {
             }
 
             Scene scene = new Scene(root, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+
+            // Apply AtlantaFX theme to the scene
+            ThemeManager.getInstance().applyToScene(scene);
+
             stage.setScene(scene);
             stage.show();
 
@@ -395,6 +401,46 @@ public class NavigationManager {
     }
 
     /**
+     * Navigates to Season View for a specific series.
+     *
+     * @param stage the Stage to navigate on
+     * @return true if navigation was successful
+     */
+    public static boolean navigateToSeasonView(Stage stage) {
+        return navigate(stage, "/ui/series/SeasonView.fxml");
+    }
+
+    /**
+     * Navigates to Season Management (Admin only).
+     *
+     * @param stage the Stage to navigate on
+     * @return true if navigation was successful
+     */
+    public static boolean navigateToSeasonManagement(Stage stage) {
+        return navigate(stage, "/ui/series/SeasonManagement.fxml");
+    }
+
+    /**
+     * Navigates to Season Chooser for episode navigation.
+     *
+     * @param stage the Stage to navigate on
+     * @return true if navigation was successful
+     */
+    public static boolean navigateToSeasonChooser(Stage stage) {
+        return navigate(stage, "/ui/series/SeasonChooser.fxml");
+    }
+
+    /**
+     * Navigates to AR Preview Experience.
+     *
+     * @param stage the Stage to navigate on
+     * @return true if navigation was successful
+     */
+    public static boolean navigateToARPreview(Stage stage) {
+        return navigate(stage, "/ui/ar/ARPreview.fxml");
+    }
+
+    /**
      * Navigates to login screen and clears user session.
      *
      * @param stage the Stage to navigate on
@@ -405,11 +451,16 @@ public class NavigationManager {
             FXMLLoader loader = new FXMLLoader(NavigationManager.class.getResource("/ui/users/Login.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
+
+            // Apply AtlantaFX theme to the login scene
+            ThemeManager.getInstance().applyToScene(scene);
+
             stage.setScene(scene);
             stage.show();
 
             // Clear session
-            SessionManager.getInstance().logout();
+            SessionManager.getInstance();
+            SessionManager.logout();
 
             LOGGER.info("Successfully navigated to login");
             return true;

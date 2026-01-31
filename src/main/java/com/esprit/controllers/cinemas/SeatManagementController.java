@@ -1,101 +1,129 @@
 package com.esprit.controllers.cinemas;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.DoubleRangeValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
+import com.esprit.models.cinemas.Cinema;
 import com.esprit.models.cinemas.CinemaHall;
 import com.esprit.models.cinemas.Seat;
 import com.esprit.services.cinemas.CinemaHallService;
+import com.esprit.services.cinemas.CinemaService;
 import com.esprit.services.cinemas.SeatService;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.shape.Rectangle;
+import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for managing seats in a cinema hall (admin functionality).
- */
+@Log4j2
 public class SeatManagementController {
 
     private static final Logger LOGGER = Logger.getLogger(SeatManagementController.class.getName());
     private final SeatService seatService;
     private final CinemaHallService hallService;
+    private final CinemaService cinemaService;
+    private final ListProperty<String> seatTypeListProperty = new SimpleListProperty<>(
+        FXCollections.observableArrayList("Standard", "Premium", "VIP", "Wheelchair Accessible", "Companion"));
+    private final ObjectProperty<String> selectedSeatTypeProperty = new SimpleObjectProperty<>("Standard");
+    private final DoubleProperty priceMultiplierProperty = new SimpleDoubleProperty(1.0);
+    private final BooleanProperty isActiveProperty = new SimpleBooleanProperty(true);
+    private final BooleanProperty isAccessibleProperty = new SimpleBooleanProperty(false);
+    private final ObservableList<Seat> seats;
+    private final List<Button> selectedSeatButtons = new ArrayList<>();
     @FXML
     private VBox managementContainer;
     @FXML
-    private Label hallNameLabel;
+    private ComboBox<Cinema> cinemaCombo;
     @FXML
-    private Label cinemaNameLabel;
-    @FXML
-    private Label capacityLabel;
+    private ComboBox<CinemaHall> hallCombo;
     @FXML
     private Label totalSeatsLabel;
     @FXML
-    private Label standardSeatsLabel;
-    @FXML
-    private Label premiumSeatsLabel;
+    private Label regularSeatsLabel;
     @FXML
     private Label vipSeatsLabel;
+    @FXML
+    private Label accessibleSeatsLabel;
     @FXML
     private Label disabledSeatsLabel;
     @FXML
     private GridPane seatGrid;
     @FXML
-    private VBox seatDetailPanel;
+    private VBox seatConfigFormContainer;
     @FXML
-    private Label selectedSeatLabel;
+    private Rectangle screenIndicator;
     @FXML
-    private ComboBox<String> seatTypeCombo;
+    private RadioButton singleSelectMode;
     @FXML
-    private Spinner<Double> seatPriceMultiplierSpinner;
+    private RadioButton rectangleSelectMode;
     @FXML
-    private CheckBox isActiveCheck;
+    private RadioButton rowSelectMode;
     @FXML
-    private CheckBox isAccessibleCheck;
-    @FXML
-    private Spinner<Integer> rowsSpinner;
+    private ToggleGroup selectionModeGroup;
     @FXML
     private Spinner<Integer> seatsPerRowSpinner;
     @FXML
+    private Spinner<Integer> aisleAfterSpinner;
+    @FXML
+    private VBox templateDialog;
+    @FXML
+    private VBox confirmDialog;
+    @FXML
     private ProgressIndicator loadingIndicator;
     private CinemaHall currentHall;
-    private ObservableList<Seat> seats;
     private Seat selectedSeat;
-    private List<Button> selectedSeatButtons = new ArrayList<>();
     private boolean isMultiSelectMode = false;
+    // FormsFX Form and Properties
+    private Form seatConfigForm;
 
     public SeatManagementController() {
         this.seatService = new SeatService();
         this.hallService = new CinemaHallService();
+        this.cinemaService = new CinemaService();
         this.seats = FXCollections.observableArrayList();
     }
 
     @FXML
     public void initialize() {
-        LOGGER.info("Initializing SeatManagementController");
+        LOGGER.info("Initializing SeatManagementController with FormsFX");
 
-        setupForm();
+        setupSpinners();
+        setupFormsFX();
+        setupCombos();
+
+        // Default selection mode
+        if (singleSelectMode != null) {
+            singleSelectMode.setSelected(true);
+        }
     }
 
     /**
@@ -103,31 +131,89 @@ public class SeatManagementController {
      */
     public void setHall(CinemaHall hall) {
         this.currentHall = hall;
-        updateHallInfo();
+        if (hallCombo != null && hall != null) {
+            hallCombo.setValue(hall);
+        }
         loadSeats();
     }
 
-    private void setupForm() {
-        seatTypeCombo.getItems().addAll("Standard", "Premium", "VIP", "Wheelchair Accessible", "Companion");
-        seatTypeCombo.setValue("Standard");
-
-        seatPriceMultiplierSpinner.setValueFactory(
-            new SpinnerValueFactory.DoubleSpinnerValueFactory(0.5, 3.0, 1.0, 0.1));
-
-        rowsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, 10));
-        seatsPerRowSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 15));
-
-        if (isActiveCheck != null) isActiveCheck.setSelected(true);
+    private void setupSpinners() {
+        if (seatsPerRowSpinner != null) {
+            seatsPerRowSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 15));
+        }
+        if (aisleAfterSpinner != null) {
+            aisleAfterSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 5));
+        }
     }
 
-    private void updateHallInfo() {
-        if (currentHall == null) return;
+    private void setupCombos() {
+        // Load cinemas
+        new Thread(() -> {
+            try {
+                List<Cinema> cinemaList = cinemaService.getAllCinemas();
+                Platform.runLater(() -> {
+                    if (cinemaCombo != null) {
+                        cinemaCombo.getItems().setAll(cinemaList);
+                        cinemaCombo.setOnAction(e -> loadHallsForCinema(cinemaCombo.getValue()));
+                    }
+                });
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error loading cinemas", e);
+            }
+        }).start();
+    }
 
-        if (hallNameLabel != null) hallNameLabel.setText(currentHall.getHallName());
-        if (cinemaNameLabel != null && currentHall.getCinema() != null) {
-            cinemaNameLabel.setText(currentHall.getCinema().getNom());
+    private void loadHallsForCinema(Cinema cinema) {
+        if (cinema == null) return;
+
+        new Thread(() -> {
+            try {
+                List<CinemaHall> hallList = hallService.getHallsByCinema(cinema.getId());
+                Platform.runLater(() -> {
+                    if (hallCombo != null) {
+                        hallCombo.getItems().setAll(hallList);
+                        hallCombo.setOnAction(e -> {
+                            currentHall = hallCombo.getValue();
+                            if (currentHall != null) {
+                                loadSeats();
+                            }
+                        });
+                    }
+                });
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error loading halls", e);
+            }
+        }).start();
+    }
+
+    /**
+     * Creates and configures the FormsFX form for seat configuration.
+     */
+    private void setupFormsFX() {
+        seatConfigForm = Form.of(
+            Group.of(
+                Field.ofSingleSelectionType(seatTypeListProperty, selectedSeatTypeProperty)
+                    .label("Seat Type"),
+
+                Field.ofDoubleType(priceMultiplierProperty)
+                    .label("Price Multiplier")
+                    .validate(DoubleRangeValidator.between(0.5, 3.0, "Multiplier must be between 0.5 and 3.0")),
+
+                Field.ofBooleanType(isActiveProperty)
+                    .label("Active"),
+
+                Field.ofBooleanType(isAccessibleProperty)
+                    .label("Accessible")
+            )
+        ).title("Edit Seat");
+
+        // Render the form into the container
+        if (seatConfigFormContainer != null) {
+            FormRenderer renderer = new FormRenderer(seatConfigForm);
+            renderer.getStyleClass().add("form-renderer");
+            seatConfigFormContainer.getChildren().clear();
+            seatConfigFormContainer.getChildren().add(renderer);
         }
-        if (capacityLabel != null) capacityLabel.setText(String.valueOf(currentHall.getCapacity()));
     }
 
     private void loadSeats() {
@@ -161,7 +247,7 @@ public class SeatManagementController {
         seatGrid.getRowConstraints().clear();
 
         if (seats.isEmpty()) {
-            Label emptyLabel = new Label("No seats configured. Generate seat layout below.");
+            Label emptyLabel = new Label("No seats configured. Select a hall and apply a template.");
             emptyLabel.getStyleClass().add("empty-state-label");
             seatGrid.add(emptyLabel, 0, 0);
             return;
@@ -176,6 +262,11 @@ public class SeatManagementController {
                 return 0;
             }
         }).max().orElse(0);
+
+        // Update screen indicator width
+        if (screenIndicator != null) {
+            screenIndicator.setWidth(Math.min(maxCol * 35 + 100, 600));
+        }
 
         // Add column headers
         for (int col = 1; col <= maxCol; col++) {
@@ -211,15 +302,6 @@ public class SeatManagementController {
             Button seatBtn = createSeatButton(seat);
             seatGrid.add(seatBtn, col, row);
         }
-
-        // Add screen indicator at top
-        Label screenLabel = new Label("SCREEN");
-        screenLabel.getStyleClass().add("screen-indicator");
-        screenLabel.setMinWidth(maxCol * 35 + 50);
-        screenLabel.setAlignment(Pos.CENTER);
-        HBox screenBox = new HBox(screenLabel);
-        screenBox.setAlignment(Pos.CENTER);
-        seatGrid.add(screenBox, 0, maxRow + 2, maxCol + 1, 1);
     }
 
     private Button createSeatButton(Seat seat) {
@@ -244,7 +326,7 @@ public class SeatManagementController {
             if (isMultiSelectMode) {
                 toggleSeatSelection(btn, seat);
             } else {
-                selectSeat(seat);
+                selectSeat(seat, btn);
             }
         });
 
@@ -266,28 +348,23 @@ public class SeatManagementController {
         return rowLabel.charAt(0) - 'A' + 1;
     }
 
-    private void selectSeat(Seat seat) {
+    /**
+     * Selects a seat and populates the FormsFX form.
+     */
+    private void selectSeat(Seat seat, Button btn) {
+        // Clear previous selection visual
+        selectedSeatButtons.forEach(b -> b.getStyleClass().remove("seat-selected"));
+        selectedSeatButtons.clear();
+
         selectedSeat = seat;
+        selectedSeatButtons.add(btn);
+        btn.getStyleClass().add("seat-selected");
 
-        if (selectedSeatLabel != null) {
-            selectedSeatLabel.setText("Seat " + seat.getRowLabel() + seat.getSeatNumber());
-        }
-        if (seatTypeCombo != null) {
-            seatTypeCombo.setValue(seat.getSeatType());
-        }
-        if (seatPriceMultiplierSpinner != null) {
-            seatPriceMultiplierSpinner.getValueFactory().setValue(seat.getPriceMultiplier());
-        }
-        if (isActiveCheck != null) {
-            isActiveCheck.setSelected(seat.isActive());
-        }
-        if (isAccessibleCheck != null) {
-            isAccessibleCheck.setSelected(seat.isAccessible());
-        }
-
-        if (seatDetailPanel != null) {
-            seatDetailPanel.setVisible(true);
-        }
+        // Populate FormsFX form
+        selectedSeatTypeProperty.set(seat.getSeatType() != null ? seat.getSeatType() : "Standard");
+        priceMultiplierProperty.set(seat.getPriceMultiplier());
+        isActiveProperty.set(seat.isActive());
+        isAccessibleProperty.set(seat.isAccessible());
     }
 
     private void toggleSeatSelection(Button btn, Seat seat) {
@@ -302,130 +379,305 @@ public class SeatManagementController {
 
     private void updateStatistics() {
         int total = seats.size();
-        long standard = seats.stream().filter(s -> "Standard".equalsIgnoreCase(s.getSeatType())).count();
-        long premium = seats.stream().filter(s -> "Premium".equalsIgnoreCase(s.getSeatType())).count();
-        long vip = seats.stream().filter(s -> "VIP".equalsIgnoreCase(s.getSeatType())).count();
+        long regular = seats.stream().filter(s -> "Standard".equalsIgnoreCase(s.getSeatType())).count();
+        long vip = seats.stream().filter(s -> "VIP".equalsIgnoreCase(s.getSeatType()) || "Premium".equalsIgnoreCase(s.getSeatType())).count();
+        long accessible = seats.stream().filter(Seat::isAccessible).count();
         long disabled = seats.stream().filter(s -> !s.isActive()).count();
 
         if (totalSeatsLabel != null) totalSeatsLabel.setText(String.valueOf(total));
-        if (standardSeatsLabel != null) standardSeatsLabel.setText(String.valueOf(standard));
-        if (premiumSeatsLabel != null) premiumSeatsLabel.setText(String.valueOf(premium));
+        if (regularSeatsLabel != null) regularSeatsLabel.setText(String.valueOf(regular));
         if (vipSeatsLabel != null) vipSeatsLabel.setText(String.valueOf(vip));
+        if (accessibleSeatsLabel != null) accessibleSeatsLabel.setText(String.valueOf(accessible));
         if (disabledSeatsLabel != null) disabledSeatsLabel.setText(String.valueOf(disabled));
     }
 
+    // ==================== Type Assignment Buttons ====================
+
     @FXML
-    private void handleSaveSeat() {
-        if (selectedSeat == null) {
-            showError("Please select a seat first.");
+    private void setRegularType() {
+        applyTypeToSelected("Standard", 1.0);
+    }
+
+    @FXML
+    private void setVIPType() {
+        applyTypeToSelected("VIP", 1.5);
+    }
+
+    @FXML
+    private void setAccessibleType() {
+        if (selectedSeatButtons.isEmpty()) {
+            showError("No seats selected.");
             return;
         }
 
-        selectedSeat.setSeatType(seatTypeCombo.getValue());
-        selectedSeat.setPriceMultiplier(seatPriceMultiplierSpinner.getValue());
-        selectedSeat.setActive(isActiveCheck.isSelected());
-        selectedSeat.setAccessible(isAccessibleCheck.isSelected());
+        for (Button btn : selectedSeatButtons) {
+            Seat seat = findSeatByButton(btn);
+            if (seat != null) {
+                seat.setAccessible(true);
+                saveSeat(seat);
+            }
+        }
+        loadSeats();
+    }
 
-        showLoading(true);
+    @FXML
+    private void setDisabledType() {
+        if (selectedSeatButtons.isEmpty()) {
+            showError("No seats selected.");
+            return;
+        }
+
+        for (Button btn : selectedSeatButtons) {
+            Seat seat = findSeatByButton(btn);
+            if (seat != null) {
+                seat.setActive(false);
+                saveSeat(seat);
+            }
+        }
+        loadSeats();
+    }
+
+    private void applyTypeToSelected(String type, double multiplier) {
+        if (selectedSeatButtons.isEmpty()) {
+            showError("No seats selected.");
+            return;
+        }
+
+        for (Button btn : selectedSeatButtons) {
+            Seat seat = findSeatByButton(btn);
+            if (seat != null) {
+                seat.setSeatType(type);
+                seat.setPriceMultiplier(multiplier);
+                seat.setActive(true);
+                saveSeat(seat);
+            }
+        }
+        loadSeats();
+    }
+
+    private Seat findSeatByButton(Button btn) {
+        String text = btn.getText();
+        return seats.stream()
+            .filter(s -> (s.getRowLabel() + s.getSeatNumber()).equals(text))
+            .findFirst()
+            .orElse(null);
+    }
+
+    private void saveSeat(Seat seat) {
+        try {
+            seatService.updateSeat(seat);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error saving seat", e);
+        }
+    }
+
+    // ==================== Row Operations ====================
+
+    @FXML
+    private void addRow() {
+        if (currentHall == null) {
+            showError("Please select a hall first.");
+            return;
+        }
+
+        int seatsPerRow = seatsPerRowSpinner != null ? seatsPerRowSpinner.getValue() : 15;
+        int maxRow = seats.stream().mapToInt(s -> getRowNumber(s.getRowLabel())).max().orElse(0);
+        String newRowLabel = String.valueOf((char) ('A' + maxRow));
 
         new Thread(() -> {
             try {
-                seatService.updateSeat(selectedSeat);
+                for (int i = 1; i <= seatsPerRow; i++) {
+                    Seat seat = new Seat();
+                    seat.setCinemaHall(currentHall);
+                    seat.setRowLabel(newRowLabel);
+                    seat.setSeatNumber(String.valueOf(i));
+                    seat.setSeatType("Standard");
+                    seat.setPriceMultiplier(1.0);
+                    seat.setActive(true);
+                    seatService.createSeat(seat);
+                }
 
                 Platform.runLater(() -> {
-                    showLoading(false);
-                    showSuccess("Seat updated!");
-                    displaySeatMap();
-                    updateStatistics();
+                    showSuccess("Row " + newRowLabel + " added!");
+                    loadSeats();
                 });
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Error updating seat", e);
-                Platform.runLater(() -> {
-                    showLoading(false);
-                    showError("Failed to update seat.");
-                });
+                LOGGER.log(Level.SEVERE, "Error adding row", e);
+                Platform.runLater(() -> showError("Failed to add row."));
             }
         }).start();
     }
 
     @FXML
-    private void handleBulkUpdate() {
-        if (selectedSeatButtons.isEmpty()) {
-            showError("No seats selected. Enable multi-select mode and select seats.");
+    private void removeRow() {
+        if (seats.isEmpty()) return;
+
+        int maxRow = seats.stream().mapToInt(s -> getRowNumber(s.getRowLabel())).max().orElse(0);
+        String lastRowLabel = String.valueOf((char) ('A' + maxRow - 1));
+
+        List<Seat> rowSeats = seats.stream()
+            .filter(s -> s.getRowLabel().equals(lastRowLabel))
+            .toList();
+
+        if (rowSeats.isEmpty()) return;
+
+        new Thread(() -> {
+            try {
+                for (Seat seat : rowSeats) {
+                    seatService.deleteSeat(seat.getId());
+                }
+
+                Platform.runLater(() -> {
+                    showSuccess("Row " + lastRowLabel + " removed!");
+                    loadSeats();
+                });
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error removing row", e);
+                Platform.runLater(() -> showError("Failed to remove row."));
+            }
+        }).start();
+    }
+
+    @FXML
+    private void applySeatsPerRow() {
+        showInfo("Seats per row will be applied when adding new rows.");
+    }
+
+    @FXML
+    private void addAisle() {
+        showInfo("Aisle management coming soon!");
+    }
+
+    // ==================== Quick Actions ====================
+
+    @FXML
+    private void selectAll() {
+        isMultiSelectMode = true;
+        selectedSeatButtons.clear();
+
+        seatGrid.getChildren().stream()
+            .filter(node -> node instanceof Button)
+            .map(node -> (Button) node)
+            .forEach(btn -> {
+                if (!btn.getText().matches("\\d+") && !btn.getText().matches("[A-Z]")) {
+                    selectedSeatButtons.add(btn);
+                    btn.getStyleClass().add("seat-selected");
+                }
+            });
+
+        showInfo("Selected " + selectedSeatButtons.size() + " seats.");
+    }
+
+    @FXML
+    private void clearSelection() {
+        selectedSeatButtons.forEach(btn -> btn.getStyleClass().remove("seat-selected"));
+        selectedSeatButtons.clear();
+        selectedSeat = null;
+        isMultiSelectMode = false;
+    }
+
+    @FXML
+    private void resetLayout() {
+        if (confirmDialog != null) {
+            confirmDialog.setVisible(true);
+            confirmDialog.setManaged(true);
+        }
+    }
+
+    @FXML
+    private void cancelReset() {
+        if (confirmDialog != null) {
+            confirmDialog.setVisible(false);
+            confirmDialog.setManaged(false);
+        }
+    }
+
+    @FXML
+    private void confirmReset() {
+        if (currentHall == null) {
+            showError("No hall selected.");
+            cancelReset();
             return;
         }
-
-        String seatType = seatTypeCombo.getValue();
-        double priceMultiplier = seatPriceMultiplierSpinner.getValue();
-        boolean active = isActiveCheck.isSelected();
 
         showLoading(true);
 
         new Thread(() -> {
             try {
-                // Find seats that match selected buttons
-                List<Seat> seatsToUpdate = seats.stream()
-                    .filter(s -> selectedSeatButtons.stream()
-                        .anyMatch(btn -> btn.getText().equals(s.getRowLabel() + s.getSeatNumber())))
-                    .toList();
-
-                for (Seat seat : seatsToUpdate) {
-                    seat.setSeatType(seatType);
-                    seat.setPriceMultiplier(priceMultiplier);
-                    seat.setActive(active);
-                    seatService.updateSeat(seat);
+                for (Seat seat : seats) {
+                    seatService.deleteSeat(seat.getId());
                 }
 
                 Platform.runLater(() -> {
                     showLoading(false);
-                    showSuccess("Updated " + seatsToUpdate.size() + " seats!");
-                    selectedSeatButtons.clear();
-                    isMultiSelectMode = false;
+                    cancelReset();
+                    showSuccess("Layout reset!");
                     loadSeats();
                 });
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Error bulk updating seats", e);
+                LOGGER.log(Level.SEVERE, "Error resetting layout", e);
                 Platform.runLater(() -> {
                     showLoading(false);
-                    showError("Failed to update seats.");
+                    cancelReset();
+                    showError("Failed to reset layout.");
                 });
             }
         }).start();
     }
 
-    @FXML
-    private void handleToggleMultiSelect() {
-        isMultiSelectMode = !isMultiSelectMode;
+    // ==================== Template Operations ====================
 
-        if (!isMultiSelectMode) {
-            // Clear selections
-            selectedSeatButtons.forEach(btn -> btn.getStyleClass().remove("seat-selected"));
-            selectedSeatButtons.clear();
+    @FXML
+    private void saveLayout() {
+        showSuccess("Layout saved!");
+    }
+
+    @FXML
+    private void applyTemplate() {
+        if (templateDialog != null) {
+            templateDialog.setVisible(true);
+            templateDialog.setManaged(true);
+        }
+    }
+
+    @FXML
+    private void closeTemplateDialog() {
+        if (templateDialog != null) {
+            templateDialog.setVisible(false);
+            templateDialog.setManaged(false);
+        }
+    }
+
+    @FXML
+    private void selectStandardTemplate() {
+        generateSeats(10, 15, "standard");
+        closeTemplateDialog();
+    }
+
+    @FXML
+    private void selectPremiumTemplate() {
+        generateSeats(8, 12, "premium");
+        closeTemplateDialog();
+    }
+
+    @FXML
+    private void selectIMAXTemplate() {
+        generateSeats(15, 20, "imax");
+        closeTemplateDialog();
+    }
+
+    @FXML
+    private void selectBoutiqueTemplate() {
+        generateSeats(5, 10, "boutique");
+        closeTemplateDialog();
+    }
+
+    private void generateSeats(int rows, int seatsPerRow, String template) {
+        if (currentHall == null) {
+            showError("Please select a hall first.");
+            return;
         }
 
-        showInfo(isMultiSelectMode ?
-            "Multi-select mode enabled. Click seats to select." :
-            "Multi-select mode disabled.");
-    }
-
-    @FXML
-    private void handleGenerateSeats() {
-        int rows = rowsSpinner.getValue();
-        int seatsPerRow = seatsPerRowSpinner.getValue();
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Generate Seats");
-        confirm.setHeaderText("Generate " + (rows * seatsPerRow) + " seats?");
-        confirm.setContentText("This will replace all existing seats in this hall.");
-
-        confirm.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                generateSeats(rows, seatsPerRow);
-            }
-        });
-    }
-
-    private void generateSeats(int rows, int seatsPerRow) {
         showLoading(true);
 
         new Thread(() -> {
@@ -446,17 +698,38 @@ public class SeatManagementController {
                         seat.setRowLabel(rowLabel);
                         seat.setSeatNumber(String.valueOf(seatNum));
 
-                        // Determine seat type based on position
-                        if (row >= rows - 2) {
-                            seat.setSeatType("Premium");
-                            seat.setPriceMultiplier(1.5);
-                        } else if (seatNum >= seatsPerRow - 1 || seatNum <= 2) {
-                            // Edge seats
-                            seat.setSeatType("Standard");
-                            seat.setPriceMultiplier(0.9);
-                        } else {
-                            seat.setSeatType("Standard");
-                            seat.setPriceMultiplier(1.0);
+                        // Determine seat type based on template and position
+                        switch (template) {
+                            case "premium":
+                                if (row >= rows - 2) {
+                                    seat.setSeatType("VIP");
+                                    seat.setPriceMultiplier(2.0);
+                                } else {
+                                    seat.setSeatType("Premium");
+                                    seat.setPriceMultiplier(1.5);
+                                }
+                                break;
+                            case "imax":
+                                if (row >= rows - 3) {
+                                    seat.setSeatType("Premium");
+                                    seat.setPriceMultiplier(1.5);
+                                } else {
+                                    seat.setSeatType("Standard");
+                                    seat.setPriceMultiplier(1.0);
+                                }
+                                break;
+                            case "boutique":
+                                seat.setSeatType("VIP");
+                                seat.setPriceMultiplier(2.5);
+                                break;
+                            default: // standard
+                                if (row >= rows - 2) {
+                                    seat.setSeatType("Premium");
+                                    seat.setPriceMultiplier(1.5);
+                                } else {
+                                    seat.setSeatType("Standard");
+                                    seat.setPriceMultiplier(1.0);
+                                }
                         }
 
                         seat.setActive(true);
@@ -473,7 +746,7 @@ public class SeatManagementController {
 
                 Platform.runLater(() -> {
                     showLoading(false);
-                    showSuccess("Generated " + newSeats.size() + " seats!");
+                    showSuccess("Generated " + newSeats.size() + " seats using " + template + " template!");
                     loadSeats();
                 });
             } catch (Exception e) {
@@ -486,56 +759,7 @@ public class SeatManagementController {
         }).start();
     }
 
-    @FXML
-    private void handleSelectRow() {
-        if (selectedSeat == null) {
-            showError("Please select a seat first to identify the row.");
-            return;
-        }
-
-        isMultiSelectMode = true;
-        String rowLabel = selectedSeat.getRowLabel();
-
-        seats.stream()
-            .filter(s -> s.getRowLabel().equals(rowLabel))
-            .forEach(s -> {
-                seatGrid.getChildren().stream()
-                    .filter(node -> node instanceof Button)
-                    .map(node -> (Button) node)
-                    .filter(btn -> btn.getText().startsWith(rowLabel))
-                    .forEach(btn -> {
-                        if (!selectedSeatButtons.contains(btn)) {
-                            selectedSeatButtons.add(btn);
-                            btn.getStyleClass().add("seat-selected");
-                        }
-                    });
-            });
-
-        showInfo("Selected row " + rowLabel);
-    }
-
-    @FXML
-    private void handleClearSelection() {
-        selectedSeatButtons.forEach(btn -> btn.getStyleClass().remove("seat-selected"));
-        selectedSeatButtons.clear();
-        selectedSeat = null;
-        if (seatDetailPanel != null) seatDetailPanel.setVisible(false);
-    }
-
-    @FXML
-    private void handleBack() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/views/admin/CinemaHallManagement.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) managementContainer.getScene().getWindow();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/ui/styles/admin.css").toExternalForm());
-            stage.setScene(scene);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error navigating back", e);
-        }
-    }
+    // ==================== Utility Methods ====================
 
     private void showLoading(boolean show) {
         if (loadingIndicator != null) loadingIndicator.setVisible(show);

@@ -9,7 +9,7 @@
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.cinemas.MovieSessionDetailsController"
            styleClass="immersive-root"
-           stylesheets="@../styles/filmStyle.css, @../styles/booking.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
@@ -219,3 +219,4 @@
     </center>
   </BorderPane>
 </StackPane>
+

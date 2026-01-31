@@ -196,8 +196,8 @@ public class TestDataFactory {
      */
     public static String generateGenre() {
         String[] genres = {
-                "Action", "Comedy", "Drama", "Horror", "Sci-Fi",
-                "Thriller", "Romance", "Animation", "Documentary", "Fantasy"
+            "Action", "Comedy", "Drama", "Horror", "Sci-Fi",
+            "Thriller", "Romance", "Animation", "Documentary", "Fantasy"
         };
         return genres[random.nextInt(genres.length)];
     }
@@ -229,16 +229,16 @@ public class TestDataFactory {
         // Note: Adjust this based on your User model constructor
         // This is a placeholder implementation
         return Client.builder()
-                .lastName(generateLastName())
-                .firstName(generateFirstName())
-                .phoneNumber("12345678")
-                .passwordHash(generateValidPassword())
-                .role(UserRole.CLIENT)
-                .address("Test Address")
-                .birthDate(new java.sql.Date(System.currentTimeMillis()))
-                .email(generateEmail())
-                .profilePictureUrl("default.png")
-                .build();
+            .lastName(generateLastName())
+            .firstName(generateFirstName())
+            .phoneNumber("12345678")
+            .passwordHash(generateValidPassword())
+            .role(UserRole.CLIENT)
+            .address("Test Address")
+            .birthDate(new java.sql.Date(System.currentTimeMillis()))
+            .email(generateEmail())
+            .profilePictureUrl("default.png")
+            .build();
     }
 
     /**

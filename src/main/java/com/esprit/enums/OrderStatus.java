@@ -2,6 +2,7 @@ package com.esprit.enums;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -97,7 +98,7 @@ public enum OrderStatus {
             case PROCESSING:
                 return new HashSet<>(Arrays.asList(SHIPPED, CANCELLED));
             case SHIPPED:
-                return new HashSet<>(Arrays.asList(DELIVERED));
+                return new HashSet<>(List.of(DELIVERED));
             case DELIVERED:
             case CANCELLED:
                 return new HashSet<>(); // Final states - no transitions allowed

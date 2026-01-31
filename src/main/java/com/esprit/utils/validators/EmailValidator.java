@@ -1,15 +1,10 @@
 package com.esprit.utils.validators;
 
+import lombok.extern.log4j.Log4j2;
+
 import java.util.regex.Pattern;
 
-/**
- * Email validation utility for the RAKCHA application.
- * Provides RFC 5322 compliant email validation.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class EmailValidator {
 
     // RFC 5322 compliant email regex pattern
@@ -43,11 +38,7 @@ public class EmailValidator {
         }
 
         // Check for common issues
-        if (email.contains("..") || email.startsWith(".") || email.endsWith(".")) {
-            return false;
-        }
-
-        return true;
+        return !email.contains("..") && !email.startsWith(".") && !email.endsWith(".");
     }
 
     /**

@@ -21,6 +21,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
@@ -35,10 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Controller for viewing detailed movie session information and selecting
- * a specific showtime for booking.
- */
+@Log4j2
 public class MovieSessionDetailsController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(MovieSessionDetailsController.class.getName());
@@ -128,21 +126,21 @@ public class MovieSessionDetailsController implements Initializable {
         // Metadata
         if (metaLabel != null) {
             String meta = String.format("%s • %d min • %s",
-                    currentFilm.getGenre(),
-                    currentFilm.getDuration(),
-                    currentFilm.getCountry());
+                currentFilm.getGenre(),
+                currentFilm.getDurationMin(),
+                currentFilm.getAgeRating());
             metaLabel.setText(meta);
         }
 
         // Rating
         if (ratingLabel != null) {
-            ratingLabel.setText(String.format("%.1f", currentFilm.getAverageRating()));
+            ratingLabel.setText(String.format("%.1f", currentFilm.getRating()));
         }
 
         // Rating stars
         if (ratingStars != null) {
             ratingStars.getChildren().clear();
-            int fullStars = (int) currentFilm.getAverageRating();
+            int fullStars = (int) currentFilm.getRating();
             for (int i = 0; i < 5; i++) {
                 FontIcon star = new FontIcon(i < fullStars ? "mdi2s-star" : "mdi2s-star-outline");
                 star.setIconSize(16);
@@ -161,7 +159,7 @@ public class MovieSessionDetailsController implements Initializable {
     }
 
     private void loadImages() {
-        String imageUrl = currentFilm.getImage();
+        String imageUrl = currentFilm.getImageUrl();
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             try {
@@ -187,8 +185,8 @@ public class MovieSessionDetailsController implements Initializable {
 
         // Get unique dates from sessions
         Set<LocalDate> availableDates = allSessions.stream()
-                .map(s -> s.getStartTime().toLocalDate())
-                .collect(Collectors.toSet());
+            .map(s -> s.getStartTime().toLocalDate())
+            .collect(Collectors.toSet());
 
         // Add next 7 days
         LocalDate today = LocalDate.now();
@@ -256,12 +254,12 @@ public class MovieSessionDetailsController implements Initializable {
 
         // Filter sessions for the selected date
         List<MovieSession> daySessions = allSessions.stream()
-                .filter(s -> s.getStartTime().toLocalDate().equals(date))
-                .collect(Collectors.toList());
+            .filter(s -> s.getStartTime().toLocalDate().equals(date))
+            .collect(Collectors.toList());
 
         // Group by cinema
         Map<Cinema, List<MovieSession>> byCinema = daySessions.stream()
-                .collect(Collectors.groupingBy(s -> s.getCinemaHall().getCinema()));
+            .collect(Collectors.groupingBy(s -> s.getCinemaHall().getCinema()));
 
         for (Map.Entry<Cinema, List<MovieSession>> entry : byCinema.entrySet()) {
             VBox cinemaSection = createCinemaSection(entry.getKey(), entry.getValue());
@@ -294,7 +292,7 @@ public class MovieSessionDetailsController implements Initializable {
 
         // Group sessions by hall
         Map<CinemaHall, List<MovieSession>> byHall = sessions.stream()
-                .collect(Collectors.groupingBy(MovieSession::getCinemaHall));
+            .collect(Collectors.groupingBy(MovieSession::getCinemaHall));
 
         // Hall tabs
         HBox hallTabs = new HBox(8);

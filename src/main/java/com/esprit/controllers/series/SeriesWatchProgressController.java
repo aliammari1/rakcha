@@ -1,14 +1,12 @@
 package com.esprit.controllers.series;
 
 import com.esprit.models.series.Series;
-import com.esprit.models.series.Season;
-import com.esprit.models.series.Episode;
 import com.esprit.models.users.User;
 import com.esprit.models.users.WatchProgress;
+import com.esprit.services.series.EpisodeService;
+import com.esprit.services.series.SeasonService;
 import com.esprit.services.series.SeriesService;
 import com.esprit.services.users.WatchProgressService;
-import com.esprit.services.series.SeasonService;
-import com.esprit.services.series.EpisodeService;
 import com.esprit.utils.SessionManager;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,23 +17,35 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for tracking series watching progress.
- */
+@Log4j2
 public class SeriesWatchProgressController {
 
     private static final Logger LOGGER = Logger.getLogger(SeriesWatchProgressController.class.getName());
@@ -44,6 +54,7 @@ public class SeriesWatchProgressController {
     private final WatchProgressService watchProgressService;
     private final SeasonService seasonService;
     private final EpisodeService episodeService;
+    private final ObservableList<WatchProgress> allProgress;
     @FXML
     private VBox progressContainer;
     @FXML
@@ -110,7 +121,6 @@ public class SeriesWatchProgressController {
     private Label detailTitle;
     @FXML
     private Label detailRating;
-    private ObservableList<WatchProgress> allProgress;
     private User currentUser;
 
     public SeriesWatchProgressController() {
@@ -366,7 +376,7 @@ public class SeriesWatchProgressController {
     private void markAsWatched(WatchProgress progress) {
         new Thread(() -> {
             try {
-                watchProgressService.markSeriesAsWatched(currentUser.getId(), progress.getSeriesId());
+                watchProgressService.markSeriesAsWatched(currentUser.getId(), progress.getSeries().getId());
                 Platform.runLater(() -> {
                     showSuccess("Marked as watched!");
                     loadWatchProgress();
@@ -388,7 +398,7 @@ public class SeriesWatchProgressController {
             if (response == ButtonType.OK) {
                 new Thread(() -> {
                     try {
-                        watchProgressService.resetSeriesProgress(currentUser.getId(), progress.getSeriesId());
+                        watchProgressService.resetSeriesProgress(currentUser.getId(), progress.getSeries().getId());
                         Platform.runLater(() -> {
                             showSuccess("Progress reset!");
                             loadWatchProgress();
@@ -412,7 +422,7 @@ public class SeriesWatchProgressController {
             if (response == ButtonType.OK) {
                 new Thread(() -> {
                     try {
-                        watchProgressService.removeFromList(currentUser.getId(), progress.getSeriesId());
+                        watchProgressService.removeFromList(currentUser.getId(), progress.getSeries().getId());
                         Platform.runLater(() -> {
                             showSuccess("Removed from list!");
                             loadWatchProgress();
@@ -429,7 +439,7 @@ public class SeriesWatchProgressController {
     private void rateSeries(WatchProgress progress, int rating) {
         new Thread(() -> {
             try {
-                watchProgressService.rateSeries(currentUser.getId(), progress.getSeriesId(), rating);
+                watchProgressService.rateSeries(currentUser.getId(), progress.getSeries().getId(), rating);
                 Platform.runLater(() -> {
                     showSuccess("Rating saved!");
                     loadWatchProgress();

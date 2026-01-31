@@ -1,7 +1,7 @@
 package com.esprit.controllers.films;
 
-import com.esprit.models.films.Film;
 import com.esprit.models.common.Review;
+import com.esprit.models.films.Film;
 import com.esprit.utils.TestFXBase;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -38,7 +38,7 @@ class FilmUserControllerTest extends TestFXBase {
     @Start
     public void start(Stage stage) throws Exception {
         javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
-                getClass().getResource("/ui/films/filmuser.fxml"));
+            getClass().getResource("/ui/films/filmuser.fxml"));
         javafx.scene.Parent root = loader.load();
         controller = loader.getController();
 

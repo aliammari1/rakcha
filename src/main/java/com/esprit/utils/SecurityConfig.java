@@ -7,6 +7,10 @@ package com.esprit.utils;
  * @version 1.0.0
  * @since 1.0.0
  */
+
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class SecurityConfig {
 
     /**

@@ -1,5 +1,9 @@
 package com.esprit.controllers.products;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.products.Order;
 import com.esprit.models.products.OrderItem;
 import com.esprit.models.products.Product;
@@ -21,6 +25,8 @@ import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,6 +46,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.extern.log4j.Log4j2;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
@@ -54,25 +61,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller class for handling order processing in the RAKCHA application.
- * This controller manages the order checkout process, including address input,
- * payment processing via PayPal, and order finalization.
- *
- * <p>
- * The controller validates user inputs, creates order records in the database,
- * updates product inventory, and handles the PayPal payment flow through their
- * API.
- * </p>
- *
- * <p>
- * It also provides navigation capabilities to other parts of the application.
- * </p>
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class OrderClientController implements Initializable {
 
     private static final String CLIENT_ID = System.getenv("PAYPAL_CLIENT_ID");
@@ -82,8 +71,13 @@ public class OrderClientController implements Initializable {
     private static final Logger LOGGER = Logger.getLogger(OrderClientController.class.getName());
     private final OrderService orderService = new OrderService();
     private final UserService usersService = new UserService();
+
+    // FormsFX properties
+    private final StringProperty addressProperty = new SimpleStringProperty("");
+    private final StringProperty phoneProperty = new SimpleStringProperty("");
     Order order = new Order();
     double totalPrix = SharedData.getInstance().getTotalPrice();
+    private Form orderForm;
     @FXML
     private TextField adresseTextField;
     @FXML
@@ -126,7 +120,7 @@ public class OrderClientController implements Initializable {
                 connectedUser = SessionManager.getCurrentUser();
                 if (connectedUser != null) {
                     OrderClientController.LOGGER
-                            .info("User connected: " + connectedUser.getEmail());
+                        .info("User connected: " + connectedUser.getEmail());
                 }
             }
 
@@ -149,6 +143,80 @@ public class OrderClientController implements Initializable {
      */
     @Override
     public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        // Initialize FormsFX
+        setupFormsFX();
+        setupBidirectionalBindings();
+    }
+
+    /**
+     * Configures FormsFX for order form validation.
+     */
+    private void setupFormsFX() {
+        orderForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(addressProperty)
+                    .label("Address")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Address is required")
+                    ),
+                Field.ofStringType(phoneProperty)
+                    .label("Phone Number")
+                    .validate(
+                        StringLengthValidator.exactly(8, "Phone number must be exactly 8 digits"),
+                        RegexValidator.forPattern("\\d{8}", "Phone number must contain only digits")
+                    )
+            )
+        );
+    }
+
+    /**
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        if (adresseTextField != null) {
+            adresseTextField.textProperty().bindBidirectional(addressProperty);
+        }
+
+        if (numTelephoneTextField != null) {
+            numTelephoneTextField.textProperty().bindBidirectional(phoneProperty);
+        }
+    }
+
+    /**
+     * Validates the order form using FormsFX.
+     *
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validateOrderForm() {
+        orderForm.persist();
+        if (!orderForm.isValid()) {
+            StringBuilder errorMessage = new StringBuilder();
+            orderForm.getGroups().forEach(group ->
+                group.getElements().forEach(element -> {
+                    if (element instanceof Field<?> field) {
+                        if (!field.isValid()) {
+                            errorMessage.append(field.getLabel()).append(": ");
+                            field.getErrorMessages().forEach(msg -> errorMessage.append(msg).append("\n"));
+                        }
+                    }
+                })
+            );
+            showAlert("Validation Error", errorMessage.toString().trim());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        if (adresseTextField != null) {
+            adresseTextField.textProperty().unbindBidirectional(addressProperty);
+        }
+        if (numTelephoneTextField != null) {
+            numTelephoneTextField.textProperty().unbindBidirectional(phoneProperty);
+        }
     }
 
     /**
@@ -157,7 +225,7 @@ public class OrderClientController implements Initializable {
      *
      * @param prixTotal the total price value to display (in DT)
      * @return the Label showing the formatted price with Verdana 25 font and red
-     *         text color
+     * text color
      */
     private Label createPrixTotalLabel(final double prixTotal) {
         final Label prixTotalLabel = new Label(prixTotal + " DT");
@@ -178,29 +246,20 @@ public class OrderClientController implements Initializable {
      */
     @FXML
     void order(final ActionEvent event) {
+        // Validate using FormsFX
+        if (!validateOrderForm()) {
+            return;
+        }
+
         final OrderItemService orderItemService = new OrderItemService();
-        // Validation du numéro de téléphone
-        final String numTelephone = this.numTelephoneTextField.getText();
-        if (!this.isValidPhoneNumber(numTelephone)) {
-            this.showAlert("Numéro de téléphone invalide",
-                    "Veuillez entrer un numéro de téléphone valide (8 chiffres).");
-            return;
-        }
 
-        // Validation de l'adresse
-        final String adresse = this.adresseTextField.getText();
-        if (adresse.isEmpty()) {
-            this.showAlert("Adresse invalide", "Veuillez entrer une adresse valide.");
-            return;
-        }
-
-        this.order.setShippingAddress(this.adresseTextField.getText());
-        this.order.setPhoneNumber(this.numTelephoneTextField.getText());
+        this.order.setShippingAddress(addressProperty.get());
+        this.order.setPhoneNumber(phoneProperty.get());
         this.order.setClient((Client) this.connectedUser);
         this.order.setOrderDate(java.time.LocalDateTime.now());
         try {
             this.orderService.create(this.order);
-            this.order.setStatus("en cours");
+            this.order.setStatus(com.esprit.enums.OrderStatus.PROCESSING);
         } catch (final Exception e) {
             OrderClientController.LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -278,7 +337,7 @@ public class OrderClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/products/PanierProduit.fxml"));
+                this.getClass().getResource("/ui/products/PanierProduit.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -313,7 +372,7 @@ public class OrderClientController implements Initializable {
     @FXML
     void payment(final ActionEvent event) {
         final APIContext apiContext = new APIContext(OrderClientController.CLIENT_ID,
-                OrderClientController.CLIENT_SECRET, "sandbox");
+            OrderClientController.CLIENT_SECRET, "sandbox");
         final Amount amount = new Amount();
         amount.setCurrency("USD");
         amount.setTotal(String.valueOf(this.totalPrix)); // totalPrix should be set to the total price of the order
@@ -336,7 +395,7 @@ public class OrderClientController implements Initializable {
         try {
             final Payment createdPayment = payment.create(apiContext);
             OrderClientController.LOGGER.info("Created payment with id = " + createdPayment.getId() + " and status = "
-                    + createdPayment.getState());
+                + createdPayment.getState());
             // Extract approval URL
             String approvalUrl = null;
             final List<Links> links = createdPayment.getLinks();
@@ -459,7 +518,7 @@ public class OrderClientController implements Initializable {
      */
     private void completePayment(final String paymentId, final String payerId) {
         final APIContext apiContext = new APIContext(OrderClientController.CLIENT_ID,
-                OrderClientController.CLIENT_SECRET, "sandbox");
+            OrderClientController.CLIENT_SECRET, "sandbox");
         final Payment payment = new Payment();
         payment.setId(paymentId);
         final PaymentExecution paymentExecution = new PaymentExecution();
@@ -469,7 +528,7 @@ public class OrderClientController implements Initializable {
             OrderClientController.LOGGER.info("Payment executed. Status: " + executedPayment.getState());
             if ("approved".equalsIgnoreCase(executedPayment.getState())) {
                 // Update order status to paid
-                this.order.setStatus("payee");
+                this.order.setStatus(com.esprit.enums.OrderStatus.PAID);
                 this.orderService.update(this.order);
                 OrderClientController.LOGGER.info("Order status updated to paid");
             }
@@ -491,7 +550,7 @@ public class OrderClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/products/CommentaireProduit.fxml"));
+                this.getClass().getResource("/ui/products/CommentaireProduit.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -521,7 +580,7 @@ public class OrderClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/products/AfficherProduitClient.fxml"));
+                this.getClass().getResource("/ui/products/AfficherProduitClient.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -550,7 +609,7 @@ public class OrderClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/products/AfficherProduitClient.fxml"));
+                this.getClass().getResource("/ui/products/AfficherProduitClient.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);

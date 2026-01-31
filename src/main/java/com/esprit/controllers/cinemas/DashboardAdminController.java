@@ -5,7 +5,6 @@ import com.esprit.models.cinemas.Cinema;
 import com.esprit.models.films.Film;
 import com.esprit.services.cinemas.CinemaService;
 import com.esprit.services.cinemas.MovieSessionService;
-import com.esprit.services.films.FilmService;
 import com.esprit.utils.PageRequest;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -37,30 +36,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Controller responsible for handling admin dashboard operations for cinema
- * management.
- *
- * <p>
- * This controller provides functionality to filter and display data from the
- * Cinema module,
- * including cinema approval/rejection, movie display, and various filtering
- * options.
- * It handles user interactions related to admin dashboards for cinema,
- * addresses, statuses,
- * events, movies, and series modules based on user selections.
- * </p>
- *
- * @author Esprit Team
- * @version 1.0
- * @since 1.0
- */
+@Log4j2
 public class DashboardAdminController {
 
     private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
@@ -111,7 +94,7 @@ public class DashboardAdminController {
             Cinema cinema = cellData.getValue();
             if (cinema.getManager() != null) {
                 return new SimpleObjectProperty<>(
-                        cinema.getManager().getFirstName() + " " + cinema.getManager().getLastName());
+                    cinema.getManager().getFirstName() + " " + cinema.getManager().getLastName());
             } else {
                 return new SimpleObjectProperty<>("No Manager");
             }
@@ -153,7 +136,7 @@ public class DashboardAdminController {
                     alert.setContentText("Are you sure you want to accept this cinema?");
                     if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
                         Cinema cinema = getTableView().getItems().get(getIndex());
-                        cinema.setStatus(CinemaStatus.ACCEPTED.getStatus());
+                        cinema.setStatus(CinemaStatus.ACCEPTED);
                         CinemaService cinemaService = new CinemaService();
                         cinemaService.update(cinema);
                         getTableView().refresh();
@@ -168,7 +151,7 @@ public class DashboardAdminController {
                     dialog.showAndWait().ifPresent(reason -> {
                         if (!reason.trim().isEmpty()) {
                             Cinema cinema = getTableView().getItems().get(getIndex());
-                            cinema.setStatus(CinemaStatus.REFUSED.getStatus());
+                            cinema.setStatus(CinemaStatus.REFUSED);
                             CinemaService cinemaService = new CinemaService();
                             cinemaService.update(cinema);
                             getTableView().refresh();
@@ -487,9 +470,9 @@ public class DashboardAdminController {
         final List<String> selectedStatuses = this.getSelectedStatuses();
         // Filtrer les cinémas en fonction des adresses et/ou des statuts sélectionnés
         final List<Cinema> filteredCinemas = this.getAllCinemas().stream()
-                .filter(cinema -> selectedAddresses.isEmpty() || selectedAddresses.contains(cinema.getAddress()))
-                .filter(cinema -> selectedStatuses.isEmpty() || selectedStatuses.contains(cinema.getStatus()))
-                .collect(Collectors.toList());
+            .filter(cinema -> selectedAddresses.isEmpty() || selectedAddresses.contains(cinema.getAddress()))
+            .filter(cinema -> selectedStatuses.isEmpty() || selectedStatuses.contains(cinema.getStatus()))
+            .collect(Collectors.toList());
         // Mettre à jour le TableView avec les cinémas filtrés
         final ObservableList<Cinema> filteredList = FXCollections.observableArrayList(filteredCinemas);
         this.listCinema.setItems(filteredList);
@@ -499,12 +482,12 @@ public class DashboardAdminController {
      * Collects the texts of address checkboxes that are currently selected.
      *
      * @return a List<String> containing the text of each selected address checkbox;
-     *         empty if none are selected.
+     * empty if none are selected.
      */
     private List<String> getSelectedAddresses() {
         // Récupérer les adresses sélectionnées dans l'AnchorPane de filtrage
         return this.addressCheckBoxes.stream().filter(CheckBox::isSelected).map(CheckBox::getText)
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     /**
@@ -515,7 +498,7 @@ public class DashboardAdminController {
     private List<String> getSelectedStatuses() {
         // Récupérer les statuts sélectionnés dans l'AnchorPane de filtrage
         return this.statusCheckBoxes.stream().filter(CheckBox::isSelected).map(CheckBox::getText)
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     /**

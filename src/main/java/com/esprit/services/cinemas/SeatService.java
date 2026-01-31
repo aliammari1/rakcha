@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -21,10 +20,11 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class SeatService {
 
     private final CinemaHallService cinemaHallService;
-    private Connection connection;
+    private final Connection connection;
 
     /**
      * Constructs a new SeatService instance.

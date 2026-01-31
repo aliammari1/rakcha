@@ -1,5 +1,10 @@
 package com.esprit.controllers.users;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.enums.UserRole;
 import com.esprit.models.users.Admin;
 import com.esprit.models.users.User;
@@ -7,7 +12,12 @@ import com.esprit.services.users.UserService;
 import com.esprit.utils.CloudinaryStorage;
 import com.esprit.utils.Page;
 import com.esprit.utils.PageRequest;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -42,6 +52,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
+import lombok.extern.log4j.Log4j2;
 import net.synedra.validatorfx.Validator;
 
 import java.io.File;
@@ -55,17 +66,22 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller class for the RAKCHA application. Handles UI interactions
- * and manages view logic using FXML.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class AdminDashboardController {
 
     private static final Logger LOGGER = Logger.getLogger(AdminDashboardController.class.getName());
+
+    // FormsFX Properties for reactive form binding
+    private final StringProperty emailProperty = new SimpleStringProperty("");
+    private final StringProperty passwordProperty = new SimpleStringProperty("");
+    private final StringProperty firstNameProperty = new SimpleStringProperty("");
+    private final StringProperty lastNameProperty = new SimpleStringProperty("");
+    private final StringProperty adresseProperty = new SimpleStringProperty("");
+    private final StringProperty phoneProperty = new SimpleStringProperty("");
+    private final ObjectProperty<LocalDate> birthdateProperty = new SimpleObjectProperty<>();
+    private final ObjectProperty<UserRole> roleProperty = new SimpleObjectProperty<>();
+    private final ListProperty<UserRole> roleItems = new SimpleListProperty<>(
+        FXCollections.observableArrayList(UserRole.values()));
     TableColumn<User, String> roleTableColumn;
     TableColumn<User, HBox> photoDeProfilTableColumn;
     TableColumn<User, String> lastNameTableColumn;
@@ -80,6 +96,8 @@ public class AdminDashboardController {
     Validator tableValidator;
     Tooltip formValidatorTooltip;
     Tooltip tableValidatorTooltip;
+    // FormsFX Form with validation
+    private Form userForm;
     private String cloudinaryImageUrl;
     @FXML
     private TextField adresseTextField;
@@ -134,6 +152,11 @@ public class AdminDashboardController {
             this.setupCellValueFactories();
             this.setupCellFactories();
             this.setupCellOnEditCommit();
+            // Setup FormsFX for declarative form handling
+            this.setupFormsFX();
+            this.setupEasyBindings();
+
+            // Legacy tooltip-based validation (kept for compatibility)
             final Tooltip tooltip = new Tooltip();
             this.addValidationListener(this.firstNameTextField, newValue -> newValue.toLowerCase().equals(newValue),
                 "Please use only lowercase letters.");
@@ -234,6 +257,96 @@ public class AdminDashboardController {
             }
 
         });
+    }
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules.
+     */
+    private void setupFormsFX() {
+        this.userForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.emailProperty)
+                    .label("Email")
+                    .validate(RegexValidator.forPattern(
+                        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
+                        "Invalid email format")),
+                Field.ofStringType(this.passwordProperty)
+                    .label("Password")
+                    .validate(StringLengthValidator.atLeast(4, "Password must be at least 4 characters")),
+                Field.ofStringType(this.firstNameProperty)
+                    .label("First Name")
+                    .validate(StringLengthValidator.atLeast(2, "First name must be at least 2 characters")),
+                Field.ofStringType(this.lastNameProperty)
+                    .label("Last Name")
+                    .validate(StringLengthValidator.atLeast(2, "Last name must be at least 2 characters")),
+                Field.ofStringType(this.adresseProperty)
+                    .label("Address")
+                    .validate(StringLengthValidator.atLeast(5, "Address must be at least 5 characters")),
+                Field.ofStringType(this.phoneProperty)
+                    .label("Phone")
+                    .validate(RegexValidator.forPattern("\\d{8,15}", "Phone must be 8-15 digits"))
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind subscriptions to sync text fields with FormsFX properties.
+     */
+    private void setupEasyBindings() {
+        if (this.emailTextField != null) {
+            this.emailTextField.textProperty().bindBidirectional(this.emailProperty);
+        }
+        if (this.passwordTextField != null) {
+            this.passwordTextField.textProperty().bindBidirectional(this.passwordProperty);
+        }
+        if (this.firstNameTextField != null) {
+            this.firstNameTextField.textProperty().bindBidirectional(this.firstNameProperty);
+        }
+        if (this.lastNameTextField != null) {
+            this.lastNameTextField.textProperty().bindBidirectional(this.lastNameProperty);
+        }
+        if (this.adresseTextField != null) {
+            this.adresseTextField.textProperty().bindBidirectional(this.adresseProperty);
+        }
+        if (this.phoneNumberTextField != null) {
+            this.phoneNumberTextField.textProperty().bindBidirectional(this.phoneProperty);
+        }
+        if (this.dateDeNaissanceDatePicker != null) {
+            this.dateDeNaissanceDatePicker.valueProperty().bindBidirectional(this.birthdateProperty);
+        }
+        if (this.roleComboBox != null) {
+            this.roleComboBox.valueProperty().bindBidirectional(this.roleProperty);
+        }
+    }
+
+    /**
+     * Cleanup method to unbind properties when the view is closed.
+     */
+    public void cleanup() {
+        if (this.emailTextField != null) {
+            this.emailTextField.textProperty().unbindBidirectional(this.emailProperty);
+        }
+        if (this.passwordTextField != null) {
+            this.passwordTextField.textProperty().unbindBidirectional(this.passwordProperty);
+        }
+        if (this.firstNameTextField != null) {
+            this.firstNameTextField.textProperty().unbindBidirectional(this.firstNameProperty);
+        }
+        if (this.lastNameTextField != null) {
+            this.lastNameTextField.textProperty().unbindBidirectional(this.lastNameProperty);
+        }
+        if (this.adresseTextField != null) {
+            this.adresseTextField.textProperty().unbindBidirectional(this.adresseProperty);
+        }
+        if (this.phoneNumberTextField != null) {
+            this.phoneNumberTextField.textProperty().unbindBidirectional(this.phoneProperty);
+        }
+        if (this.dateDeNaissanceDatePicker != null) {
+            this.dateDeNaissanceDatePicker.valueProperty().unbindBidirectional(this.birthdateProperty);
+        }
+        if (this.roleComboBox != null) {
+            this.roleComboBox.valueProperty().unbindBidirectional(this.roleProperty);
+        }
     }
 
     /**

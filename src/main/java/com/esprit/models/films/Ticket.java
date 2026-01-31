@@ -8,11 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
-/**
- * The Ticket class represents a ticket for a movie session.
- */
-
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,34 +24,37 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  */
 
+
 public class Ticket {
 
-    private Long id;
-
-    private Client client;
-
+    /**
+     * The movie session this ticket is for.
+     */
     private MovieSession movieSession;
-
+    /**
+     * The seat reserved by this ticket.
+     */
     private Seat seat;
-
-    private Long seatId;
-
+    @Builder.Default
+    private int transferCount = 0;
+    private Long id;
+    /**
+     * The client who purchased the ticket.
+     */
+    private Client client;
     private java.time.LocalDateTime purchaseTime;
-
     private String qrCode;
-
     private double pricePaid;
-
     @Builder.Default
     private TicketStatus status = TicketStatus.CONFIRMED;
-
     private java.time.LocalDateTime reservedAt;
     private java.time.LocalDateTime expiresAt;
     private java.time.LocalDateTime cancelledAt;
     private String cancellationReason;
-    @Builder.Default
-    private int transferCount = 0;
-    private float refundAmount;
+    /**
+     * Refund amount (consistent with pricePaid as double).
+     */
+    private double refundAmount;
 
     /**
      * Constructor without id for creating new ticket instances.
@@ -64,7 +65,7 @@ public class Ticket {
      * @param pricePaid    The price paid for the ticket.
      */
     public Ticket(final Client client, final MovieSession movieSession, final Seat seat,
-                  final float pricePaid) {
+                  final double pricePaid) {
         this.client = client;
         this.movieSession = movieSession;
         this.seat = seat;

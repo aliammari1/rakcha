@@ -4,19 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class PasswordReset {
 
+    @Builder.Default
+    private final java.sql.Timestamp requestedAt = new java.sql.Timestamp(System.currentTimeMillis());
     private Long id;
-    private Long userId;
+    private User user;
     private String selector;
     private String hashedToken;
-    @Builder.Default
-    private java.sql.Timestamp requestedAt = new java.sql.Timestamp(System.currentTimeMillis());
     private java.sql.Timestamp expiresAt;
+
 }
 

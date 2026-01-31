@@ -1,11 +1,9 @@
 package com.esprit.exceptions;
 
 import com.esprit.models.cinemas.MovieSession;
+import lombok.extern.log4j.Log4j2;
 
-/**
- * Exception thrown when a movie session conflicts with an existing session in
- * the same hall.
- */
+@Log4j2
 public class SessionConflictException extends RuntimeException {
 
     private final MovieSession conflictingSession;

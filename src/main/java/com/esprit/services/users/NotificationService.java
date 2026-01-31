@@ -23,17 +23,20 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class NotificationService {
 
     private static final Logger LOGGER = Logger.getLogger(NotificationService.class.getName());
     private final Connection connection;
+    private final UserService userService;
 
     /**
      * Constructs a new NotificationService instance.
      */
     public NotificationService() {
         this.connection = DataSource.getInstance().getConnection();
+        this.userService = new UserService();
     }
 
     /**
@@ -45,7 +48,7 @@ public class NotificationService {
     public void createNotification(Notification notification) throws SQLException {
         String query = "INSERT INTO notifications (user_id, title, message, is_read, type, created_at) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setLong(1, notification.getUserId());
+            pst.setLong(1, notification.getUser().getId());
             pst.setString(2, notification.getTitle());
             pst.setString(3, notification.getMessage());
             pst.setBoolean(4, notification.isRead());
@@ -214,7 +217,7 @@ public class NotificationService {
      */
     public void sendNotification(Long userId, String title, String message, String type) {
         Notification notification = Notification.builder()
-            .userId(userId)
+            .user(this.userService.getById(userId))
             .title(title)
             .message(message)
             .type(type)
@@ -238,7 +241,7 @@ public class NotificationService {
     private Notification mapResultSetToNotification(ResultSet rs) throws SQLException {
         return Notification.builder()
             .id(rs.getLong("id"))
-            .userId(rs.getLong("user_id"))
+            .user(this.userService.getById(rs.getLong("user_id")))
             .title(rs.getString("title"))
             .message(rs.getString("message"))
             .isRead(rs.getBoolean("is_read"))

@@ -6,6 +6,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/21"
             fx:controller="com.esprit.controllers.common.CategoryManagementController"
+            stylesheets="@../styles/rakcha-unified.css"
             style="-fx-background-color: linear-gradient(to bottom right, #1a0a0a, #2d1515, #1a0a0a);">
 
   <!-- Top Header -->
@@ -95,43 +96,8 @@
 
         <Separator style="-fx-background-color: #8b0000;"/>
 
-        <!-- Name Field -->
-        <VBox spacing="5">
-          <Label text="Name *" style="-fx-text-fill: #cccccc; -fx-font-size: 12px;"/>
-          <TextField fx:id="nameField" promptText="Enter category name"
-                     style="-fx-background-color: rgba(255,255,255,0.1);
-                                      -fx-text-fill: white;
-                                      -fx-prompt-text-fill: #888888;
-                                      -fx-background-radius: 10;
-                                      -fx-border-color: #666666;
-                                      -fx-border-radius: 10;
-                                      -fx-padding: 10;"/>
-        </VBox>
-
-        <!-- Type ComboBox -->
-        <VBox spacing="5">
-          <Label text="Type *" style="-fx-text-fill: #cccccc; -fx-font-size: 12px;"/>
-          <ComboBox fx:id="typeComboBox" maxWidth="Infinity"
-                    style="-fx-background-color: rgba(255,255,255,0.1);
-                                     -fx-background-radius: 10;
-                                     -fx-border-color: #666666;
-                                     -fx-border-radius: 10;"/>
-        </VBox>
-
-        <!-- Description Field -->
-        <VBox spacing="5" VBox.vgrow="ALWAYS">
-          <Label text="Description *" style="-fx-text-fill: #cccccc; -fx-font-size: 12px;"/>
-          <TextArea fx:id="descriptionField" promptText="Enter category description"
-                    wrapText="true" prefRowCount="4"
-                    VBox.vgrow="ALWAYS"
-                    style="-fx-background-color: rgba(255,255,255,0.1);
-                                     -fx-text-fill: white;
-                                     -fx-prompt-text-fill: #888888;
-                                     -fx-background-radius: 10;
-                                     -fx-border-color: #666666;
-                                     -fx-border-radius: 10;
-                                     -fx-padding: 10;"/>
-        </VBox>
+        <!-- FormsFX Form Container -->
+        <VBox fx:id="formContainer" spacing="10" VBox.vgrow="ALWAYS"/>
 
         <Separator style="-fx-background-color: #8b0000;"/>
 
@@ -167,3 +133,4 @@
     </HBox>
   </bottom>
 </BorderPane>
+

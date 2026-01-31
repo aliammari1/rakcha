@@ -28,20 +28,22 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for managing user's friends list and friend requests.
- */
+@Log4j2
 public class FriendsListController {
 
     private static final Logger LOGGER = Logger.getLogger(FriendsListController.class.getName());
     private final FriendService friendService;
     private final UserService userService;
+    private final ObservableList<User> friends;
+    private final ObservableList<User> pendingRequests;
+    private final ObservableList<User> suggestions;
     @FXML
     private VBox friendsContainer;
     @FXML
@@ -72,9 +74,6 @@ public class FriendsListController {
     private ProgressIndicator loadingIndicator;
     @FXML
     private VBox emptyStateBox;
-    private ObservableList<User> friends;
-    private ObservableList<User> pendingRequests;
-    private ObservableList<User> suggestions;
     private User currentUser;
 
     public FriendsListController() {

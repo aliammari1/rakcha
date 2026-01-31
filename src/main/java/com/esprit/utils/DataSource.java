@@ -1,12 +1,13 @@
 package com.esprit.utils;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 /**
  * Utility class providing helper methods for the RAKCHA application. Contains
@@ -18,41 +19,48 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class DataSource {
 
-    private static final Logger LOGGER = Logger.getLogger(DataSource.class.getName());
     private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
     private static DataSource instance;
     private final String url;
     private final String user;
     private final String password;
+    private final boolean useConnectionPooling;
     private Connection connection;
+    private HikariDataSource hikariDataSource;
 
     private DataSource() {
-        // Determine database type
-
         // Set default URL based on a database type
         this.url = System.getProperty("db.url", dotenv.get("DB_URL", ""));
-
         this.user = System.getProperty("db.user", dotenv.get("DB_USER", "root"));
         this.password = System.getProperty("db.password", dotenv.get("DB_PASSWORD", ""));
 
+        // Enable connection pooling for production databases (MySQL, PostgreSQL)
+        // Use simple connection for SQLite and H2 (embedded databases)
+        this.useConnectionPooling = !url.toUpperCase().contains("SQLITE") &&
+            !url.toUpperCase().contains("H2") &&
+            !url.isEmpty();
+
         // Create a data directory for SQLite if needed
-        if (dotenv.get("DB_URL", "").toUpperCase().contains("SQLITE")) {
+        if (url.toUpperCase().contains("SQLITE")) {
             createDataDirectoryIfNeeded();
         }
 
-
         try {
-            this.connection = DriverManager.getConnection(this.url, this.user, this.password);
-            log.info("Database connection established successfully");
+            if (useConnectionPooling) {
+                initializeConnectionPool();
+                log.info("Database connection pool established successfully with HikariCP");
+            } else {
+                this.connection = DriverManager.getConnection(this.url, this.user, this.password);
+                log.info("Database connection established successfully (direct connection)");
+            }
         } catch (final SQLException e) {
-            log.error(
-                "Failed to establish database connection", e);
+            log.error("Failed to establish database connection", e);
             throw new RuntimeException("Database connection failed", e);
         }
-
     }
 
 
@@ -69,36 +77,109 @@ public class DataSource {
 
 
     /**
+     * Initialize HikariCP connection pool for production databases
+     */
+    private void initializeConnectionPool() throws SQLException {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(this.url);
+        config.setUsername(this.user);
+        config.setPassword(this.password);
+
+        // HikariCP performance optimizations
+        config.setMaximumPoolSize(20);
+        config.setMinimumIdle(5);
+        config.setConnectionTimeout(30000); // 30 seconds
+        config.setIdleTimeout(600000); // 10 minutes
+        config.setMaxLifetime(1800000); // 30 minutes
+        config.setLeakDetectionThreshold(60000); // 1 minute
+
+        // Database-specific optimizations
+        if (url.toUpperCase().contains("MYSQL")) {
+            config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            config.addDataSourceProperty("useServerPrepStmts", "true");
+            config.addDataSourceProperty("useLocalSessionState", "true");
+            config.addDataSourceProperty("rewriteBatchedStatements", "true");
+            config.addDataSourceProperty("cacheResultSetMetadata", "true");
+            config.addDataSourceProperty("cacheServerConfiguration", "true");
+            config.addDataSourceProperty("elideSetAutoCommits", "true");
+            config.addDataSourceProperty("maintainTimeStats", "false");
+        } else if (url.toUpperCase().contains("POSTGRESQL")) {
+            config.setDriverClassName("org.postgresql.Driver");
+            config.addDataSourceProperty("prepareThreshold", "1");
+            config.addDataSourceProperty("preparedStatementCacheQueries", "256");
+            config.addDataSourceProperty("preparedStatementCacheSizeMiB", "5");
+            config.addDataSourceProperty("databaseMetadataCacheFields", "65536");
+            config.addDataSourceProperty("databaseMetadataCacheFieldsMiB", "5");
+        }
+
+        this.hikariDataSource = new HikariDataSource(config);
+    }
+
+    /**
      * @return Connection
      */
     public Connection getConnection() {
         try {
-            if (this.connection == null || this.connection.isClosed()) {
-                this.connection = DriverManager.getConnection(this.url, this.user, this.password);
+            if (useConnectionPooling && hikariDataSource != null) {
+                return hikariDataSource.getConnection();
+            } else {
+                if (this.connection == null || this.connection.isClosed()) {
+                    this.connection = DriverManager.getConnection(this.url, this.user, this.password);
+                }
+                return this.connection;
             }
-
         } catch (SQLException e) {
             log.error("Failed to get database connection", e);
             throw new RuntimeException("Failed to get database connection", e);
         }
-
-        return this.connection;
     }
 
 
     /**
-     * Close the database connection
+     * Close the database connection or connection pool
      */
     public void closeConnection() {
-        if (this.connection != null) {
+        if (useConnectionPooling && hikariDataSource != null) {
+            try {
+                hikariDataSource.close();
+                log.info("HikariCP connection pool closed successfully");
+            } catch (Exception e) {
+                log.warn("Error closing HikariCP connection pool", e);
+            }
+        } else if (this.connection != null) {
             try {
                 this.connection.close();
+                log.info("Direct database connection closed successfully");
             } catch (SQLException e) {
                 log.warn("Error closing database connection", e);
             }
-
         }
+    }
 
+    /**
+     * Get connection pool statistics (for monitoring)
+     */
+    public String getConnectionPoolStats() {
+        if (useConnectionPooling && hikariDataSource != null) {
+            return String.format(
+                "Pool Stats - Active: %d, Idle: %d, Total: %d, Waiting: %d",
+                hikariDataSource.getHikariPoolMXBean().getActiveConnections(),
+                hikariDataSource.getHikariPoolMXBean().getIdleConnections(),
+                hikariDataSource.getHikariPoolMXBean().getTotalConnections(),
+                hikariDataSource.getHikariPoolMXBean().getThreadsAwaitingConnection()
+            );
+        }
+        return "Connection pooling not enabled";
+    }
+
+    /**
+     * Check if connection pooling is enabled
+     */
+    public boolean isConnectionPoolingEnabled() {
+        return useConnectionPooling;
     }
 
 

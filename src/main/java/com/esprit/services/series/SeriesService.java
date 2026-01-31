@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -29,6 +28,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class SeriesService implements IService<Series> {
 
     private static final Logger LOGGER = Logger.getLogger(SeriesService.class.getName());
@@ -125,9 +125,9 @@ public class SeriesService implements IService<Series> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            LOGGER.warning("Invalid sort column: " + pageRequest.getSortBy() + ". Using default sorting.");
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            LOGGER.warning("Invalid sort column: " + pageRequest.sortBy() + ". Using default sorting.");
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -147,11 +147,11 @@ public class SeriesService implements IService<Series> {
 
             }
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             LOGGER.log(Level.SEVERE, "Error retrieving paginated series: " + e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
 
     }

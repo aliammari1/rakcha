@@ -17,20 +17,14 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Is responsible for handling user interactions related to categories, such as
- * displaying category information and handling menu events. The controller uses
- * an `IServiceCategorieImpl` interface to retrieve category data from a
- * database and displays the information in a tile pane. Additionally, it
- * handles menu events for different types of content (series, episodes) and
- * displays them in separate stages.
- */
+@Log4j2
 public class CategoriesClientController {
 
     @FXML

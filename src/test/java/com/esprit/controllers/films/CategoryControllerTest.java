@@ -39,7 +39,7 @@ class CategoryControllerTest extends TestFXBase {
     @Start
     public void start(Stage stage) throws Exception {
         javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
-                getClass().getResource("/ui/films/InterfaceCategory.fxml"));
+            getClass().getResource("/ui/films/InterfaceCategory.fxml"));
         javafx.scene.Parent root = loader.load();
         controller = loader.getController();
 
@@ -248,8 +248,8 @@ class CategoryControllerTest extends TestFXBase {
 
             TableView<Category> table = lookup("#filmCategory_tableView").query();
             TableColumn<Category, Integer> idColumn = (TableColumn<Category, Integer>) table.getColumns().stream()
-                    .filter(col -> "idCategory_tableColumn".equals(col.getId()))
-                    .findFirst().orElse(null);
+                .filter(col -> "idCategory_tableColumn".equals(col.getId()))
+                .findFirst().orElse(null);
             assertThat(idColumn).isNotNull();
             assertThat(idColumn.isVisible()).isFalse();
         }
@@ -262,8 +262,8 @@ class CategoryControllerTest extends TestFXBase {
 
             TableView<Category> table = lookup("#filmCategory_tableView").query();
             TableColumn<Category, String> nameCol = (TableColumn<Category, String>) table.getColumns().stream()
-                    .filter(col -> "nomCategory_tableColumn".equals(col.getId()))
-                    .findFirst().orElse(null);
+                .filter(col -> "nomCategory_tableColumn".equals(col.getId()))
+                .findFirst().orElse(null);
             assertThat(nameCol).isNotNull();
             assertThat(nameCol.isVisible()).isTrue();
         }
@@ -276,8 +276,8 @@ class CategoryControllerTest extends TestFXBase {
 
             TableView<Category> table = lookup("#filmCategory_tableView").query();
             TableColumn<Category, String> descCol = (TableColumn<Category, String>) table.getColumns().stream()
-                    .filter(col -> "descriptionCategory_tableColumn".equals(col.getId()))
-                    .findFirst().orElse(null);
+                .filter(col -> "descriptionCategory_tableColumn".equals(col.getId()))
+                .findFirst().orElse(null);
             assertThat(descCol).isNotNull();
             assertThat(descCol.isVisible()).isTrue();
         }
@@ -290,8 +290,8 @@ class CategoryControllerTest extends TestFXBase {
 
             TableView<Category> table = lookup("#filmCategory_tableView").query();
             TableColumn<Category, Button> deleteCol = (TableColumn<Category, Button>) table.getColumns().stream()
-                    .filter(col -> "delete_tableColumn".equals(col.getId()))
-                    .findFirst().orElse(null);
+                .filter(col -> "delete_tableColumn".equals(col.getId()))
+                .findFirst().orElse(null);
             assertThat(deleteCol).isNotNull();
         }
 
@@ -334,8 +334,8 @@ class CategoryControllerTest extends TestFXBase {
 
             // Verify description column exists
             TableColumn<Category, String> descCol = (TableColumn<Category, String>) table.getColumns().stream()
-                    .filter(col -> "descriptionCategory_tableColumn".equals(col.getId()))
-                    .findFirst().orElse(null);
+                .filter(col -> "descriptionCategory_tableColumn".equals(col.getId()))
+                .findFirst().orElse(null);
             assertThat(descCol).isNotNull();
         }
 
@@ -391,8 +391,8 @@ class CategoryControllerTest extends TestFXBase {
 
             // Verify delete button column exists
             TableColumn deleteCol = table.getColumns().stream()
-                    .filter(col -> "delete_tableColumn".equals(col.getId()))
-                    .findFirst().orElse(null);
+                .filter(col -> "delete_tableColumn".equals(col.getId()))
+                .findFirst().orElse(null);
             assertThat(deleteCol).isNotNull();
 
             waitForFxEvents();
@@ -410,8 +410,8 @@ class CategoryControllerTest extends TestFXBase {
 
             // Verify delete column exists
             TableColumn deleteCol = table.getColumns().stream()
-                    .filter(col -> "delete_tableColumn".equals(col.getId()))
-                    .findFirst().orElse(null);
+                .filter(col -> "delete_tableColumn".equals(col.getId()))
+                .findFirst().orElse(null);
             assertThat(deleteCol).isNotNull();
 
             waitForFxEvents();

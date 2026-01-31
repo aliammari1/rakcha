@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -8,10 +7,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Circle?>
 <?import org.kordamp.ikonli.javafx.*?>
+<?import java.lang.String?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.products.ProductWishlistController"
            styleClass="immersive-root"
-           stylesheets="@../styles/filmStyle.css, @../styles/shop.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
@@ -260,3 +260,4 @@
     <Button onAction="#viewCart" styleClass="toast-btn" text="View Cart"/>
   </HBox>
 </StackPane>
+

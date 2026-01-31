@@ -1,6 +1,7 @@
 package com.esprit.utils;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,14 +14,7 @@ import java.sql.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Utility class providing helper methods for the RAKCHA application. Contains
- * reusable functionality and common operations.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class Chat {
 
     private static final Logger LOGGER = Logger.getLogger(Chat.class.getName());

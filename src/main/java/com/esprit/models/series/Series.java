@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,34 +23,25 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
-
 public class Series {
 
-    private Long id;
-
-    private String name;
-
-    private String summary;
-
     private String director;
-
     private String country;
-
-    private String imageUrl;
-
-    private int releaseYear;
-
-    private List<Category> categories;
-
-    private List<Episode> episodes;
-
-    private List<Favorite> favorites;
-
+    /**
+     * Seasons in this series (proper hierarchy: Series → Seasons → Episodes).
+     */
+    @Builder.Default
+    private List<Season> seasons = new ArrayList<>();
     private int clickLikes;
-
     private int clickDislikes;
-
     private int clickFavorites;
+    private Long id;
+    private String name;
+    private String summary;
+    private String imageUrl;
+    private int releaseYear;
+    private List<Category> categories;
+    private List<Favorite> favorites;
 
     /**
      * Create a Series instance without an id.
@@ -61,26 +55,6 @@ public class Series {
      */
     public Series(final String name, final String summary, final String director, final String country,
                   final String imageUrl, final int releaseYear) {
-        this.name = name;
-        this.summary = summary;
-        this.director = director;
-        this.country = country;
-        this.imageUrl = imageUrl;
-        this.releaseYear = releaseYear;
-        this.clickLikes = 0;
-        this.clickDislikes = 0;
-        this.clickFavorites = 0;
-    }
-
-    /**
-     * Legacy constructor with like/dislike counters.
-     *
-     * @deprecated Use simplified constructor instead
-     */
-    @Deprecated(forRemoval = true)
-    public Series(final String name, final String summary, final String director, final String country,
-                  final String imageUrl, final int releaseYear, final int liked, final int numberOfLikes, final int disliked,
-                  final int numberOfDislikes) {
         this.name = name;
         this.summary = summary;
         this.director = director;
@@ -181,15 +155,6 @@ public class Series {
      */
     public List<Category> getGenres() {
         return this.categories;
-    }
-
-    /**
-     * Get the series ID (alias for compatibility).
-     *
-     * @return the series ID
-     */
-    public Long getIdserie() {
-        return this.id;
     }
 
 }

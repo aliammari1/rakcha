@@ -14,7 +14,7 @@
            style="-fx-background-color: linear-gradient(to bottom right, #0a0a0a, #1a0a0a, #2a0f0f, #1a0606, #0a0a0a);
            -fx-effect: dropshadow(gaussian, #8b0000, 50, 0, 0, 0);
            -fx-background-animation: true;"
-           stylesheets="@../styles/login-animations.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Background Animations Container - Now comes FIRST in the StackPane for proper layering -->
   <AnchorPane style="-fx-background-color: transparent;" maxWidth="1200.0" maxHeight="630.0"
@@ -304,81 +304,8 @@
 
       <VBox spacing="20" maxWidth="400" alignment="CENTER">
 
-        <VBox spacing="8">
-          <Label text="Email or Username"
-                 style="-fx-text-fill: #cccccc;
-                               -fx-font-family: 'Arial';
-                               -fx-font-size: 13px;
-                               -fx-font-weight: bold;"/>
-          <StackPane>
-
-            <Rectangle width="400" height="50"
-                       style="-fx-fill: linear-gradient(to bottom, rgba(40, 40, 40, 0.8), rgba(20, 20, 20, 0.9));
-                                   -fx-stroke: #8b0000;
-                                   -fx-stroke-width: 1;
-                                   -fx-background-radius: 12;
-                                   -fx-stroke-radius: 12;
-                                   -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 8, 0, 0, 0);"/>
-            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 0 20 0 20;">
-              <FontIcon iconLiteral="mdi2a-account:16:ffffff"/>
-              <TextField fx:id="emailTextField" text="ammari.ali.0001@gmail.com"
-                         styleClass="animated-input"
-                         promptText="Enter your email or username"
-                         style="-fx-background-color: transparent;
-                                       -fx-text-fill: white;
-                                       -fx-font-family: 'Arial';
-                                       -fx-font-size: 14px;
-                                       -fx-border-color: transparent;
-                                       -fx-focus-color: transparent;
-                                       -fx-faint-focus-color: transparent;
-                                       -fx-prompt-text-fill: #666666;"
-                         HBox.hgrow="ALWAYS"/>
-            </HBox>
-          </StackPane>
-          <Label fx:id="emailErrorLabel"
-                 style="-fx-text-fill: #ff4444;
-                               -fx-font-family: 'Arial';
-                               -fx-font-size: 11px;"/>
-        </VBox>
-
-
-        <VBox spacing="8">
-          <Label text="Password"
-                 style="-fx-text-fill: #cccccc;
-                               -fx-font-family: 'Arial';
-                               -fx-font-size: 13px;
-                               -fx-font-weight: bold;"/>
-          <StackPane>
-
-            <Rectangle width="400" height="50"
-                       style="-fx-fill: linear-gradient(to bottom, rgba(40, 40, 40, 0.8), rgba(20, 20, 20, 0.9));
-                                   -fx-stroke: #8b0000;
-                                   -fx-stroke-width: 1;
-                                   -fx-background-radius: 12;
-                                   -fx-stroke-radius: 12;
-                                   -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 8, 0, 0, 0);"/>
-            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 0 20 0 20;">
-              <FontIcon iconLiteral="mdi2l-lock:16:ffffff"/>
-              <PasswordField fx:id="passwordTextField" text="\$Password123"
-                             styleClass="animated-input"
-                             promptText="Enter your password"
-                             style="-fx-background-color: transparent;
-                                       -fx-text-fill: white;
-                                       -fx-font-family: 'Arial';
-                                       -fx-font-size: 14px;
-                                       -fx-border-color: transparent;
-                                       -fx-focus-color: transparent;
-                                       -fx-faint-focus-color: transparent;
-                                       -fx-prompt-text-fill: #666666;"
-                             HBox.hgrow="ALWAYS"/>
-            </HBox>
-          </StackPane>
-          <Label fx:id="passwordErrorLabel"
-                 style="-fx-text-fill: #ff4444;
-                               -fx-font-family: 'Arial';
-                               -fx-font-size: 11px;"/>
-        </VBox>
-
+        <!-- FormsFX Form Container -->
+        <VBox fx:id="loginFormContainer" spacing="15" maxWidth="400"/>
 
         <HBox alignment="CENTER" spacing="50">
           <CheckBox id="rememberMe" text="Remember me"
@@ -539,3 +466,4 @@
   </AnchorPane>
 
 </StackPane>
+

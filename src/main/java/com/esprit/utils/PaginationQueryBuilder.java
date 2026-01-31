@@ -1,17 +1,13 @@
 package com.esprit.utils;
 
+import lombok.extern.log4j.Log4j2;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * Utility class for building paginated SQL queries.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class PaginationQueryBuilder {
 
     /**
@@ -26,13 +22,13 @@ public class PaginationQueryBuilder {
 
         // Add ORDER BY clause if sorting is specified
         if (pageRequest.hasSorting()) {
-            query.append(" ORDER BY ").append(pageRequest.getSortBy())
-                .append(" ").append(pageRequest.getSortDirection());
+            query.append(" ORDER BY ").append(pageRequest.sortBy())
+                .append(" ").append(pageRequest.sortDirection());
         }
 
 
         // Add LIMIT and OFFSET
-        query.append(" LIMIT ").append(pageRequest.getSize())
+        query.append(" LIMIT ").append(pageRequest.size())
             .append(" OFFSET ").append(pageRequest.getOffset());
 
         return query.toString();

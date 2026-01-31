@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -31,11 +30,12 @@ import java.util.Map;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class MovieSessionService implements IService<MovieSession> {
 
     // Allowed columns for sorting to prevent SQL injection
     private static final String[] ALLOWED_SORT_COLUMNS = {
-            "id", "movie_id", "hall_id", "start_time", "end_time", "price"
+        "id", "movie_id", "hall_id", "start_time", "end_time", "price"
     };
     private final Connection connection;
     private final CinemaHallService cinemaHallService;
@@ -158,8 +158,8 @@ public class MovieSessionService implements IService<MovieSession> {
      *                    column is invalid it will be ignored and default sorting
      *                    will be used
      * @return a Page<MovieSession> containing the sessions for the requested page
-     *         and the total number of matching sessions; if a database error
-     *         occurs, returns an empty page with totalElements set to 0
+     * and the total number of matching sessions; if a database error
+     * occurs, returns an empty page with totalElements set to 0
      */
     @Override
     /**
@@ -174,9 +174,9 @@ public class MovieSessionService implements IService<MovieSession> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-                !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.getSortBy());
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.sortBy());
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -188,7 +188,7 @@ public class MovieSessionService implements IService<MovieSession> {
             final String paginatedQuery = PaginationQueryBuilder.buildPaginatedQuery(baseQuery, pageRequest);
 
             try (PreparedStatement stmt = connection.prepareStatement(paginatedQuery);
-                    ResultSet rs = stmt.executeQuery()) {
+                 ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     MovieSession session = buildMovieSession(rs);
                     if (session != null) {
@@ -199,11 +199,11 @@ public class MovieSessionService implements IService<MovieSession> {
 
             }
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.error("Error retrieving paginated movie sessions: {}", e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
 
     }
@@ -214,12 +214,12 @@ public class MovieSessionService implements IService<MovieSession> {
      * @param filmId   the ID of the film to filter sessions by
      * @param cinemaId the ID of the cinema to filter sessions by
      * @return a list of MovieSession objects for the specified film and cinema; an
-     *         empty list if none are found
+     * empty list if none are found
      */
     public List<MovieSession> getSessionsByFilmAndCinema(Long filmId, Long cinemaId) {
         List<MovieSession> movieSessions = new ArrayList<>();
         String query = "SELECT ms.* FROM screenings ms " + "JOIN cinema_halls ch ON ms.hall_id = ch.id "
-                + "WHERE ms.movie_id = ? AND ch.cinema_id = ?";
+            + "WHERE ms.movie_id = ? AND ch.cinema_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setLong(1, filmId);
             stmt.setLong(2, cinemaId);
@@ -249,10 +249,10 @@ public class MovieSessionService implements IService<MovieSession> {
      * @param cinema    the cinema to filter sessions by; if null the method returns
      *                  an empty map
      * @return a map keyed by session date where each value is the list of
-     *         MovieSession objects occurring on that date
+     * MovieSession objects occurring on that date
      */
     public Map<LocalDate, List<MovieSession>> getSessionsByDateRangeAndCinema(LocalDate startDate, LocalDate endDate,
-            Cinema cinema) {
+                                                                              Cinema cinema) {
         Map<LocalDate, List<MovieSession>> sessionsByDate = new HashMap<>();
         if (cinema == null) {
             log.warn("Cinema is null");
@@ -290,7 +290,7 @@ public class MovieSessionService implements IService<MovieSession> {
      *
      * @param filmId the film's id to search sessions for
      * @return the earliest upcoming MovieSession for the film, or {@code null} if
-     *         no matching session exists
+     * no matching session exists
      */
     public MovieSession getFirstSessionForFilm(Long filmId) {
         String query = "SELECT * FROM screenings WHERE movie_id = ? AND start_time >= CURRENT_DATE ORDER BY start_time LIMIT 1";
@@ -314,7 +314,7 @@ public class MovieSessionService implements IService<MovieSession> {
      * Retrieves the movie session with the specified id.
      *
      * @return the MovieSession with the specified id, or null if no session exists
-     *         with that id or an error occurs
+     * with that id or an error occurs
      */
     public MovieSession getMovieSessionById(Long id) {
         String query = "SELECT * FROM screenings WHERE id = ?";
@@ -342,7 +342,7 @@ public class MovieSessionService implements IService<MovieSession> {
      *
      * @param rs the ResultSet positioned at the row to convert into a MovieSession
      * @return the constructed MovieSession, or `null` when related entities are
-     *         missing or an error prevents construction
+     * missing or an error prevents construction
      */
     private MovieSession buildMovieSession(ResultSet rs) {
         try {
@@ -351,15 +351,15 @@ public class MovieSessionService implements IService<MovieSession> {
 
             if (film == null || cinemaHall == null) {
                 log.warn("Missing required entities for movie session id: " + rs.getLong("id")
-                        + " - Film ID: " + rs.getLong("movie_id")
-                        + ", CinemaHall ID: " + rs.getLong("hall_id"));
+                    + " - Film ID: " + rs.getLong("movie_id")
+                    + ", CinemaHall ID: " + rs.getLong("hall_id"));
                 return null;
             }
 
             return MovieSession.builder().id(rs.getLong("id")).film(film).cinemaHall(cinemaHall)
-                    .startTime(rs.getTimestamp("start_time").toLocalDateTime())
-                    .endTime(rs.getTimestamp("end_time").toLocalDateTime())
-                    .price(rs.getDouble("price")).build();
+                .startTime(rs.getTimestamp("start_time").toLocalDateTime())
+                .endTime(rs.getTimestamp("end_time").toLocalDateTime())
+                .price(rs.getDouble("price")).build();
         } catch (SQLException e) {
             log.error("Error building movie session from ResultSet", e);
             return null;
@@ -408,7 +408,7 @@ public class MovieSessionService implements IService<MovieSession> {
         List<MovieSession> sessions = new ArrayList<>();
         String query = "SELECT * FROM screenings";
         try (PreparedStatement stmt = connection.prepareStatement(query);
-                ResultSet rs = stmt.executeQuery()) {
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 MovieSession session = buildMovieSession(rs);
                 if (session != null) {
@@ -430,7 +430,7 @@ public class MovieSessionService implements IService<MovieSession> {
     public int count() {
         String query = "SELECT COUNT(*) FROM screenings";
         try (PreparedStatement stmt = connection.prepareStatement(query);
-                ResultSet rs = stmt.executeQuery()) {
+             ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -450,9 +450,9 @@ public class MovieSessionService implements IService<MovieSession> {
     public List<MovieSession> search(String searchTerm) {
         List<MovieSession> sessions = new ArrayList<>();
         String query = "SELECT ms.* FROM screenings ms " +
-                "JOIN cinema_halls ch ON ms.hall_id = ch.id " +
-                "JOIN films f ON ms.movie_id = f.id " +
-                "WHERE f.title LIKE ? OR ch.name LIKE ?";
+            "JOIN cinema_halls ch ON ms.hall_id = ch.id " +
+            "JOIN films f ON ms.movie_id = f.id " +
+            "WHERE f.title LIKE ? OR ch.name LIKE ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             String likePattern = "%" + searchTerm + "%";
             stmt.setString(1, likePattern);
@@ -480,7 +480,7 @@ public class MovieSessionService implements IService<MovieSession> {
         List<MovieSession> sessions = new ArrayList<>();
         String query = "SELECT * FROM movie_sessions";
         try (PreparedStatement stmt = connection.prepareStatement(query);
-                ResultSet rs = stmt.executeQuery()) {
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 MovieSession session = buildMovieSession(rs);
                 if (session != null) {
@@ -537,9 +537,9 @@ public class MovieSessionService implements IService<MovieSession> {
     public List<Film> getFilmsByCinemaId(Long cinemaId) {
         List<Film> films = new ArrayList<>();
         String query = "SELECT DISTINCT f.* FROM movies f " +
-                "JOIN screenings ms ON f.id = ms.movie_id " +
-                "JOIN cinema_halls ch ON ms.hall_id = ch.id " +
-                "WHERE ch.cinema_id = ?";
+            "JOIN screenings ms ON f.id = ms.movie_id " +
+            "JOIN cinema_halls ch ON ms.hall_id = ch.id " +
+            "WHERE ch.cinema_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setLong(1, cinemaId);
             try (ResultSet rs = stmt.executeQuery()) {

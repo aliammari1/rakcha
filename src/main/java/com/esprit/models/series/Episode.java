@@ -4,46 +4,34 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDate;
 
-/**
- * Episode entity class for the RAKCHA application. Represents episode
- * data with Hibernate/JPA annotations for database persistence.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
-
+@Log4j2
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class Episode {
 
-    private Long id;
-
-    private Long seasonId;
-
+    /**
+     * The season this episode belongs to.
+     */
+    private Season season;
     private int episodeNumber;
-
-    private String title;
-
-    private String imageUrl;
-
     private String videoUrl;
-
-    private Integer durationMin;
-
     private LocalDate releaseDate;
+    private Long id;
+    private String title;
+    private String imageUrl;
+    private Integer durationMin;
 
     /**
      * Create a new Episode populated with title, episode number, season, image,
      * video, and season identifier.
      *
-     * @param seasonId      the identifier of the season this episode belongs to
+     * @param season        the season this episode belongs to
      * @param episodeNumber the episode number within its season
      * @param title         the episode title
      * @param imageUrl      the episode image URL or path
@@ -51,30 +39,15 @@ public class Episode {
      * @param durationMin   the duration in minutes
      * @param releaseDate   the release date of the episode
      */
-    public Episode(final Long seasonId, final int episodeNumber, final String title, final String imageUrl,
+    public Episode(final Season season, final int episodeNumber, final String title, final String imageUrl,
                    final String videoUrl, final Integer durationMin, final LocalDate releaseDate) {
-        this.seasonId = seasonId;
+        this.season = season;
         this.episodeNumber = episodeNumber;
         this.title = title;
         this.imageUrl = imageUrl;
         this.videoUrl = videoUrl;
         this.durationMin = durationMin;
         this.releaseDate = releaseDate;
-    }
-
-    /**
-     * Legacy constructor with series ID and season number.
-     *
-     * @deprecated Use seasonId constructor instead
-     */
-    @Deprecated(forRemoval = true)
-    public Episode(final String title, final int episodeNumber, final int season, final String imageUrl,
-                   final String videoUrl, final int durationMin, final int seriesId) {
-        this.title = title;
-        this.episodeNumber = episodeNumber;
-        this.imageUrl = imageUrl;
-        this.videoUrl = videoUrl;
-        this.durationMin = durationMin;
     }
 
     /**

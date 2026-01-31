@@ -4,57 +4,53 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
 
-/**
- * Model class representing a direct message between users.
- * Used for the in-app messaging/chat system.
- */
+@Log4j2
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class Message {
 
+    @Builder.Default
+    private final boolean deleted = false;
+    // Message type
+    @Builder.Default
+    private final MessageType type = MessageType.TEXT;
     private Long id;
-
-    // Sender and recipient
-    private Long senderId;
-    private Long recipientId;
-
+    /**
+     * The user who sent the message.
+     */
+    private User sender;
+    /**
+     * The user who received the message.
+     */
+    private User recipient;
     // Message content
     private String content;
-
     // Optional attachment (image, file URL)
     private String attachmentUrl;
     private String attachmentType; // "image", "file", "gif", etc.
-
     // Timestamps
     private LocalDateTime createdAt;
     private LocalDateTime readAt;
-
     // Status flags
     @Builder.Default
     private boolean read = false;
-
-    @Builder.Default
-    private boolean deleted = false;
-
     // For reply threading
     private Long replyToId;
-
-    // Message type
-    @Builder.Default
-    private MessageType type = MessageType.TEXT;
 
     /**
      * Factory method to create a text message.
      */
-    public static Message createTextMessage(Long senderId, Long recipientId, String content) {
+    public static Message createTextMessage(User sender, User recipient, String content) {
         return Message.builder()
-            .senderId(senderId)
-            .recipientId(recipientId)
+            .sender(sender)
+            .recipient(recipient)
             .content(content)
             .type(MessageType.TEXT)
             .createdAt(LocalDateTime.now())
@@ -64,10 +60,10 @@ public class Message {
     /**
      * Factory method to create an image message.
      */
-    public static Message createImageMessage(Long senderId, Long recipientId, String imageUrl) {
+    public static Message createImageMessage(User sender, User recipient, String imageUrl) {
         return Message.builder()
-            .senderId(senderId)
-            .recipientId(recipientId)
+            .sender(sender)
+            .recipient(recipient)
             .content("📷 Image")
             .attachmentUrl(imageUrl)
             .attachmentType("image")
@@ -79,9 +75,9 @@ public class Message {
     /**
      * Factory method to create a system message.
      */
-    public static Message createSystemMessage(Long recipientId, String content) {
+    public static Message createSystemMessage(User recipient, String content) {
         return Message.builder()
-            .recipientId(recipientId)
+            .recipient(recipient)
             .content(content)
             .type(MessageType.SYSTEM)
             .createdAt(LocalDateTime.now())
@@ -101,8 +97,8 @@ public class Message {
     /**
      * Checks if the message was sent by the given user.
      */
-    public boolean isSentBy(Long userId) {
-        return senderId != null && senderId.equals(userId);
+    public boolean isSentBy(User user) {
+        return sender != null && sender.equals(user);
     }
 
     /**

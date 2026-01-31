@@ -138,9 +138,12 @@ installed
 
 Platform-specific
 tools:
+
 -
+
 *
 *
+
 Windows
 **:
 WiX
@@ -149,18 +152,24 @@ Toolset
 for
 MSI
 installers
+
 -
+
 *
 *
+
 macOS
 **:
 Xcode
 command
 line
 tools
+
 -
+
 *
 *
+
 Linux
 **:
 RPM
@@ -176,6 +185,7 @@ tools
 *
 
 *
+
 Clean
 and
 compile
@@ -192,6 +202,7 @@ mvn clean compile
 *
 
 *
+
 Package
 the
 application
@@ -206,6 +217,7 @@ mvn clean package
 *
 
 *
+
 Create
 native
 installer
@@ -263,6 +275,7 @@ performance:
 *
 
 *
+
 Memory
 **:
 256MB
@@ -275,6 +288,7 @@ maximum
 *
 
 *
+
 Encoding
 **:
 UTF-8
@@ -289,6 +303,7 @@ encoding
 *
 
 *
+
 JavaFX
 Access
 **:
@@ -304,6 +319,7 @@ compatibility
 *
 
 *
+
 Logging
 **:
 Logback
@@ -645,6 +661,7 @@ testing:
 *
 
 *
+
 Windows
 **:
 Distribute
@@ -658,6 +675,7 @@ file
 *
 
 *
+
 macOS
 **:
 Distribute
@@ -674,6 +692,7 @@ Gatekeeper)
 *
 
 *
+
 Linux
 **:
 Distribute
