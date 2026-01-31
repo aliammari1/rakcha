@@ -6,14 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The `Product` class represents a product.
- */
-
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
@@ -30,20 +28,13 @@ import java.util.List;
 public class Product {
 
     private Long id;
-
     private String name;
-
     private String description;
-
     private String imageUrl;
-
     private Double price;
-
     private int stockQuantity;
-
     @Builder.Default
     private List<Category> categories = new ArrayList<>();
-
     @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
@@ -172,7 +163,6 @@ public class Product {
     public void setPrix(Double prix) {
         this.price = prix;
     }
-
 }
 
 

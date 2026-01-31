@@ -1,11 +1,18 @@
 package com.esprit.controllers.users;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.enums.UserRole;
 import com.esprit.models.users.Client;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
 import com.esprit.utils.SessionManager;
 import com.esprit.utils.SignInGoogle;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,8 +20,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.awt.*;
 import java.io.IOException;
@@ -24,24 +32,39 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller class for the RAKCHA application. Handles UI interactions
- * and manages view logic using FXML.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class VerifyWithGoogle {
 
     private static final Logger LOGGER = Logger.getLogger(VerifyWithGoogle.class.getName());
-
+    // FormsFX properties for declarative form handling
+    private final StringProperty verificationCodeProperty = new SimpleStringProperty("");
     @FXML
-    private TextField verification_code_textField;
+    private VBox verificationFormContainer;
     @FXML
     private Label verification_error_label;
     @FXML
     private Button verifyButton;
+    private Form verificationForm;
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules and renders it.
+     */
+    private void setupFormsFX() {
+        this.verificationForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.verificationCodeProperty)
+                    .label("Authorization Code")
+                    .placeholder("Paste the authorization code here")
+                    .validate(StringLengthValidator.atLeast(10, "Verification code is required"))
+            )
+        );
+
+        // Render form using pure FormsFX
+        if (this.verificationFormContainer != null) {
+            FormRenderer formRenderer = new FormRenderer(this.verificationForm);
+            this.verificationFormContainer.getChildren().add(formRenderer);
+        }
+    }
 
     /**
      * @throws IOException
@@ -50,6 +73,7 @@ public class VerifyWithGoogle {
      */
     @FXML
     void initialize() throws IOException, ExecutionException, InterruptedException {
+        setupFormsFX();
         final String link = SignInGoogle.signInWithGoogle();
         openWebpage(link);
     }
@@ -82,7 +106,7 @@ public class VerifyWithGoogle {
             }
         } catch (IOException e) {
             VerifyWithGoogle.LOGGER.warning(
-                    "Browser automation failed (xdg-open/open not found). This is expected on some Linux environments.");
+                "Browser automation failed (xdg-open/open not found). This is expected on some Linux environments.");
             VerifyWithGoogle.LOGGER.info("Please open the following URL manually: " + url);
             System.out.println("Please open the following URL manually: " + url);
         }
@@ -94,7 +118,7 @@ public class VerifyWithGoogle {
     @FXML
     void verifyAuthCode(final ActionEvent event) {
         try {
-            String authCode = this.verification_code_textField.getText().trim();
+            String authCode = this.verificationCodeProperty.get().trim();
 
             if (authCode.isEmpty()) {
                 VerifyWithGoogle.LOGGER.warning("Authorization code is empty");

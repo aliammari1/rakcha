@@ -74,9 +74,9 @@ public class CategoryService implements IService<Category> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.getSortBy());
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.sortBy());
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
 
@@ -98,11 +98,11 @@ public class CategoryService implements IService<Category> {
             }
 
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.error("Error retrieving paginated categories: {}", e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
 
     }
@@ -214,9 +214,9 @@ public class CategoryService implements IService<Category> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.getSortBy());
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.sortBy());
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -234,13 +234,13 @@ public class CategoryService implements IService<Category> {
             // Build paginated query with type filter
             StringBuilder queryBuilder = new StringBuilder(baseQuery);
             if (pageRequest.hasSorting()) {
-                queryBuilder.append(" ORDER BY ").append(pageRequest.getSortBy());
-                if (pageRequest.getSortDirection() != null) {
-                    queryBuilder.append(" ").append(pageRequest.getSortDirection());
+                queryBuilder.append(" ORDER BY ").append(pageRequest.sortBy());
+                if (pageRequest.sortDirection() != null) {
+                    queryBuilder.append(" ").append(pageRequest.sortDirection());
                 }
             }
-            queryBuilder.append(" LIMIT ").append(pageRequest.getSize());
-            queryBuilder.append(" OFFSET ").append(pageRequest.getPage() * pageRequest.getSize());
+            queryBuilder.append(" LIMIT ").append(pageRequest.size());
+            queryBuilder.append(" OFFSET ").append(pageRequest.page() * pageRequest.size());
 
             try (PreparedStatement stmt = connection.prepareStatement(queryBuilder.toString())) {
                 stmt.setString(1, type.toString());
@@ -255,11 +255,11 @@ public class CategoryService implements IService<Category> {
                 }
             }
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.error("Error retrieving paginated categories by type: {}", e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
     }
 

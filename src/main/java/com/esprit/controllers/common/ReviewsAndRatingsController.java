@@ -1,5 +1,9 @@
 package com.esprit.controllers.common;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.common.Review;
 import com.esprit.models.films.Film;
 import com.esprit.models.series.Series;
@@ -9,6 +13,8 @@ import com.esprit.services.films.FilmService;
 import com.esprit.services.series.SeriesService;
 import com.esprit.utils.SessionManager;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,6 +37,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -38,9 +45,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for displaying and managing reviews and ratings.
- */
+@Log4j2
 public class ReviewsAndRatingsController {
 
     private static final Logger LOGGER = Logger.getLogger(ReviewsAndRatingsController.class.getName());
@@ -48,6 +53,9 @@ public class ReviewsAndRatingsController {
     private final ReviewService reviewService;
     private final FilmService filmService;
     private final SeriesService seriesService;
+    // FormsFX properties for declarative form handling
+    private final StringProperty reviewTextProperty = new SimpleStringProperty("");
+    private final ObservableList<Review> reviews;
     @FXML
     private VBox reviewsContainer;
     @FXML
@@ -84,13 +92,12 @@ public class ReviewsAndRatingsController {
     private Label userReviewedLabel;
     @FXML
     private VBox writeReviewBox;
-    private ObservableList<Review> reviews;
     private User currentUser;
-
     private String contentType; // "film" or "series"
     private Long contentId;
     private int userRating = 0;
     private Review userExistingReview;
+    private Form reviewForm;
 
     public ReviewsAndRatingsController() {
         this.reviewService = new ReviewService();
@@ -105,9 +112,42 @@ public class ReviewsAndRatingsController {
 
         currentUser = SessionManager.getCurrentUser();
 
+        setupFormsFX();
+        setupEasyBindings();
         setupSort();
         setupFilter();
         setupUserRatingStars();
+    }
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules.
+     */
+    private void setupFormsFX() {
+        this.reviewForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.reviewTextProperty)
+                    .label("Review")
+                    .validate(StringLengthValidator.atLeast(10, "Review must be at least 10 characters"))
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind subscriptions to sync text fields with FormsFX properties.
+     */
+    private void setupEasyBindings() {
+        if (this.reviewTextArea != null) {
+            this.reviewTextArea.textProperty().bindBidirectional(this.reviewTextProperty);
+        }
+    }
+
+    /**
+     * Cleanup method to unbind properties when the view is closed.
+     */
+    public void cleanup() {
+        if (this.reviewTextArea != null) {
+            this.reviewTextArea.textProperty().unbindBidirectional(this.reviewTextProperty);
+        }
     }
 
     /**
@@ -202,7 +242,7 @@ public class ReviewsAndRatingsController {
                 if ("film".equals(contentType)) {
                     Film film = filmService.getFilmById(contentId);
                     if (film != null) {
-                        title = film.getName();
+                        title = film.getTitle();
                         image = film.getImageUrl();
                         type = "Film";
                     }

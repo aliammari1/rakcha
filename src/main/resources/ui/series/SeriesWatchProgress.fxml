@@ -9,7 +9,7 @@
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.series.SeriesWatchProgressController"
            styleClass="immersive-root"
-           stylesheets="@../styles/filmStyle.css, @../styles/series.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
@@ -324,3 +324,4 @@
     </VBox>
   </VBox>
 </StackPane>
+

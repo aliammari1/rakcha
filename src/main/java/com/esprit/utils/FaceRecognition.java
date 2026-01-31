@@ -20,6 +20,9 @@
 //  * @version 1.0.0
 //  * @since 1.0.0
 //  */
+// 
+// import lombok.extern.log4j.Log4j2;
+// @Log4j2
 // public class FaceRecognition {
 //     private static final Logger LOGGER = Logger.getLogger(FaceRecognition.class.getName());
 //     private static final String FACES_DIR = "./faces";
@@ -58,7 +61,6 @@
 //             String lowercaseName = name.toLowerCase();
 //             return lowercaseName.endsWith(".jpg") || lowercaseName.endsWith(".png");
 //         }
-;
 
 //         File[] imageFiles = root.listFiles(imgFilter);
 //         if (imageFiles == null || imageFiles.length == 0) {

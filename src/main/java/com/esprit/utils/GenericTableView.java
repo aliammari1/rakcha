@@ -18,6 +18,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import lombok.extern.log4j.Log4j2;
 import net.synedra.validatorfx.Validator;
 
 import java.util.HashMap;
@@ -27,12 +28,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
-/**
- * Generic TableView utility class that provides common functionality for tables
- * including validation, tooltips, filtering, and editing capabilities.
- *
- * @param <T> The type of objects displayed in the table
- */
+@Log4j2
 public class GenericTableView<T> {
 
     private static final Logger LOGGER = Logger.getLogger(GenericTableView.class.getName());

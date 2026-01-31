@@ -5,6 +5,7 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="com.esprit.controllers.users.HomeCinemaManagerController"
+            stylesheets="@../styles/rakcha-unified.css"
             style="-fx-background-color: linear-gradient(to bottom, #1a1a1f, #0f0f14);">
 
   <!-- Sidebar -->

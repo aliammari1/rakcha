@@ -1,7 +1,10 @@
 package com.esprit.services.series;
 
 import com.esprit.models.series.Favorite;
+import com.esprit.models.users.Client;
 import com.esprit.services.IService;
+import com.esprit.services.films.FilmService;
+import com.esprit.services.users.UserService;
 import com.esprit.utils.DataSource;
 import com.esprit.utils.Page;
 import com.esprit.utils.PageRequest;
@@ -12,13 +15,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -27,13 +28,16 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class FavoriteService implements IService<Favorite> {
 
     private static final Logger LOGGER = Logger.getLogger(FavoriteService.class.getName());
     // Allowed columns for sorting to prevent SQL injection
     private static final String[] ALLOWED_SORT_COLUMNS = {"id", "user_id", "series_id"};
-    public Connection connection;
-    public Statement statement;
+    private final Connection connection;
+    private final UserService userService;
+    private final FilmService filmService;
+    private final SeriesService seriesService;
 
     /**
      * Constructs a new IServiceFavoriteImpl instance.
@@ -41,6 +45,9 @@ public class FavoriteService implements IService<Favorite> {
      */
     public FavoriteService() {
         this.connection = DataSource.getInstance().getConnection();
+        this.userService = new UserService();
+        this.filmService = new FilmService();
+        this.seriesService = new SeriesService();
     }
 
 
@@ -58,15 +65,15 @@ public class FavoriteService implements IService<Favorite> {
             VALUES(?, ?, ?, CURRENT_TIMESTAMP)
             """;
         try (final PreparedStatement ps = this.connection.prepareStatement(req)) {
-            ps.setLong(1, favorite.getUserId());
+            ps.setLong(1, favorite.getUser().getId());
 
             // Set movie_id or series_id based on what's available
-            if (favorite.getMovieId() != null) {
-                ps.setLong(2, favorite.getMovieId());
+            if (favorite.getMovie() != null) {
+                ps.setLong(2, favorite.getMovie().getId());
                 ps.setNull(3, java.sql.Types.INTEGER);
-            } else if (favorite.getSeriesId() != null) {
+            } else if (favorite.getSeries() != null) {
                 ps.setNull(2, java.sql.Types.INTEGER);
-                ps.setLong(3, favorite.getSeriesId());
+                ps.setLong(3, favorite.getSeries().getId());
             } else {
                 throw new IllegalArgumentException("Either movieId or seriesId must be set");
             }
@@ -90,14 +97,14 @@ public class FavoriteService implements IService<Favorite> {
     public void update(final Favorite favorite) {
         final String req = "UPDATE user_favorites SET user_id=?, movie_id=?, series_id=? WHERE id=?";
         try (final PreparedStatement pst = this.connection.prepareStatement(req)) {
-            pst.setLong(1, favorite.getUserId());
+            pst.setLong(1, favorite.getUser().getId());
 
-            if (favorite.getMovieId() != null) {
-                pst.setLong(2, favorite.getMovieId());
+            if (favorite.getMovie() != null) {
+                pst.setLong(2, favorite.getMovie().getId());
                 pst.setNull(3, java.sql.Types.INTEGER);
-            } else if (favorite.getSeriesId() != null) {
+            } else if (favorite.getSeries() != null) {
                 pst.setNull(2, java.sql.Types.INTEGER);
-                pst.setLong(3, favorite.getSeriesId());
+                pst.setLong(3, favorite.getSeries().getId());
             } else {
                 throw new IllegalArgumentException("Either movieId or seriesId must be set");
             }
@@ -180,9 +187,9 @@ public class FavoriteService implements IService<Favorite> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            LOGGER.warning("Invalid sort column: " + pageRequest.getSortBy() + ". Using default sorting.");
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            LOGGER.warning("Invalid sort column: " + pageRequest.sortBy() + ". Using default sorting.");
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
 
@@ -204,11 +211,11 @@ public class FavoriteService implements IService<Favorite> {
             }
 
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             LOGGER.log(Level.SEVERE, "Error retrieving paginated favorites: " + e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
 
     }
@@ -224,9 +231,9 @@ public class FavoriteService implements IService<Favorite> {
     private Favorite buildFavoriteFromResultSet(ResultSet rs) throws SQLException {
         return Favorite.builder()
             .id(rs.getLong("id"))
-            .userId(rs.getLong("user_id"))
-            .movieId(rs.getObject("movie_id") != null ? rs.getLong("movie_id") : null)
-            .seriesId(rs.getObject("series_id") != null ? rs.getLong("series_id") : null)
+            .user((Client) this.userService.getById(rs.getLong("user_id")))
+            .movie(rs.getLong("movie_id") != 0 ? this.filmService.getById(rs.getLong("movie_id")) : null)
+            .series(rs.getLong("series_id") != 0 ? this.seriesService.getById(rs.getLong("series_id")) : null)
             .build();
     }
 

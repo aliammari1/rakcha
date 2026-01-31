@@ -33,6 +33,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import lombok.extern.log4j.Log4j2;
 import org.controlsfx.control.Rating;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -46,13 +47,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Is used to display details of a product when the user clicks on its name in
- * the list view. It retrieves the product ID from the event, and then loads an
- * FXML file to display additional information such as price and image. The
- * controller also handles mouse clicks on the image and displays a new stage
- * with additional information.
- */
+@Log4j2
 public class DetailsProductClientController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(DetailsProductClientController.class.getName());
@@ -243,7 +238,7 @@ public class DetailsProductClientController implements Initializable {
         rating.setMax(5);
         rating.setRating(avis.getRating()); // Vous pouvez ajuster en fonction de la valeur du produit
         final String format = "%.1f/5"
-                .formatted(BigDecimal.valueOf(rate).setScale(1, RoundingMode.FLOOR).doubleValue());
+            .formatted(BigDecimal.valueOf(rate).setScale(1, RoundingMode.FLOOR).doubleValue());
         final Label etoilelabel = new Label(format);
         etoilelabel.getStyleClass().add("product-rating-label");
         etoilelabel.setLayoutX(410);
@@ -255,28 +250,28 @@ public class DetailsProductClientController implements Initializable {
         iconeetoile.setLayoutX(465);
         iconeetoile.setLayoutY(250);
         final Review avi = new ReviewService().ratingExists(produit.getId(),
-                SessionManager.getCurrentUser() != null ? SessionManager.getCurrentUser().getId() : 0L);
+            SessionManager.getCurrentUser() != null ? SessionManager.getCurrentUser().getId() : 0L);
         rating.setRating(null != avi ? avi.getRating() : 0);
         // Stage stage = (Stage) hyperlink.getScene().getWindow();
         rating.ratingProperty().addListener((observableValue, number, t1) -> {
             final ReviewService avisService = new ReviewService();
             final Review avi1 = avisService.ratingExists(produit.getId(),
-                    SessionManager.getCurrentUser() != null ? SessionManager.getCurrentUser().getId() : 0L);
+                SessionManager.getCurrentUser() != null ? SessionManager.getCurrentUser().getId() : 0L);
             if (null != avi) {
                 avisService.delete(avi1);
             }
 
             avisService.create(new Review((Client) SessionManager.getCurrentUser(),
-                    t1.intValue(), produit));
+                t1.intValue(), produit));
             final double rate1 = new ReviewService().getAverageRating(produit.getId());
             // Formater le texte avec une seule valeur après la virgule
             final String formattedRate = "%.1f/5"
-                    .formatted(BigDecimal.valueOf(rate1).setScale(1, RoundingMode.FLOOR).doubleValue());
+                .formatted(BigDecimal.valueOf(rate1).setScale(1, RoundingMode.FLOOR).doubleValue());
             DetailsProductClientController.LOGGER.info(formattedRate);
             etoilelabel.setText(formattedRate);
         });
         card.getChildren().addAll(imageView, nameLabel, descriptionLabel, priceLabel, rating, etoilelabel,
-                addToCartButton, iconeetoile);
+            addToCartButton, iconeetoile);
         cardContainer.getChildren().add(card);
         return cardContainer;
     }
@@ -332,7 +327,7 @@ public class DetailsProductClientController implements Initializable {
         final Window previousWindow = this.retour.getScene().getWindow();
         // Charger le fichier FXML de la page "/ui/AfficherProduct.fxml"
         final FXMLLoader fxmlLoader = new FXMLLoader(
-                this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
+            this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
         try {
             final Parent rootNode = fxmlLoader.load();
             final Scene scene = new Scene(rootNode);
@@ -375,7 +370,7 @@ public class DetailsProductClientController implements Initializable {
      *
      * @param produit the product used to populate the card (image, name, price)
      * @return an HBox containing the assembled shopping-cart card and its event
-     *         handlers
+     * handlers
      */
     private HBox createShoppingCartCard(final Product produit) {
         // Créer une carte pour le produit avec ses informations
@@ -440,15 +435,15 @@ public class DetailsProductClientController implements Initializable {
         orderbutton.setPrefWidth(120);
         orderbutton.setPrefHeight(35);
         orderbutton.setStyle("""
-                -fx-background-color: #624970;
-                 -fx-text-fill: #FCE19A;\
-                   -fx-font-size: 12px;
-                     -fx-font-weight: bold;
-                 -fx-background-color: #6f7b94\
-                """); // Style du bouton
+            -fx-background-color: #624970;
+             -fx-text-fill: #FCE19A;\
+               -fx-font-size: 12px;
+                 -fx-font-weight: bold;
+             -fx-background-color: #6f7b94\
+            """); // Style du bouton
         orderbutton.setOnAction(event -> {
             final FXMLLoader fxmlLoader = new FXMLLoader(
-                    this.getClass().getResource("/ui/products/DesignProduitAdmin.fxml"));
+                this.getClass().getResource("/ui/products/DesignProduitAdmin.fxml"));
             try {
                 Parent root = null;
                 root = fxmlLoader.load();
@@ -468,7 +463,7 @@ public class DetailsProductClientController implements Initializable {
                 // le
                 // remplacer par une boîte de dialogue)
                 DetailsProductClientController.LOGGER
-                        .info("Erreur lors du chargement du fichier FXML : " + e.getMessage());
+                    .info("Erreur lors du chargement du fichier FXML : " + e.getMessage());
             }
 
         });
@@ -478,12 +473,12 @@ public class DetailsProductClientController implements Initializable {
         achatbutton.setLayoutY(400);
         achatbutton.setPrefHeight(30);
         achatbutton.setStyle("""
-                 -fx-background-color: #466288;
-                    -fx-text-fill: #FCE19A;
-                    -fx-font-size: 12px;
-                    -fx-font-weight: bold;
-                    -fx-padding: 10px 10px;\
-                """);
+             -fx-background-color: #466288;
+                -fx-text-fill: #FCE19A;
+                -fx-font-size: 12px;
+                -fx-font-weight: bold;
+                -fx-padding: 10px 10px;\
+            """);
         achatbutton.setOnAction(event -> {
             this.fermerShoppingCartCard(shoppingcartContainer);
         });
@@ -497,7 +492,7 @@ public class DetailsProductClientController implements Initializable {
         // Attachez un gestionnaire d'événements pour fermer la carte du shoppingcart
         closeIcon.setOnMouseClicked(event -> this.fermerShoppingCartCard(shoppingcartContainer));
         card.getChildren().addAll(cartLabel, imageView, nameLabel, priceLabel, quantiteLabel, sommeTotaleLabel,
-                achatbutton, orderbutton, closeIcon);
+            achatbutton, orderbutton, closeIcon);
         shoppingcartContainer.getChildren().add(card);
         return shoppingcartContainer;
     }
@@ -549,7 +544,7 @@ public class DetailsProductClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/products/PanierProduit.fxml"));
+                this.getClass().getResource("/ui/products/PanierProduit.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -580,7 +575,7 @@ public class DetailsProductClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/produits/CommentaireProduct.fxml"));
+                this.getClass().getResource("/ui/produits/CommentaireProduct.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -609,7 +604,7 @@ public class DetailsProductClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/produits/CommentaireProduct.fxml"));
+                this.getClass().getResource("/ui/produits/CommentaireProduct.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -641,7 +636,7 @@ public class DetailsProductClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/AffichageEvenementClient.fxml"));
+                this.getClass().getResource("/ui/AffichageEvenementClient.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -677,7 +672,7 @@ public class DetailsProductClientController implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
+                this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -794,7 +789,7 @@ public class DetailsProductClientController implements Initializable {
                 DetailsProductClientController.LOGGER.info(String.valueOf(produit.getId()));
                 final VBox cardContainer = this.createtopthree(produit);
                 DetailsProductClientController.LOGGER.log(Level.INFO, "------------------{0}{1}",
-                        new Object[] { j, cardContainer.getChildren() });
+                    new Object[]{j, cardContainer.getChildren()});
                 this.topthreeVbox.getChildren().add(cardContainer);
                 j++;
             }
@@ -819,7 +814,7 @@ public class DetailsProductClientController implements Initializable {
      * @param produit the product to represent; its id, name, price, and image URL
      *                are used to populate the card
      * @return a VBox containing the assembled product card (image, name label, and
-     *         price label)
+     * price label)
      */
     public VBox createtopthree(final Product produit) {
         final VBox cardContainer = new VBox(5);
@@ -856,10 +851,10 @@ public class DetailsProductClientController implements Initializable {
         imageView.setOnMouseClicked(event -> {
             try {
                 final FXMLLoader loader = new FXMLLoader(
-                        this.getClass().getResource("/ui/produits/DetailsProductClient.fxml"));
+                    this.getClass().getResource("/ui/produits/DetailsProductClient.fxml"));
                 Parent root = null;
                 DetailsProductClientController.LOGGER
-                        .info("Clique sur le nom du produit. ID du produit : " + produit.getId());
+                    .info("Clique sur le nom du produit. ID du produit : " + produit.getId());
                 root = loader.load();
                 // Récupérez le contrôleur et passez l'id du produit lors de l'initialisation
                 final DetailsProductClientController controller = loader.getController();
@@ -887,10 +882,10 @@ public class DetailsProductClientController implements Initializable {
         nameLabel.setOnMouseClicked(event -> {
             try {
                 final FXMLLoader loader = new FXMLLoader(
-                        this.getClass().getResource("/ui/produits/DetailsProductClient.fxml"));
+                    this.getClass().getResource("/ui/produits/DetailsProductClient.fxml"));
                 Parent root = null;
                 DetailsProductClientController.LOGGER
-                        .info("Clique sur le nom du produit. ID du produit : " + produit.getId());
+                    .info("Clique sur le nom du produit. ID du produit : " + produit.getId());
                 root = loader.load();
                 // Récupérez le contrôleur et passez l'id du produit lors de l'initialisation
                 final DetailsProductClientController controller = loader.getController();

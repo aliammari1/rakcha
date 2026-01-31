@@ -1,38 +1,79 @@
 package com.esprit.controllers.users;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.utils.SessionManager;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller for email verification code screen.
- * Handles user verification code input and navigation to reset password screen.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class VerificationCodeController {
 
     private static final Logger LOGGER = Logger.getLogger(VerificationCodeController.class.getName());
-
+    // FormsFX properties for declarative form handling
+    private final StringProperty codeProperty = new SimpleStringProperty("");
+    private String email;
     @FXML
-    private TextField codeTextField;
-    @FXML
-    private Label codeErrorLabel;
+    private VBox codeFormContainer;
     @FXML
     private Button verifyButton;
+    private Form codeForm;
+
+    /**
+     * Initialize method called by JavaFX.
+     */
+    @FXML
+    public void initialize() {
+        setupFormsFX();
+    }
+
+    /**
+     * Sets the email associated with the verification code.
+     *
+     * @param email the user's email
+     */
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules and renders it.
+     */
+    private void setupFormsFX() {
+        this.codeForm = Form.of(
+                Group.of(
+                    Field.ofStringType(this.codeProperty)
+                        .label("Verification Code")
+                        .placeholder("Enter your 6-digit code")
+                        .required("Verification code is required")
+                        .validate(StringLengthValidator.exactly(6, "Code must be exactly 6 digits"))
+                        .validate(RegexValidator.forPattern("\\d{6}", "Code must contain only numbers"))))
+            .title("Email Verification");
+
+        // Render the form into the container
+        if (this.codeFormContainer != null) {
+            FormRenderer formRenderer = new FormRenderer(this.codeForm);
+            this.codeFormContainer.getChildren().clear();
+            this.codeFormContainer.getChildren().add(formRenderer);
+        }
+    }
 
     /**
      * Verifies the code entered by user.
@@ -41,33 +82,21 @@ public class VerificationCodeController {
      */
     @FXML
     void verifyCode(final ActionEvent event) {
-        final String code = this.codeTextField.getText().trim();
-
-        if (code.isEmpty()) {
-            this.codeErrorLabel.setText("Please enter the verification code");
+        // Validate form first
+        if (!codeForm.isValid()) {
             return;
         }
 
-        if (code.length() != 6) {
-            this.codeErrorLabel.setText("Code must be exactly 6 digits");
-            return;
-        }
-
-        if (!code.matches("\\d{6}")) {
-            this.codeErrorLabel.setText("Code must contain only numbers");
-            return;
-        }
+        final String code = this.codeProperty.get().trim();
 
         // Check if code has expired
-        if (SessionManager.isCodeExpired()) {
-            this.codeErrorLabel.setText("Verification code has expired. Please request a new one.");
+        if (SessionManager.isCodeExpired(email)) {
             SessionManager.clearVerificationData();
             return;
         }
 
         // Verify the code
-        if (!SessionManager.verifyCode(code)) {
-            this.codeErrorLabel.setText("Invalid verification code. Please try again.");
+        if (!SessionManager.verifyCode(email, code)) {
             return;
         }
 
@@ -77,7 +106,6 @@ public class VerificationCodeController {
 
         } catch (final Exception e) {
             LOGGER.log(Level.SEVERE, "Error navigating to reset password: " + e.getMessage(), e);
-            this.codeErrorLabel.setText("Error proceeding. Please try again.");
         }
     }
 
@@ -93,7 +121,7 @@ public class VerificationCodeController {
         final ResetPasswordController controller = loader.getController();
 
         // Pass the email to the reset password controller
-        controller.setUserEmail(SessionManager.getUserEmail());
+        controller.setUserEmail(SessionManager.getUserEmail(email));
 
         final Stage stage = (Stage) this.verifyButton.getScene().getWindow();
         stage.setScene(new Scene(root));

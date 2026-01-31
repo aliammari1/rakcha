@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>RAKCHA Desktop - Download</title>
-    <meta content="Download RAKCHA Desktop Application - Movie and Cinema Management System" name="description">
+    <title>RAKCHA | Cinematic Management System</title>
+    <meta content="The ultimate desktop application for cinema management." name="description">
+    
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         :root {
-            --primary-red: #b91c1c;
-            --dark-red: #7f1d1d;
-            --crimson: #dc2626;
-            --burgundy: #991b1b;
-            --accent-silver: #e5e7eb;
-            --accent-white: #f9fafb;
-            --gold-accent: #ffd700;
-            --dark-bg: #0a0a0a;
-            --darker-bg: #030303;
-            --card-bg: rgba(15, 5, 5, 0.95);
-            --text-light: #ffffff;
-            --text-muted: #d1d5db;
+            --primary: #E50914;
+            --primary-glow: rgba(229, 9, 20, 0.5);
+            --dark-bg: #050505;
+            --surface: #121212;
+            --surface-glass: rgba(20, 20, 20, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         * {
@@ -34,1381 +34,505 @@
         }
 
         body {
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--text-light);
-            background: var(--darker-bg);
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
             overflow-x: hidden;
-            position: relative;
+            min-height: 100vh;
         }
 
-        /* Animated background */
-        body::before {
-            content: '';
+        /* --- Ambient Backgrounds --- */
+        .bg-ambient {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at 20% 80%, rgba(185, 28, 28, 0.15) 0%, transparent 60%),
-            radial-gradient(ellipse at 80% 20%, rgba(127, 29, 29, 0.12) 0%, transparent 60%),
-            radial-gradient(ellipse at 50% 50%, rgba(220, 38, 38, 0.08) 0%, transparent 70%),
-            linear-gradient(180deg, #030303 0%, #0a0a0a 50%, #030303 100%);
-            z-index: -3;
-            animation: backgroundShift 30s ease-in-out infinite;
+            top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(229, 9, 20, 0.08), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(50, 0, 0, 0.2), transparent 40%);
         }
 
-        @keyframes backgroundShift {
-            0%, 100% {
-                background: radial-gradient(ellipse at 20% 80%, rgba(185, 28, 28, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(127, 29, 29, 0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 50%, rgba(220, 38, 38, 0.08) 0%, transparent 70%),
-                linear-gradient(180deg, #030303 0%, #0a0a0a 50%, #030303 100%);
-            }
-            50% {
-                background: radial-gradient(ellipse at 80% 20%, rgba(185, 28, 28, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 20% 80%, rgba(127, 29, 29, 0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 50%, rgba(220, 38, 38, 0.08) 0%, transparent 70%),
-                linear-gradient(180deg, #0a0a0a 0%, #030303 50%, #0a0a0a 100%);
-            }
-        }
-
-        /* Fire particle container - ENABLED */
-        .fire-particles {
+        .fog {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: radial-gradient(circle, rgba(220, 38, 38, 1) 0%, rgba(185, 28, 28, 0.8) 40%, transparent 70%);
-            border-radius: 50%;
-            opacity: 0;
-            animation: rise 5s infinite linear;
-            box-shadow: 0 0 10px rgba(220, 38, 38, 0.8);
-        }
-
-        @keyframes rise {
-            0% {
-                opacity: 0;
-                transform: translateY(100vh) scale(0.5);
-            }
-            10% {
-                opacity: 1;
-                transform: translateY(90vh) scale(1);
-            }
-            90% {
-                opacity: 1;
-                transform: translateY(10vh) scale(0.8);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(0) scale(0);
-            }
-        }
-
-        /* Larger fire particles */
-        .particle.large {
-            width: 10px;
-            height: 10px;
-            background: radial-gradient(circle, rgba(220, 38, 38, 1) 0%, rgba(185, 28, 28, 0.9) 30%, transparent 80%);
-            animation-duration: 7s;
-            box-shadow: 0 0 20px rgba(220, 38, 38, 1);
-        }
-
-        /* Spark particles */
-        .particle.spark {
-            width: 3px;
-            height: 3px;
-            background: var(--gold-accent);
-            box-shadow: 0 0 15px var(--gold-accent);
-            animation-duration: 3s;
-        }
-
-        /* Cinema screen glow effect */
-        .screen-glow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center top, rgba(185, 28, 28, 0.08) 0%, transparent 50%),
-            radial-gradient(ellipse at center bottom, rgba(127, 29, 29, 0.05) 0%, transparent 50%);
-            z-index: -1;
+            top: 0; left: 0; width: 200%; height: 100%; z-index: -1;
+            background: url('https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog1.png') repeat-x;
+            background-size: cover;
+            animation: fogMove 120s linear infinite;
+            opacity: 0.15;
             pointer-events: none;
         }
+        
+        .vignette {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle, transparent 40%, #050505 120%);
+            pointer-events: none;
+        }
+
+        @keyframes fogMove { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
 
         .container {
-            max-width: 1400px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 1;
+            padding: 0 2rem;
         }
 
-        header {
-            padding: 3rem 0 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        /* Logo Image Animation */
-        .logo-container {
+        /* --- Navigation --- */
+        nav {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            position: relative;
-        }
-
-        .logo-image {
-            width: 200px;
-            height: 200px;
-            animation: logoFloat 4s ease-in-out infinite;
-            filter: drop-shadow(0 0 40px rgba(220, 38, 38, 0.8)) drop-shadow(0 0 80px rgba(185, 28, 28, 0.5));
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            cursor: pointer;
-        }
-
-        .logo-image:hover {
-            transform: scale(1.2);
-            filter: drop-shadow(0 0 60px rgba(220, 38, 38, 1)) drop-shadow(0 0 120px rgba(185, 28, 28, 0.8));
-        }
-
-        @keyframes logoFloat {
-            0%, 100% {
-                transform: translateY(0px) scale(1);
-            }
-            50% {
-                transform: translateY(-15px) scale(1.05);
-            }
-        }
-
-        /* Logo ring effect */
-        .logo-ring {
-            position: absolute;
-            width: 240px;
-            height: 240px;
-            border: 2px solid rgba(220, 38, 38, 0.2);
-            border-radius: 50%;
-            animation: ringPulse 3s ease-in-out infinite;
-        }
-
-        .logo-ring:nth-child(2) {
-            width: 260px;
-            height: 260px;
-            animation-delay: 0.8s;
-            border-color: rgba(185, 28, 28, 0.15);
-        }
-
-        .logo-ring:nth-child(3) {
-            width: 280px;
-            height: 280px;
-            animation-delay: 1.6s;
-            border-color: rgba(127, 29, 29, 0.1);
-        }
-
-        @keyframes ringPulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.3;
-            }
-            50% {
-                transform: scale(1.15);
-                opacity: 0;
-            }
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
         }
 
         .logo {
             font-family: 'Cinzel', serif;
-            font-size: 5rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            letter-spacing: 0.15em;
-            background: linear-gradient(135deg, var(--primary-red) 0%, var(--crimson) 50%, var(--dark-red) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 30px rgba(185, 28, 28, 0.5));
-            animation: logoGlow 4s ease-in-out infinite;
-            text-transform: uppercase;
-        }
-
-        @keyframes logoGlow {
-            0%, 100% {
-                filter: drop-shadow(0 0 20px rgba(185, 28, 28, 0.4)) drop-shadow(0 0 40px rgba(127, 29, 29, 0.2));
-            }
-            50% {
-                filter: drop-shadow(0 0 40px rgba(220, 38, 38, 0.6)) drop-shadow(0 0 60px rgba(185, 28, 28, 0.3));
-            }
-        }
-
-        .tagline {
-            font-size: 1.4rem;
-            font-weight: 300;
-            color: var(--accent-silver);
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-            margin-bottom: 0.8rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            color: var(--text-muted);
-            font-weight: 400;
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-            opacity: 0.8;
-        }
-
-        .main-content {
-            background: linear-gradient(135deg,
-            var(--card-bg) 0%,
-            rgba(30, 5, 10, 0.95) 50%,
-            var(--card-bg) 100%);
-            border-radius: 30px;
-            margin: 3rem auto;
-            padding: 5rem 4rem;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6),
-            inset 0 1px 0 rgba(185, 28, 28, 0.3),
-            0 0 120px rgba(185, 28, 28, 0.12);
-            max-width: 1300px;
-            border: 1px solid rgba(185, 28, 28, 0.15);
-            position: relative;
-            backdrop-filter: blur(20px);
-            overflow: hidden;
-        }
-
-        .main-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-silver), transparent);
-            opacity: 0.3;
-        }
-
-        .app-info {
-            text-align: center;
-            margin-bottom: 5rem;
-        }
-
-        .app-info h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 4rem;
-            margin-bottom: 2rem;
-            color: var(--accent-white);
-            text-shadow: 0 4px 20px rgba(185, 28, 28, 0.5);
-            letter-spacing: 0.08em;
+            font-size: 1.8rem;
             font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px var(--primary-glow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .app-info p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            line-height: 1.9;
-            font-weight: 300;
-        }
-
-        .features {
+        /* --- Hero Section --- */
+        .hero {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0 5rem;
-        }
-
-        .feature {
-            text-align: center;
-            padding: 2rem 1.5rem;
-            background: linear-gradient(135deg, rgba(185, 28, 28, 0.12) 0%, rgba(127, 29, 29, 0.08) 100%);
-            border-radius: 20px;
-            border: 1px solid rgba(185, 28, 28, 0.25);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .feature::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(229, 231, 235, 0.08), transparent);
-            transition: left 0.6s;
-        }
-
-        .feature:hover::before {
-            left: 100%;
-        }
-
-        .feature:hover {
-            transform: translateY(-8px) scale(1.05);
-            border-color: var(--crimson);
-            box-shadow: 0 15px 35px rgba(185, 28, 28, 0.3);
-            background: linear-gradient(135deg, rgba(185, 28, 28, 0.18) 0%, rgba(127, 29, 29, 0.12) 100%);
-        }
-
-        /* Gamification: Achievement badge */
-        .feature::after {
-            content: '✓';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 30px;
-            height: 30px;
-            background: var(--gold-accent);
-            color: var(--dark-bg);
-            border-radius: 50%;
-            display: flex;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
             align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            opacity: 0;
-            transform: scale(0) rotate(-180deg);
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .feature.unlocked::after {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        .feature i {
-            font-size: 2.5rem;
-            color: var(--crimson);
-            margin-bottom: 1.2rem;
-            filter: drop-shadow(0 0 15px rgba(220, 38, 38, 0.6));
-            transition: transform 0.3s;
-        }
-
-        .feature:hover i {
-            transform: scale(1.2) rotate(360deg);
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .feature h3 {
-            color: var(--accent-silver);
-            margin-bottom: 0.8rem;
-            font-size: 1.15rem;
-            font-weight: 600;
-            font-family: 'Cinzel', serif;
-        }
-
-        .feature p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .downloads {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 3rem;
-            margin: 5rem 0;
-        }
-
-        .platform-section {
-            background: linear-gradient(135deg,
-            rgba(30, 5, 10, 0.9) 0%,
-            rgba(20, 5, 8, 0.95) 100%);
-            border-radius: 25px;
-            padding: 3rem;
-            border: 2px solid rgba(185, 28, 28, 0.35);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 rgba(185, 28, 28, 0.2);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            padding-top: 6rem;
             position: relative;
-            overflow: hidden;
         }
 
-        .platform-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg,
-            transparent,
-            rgba(185, 28, 28, 0.15),
-            transparent);
-            transition: left 0.6s ease;
-        }
-
-        .platform-section:hover::before {
-            left: 100%;
-        }
-
-        .platform-section:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
-            0 0 60px rgba(185, 28, 28, 0.25),
-            inset 0 1px 0 rgba(185, 28, 28, 0.3);
-            border-color: var(--crimson);
-        }
-
-        .platform-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2.5rem;
-        }
-
-        .platform-icon {
-            font-size: 3.5rem;
-            margin-right: 1.5rem;
-            color: var(--crimson);
-            filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.7));
-        }
-
-        .platform-name {
-            font-family: 'Cinzel', serif;
-            font-size: 2.8rem;
-            color: var(--accent-white);
-            text-shadow: 0 2px 10px rgba(185, 28, 28, 0.5);
-            letter-spacing: 0.08em;
-            font-weight: 700;
-        }
-
-        .download-options {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-        }
-
-        .download-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1.5rem 2rem;
-            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 15px;
-            font-weight: 600;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 6px 20px rgba(185, 28, 28, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .download-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(229, 231, 235, 0.1);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-
-        .download-btn:hover::before {
-            width: 500px;
-            height: 500px;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 30px rgba(185, 28, 28, 0.5);
-            background: linear-gradient(135deg, var(--crimson) 0%, var(--primary-red) 100%);
-            border-color: var(--accent-silver);
-        }
-
-        .download-btn:active {
-            transform: translateY(-1px) scale(0.98);
-        }
-
-        /* Download counter badge */
-        .download-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: var(--gold-accent);
-            color: var(--dark-bg);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            animation: badgePulse 2s infinite;
+        .hero-content {
             z-index: 2;
         }
 
-        @keyframes badgePulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
+        .hero-content h1 {
+            font-size: 3.8rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .hero-content h1 span {
+            color: var(--primary);
         }
 
-        .download-info {
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+            max-width: 90%;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px; /* Modern pill shape */
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--primary-glow);
+            background: #ff0f1f;
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .btn-outline:hover {
+            border-color: white;
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* --- 3D Laptop Mockup with CSS UI --- */
+        .hero-visual {
+            perspective: 1500px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .laptop-mockup {
+            width: 100%;
+            max-width: 650px;
+            transform: rotateY(-10deg) rotateX(5deg);
+            transition: transform 0.3s ease;
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+        }
+        
+        /* Glow behind laptop */
+        .laptop-mockup::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; height: 80%;
+            background: var(--primary);
+            filter: blur(80px);
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .laptop-screen {
+            background: #000;
+            border-radius: 12px;
+            border: 1px solid #333;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            overflow: hidden;
+            aspect-ratio: 16/10;
+            position: relative;
+            background: #0f0f0f;
+            display: flex;
+        }
+        
+        /* --- CSS-Only Dashboard UI Inside Laptop --- */
+        .mock-sidebar {
+            width: 60px;
+            background: #0a0a0a;
+            border-right: 1px solid #222;
             display: flex;
             flex-direction: column;
-            z-index: 1;
+            align-items: center;
+            padding-top: 20px;
+            gap: 20px;
         }
-
-        .download-title {
-            font-size: 1.15rem;
-            margin-bottom: 0.3rem;
-            font-weight: 600;
+        .mock-icon { width: 24px; height: 24px; border-radius: 6px; background: #222; }
+        .mock-icon.active { background: var(--primary); box-shadow: 0 0 10px var(--primary-glow); }
+        
+        .mock-main { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .mock-hero { 
+            width: 100%; height: 120px; 
+            background: linear-gradient(45deg, #222, #1a1a1a); 
+            border-radius: 8px; 
+            position: relative;
+            overflow: hidden;
         }
-
-        .download-desc {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .download-size {
-            font-size: 0.95rem;
-            color: var(--accent-silver);
-            font-weight: 600;
-            z-index: 1;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 3rem 0;
-            color: rgba(229, 231, 235, 0.6);
-            border-top: 1px solid rgba(185, 28, 28, 0.2);
-            margin-top: 3rem;
-        }
-
-        .system-requirements {
-            background: linear-gradient(135deg, rgba(30, 5, 10, 0.7) 0%, rgba(20, 5, 8, 0.8) 100%);
-            border-radius: 20px;
-            padding: 3rem;
-            margin: 5rem 0 4rem;
-            border: 1px solid rgba(185, 28, 28, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-        }
-
-        .system-requirements h3 {
-            color: var(--accent-white);
-            margin-bottom: 2.5rem;
-            font-family: 'Cinzel', serif;
-            font-size: 2.2rem;
-            text-align: center;
-            letter-spacing: 0.08em;
+        .mock-hero::after {
+            content: 'RAKCHA';
+            position: absolute;
+            bottom: 10px; left: 15px;
+            font-family: 'Cinzel';
+            color: rgba(255,255,255,0.2);
+            font-size: 2rem;
             font-weight: 700;
         }
+        
+        .mock-row { display: flex; gap: 10px; }
+        .mock-card { 
+            flex: 1; aspect-ratio: 2/3; 
+            background: #1a1a1a; 
+            border-radius: 6px; 
+            position: relative;
+            overflow: hidden;
+        }
+        /* Animated shimmer for "loading" effect */
+        .mock-hero, .mock-card {
+            position: relative;
+        }
+        .mock-hero::before, .mock-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            animation: shimmer 2s infinite;
+        }
 
-        .req-grid {
+        .laptop-base {
+            height: 18px;
+            background: #1a1a1a;
+            border-radius: 0 0 24px 24px;
+            margin-top: -2px;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(to bottom, #2a2a2a, #111);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+        /* Laptop notch */
+        .laptop-base::before {
+            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 12px;
+            background: #161616;
+            border-radius: 0 0 10px 10px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotateY(-10deg) rotateX(5deg) translateY(0px); }
+            50% { transform: rotateY(-10deg) rotateX(5deg) translateY(-15px); }
+        }
+        @keyframes shimmer { 0% { transform: translateX(-150%); } 100% { transform: translateX(150%); } }
+
+        /* --- Features Section --- */
+        .features-section { padding: 8rem 0; }
+        
+        .section-header { text-align: center; margin-bottom: 5rem; }
+        .section-header h2 { font-family: 'Cinzel', serif; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-muted); }
+
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 2rem;
         }
 
-        .req-item {
-            display: flex;
-            align-items: center;
-            padding: 1.5rem;
-            background: rgba(185, 28, 28, 0.08);
-            border-radius: 15px;
-            border: 1px solid rgba(185, 28, 28, 0.15);
+        .card {
+            background: var(--surface-glass);
+            border: 1px solid var(--border);
+            padding: 3rem 2rem;
+            border-radius: 20px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .req-item:hover {
-            background: rgba(185, 28, 28, 0.15);
-            border-color: var(--crimson);
-            transform: translateX(5px);
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(30,30,30,0.8);
         }
 
-        .req-item i {
-            color: var(--crimson);
-            margin-right: 1.5rem;
-            font-size: 1.5rem;
-            width: 30px;
+        .card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 { font-size: 1.4rem; margin-bottom: 1rem; font-weight: 600; }
+        .card p { color: var(--text-muted); line-height: 1.6; }
+
+        /* --- Download Section --- */
+        .download-hub {
+            background: linear-gradient(to bottom, transparent, rgba(20,20,20,0.8));
+            padding: 6rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .platform-card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 16px;
+            padding: 2.5rem 1.5rem;
             text-align: center;
-            filter: drop-shadow(0 0 10px rgba(196, 30, 58, 0.5));
+            transition: all 0.3s;
+            position: relative;
         }
 
-        .req-item span {
-            color: var(--text-muted);
-            line-height: 1.6;
+        .platform-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
 
-        @media (max-width: 768px) {
-            .logo {
-                font-size: 3.5rem;
-            }
-
-            .logo-image {
-                width: 150px;
-                height: 150px;
-            }
-
-            .logo-ring {
-                width: 180px;
-                height: 180px;
-            }
-
-            .logo-ring:nth-child(2) {
-                width: 200px;
-                height: 200px;
-            }
-
-            .logo-ring:nth-child(3) {
-                width: 220px;
-                height: 220px;
-            }
-
-            .stats-container {
-                top: 10px;
-                right: 10px;
-                padding: 10px 15px;
-                min-width: 120px;
-            }
-
-            .stat-item {
-                font-size: 0.8rem;
-            }
-
-            .stat-value {
-                font-size: 1rem;
-            }
-
-            .achievement-toast {
-                bottom: 10px;
-                right: 10px;
-                min-width: 250px;
-                padding: 15px 20px;
-            }
-
-            .app-info h1 {
-                font-size: 2.5rem;
-            }
-
-            .platform-section {
-                padding: 2rem;
-            }
-
-            .platform-name {
-                font-size: 2rem;
-            }
-
-            .downloads {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .main-content {
-                padding: 3rem 2rem;
-                margin: 1.5rem;
-            }
-
-            .features {
-                grid-template-columns: 1fr;
-            }
+        .platform-card.recommended {
+            border: 1px solid var(--primary);
+            background: linear-gradient(180deg, rgba(229, 9, 20, 0.05), #111);
+        }
+        
+        .badge {
+            position: absolute; top: 15px; right: 15px;
+            background: var(--primary); color: white;
+            font-size: 0.7rem; padding: 4px 8px; border-radius: 4px;
+            font-weight: 700;
         }
 
-        .footer {
+        .platform-icon { font-size: 3.5rem; margin-bottom: 1.5rem; color: #eee; }
+
+        .download-btn-block {
+            display: block;
+            width: 100%;
+            background: #fff;
+            color: #000;
+            padding: 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 2rem;
+            transition: 0.2s;
+        }
+
+        .download-btn-block:hover { background: var(--primary); color: white; }
+
+        footer {
             text-align: center;
-            padding: 4rem 0 3rem;
-            color: var(--text-muted);
-            border-top: 1px solid rgba(196, 30, 58, 0.25);
-            margin-top: 5rem;
-        }
-
-        .footer p {
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        /* Loading animation for when files are being loaded */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(196, 30, 58, 0.4);
-            border-radius: 50%;
-            border-top-color: var(--primary-red);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Cinematic vignette effect */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        /* Gamification Progress Bar */
-        .progress-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: rgba(185, 28, 28, 0.2);
-            z-index: 1000;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--crimson), var(--gold-accent));
-            transition: width 0.3s ease;
-            box-shadow: 0 0 20px var(--crimson);
-        }
-
-        /* Stats Counter */
-        .stats-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(15, 5, 5, 0.95);
-            padding: 15px 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(220, 38, 38, 0.5);
-            z-index: 999;
-            min-width: 150px;
-            backdrop-filter: blur(10px);
-            animation: slideInRight 0.5s ease;
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .stat-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
+            padding: 4rem 0;
+            color: #555;
             font-size: 0.9rem;
+            border-top: 1px solid #111;
         }
 
-        .stat-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .stat-label {
-            color: var(--accent-silver);
+        /* Scroll Indicator */
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            opacity: 0.5;
+            animation: bounce 2s infinite;
         }
-
-        .stat-value {
-            color: var(--gold-accent);
-            font-weight: bold;
-            font-size: 1.1rem;
+        .mouse {
+            width: 24px; height: 36px;
+            border: 2px solid #fff;
+            border-radius: 12px;
+            position: relative;
         }
-
-        /* Achievement Toast */
-        .achievement-toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.95), rgba(185, 28, 28, 0.95));
-            padding: 20px 25px;
-            border-radius: 15px;
-            border: 2px solid var(--gold-accent);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            transform: translateX(400px);
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            z-index: 1001;
-            min-width: 300px;
+        .wheel {
+            width: 2px; height: 6px;
+            background: #fff;
+            position: absolute;
+            top: 6px; left: 50%;
+            transform: translateX(-50%);
         }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform:translateY(0) translateX(-50%);} 40% {transform:translateY(-10px) translateX(-50%);} 60% {transform:translateY(-5px) translateX(-50%);} }
 
-        .achievement-toast.show {
-            transform: translateX(0);
-        }
-
-        .achievement-content {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .achievement-icon {
-            font-size: 2rem;
-            animation: rotate 1s ease-in-out;
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: rotate(0deg) scale(0);
-            }
-            50% {
-                transform: rotate(180deg) scale(1.2);
-            }
-            100% {
-                transform: rotate(360deg) scale(1);
-            }
-        }
-
-        .achievement-text h4 {
-            margin: 0;
-            color: var(--gold-accent);
-            font-size: 1.1rem;
-            font-weight: bold;
-        }
-
-        .achievement-text p {
-            margin: 5px 0 0 0;
-            color: var(--accent-white);
-            font-size: 0.9rem;
-        }
-
-        /* Cursor trail effect */
-        .cursor-trail {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(220, 38, 38, 0.6), transparent);
-            pointer-events: none;
-            z-index: 9999;
-            animation: cursorFade 1s ease-out forwards;
-        }
-
-        @keyframes cursorFade {
-            to {
-                transform: scale(2);
-                opacity: 0;
-            }
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; text-align: center; padding-top: 8rem; }
+            .hero-buttons { justify-content: center; }
+            .laptop-mockup { margin: 2rem auto; transform: none; animation: none; }
+            .hero-content h1 { font-size: 2.5rem; }
         }
     </style>
 </head>
 <body>
-<!-- Progress Bar -->
-<div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
-</div>
 
-<!-- Stats Counter -->
-<div class="stats-container">
-    <div class="stat-item">
-        <span class="stat-label"><i class="fas fa-trophy"></i> Score</span>
-        <span class="stat-value" id="scoreValue">0</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-label"><i class="fas fa-star"></i> Level</span>
-        <span class="stat-value" id="levelValue">1</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-label"><i class="fas fa-fire"></i> Streak</span>
-        <span class="stat-value" id="streakValue">0</span>
-    </div>
-</div>
+    <div class="bg-ambient"></div>
+    <div class="fog"></div>
+    <div class="vignette"></div>
 
-<!-- Achievement Toast -->
-<div class="achievement-toast" id="achievementToast">
-    <div class="achievement-content">
-        <div class="achievement-icon">🏆</div>
-        <div class="achievement-text">
-            <h4 id="achievementTitle">Achievement Unlocked!</h4>
-            <p id="achievementDesc">First Visit</p>
+    <nav>
+        <div class="container" style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+            <div class="logo">
+                <i class="fas fa-film"></i> RAKCHA
+            </div>
+            <a href="#downloads" class="btn btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">Download App</a>
         </div>
-    </div>
-</div>
+    </nav>
 
-<!-- Fire particles -->
-<div class="fire-particles" id="fireParticles"></div>
-
-<!-- Screen glow effect -->
-<div class="screen-glow"></div>
-
-<div class="container">
-    <header>
-        <div class="logo-container">
-            <div class="logo-ring"></div>
-            <div class="logo-ring"></div>
-            <div class="logo-ring"></div>
-            <img alt="RAKCHA Logo" class="logo-image" id="logoImage" src="logo-animated.svg">
-        </div>
-        <div class="logo">RAKCHA</div>
-        <div class="tagline">Movie & Cinema Management System</div>
-        <div class="subtitle">Desktop Application</div>
-    </header>
-
-    <main class="main-content">
-        <section class="app-info">
-            <h1>Download RAKCHA Desktop</h1>
-            <p>Experience the ultimate movie and cinema management system. RAKCHA Desktop brings professional-grade
-                tools for managing your cinema operations, movie collections, and entertainment business right to your
-                desktop.</p>
-
-            <div class="features">
-                <div class="feature">
-                    <i class="fas fa-film"></i>
-                    <h3>Movie Management</h3>
-                    <p>Comprehensive movie database and catalog system</p>
+    <div class="container">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Cinema <br><span>Reimagined.</span></h1>
+                <p>The all-in-one desktop solution for theaters and movie buffs. Manage your library, bookings, and screenings with the power of Rakcha.</p>
+                <div class="hero-buttons">
+                    <a href="#downloads" class="btn btn-primary"><i class="fas fa-download"></i> Get Started</a>
+                    <a href="#features" class="btn btn-outline">Explore Features</a>
                 </div>
-                <div class="feature">
-                    <i class="fas fa-building"></i>
-                    <h3>Cinema Operations</h3>
-                    <p>Manage theaters, screenings, and bookings</p>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="laptop-mockup">
+                    <div class="laptop-screen">
+                        <img src="Hero.png" alt="Hero Image" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+                    </div>
+                    <div class="laptop-base"></div>
                 </div>
-                <div class="feature">
+            </div>
+
+            <div class="scroll-down">
+                <div class="mouse"><div class="wheel"></div></div>
+                <span style="font-size: 0.8rem; letter-spacing: 2px;">SCROLL</span>
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <div class="section-header">
+                <h2>Why Choose Rakcha?</h2>
+                <p>Built for high-performance management.</p>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <i class="fas fa-database"></i>
+                    <h3>Smart Library</h3>
+                    <p>Organize thousands of movies with our local database. Instant search, custom filters, and auto-fetching metadata.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-couch"></i>
+                    <h3>Theater Visualizer</h3>
+                    <p>Manage bookings with a drag-and-drop seat editor. Create custom layouts for VIP, Standard, and IMAX halls.</p>
+                </div>
+                <div class="card">
                     <i class="fas fa-chart-line"></i>
-                    <h3>Analytics</h3>
-                    <p>Advanced reporting and business insights</p>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-users"></i>
-                    <h3>User Management</h3>
-                    <p>Complete customer and staff management</p>
+                    <h3>Real-time Analytics</h3>
+                    <p>Track box office revenue, attendance rates, and concession sales with beautiful, interactive charts.</p>
                 </div>
             </div>
         </section>
 
-        <section class="downloads">
-            <!-- Linux Downloads -->
-            <div class="platform-section">
-                <div class="platform-header">
-                    <i class="fab fa-linux platform-icon"></i>
-                    <div class="platform-name">Linux</div>
-                </div>
-                <div class="download-options">
-                    <a class="download-btn" href="releases/linux/rakcha_1.0.10_amd64.deb"
-                       onclick="trackDownload('linux', 'deb')">
-                        <span class="download-badge">HOT</span>
-                        <div class="download-info">
-                            <div class="download-title">Debian Package</div>
-                            <div class="download-desc">For Ubuntu, Debian, and derivatives</div>
-                        </div>
-                        <div class="download-size" id="linux-deb-size">
-                            <div class="loading"></div>
-                        </div>
-                    </a>
-                    <a class="download-btn" href="releases/linux/RAKCHA-portable-linux.tar.gz"
-                       onclick="trackDownload('linux', 'portable')">
-                        <div class="download-info">
-                            <div class="download-title">Portable Archive</div>
-                            <div class="download-desc">Extract and run anywhere</div>
-                        </div>
-                        <div class="download-size" id="linux-portable-size">
-                            <div class="loading"></div>
-                        </div>
-                    </a>
-                </div>
+        <section id="downloads" class="download-hub">
+            <div class="section-header">
+                <h2>Install Rakcha</h2>
+                <p>Choose your platform. Open Source & Free.</p>
             </div>
-
-            <!-- Windows Downloads -->
-            <div class="platform-section">
-                <div class="platform-header">
+            
+            <div class="platform-grid">
+                <div class="platform-card">
                     <i class="fab fa-windows platform-icon"></i>
-                    <div class="platform-name">Windows</div>
+                    <h3>Windows</h3>
+                    <p style="color: #666">Win 10/11 (64-bit)</p>
+                    <a href="#" class="download-btn-block">Download MSI</a>
                 </div>
-                <div class="download-options">
-                    <a class="download-btn" href="releases/windows/RAKCHA-1.0.10.msi"
-                       onclick="trackDownload('windows', 'msi')">
-                        <span class="download-badge">NEW</span>
-                        <div class="download-info">
-                            <div class="download-title">MSI Installer</div>
-                            <div class="download-desc">For Windows 10 and later</div>
-                        </div>
-                        <div class="download-size" id="windows-msi-size">
-                            <div class="loading"></div>
-                        </div>
-                    </a>
-                    <a class="download-btn" href="releases/windows/RAKCHA-portable-windows.zip"
-                       onclick="trackDownload('windows', 'portable')">
-                        <div class="download-info">
-                            <div class="download-title">Portable Archive</div>
-                            <div class="download-desc">No installation required</div>
-                        </div>
-                        <div class="download-size" id="windows-portable-size">
-                            <div class="loading"></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
 
-            <!-- macOS Downloads -->
-            <div class="platform-section">
-                <div class="platform-header">
+                <div class="platform-card recommended">
+                    <span class="badge">BEST</span>
+                    <i class="fab fa-linux platform-icon"></i>
+                    <h3>Linux</h3>
+                    <p style="color: #666">Ubuntu / Debian / Fedora</p>
+                    <a href="#" class="download-btn-block">Download .DEB</a>
+                </div>
+
+                <div class="platform-card">
                     <i class="fab fa-apple platform-icon"></i>
-                    <div class="platform-name">macOS</div>
-                </div>
-                <div class="download-options">
-                    <a class="download-btn" href="releases/macos/RAKCHA-1.0.10.dmg"
-                       onclick="trackDownload('macos', 'dmg')">
-                        <span class="download-badge">⭐</span>
-                        <div class="download-info">
-                            <div class="download-title">DMG Installer</div>
-                            <div class="download-desc">For macOS 10.14 and later</div>
-                        </div>
-                        <div class="download-size" id="macos-dmg-size">
-                            <div class="loading"></div>
-                        </div>
-                    </a>
-                    <a class="download-btn" href="releases/macos/RAKCHA-portable-macos.tar.gz"
-                       onclick="trackDownload('macos', 'portable')">
-                        <div class="download-info">
-                            <div class="download-title">Portable Archive</div>
-                            <div class="download-desc">Drag and drop installation</div>
-                        </div>
-                        <div class="download-size" id="macos-portable-size">
-                            <div class="loading"></div>
-                        </div>
-                    </a>
+                    <h3>macOS</h3>
+                    <p style="color: #666">Intel & Silicon</p>
+                    <a href="#" class="download-btn-block">Download DMG</a>
                 </div>
             </div>
         </section>
+    </div>
 
-        <section class="system-requirements">
-            <h3>System Requirements</h3>
-            <div class="req-grid">
-                <div class="req-item">
-                    <i class="fas fa-memory"></i>
-                    <span>4 GB RAM minimum (8 GB recommended)</span>
-                </div>
-                <div class="req-item">
-                    <i class="fas fa-hdd"></i>
-                    <span>500 MB available disk space</span>
-                </div>
-                <div class="req-item">
-                    <i class="fab fa-java"></i>
-                    <span>Java 21 runtime (included)</span>
-                </div>
-                <div class="req-item">
-                    <i class="fas fa-desktop"></i>
-                    <span>1280x720 minimum resolution</span>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <p>&copy; 2025 RAKCHA Desktop. Built with JavaFX and passion for cinema.</p>
-        <p>Open source project by ESPRIT students</p>
+    <footer>
+        <p>&copy; 2025 Rakcha Project. Crafted with <i class="fas fa-heart" style="color:var(--primary)"></i> by ESPRIT Students.</p>
     </footer>
-</div>
 
-<script>
-    // ===== GAMIFICATION SYSTEM =====
-    let score = 0;
-    let level = 1;
-    let streak = 0;
-    let achievements = [];
-    let visitedSections = new Set();
-
-    // Initialize gamification
-    function initGamification() {
-        updateStats();
-        trackScrollProgress();
-        unlockAchievement('first_visit', 'Welcome!', 'Started your RAKCHA journey');
-        setTimeout(() => {
-            addScore(10);
-        }, 2000);
-    }
-
-    // Update stats display
-    function updateStats() {
-        document.getElementById('scoreValue').textContent = score;
-        document.getElementById('levelValue').textContent = level;
-        document.getElementById('streakValue').textContent = streak;
-
-        // Level up every 100 points
-        const newLevel = Math.floor(score / 100) + 1;
-        if (newLevel > level) {
-            level = newLevel;
-            unlockAchievement('level_up', `Level ${level}!`, 'You\'re progressing!');
-            createConfetti();
-        }
-    }
-
-    // Add score with animation
-    function addScore(points) {
-        score += points;
-        streak++;
-        updateStats();
-
-        // Animate score increase
-        const scoreEl = document.getElementById('scoreValue');
-        scoreEl.style.transform = 'scale(1.5)';
-        scoreEl.style.color = 'var(--gold-accent)';
-        setTimeout(() => {
-            scoreEl.style.transform = 'scale(1)';
-            scoreEl.style.color = '';
-        }, 300);
-    }
-
-    // Unlock achievement
-    function unlockAchievement(id, title, description) {
-        if (achievements.includes(id)) return;
-
-        achievements.push(id);
-
-        const toast = document.getElementById('achievementToast');
-        document.getElementById('achievementTitle').textContent = title;
-        document.getElementById('achievementDesc').textContent = description;
-
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 4000);
-
-        addScore(50);
-    }
-
-    // Track scroll progress
-    function trackScrollProgress() {
-        window.addEventListener('scroll', () => {
-            const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const scrolled = (window.pageYOffset / windowHeight) * 100;
-
-            document.getElementById('progressBar').style.width = scrolled + '%';
-
-            // Check sections visited
-            const sections = document.querySelectorAll('.platform-section, .feature');
-            sections.forEach((section, index) => {
-                const rect = section.getBoundingClientRect();
-                if (rect.top < window.innerHeight && rect.bottom > 0) {
-                    if (!visitedSections.has(index)) {
-                        visitedSections.add(index);
-                        addScore(20);
-                    }
-                }
-            });
-
-            // Achievement for scrolling to bottom
-            if (scrolled > 95 && !achievements.includes('explorer')) {
-                unlockAchievement('explorer', 'Explorer!', 'You\'ve seen everything');
-            }
-        });
-    }
-
-    // ===== FIRE PARTICLES =====
-    function createFireParticle() {
-        const particle = document.createElement('div');
-        const types = ['particle', 'particle large', 'particle spark'];
-        particle.className = types[Math.floor(Math.random() * types.length)];
-
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDelay = Math.random() * 4 + 's';
-        particle.style.animationDuration = (Math.random() * 4 + 3) + 's';
-
-        document.getElementById('fireParticles').appendChild(particle);
-
-        setTimeout(() => {
-            if (particle.parentNode) {
-                particle.parentNode.removeChild(particle);
-            }
-        }, 10000);
-    }
-
-    // Create fire particles continuously
-    setInterval(createFireParticle, 100);
-
-    // Initial burst of particles
-    for (let i = 0; i < 30; i++) {
-        setTimeout(createFireParticle, i * 50);
-    }
-
-    // ===== CURSOR TRAIL =====
-    let cursorTrailTimeout;
-    document.addEventListener('mousemove', (e) => {
-        clearTimeout(cursorTrailTimeout);
-        cursorTrailTimeout = setTimeout(() => {
-            const trail = document.createElement('div');
-            trail.className = 'cursor-trail';
-            trail.style.left = e.pageX + 'px';
-            trail.style.top = e.pageY + 'px';
-            document.body.appendChild(trail);
-
-            setTimeout(() => {
-                if (trail.parentNode) {
-                    trail.parentNode.removeChild(trail);
-                }
-            }, 1000);
-        }, 50);
-    });
-
-    // ===== LOGO ANIMATION =====
-    const logoImage = document.getElementById('logoImage');
-    if (logoImage) {
-        logoImage.addEventListener('click', () => {
-            addScore(25);
-            unlockAchievement('logo_click', 'Logo Lover!', 'You clicked the logo');
-
-            // Extra animation on click
-            logoImage.style.animation = 'none';
-            setTimeout(() => {
-                logoImage.style.animation = 'logoFloat 3s ease-in-out infinite, logoRotate 20s linear infinite';
-            }, 10);
-        });
-    }
-
-    // ===== FEATURE CARD INTERACTIONS =====
-    document.addEventListener('DOMContentLoaded', () => {
-        const features = document.querySelectorAll('.feature');
-        features.forEach((feature, index) => {
-            feature.addEventListener('click', () => {
-                feature.classList.add('unlocked');
-                addScore(15);
-
-                if (document.querySelectorAll('.feature.unlocked').length === features.length) {
-                    unlockAchievement('feature_master', 'Feature Master!', 'Explored all features');
-                }
-            });
-
-            // Unlock features gradually
-            setTimeout(() => {
-                feature.classList.add('unlocked');
-            }, 500 + (index * 300));
-        });
-    });
-
-    // ===== CONFETTI EFFECT =====
-    function createConfetti() {
-        const colors = ['#dc2626', '#ffd700', '#e5e7eb', '#b91c1c'];
-        for (let i = 0; i < 50; i++) {
-            setTimeout(() => {
-                const confetti = document.createElement('div');
-                confetti.style.position = 'fixed';
-                confetti.style.width = '10px';
-                confetti.style.height = '10px';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.top = '-10px';
-                confetti.style.zIndex = '9999';
-                confetti.style.borderRadius = '50%';
-                confetti.style.pointerEvents = 'none';
-
-                document.body.appendChild(confetti);
-
-                const animation = confetti.animate([
-                    {transform: 'translateY(0) rotate(0deg)', opacity: 1},
-                    {
-                        transform: `translateY(${window.innerHeight + 10}px) rotate(${Math.random() * 720}deg)`,
-                        opacity: 0
-                    }
-                ], {
-                    duration: 3000 + Math.random() * 2000,
-                    easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-                });
-
-                animation.onfinish = () => {
-                    if (confetti.parentNode) {
-                        confetti.parentNode.removeChild(confetti);
-                    }
-                };
-            }, i * 30);
-        }
-    }
-
-    // ===== DOWNLOAD TRACKING =====
-    function trackDownload(platform, type) {
-        console.log(`Download started: ${platform} ${type}`);
-        addScore(100);
-        unlockAchievement(`download_${platform}`, 'Downloaded!', `${platform} version downloaded`);
-        createConfetti();
-
-        // Add download badge animation
-        const badges = document.querySelectorAll('.download-badge');
-        badges.forEach(badge => {
-            const count = parseInt(badge.textContent) + 1;
-            badge.textContent = count;
-            badge.style.animation = 'none';
-            setTimeout(() => {
-                badge.style.animation = 'badgePulse 2s infinite';
-            }, 10);
-        });
-    }
-
-    // ===== FILE SIZES =====
-    async function loadFileSizes() {
-        const files = [
-            {id: 'linux-deb-size', size: '~245MB'},
-            {id: 'linux-portable-size', size: '~240MB'},
-            {id: 'windows-msi-size', size: '~250MB'},
-            {id: 'windows-portable-size', size: '~242MB'},
-            {id: 'macos-dmg-size', size: '~255MB'},
-            {id: 'macos-portable-size', size: '~248MB'}
-        ];
-
-        files.forEach((file, index) => {
-            setTimeout(() => {
-                const element = document.getElementById(file.id);
-                if (element) {
-                    element.innerHTML = file.size;
-                    element.style.animation = 'fadeIn 0.5s ease';
-                }
-            }, index * 200);
-        });
-    }
-
-    // ===== PARALLAX EFFECT =====
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const rate = scrolled * -0.3;
-
-        const particles = document.getElementById('fireParticles');
-        if (particles) {
-            particles.style.transform = `translateY(${rate}px)`;
-        }
-
-        const logo = document.querySelector('.logo-image');
-        if (logo) {
-            logo.style.transform = `translateY(${scrolled * 0.2}px)`;
-        }
-    });
-
-    // ===== INITIALIZATION =====
-    document.addEventListener('DOMContentLoaded', () => {
-        initGamification();
-        loadFileSizes();
-
-        // Welcome confetti after a delay
-        setTimeout(() => {
-            createConfetti();
-        }, 1000);
-    });
-
-    // Add CSS animation for fadeIn
-    const style = document.createElement('style');
-    style.textContent = `
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-        `;
-    document.head.appendChild(style);
-</script>
 </body>
 </html>

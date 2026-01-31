@@ -14,38 +14,23 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ComboBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller class for managing and displaying orders in the RAKCHA
- * application.
- * This controller handles the display of orders in a TableView, provides search
- * functionality, and allows for order deletion and statistical analysis.
- *
- * <p>
- * The controller initializes the table view with order data from the database,
- * configures cell factories for displaying client information, and sets up
- * event
- * handlers for user interactions with the UI.
- * </p>
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class ListOrderController {
 
     private static final Logger LOGGER = Logger.getLogger(ListOrderController.class.getName());
@@ -142,10 +127,11 @@ public class ListOrderController {
             filteredList.addAll(orderservice.read());
         } else {
             for (final Order order : orderservice.read()) {
+                String statusValue = order.getStatus() != null ? order.getStatus().getValue() : "";
                 if (order.getShippingAddress().toLowerCase().contains(keyword.toLowerCase())
-                        || order.getClient().getLastName().toLowerCase().contains(keyword.toLowerCase())
-                        || order.getClient().getFirstName().toLowerCase().contains(keyword.toLowerCase())
-                        || order.getStatus().toLowerCase().contains(keyword.toLowerCase())) {
+                    || order.getClient().getLastName().toLowerCase().contains(keyword.toLowerCase())
+                    || order.getClient().getFirstName().toLowerCase().contains(keyword.toLowerCase())
+                    || statusValue.toLowerCase().contains(keyword.toLowerCase())) {
                     filteredList.add(order);
                 }
 

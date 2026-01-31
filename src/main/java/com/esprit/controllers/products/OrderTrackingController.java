@@ -22,6 +22,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -30,14 +31,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for order tracking and history.
- */
+@Log4j2
 public class OrderTrackingController {
 
     private static final Logger LOGGER = Logger.getLogger(OrderTrackingController.class.getName());
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm");
     private final OrderService orderService;
+    private final ObservableList<Order> orders;
     @FXML
     private VBox trackingContainer;
     @FXML
@@ -70,7 +70,6 @@ public class OrderTrackingController {
     private ProgressIndicator loadingIndicator;
     @FXML
     private VBox noOrdersBox;
-    private ObservableList<Order> orders;
     private User currentUser;
     private Order selectedOrder;
     private Integer preSelectedOrderId;
@@ -177,9 +176,11 @@ public class OrderTrackingController {
         orderNumLabel.getStyleClass().add("order-number");
         HBox.setHgrow(orderNumLabel, Priority.ALWAYS);
 
-        Label statusLabel = new Label(order.getStatus());
+        String statusDisplay = order.getStatus() != null ? order.getStatus().getDisplayName() : "Pending";
+        String statusValue = order.getStatus() != null ? order.getStatus().getValue() : "pending";
+        Label statusLabel = new Label(statusDisplay);
         statusLabel.getStyleClass().addAll("order-status-badge",
-            "status-" + order.getStatus().toLowerCase().replace(" ", "-"));
+            "status-" + statusValue.toLowerCase().replace(" ", "-"));
 
         header.getChildren().addAll(orderNumLabel, statusLabel);
 
@@ -221,9 +222,11 @@ public class OrderTrackingController {
         orderIdLabel.setText("#" + order.getId());
         orderDateLabel.setText(order.getCreatedAt() != null ?
             order.getCreatedAt().format(DATE_FORMAT) : "N/A");
-        orderStatusLabel.setText(order.getStatus());
+        String statusDisplay = order.getStatus() != null ? order.getStatus().getDisplayName() : "Pending";
+        String statusValue = order.getStatus() != null ? order.getStatus().getValue() : "pending";
+        orderStatusLabel.setText(statusDisplay);
         orderStatusLabel.getStyleClass().setAll("order-status-detail",
-            "status-" + order.getStatus().toLowerCase().replace(" ", "-"));
+            "status-" + statusValue.toLowerCase().replace(" ", "-"));
         orderTotalLabel.setText(String.format("$%.2f", order.getTotal()));
 
         if (shippingAddressLabel != null) {
@@ -278,7 +281,7 @@ public class OrderTrackingController {
     private void displayTrackingTimeline(Order order) {
         trackingTimeline.getChildren().clear();
 
-        String status = order.getStatus() != null ? order.getStatus() : "Pending";
+        String status = order.getStatus() != null ? order.getStatus().getDisplayName() : "Pending";
         LocalDateTime orderDate = order.getCreatedAt() != null ? order.getCreatedAt() : LocalDateTime.now();
 
         // Define tracking steps
@@ -372,7 +375,8 @@ public class OrderTrackingController {
                     .filter(order -> {
                         // Status filter
                         if (!"All Orders".equals(filter)) {
-                            if (!filter.equalsIgnoreCase(order.getStatus())) {
+                            String orderStatus = order.getStatus() != null ? order.getStatus().getDisplayName() : "";
+                            if (!filter.equalsIgnoreCase(orderStatus)) {
                                 return false;
                             }
                         }
@@ -380,9 +384,7 @@ public class OrderTrackingController {
                         // Search filter
                         if (!search.isEmpty()) {
                             String orderId = String.valueOf(order.getId());
-                            if (!orderId.contains(search)) {
-                                return false;
-                            }
+                            return orderId.contains(search);
                         }
 
                         return true;
@@ -417,8 +419,9 @@ public class OrderTrackingController {
             return;
         }
 
-        if ("Delivered".equalsIgnoreCase(selectedOrder.getStatus()) ||
-            "Cancelled".equalsIgnoreCase(selectedOrder.getStatus())) {
+        String statusDisplay = selectedOrder.getStatus() != null ? selectedOrder.getStatus().getDisplayName() : "";
+        if ("Delivered".equalsIgnoreCase(statusDisplay) ||
+            "Cancelled".equalsIgnoreCase(statusDisplay)) {
             showError("This order cannot be cancelled.");
             return;
         }
@@ -479,8 +482,9 @@ public class OrderTrackingController {
             return;
         }
 
-        if (!"Shipped".equalsIgnoreCase(selectedOrder.getStatus()) &&
-            !"Out for Delivery".equalsIgnoreCase(selectedOrder.getStatus())) {
+        String statusDisplay = selectedOrder.getStatus() != null ? selectedOrder.getStatus().getDisplayName() : "";
+        if (!"Shipped".equalsIgnoreCase(statusDisplay) &&
+            !"Out for Delivery".equalsIgnoreCase(statusDisplay)) {
             showInfo("Tracking available once order is shipped.");
             return;
         }

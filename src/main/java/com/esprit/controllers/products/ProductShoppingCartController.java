@@ -30,6 +30,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -37,9 +38,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for product ShoppingCart management.
- */
+@Log4j2
 public class ProductShoppingCartController {
 
     private static final Logger LOGGER = Logger.getLogger(ProductShoppingCartController.class.getName());
@@ -47,6 +46,8 @@ public class ProductShoppingCartController {
     private final CartService CartService;
     private final ProductService productService;
     private final CartService cartService;
+    private final ObservableList<ShoppingCart> ShoppingOrderItems;
+    private final ObservableList<ShoppingCart> selectedItems;
     @FXML
     private VBox ShoppingCartContainer;
     @FXML
@@ -71,8 +72,6 @@ public class ProductShoppingCartController {
     private Label selectedCountLabel;
     @FXML
     private HBox bulkActionsBox;
-    private ObservableList<ShoppingCart> ShoppingOrderItems;
-    private ObservableList<ShoppingCart> selectedItems;
     private User currentUser;
 
     public ProductShoppingCartController() {

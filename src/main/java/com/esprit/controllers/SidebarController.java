@@ -31,9 +31,46 @@ import java.util.ResourceBundle;
 @Log4j2
 public class SidebarController implements Initializable {
 
+    // Styles
+    private static final String NAV_BUTTON_STYLE = "-fx-background-color: linear-gradient(to right, rgba(139, 0, 0, 0.3), rgba(180, 0, 0, 0.2));"
+        +
+        "-fx-text-fill: white;" +
+        "-fx-font-size: 14px;" +
+        "-fx-font-weight: bold;" +
+        "-fx-background-radius: 15;" +
+        "-fx-border-color: #8b0000;" +
+        "-fx-border-width: 1;" +
+        "-fx-border-radius: 15;" +
+        "-fx-cursor: hand;" +
+        "-fx-padding: 12 20 12 20;";
+    private static final String NAV_BUTTON_ACTIVE_STYLE = "-fx-background-color: linear-gradient(to right, rgba(180, 0, 0, 0.4), rgba(220, 0, 0, 0.3));"
+        +
+        "-fx-text-fill: white;" +
+        "-fx-font-size: 14px;" +
+        "-fx-font-weight: bold;" +
+        "-fx-background-radius: 15;" +
+        "-fx-border-color: #bb0000;" +
+        "-fx-border-width: 2;" +
+        "-fx-border-radius: 15;" +
+        "-fx-cursor: hand;" +
+        "-fx-padding: 12 20 12 20;";
+    private static final String BOTTOM_BUTTON_STYLE = "-fx-background-color: linear-gradient(to right, rgba(80, 80, 80, 0.3), rgba(120, 120, 120, 0.2));"
+        +
+        "-fx-text-fill: white;" +
+        "-fx-font-size: 12px;" +
+        "-fx-font-weight: bold;" +
+        "-fx-background-radius: 15;" +
+        "-fx-border-color: #666666;" +
+        "-fx-border-width: 1;" +
+        "-fx-border-radius: 15;" +
+        "-fx-cursor: hand;" +
+        "-fx-padding: 10 20 10 20;";
+    private static final String SECTION_LABEL_STYLE = "-fx-text-fill: #888888;" +
+        "-fx-font-family: 'Arial';" +
+        "-fx-font-size: 11px;" +
+        "-fx-font-weight: bold;";
     // User data
     private User currentUser;
-
     // Container references from FXML
     @FXML
     private VBox navigationContainer;
@@ -41,7 +78,6 @@ public class SidebarController implements Initializable {
     private VBox bottomButtonsContainer;
     @FXML
     private ScrollPane navigationScrollPane;
-
     // Button references for navigation actions
     private Button homeButton;
     private Button movieButton;
@@ -51,7 +87,6 @@ public class SidebarController implements Initializable {
     private Button showtimesButton;
     private Button profileButton;
     private Button logoutButton;
-
     // Admin specific buttons
     private Button usersButton;
     private Button orderButton;
@@ -60,62 +95,19 @@ public class SidebarController implements Initializable {
     private Button seriesStatisticsButton;
     private Button emailUsersButton;
     private Button smsUsersButton;
-
     // Cinema Manager specific buttons
     private Button actorButton;
     private Button filmCategorieButton;
     private Button moviesessionButton;
     private Button statestique_button;
     private Button seriesManagementButton;
-
     // Client specific buttons
     private Button favoritesButton;
     private Button shoppingCartButton;
     private Button myOrdersButton;
     private Button watchlistButton;
     private Button ticketsButton;
-
-    // Styles
-    private static final String NAV_BUTTON_STYLE = "-fx-background-color: linear-gradient(to right, rgba(139, 0, 0, 0.3), rgba(180, 0, 0, 0.2));"
-            +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-color: #8b0000;" +
-            "-fx-border-width: 1;" +
-            "-fx-border-radius: 15;" +
-            "-fx-cursor: hand;" +
-            "-fx-padding: 12 20 12 20;";
-
-    private static final String NAV_BUTTON_ACTIVE_STYLE = "-fx-background-color: linear-gradient(to right, rgba(180, 0, 0, 0.4), rgba(220, 0, 0, 0.3));"
-            +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 14px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-color: #bb0000;" +
-            "-fx-border-width: 2;" +
-            "-fx-border-radius: 15;" +
-            "-fx-cursor: hand;" +
-            "-fx-padding: 12 20 12 20;";
-
-    private static final String BOTTOM_BUTTON_STYLE = "-fx-background-color: linear-gradient(to right, rgba(80, 80, 80, 0.3), rgba(120, 120, 120, 0.2));"
-            +
-            "-fx-text-fill: white;" +
-            "-fx-font-size: 12px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 15;" +
-            "-fx-border-color: #666666;" +
-            "-fx-border-width: 1;" +
-            "-fx-border-radius: 15;" +
-            "-fx-cursor: hand;" +
-            "-fx-padding: 10 20 10 20;";
-
-    private static final String SECTION_LABEL_STYLE = "-fx-text-fill: #888888;" +
-            "-fx-font-family: 'Arial';" +
-            "-fx-font-size: 11px;" +
-            "-fx-font-weight: bold;";
+    private Button arPreviewButton;
 
     /**
      * Sets the current user and configures the sidebar based on user role.
@@ -296,7 +288,7 @@ public class SidebarController implements Initializable {
 
         // Series Management button
         seriesManagementButton = createNavButton("Series Mgmt", "mdi2t-television-classic:24:#ff4444",
-                NAV_BUTTON_STYLE);
+            NAV_BUTTON_STYLE);
         seriesManagementButton.setOnAction(e -> switchToSeriesManagement());
         navigationContainer.getChildren().add(seriesManagementButton);
     }
@@ -334,6 +326,11 @@ public class SidebarController implements Initializable {
         ticketsButton = createNavButton("My Tickets", "mdi2t-ticket:24:#ff4444", NAV_BUTTON_STYLE);
         ticketsButton.setOnAction(e -> switchToTickets());
         navigationContainer.getChildren().add(ticketsButton);
+
+        // AR Preview button
+        arPreviewButton = createNavButton("AR Experience", "mdi2v-virtual-reality:24:#ff4444", NAV_BUTTON_STYLE);
+        arPreviewButton.setOnAction(e -> switchToARPreview());
+        navigationContainer.getChildren().add(arPreviewButton);
     }
 
     /**
@@ -499,7 +496,7 @@ public class SidebarController implements Initializable {
     private void navigateToCategoryManagement(CategoryType initialType) {
         try {
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/common/CategoryManagement.fxml"));
+                this.getClass().getResource("/ui/common/CategoryManagement.fxml"));
             final Parent root = loader.load();
 
             // Set initial type filter if specified
@@ -560,6 +557,11 @@ public class SidebarController implements Initializable {
     private void switchToTickets() {
         Stage stage = (Stage) ticketsButton.getScene().getWindow();
         NavigationManager.navigateToTicketHistory(stage);
+    }
+
+    private void switchToARPreview() {
+        Stage stage = (Stage) arPreviewButton.getScene().getWindow();
+        NavigationManager.navigateToARPreview(stage);
     }
 
     /**

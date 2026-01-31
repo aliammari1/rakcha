@@ -6,15 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a movie session in a cinema.
- */
-
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
@@ -29,16 +27,11 @@ import java.util.List;
  */
 public class MovieSession {
 
-    private Long id;
-
     private CinemaHall cinemaHall;
-
     private Film film;
-
-    private java.time.LocalDateTime startTime;
-
-    private java.time.LocalDateTime endTime;
-
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Long id;
     private Double price;
 
     @Builder.Default
@@ -47,44 +40,13 @@ public class MovieSession {
     /**
      * Constructor without id for creating new movie session instances.
      */
-    public MovieSession(final CinemaHall cinemaHall, final Film film, final java.time.LocalDateTime startTime, final java.time.LocalDateTime endTime,
+    public MovieSession(final CinemaHall cinemaHall, final Film film, final LocalDateTime startTime,
+                        final LocalDateTime endTime,
                         final Double price) {
         this.cinemaHall = cinemaHall;
         this.film = film;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.price = price;
-        this.tickets = new ArrayList<>();
-    }
-
-    /**
-     * Legacy constructor using Date and Time objects.
-     *
-     * @deprecated Use LocalDateTime constructor instead
-     */
-    @Deprecated(forRemoval = true)
-    public MovieSession(final CinemaHall cinemaHall, final Film film, final java.sql.Time startTime, final java.sql.Time endTime,
-                        final java.sql.Date sessionDate, final Double price) {
-        this.cinemaHall = cinemaHall;
-        this.film = film;
-        this.startTime = startTime != null ? startTime.toLocalTime().atDate(sessionDate.toLocalDate()) : null;
-        this.endTime = endTime != null ? endTime.toLocalTime().atDate(sessionDate.toLocalDate()) : null;
-        this.price = price;
-        this.tickets = new ArrayList<>();
-    }
-
-    /**
-     * Legacy constructor using Time objects and LocalDate.
-     *
-     * @deprecated Use LocalDateTime constructor instead
-     */
-    @Deprecated(forRemoval = true)
-    public MovieSession(final CinemaHall cinemaHall, final Film film, final java.sql.Time startTime, final java.sql.Time endTime,
-                        final LocalDate sessionDate, final Double price) {
-        this.cinemaHall = cinemaHall;
-        this.film = film;
-        this.startTime = startTime != null ? startTime.toLocalTime().atDate(sessionDate) : null;
-        this.endTime = endTime != null ? endTime.toLocalTime().atDate(sessionDate) : null;
         this.price = price;
         this.tickets = new ArrayList<>();
     }
@@ -108,4 +70,3 @@ public class MovieSession {
     }
 
 }
-

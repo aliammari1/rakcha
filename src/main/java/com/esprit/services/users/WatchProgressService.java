@@ -2,7 +2,10 @@ package com.esprit.services.users;
 
 import com.esprit.models.users.Achievement;
 import com.esprit.models.users.Activity;
+import com.esprit.models.users.Client;
 import com.esprit.models.users.WatchProgress;
+import com.esprit.services.films.FilmService;
+import com.esprit.services.series.SeriesService;
 import com.esprit.utils.DataSource;
 import lombok.extern.log4j.Log4j2;
 
@@ -29,17 +32,24 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class WatchProgressService {
 
     private static final Logger LOGGER = Logger.getLogger(WatchProgressService.class.getName());
     private final Connection connection;
+    private final UserService userService;
+    private final SeriesService seriesService;
+    private final FilmService filmService;
 
     /**
      * Constructs a new WatchProgressService instance.
      */
     public WatchProgressService() {
         this.connection = DataSource.getInstance().getConnection();
+        this.userService = new UserService();
+        this.seriesService = new SeriesService();
+        this.filmService = new FilmService();
     }
 
     // ==================== Watch Progress CRUD ====================
@@ -55,9 +65,9 @@ public class WatchProgressService {
             "(series_id = ? OR film_id = ?)";
 
         try (PreparedStatement checkStmt = connection.prepareStatement(checkQuery)) {
-            checkStmt.setLong(1, progress.getUserId());
-            checkStmt.setObject(2, progress.getSeriesId());
-            checkStmt.setObject(3, progress.getFilmId());
+            checkStmt.setLong(1, progress.getUser().getId());
+            checkStmt.setObject(2, progress.getSeries());
+            checkStmt.setObject(3, progress.getFilm());
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
@@ -76,15 +86,15 @@ public class WatchProgressService {
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setLong(1, progress.getUserId());
-            pst.setObject(2, progress.getSeriesId());
-            pst.setObject(3, progress.getFilmId());
+            pst.setLong(1, progress.getUser().getId());
+            pst.setObject(2, progress.getSeries());
+            pst.setObject(3, progress.getFilm());
             pst.setDouble(4, progress.getProgress());
             pst.setInt(5, progress.getWatchedEpisodes());
             pst.setInt(6, progress.getTotalEpisodes());
             pst.setInt(7, progress.getLastWatchedEpisodeNum());
-            pst.setTimestamp(8, progress.getLastWatchedAt() != null ?
-                Timestamp.valueOf(progress.getLastWatchedAt()) : Timestamp.valueOf(LocalDateTime.now()));
+            pst.setTimestamp(8, progress.getLastWatchedAt() != null ? Timestamp.valueOf(progress.getLastWatchedAt())
+                : Timestamp.valueOf(LocalDateTime.now()));
             pst.setObject(9, progress.getUserRating());
             pst.setInt(10, progress.getWatchedMinutes());
             pst.executeUpdate();
@@ -108,9 +118,9 @@ public class WatchProgressService {
             pst.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
             pst.setObject(5, progress.getUserRating());
             pst.setInt(6, progress.getWatchedMinutes());
-            pst.setLong(7, progress.getUserId());
-            pst.setObject(8, progress.getSeriesId());
-            pst.setObject(9, progress.getFilmId());
+            pst.setLong(7, progress.getUser().getId());
+            pst.setObject(8, progress.getSeries());
+            pst.setObject(9, progress.getFilm());
             pst.executeUpdate();
         }
     }
@@ -243,7 +253,8 @@ public class WatchProgressService {
                 if (previousDate.minusDays(1).equals(watchDate) || previousDate.equals(watchDate.plusDays(1))) {
                     streak++;
                     previousDate = watchDate;
-                } else if (streak == 0 && (watchDate.equals(LocalDate.now()) || watchDate.equals(LocalDate.now().minusDays(1)))) {
+                } else if (streak == 0
+                    && (watchDate.equals(LocalDate.now()) || watchDate.equals(LocalDate.now().minusDays(1)))) {
                     streak = 1;
                     previousDate = watchDate;
                 } else {
@@ -394,15 +405,16 @@ public class WatchProgressService {
      * @throws SQLException if a database error occurs
      */
     public void logActivity(Activity activity) throws SQLException {
-        String query = "INSERT INTO user_activities (user_id, type, description, timestamp, related_entity_id, related_entity_type) " +
+        String query = "INSERT INTO user_activities (user_id, type, description, timestamp, related_entity_id, related_entity_type) "
+            +
             "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setLong(1, activity.getUserId());
+            pst.setLong(1, activity.getUser().getId());
             pst.setString(2, activity.getType());
             pst.setString(3, activity.getDescription());
-            pst.setTimestamp(4, activity.getTimestamp() != null ?
-                Timestamp.valueOf(activity.getTimestamp()) : Timestamp.valueOf(LocalDateTime.now()));
+            pst.setTimestamp(4, activity.getTimestamp() != null ? Timestamp.valueOf(activity.getTimestamp())
+                : Timestamp.valueOf(LocalDateTime.now()));
             pst.setObject(5, activity.getRelatedEntityId());
             pst.setString(6, activity.getRelatedEntityType());
             pst.executeUpdate();
@@ -491,8 +503,8 @@ public class WatchProgressService {
             if (rows == 0) {
                 // Create new progress entry
                 WatchProgress progress = WatchProgress.builder()
-                    .userId(userId)
-                    .seriesId(seriesId)
+                    .user((Client) this.userService.getById(userId))
+                    .series(this.seriesService.getById(seriesId))
                     .progress(1.0)
                     .lastWatchedAt(LocalDateTime.now())
                     .build();
@@ -556,8 +568,8 @@ public class WatchProgressService {
             if (rows == 0) {
                 // Create new progress entry with rating
                 WatchProgress progress = WatchProgress.builder()
-                    .userId(userId)
-                    .seriesId(seriesId)
+                    .user((Client) this.userService.getById(userId))
+                    .series(this.seriesService.getById(seriesId))
                     .userRating(rating)
                     .lastWatchedAt(LocalDateTime.now())
                     .build();
@@ -571,14 +583,17 @@ public class WatchProgressService {
     private WatchProgress mapResultSetToWatchProgress(ResultSet rs) throws SQLException {
         return WatchProgress.builder()
             .id(rs.getLong("id"))
-            .userId(rs.getLong("user_id"))
-            .seriesId(rs.getObject("series_id") != null ? rs.getLong("series_id") : null)
-            .filmId(rs.getObject("film_id") != null ? rs.getLong("film_id") : null)
+            .user((Client) this.userService.getById(rs.getLong("user_id")))
+            .series(
+                rs.getObject("series_id") != null ? this.seriesService.getById(rs.getLong("series_id")) : null)
+            .film(rs.getObject("film_id") != null ? this.filmService.getById(rs.getLong("film_id")) : null)
             .progress(rs.getDouble("progress"))
             .watchedEpisodes(rs.getInt("watched_episodes"))
             .totalEpisodes(rs.getInt("total_episodes"))
             .lastWatchedEpisodeNum(rs.getInt("last_watched_episode"))
-            .lastWatchedAt(rs.getTimestamp("last_watched_at") != null ? rs.getTimestamp("last_watched_at").toLocalDateTime() : null)
+            .lastWatchedAt(rs.getTimestamp("last_watched_at") != null
+                ? rs.getTimestamp("last_watched_at").toLocalDateTime()
+                : null)
             .userRating(rs.getObject("user_rating") != null ? rs.getInt("user_rating") : null)
             .watchedMinutes(rs.getInt("watched_minutes"))
             .build();
@@ -587,7 +602,7 @@ public class WatchProgressService {
     private Activity mapResultSetToActivity(ResultSet rs) throws SQLException {
         return Activity.builder()
             .id(rs.getLong("id"))
-            .userId(rs.getLong("user_id"))
+            .user((Client) this.userService.getById(rs.getLong("user_id")))
             .type(rs.getString("type"))
             .description(rs.getString("description"))
             .timestamp(rs.getTimestamp("timestamp") != null ? rs.getTimestamp("timestamp").toLocalDateTime() : null)
@@ -604,7 +619,8 @@ public class WatchProgressService {
             .icon(rs.getString("icon"))
             .progress(rs.getDouble("progress"))
             .unlocked(rs.getBoolean("is_unlocked"))
-            .unlockedAt(rs.getTimestamp("unlocked_at") != null ? rs.getTimestamp("unlocked_at").toLocalDateTime() : null)
+            .unlockedAt(rs.getTimestamp("unlocked_at") != null ? rs.getTimestamp("unlocked_at").toLocalDateTime()
+                : null)
             .build();
     }
 
@@ -665,7 +681,8 @@ public class WatchProgressService {
      * @param contentId   the ID of the content
      */
     public void addToWatchlist(Long userId, String contentType, Long contentId) {
-        String query = "INSERT INTO watch_progress (user_id, film_id, series_id, content_type, progress, last_watched) " +
+        String query = "INSERT INTO watch_progress (user_id, film_id, series_id, content_type, progress, last_watched) "
+            +
             "VALUES (?, ?, ?, ?, 0, NOW()) ON DUPLICATE KEY UPDATE last_watched = NOW()";
         try (PreparedStatement pst = connection.prepareStatement(query)) {
             pst.setLong(1, userId);
@@ -683,4 +700,3 @@ public class WatchProgressService {
         }
     }
 }
-

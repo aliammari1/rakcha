@@ -4,21 +4,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Notification {
 
-    private Long id;
-    private Long userId;
-    private String title;
-    private String message;
     @Builder.Default
     private boolean isRead = false;
-    private String type; // e.g., 'ORDER_UPDATE', 'FRIEND_REQ'
     @Builder.Default
-    private java.sql.Timestamp createdAt = new java.sql.Timestamp(System.currentTimeMillis());
+    private final java.sql.Timestamp createdAt = new java.sql.Timestamp(System.currentTimeMillis());
+    private Long id;
+    /**
+     * The user this notification is for.
+     */
+    private User user;
+    private String title;
+    private String message;
+    private String type; // e.g., 'ORDER_UPDATE', 'FRIEND_REQ'
+
 }
 

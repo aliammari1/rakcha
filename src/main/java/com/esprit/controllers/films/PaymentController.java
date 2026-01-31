@@ -1,9 +1,15 @@
 package com.esprit.controllers.films;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.cinemas.MovieSession;
 import com.esprit.services.cinemas.MovieSessionService;
 import com.esprit.utils.PaymentProcessor;
 import com.stripe.exception.StripeException;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -14,6 +20,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import lombok.extern.log4j.Log4j2;
 import org.controlsfx.control.CheckComboBox;
 
 import java.time.LocalDate;
@@ -21,34 +28,17 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Controller class for handling payment processing in the RAKCHA application.
- *
- * <p>
- * This controller is responsible for validating and processing payments for
- * movie tickets.
- * It handles credit card information validation, payment processing, and user
- * feedback.
- * </p>
- *
- * <p>
- * Key features include:
- * </p>
- * <ul>
- * <li>Credit card number validation using regex patterns</li>
- * <li>Expiration date validation</li>
- * <li>CVC validation</li>
- * <li>Email format validation</li>
- * <li>Integration with Stripe payment processing</li>
- * </ul>
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class PaymentController {
 
     private static final Logger LOGGER = Logger.getLogger(PaymentController.class.getName());
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+
+    // FormsFX properties
+    private final StringProperty clientNameProperty = new SimpleStringProperty("");
+    private final StringProperty emailProperty = new SimpleStringProperty("");
+    private final StringProperty cardNumberProperty = new SimpleStringProperty("");
+    private Form paymentForm;
 
     @FXML
     private Label filmLabel_Payment;
@@ -86,7 +76,8 @@ public class PaymentController {
     /**
      * Initializes the payment form's month, year, and CVC spinners.
      * <p>
-     * Month spinner accepts values 1–12, year spinner accepts a large positive range, and CVC spinner accepts values 1–999.
+     * Month spinner accepts values 1–12, year spinner accepts a large positive
+     * range, and CVC spinner accepts values 1–999.
      */
     @FXML
     void initialize() {
@@ -99,13 +90,93 @@ public class PaymentController {
         this.MM.setValueFactory(valueFactory_month);
         this.YY.setValueFactory(valueFactory_year);
         this.cvc.setValueFactory(valueFactory_cvc);
+
+        // Initialize FormsFX
+        setupFormsFX();
+        setupBidirectionalBindings();
     }
 
+    /**
+     * Configures FormsFX for payment form validation.
+     */
+    private void setupFormsFX() {
+        paymentForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(clientNameProperty)
+                    .label("Client Name")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Name is required")
+                    ),
+                Field.ofStringType(emailProperty)
+                    .label("Email")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Email is required"),
+                        RegexValidator.forPattern(EMAIL_REGEX, "Please enter a valid email address")
+                    ),
+                Field.ofStringType(cardNumberProperty)
+                    .label("Card Number")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Card number is required"),
+                        StringLengthValidator.between(13, 19, "Card number must be between 13 and 19 digits")
+                    )
+            )
+        );
+    }
 
     /**
-     * Binds the given MovieSession to the controller, sets the total payment amount, and initializes the month, year, and CVC spinners.
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        client_name.textProperty().bindBidirectional(clientNameProperty);
+        email.textProperty().bindBidirectional(emailProperty);
+        num_card.textProperty().bindBidirectional(cardNumberProperty);
+    }
+
+    /**
+     * Validates the payment form using FormsFX.
      *
-     * <p>Also attaches a listener to the CVC spinner's editor to update the spinner value when the user edits the text field.</p>
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validatePaymentForm() {
+        paymentForm.persist();
+        if (!paymentForm.isValid()) {
+            StringBuilder errorMessage = new StringBuilder();
+            paymentForm.getGroups().forEach(group ->
+                group.getElements().forEach(element -> {
+                    if (element instanceof Field<?> field) {
+                        if (!field.isValid()) {
+                            field.getErrorMessages().forEach(msg -> errorMessage.append(msg).append("\n"));
+                        }
+                    }
+                })
+            );
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Validation Error");
+            alert.setHeaderText(null);
+            alert.setContentText(errorMessage.toString().trim());
+            alert.showAndWait();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        client_name.textProperty().unbindBidirectional(clientNameProperty);
+        email.textProperty().unbindBidirectional(emailProperty);
+        num_card.textProperty().unbindBidirectional(cardNumberProperty);
+    }
+
+    /**
+     * Binds the given MovieSession to the controller, sets the total payment
+     * amount, and initializes the month, year, and CVC spinners.
+     *
+     * <p>
+     * Also attaches a listener to the CVC spinner's editor to update the spinner
+     * value when the user edits the text field.
+     * </p>
      *
      * @param s the MovieSession to display and use for initializing payment fields
      */
@@ -129,24 +200,25 @@ public class PaymentController {
         // total.setText(total_txt);
         this.spinnerTextField = this.cvc.getEditor();
         this.spinnerTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-                try {
-                    this.cvc.getValueFactory().setValue(Integer.parseInt(newValue));
-                } catch (final NumberFormatException e) {
-                    // Handle invalid input
-                }
-
+            try {
+                this.cvc.getValueFactory().setValue(Integer.parseInt(newValue));
+            } catch (final NumberFormatException e) {
+                // Handle invalid input
             }
-        );
-    }
 
+        });
+    }
 
     /**
      * Validate payment inputs and attempt to process the payment.
      *
      * <p>
-     * Validates client name, email, card number, CVC, and expiration date; if validation succeeds,
-     * submits the payment via PaymentProcessor. The method presents error alerts and highlights
-     * invalid fields when validation fails, and presents a success or failure alert after attempting payment.
+     * Validates client name, email, card number, CVC, and expiration date; if
+     * validation succeeds,
+     * submits the payment via PaymentProcessor. The method presents error alerts
+     * and highlights
+     * invalid fields when validation fails, and presents a success or failure alert
+     * after attempting payment.
      * </p>
      *
      * @param event the action event that triggered this handler
@@ -155,46 +227,20 @@ public class PaymentController {
     @FXML
     private void payment(final ActionEvent event) throws StripeException {
         PaymentController.LOGGER.info(String.valueOf(this.cvc.getValue()));
-        if (this.client_name.getText().isEmpty()) {
-            final Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("You need to input your Name");
-            alert.setTitle("Problem");
-            alert.setHeaderText(null);
-            alert.showAndWait();
-            this.client_name.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            // new animatefx.animation.Shake(client_name).play();
-        } else if (this.email.getText().isEmpty()) {
-            final Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("You need to input your Email");
-            alert.setTitle("Problem");
-            alert.setHeaderText(null);
-            alert.showAndWait();
-            this.email.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            // new animatefx.animation.Shake(email).play();
-        } else if (!this.isValidEmail(this.email.getText())) {
-            final Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Please enter a valid Email address.");
-            alert.setTitle("Problem");
-            alert.setHeaderText(null);
-            alert.showAndWait();
-            this.email.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            // new animatefx.animation.Shake(email).play();
-        } else if (this.num_card.getText().isEmpty()) {
-            final Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("You need to input your Card Number");
-            alert.setTitle("Problem");
-            alert.setHeaderText(null);
-            alert.showAndWait();
-            this.num_card.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            // new animatefx.animation.Shake(num_card).play();
-        } else if (!this.check_cvc(this.cvc.getValue())) {
+
+        // Validate using FormsFX for basic fields
+        if (!validatePaymentForm()) {
+            return;
+        }
+
+        // Additional validations for CVC and expiration date
+        if (!this.check_cvc(this.cvc.getValue())) {
             final Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("The CVC number should contain three digits");
             alert.setTitle("Problem");
             alert.setHeaderText(null);
             alert.showAndWait();
             this.cvc.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            // new animatefx.animation.Shake(cvc).play();
         } else if (!this.check_expDate(this.YY.getValue(), this.MM.getValue())) {
             final Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Please enter a valid expiration date");
@@ -203,8 +249,6 @@ public class PaymentController {
             alert.showAndWait();
             this.MM.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             this.YY.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            // new animatefx.animation.Shake(MM).play();
-            // new animatefx.animation.Shake(YY).play();
         } else {
             this.client_name.setStyle(null);
             this.email.setStyle(null);
@@ -212,7 +256,8 @@ public class PaymentController {
             this.cvc.setStyle(null);
             this.MM.setStyle(null);
             this.YY.setStyle(null);
-            final boolean isValid = this.check_card_num(this.num_card.getText());
+
+            final boolean isValid = this.check_card_num(cardNumberProperty.get());
             if (!isValid) {
                 final Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Please enter a valid Card number");
@@ -220,12 +265,11 @@ public class PaymentController {
                 alert.setHeaderText(null);
                 alert.showAndWait();
                 this.num_card.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-                // new animatefx.animation.Shake(num_card).play();
             } else {
                 this.num_card.setStyle(null);
-                final String name = this.client_name.getText();
-                final String email_txt = this.email.getText();
-                final String num = this.num_card.getText();
+                final String name = clientNameProperty.get();
+                final String email_txt = emailProperty.get();
+                final String num = cardNumberProperty.get();
                 final int yy = this.YY.getValue();
                 final int mm = this.MM.getValue();
                 final String cvc_num = String.valueOf(this.cvc.getValue());
@@ -238,44 +282,38 @@ public class PaymentController {
                     alert.setContentText("Successful Payment.");
                     alert.setHeaderText(null);
                     alert.showAndWait();
-                    // this.reservation.setResStatus(true);
-                    // ReservationService rs = new ReservationService();
-                    // rs.updateEntity(this.reservation);
-                    // redirect_to_successPage();
                 } else {
                     final Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setContentText("Payment Failed.");
                     alert.setTitle("Problem");
                     alert.setHeaderText(null);
                     alert.showAndWait();
-                    // redirect_to_FailPage();
                 }
-
             }
-
         }
-
     }
-
 
     /**
      * Checks whether the given integer represents a three-digit credit card CVC.
      *
      * @param value the CVC value to check
-     * @return `true` if the value represents a three-digit number, `false` otherwise
+     * @return `true` if the value represents a three-digit number, `false`
+     * otherwise
      */
     private boolean check_cvc(final int value) {
         final String cvc_txt = String.valueOf(value);
         return 3 == cvc_txt.length();
     }
 
-
     /**
-     * Determines whether the given expiration year and month are the same as or later than the current year and month.
+     * Determines whether the given expiration year and month are the same as or
+     * later than the current year and month.
      *
      * @param value_y  the expiration year
      * @param value_mm the expiration month (1-12)
-     * @return `true` if `value_y` is greater than or equal to the current year and `value_mm` is greater than or equal to the current month, `false` otherwise
+     * @return `true` if `value_y` is greater than or equal to the current year and
+     * `value_mm` is greater than or equal to the current month, `false`
+     * otherwise
      */
     private boolean check_expDate(final int value_y, final int value_mm) {
         boolean valid = false;
@@ -287,16 +325,19 @@ public class PaymentController {
         return valid;
     }
 
-
     /**
      * Determine whether a string is a valid credit card number format.
      *
-     * <p>Checks that the input, after trimming, has length between 13 and 19 and
+     * <p>
+     * Checks that the input, after trimming, has length between 13 and 19 and
      * matches common issuer patterns such as Visa, MasterCard, American Express,
-     * Discover, Diners Club, and JCB.</p>
+     * Discover, Diners Club, and JCB.
+     * </p>
      *
-     * @param cardNumber the credit card number string to validate (whitespace will be trimmed)
-     * @return true if the input has 13–19 characters and matches a common card issuer pattern, false otherwise
+     * @param cardNumber the credit card number string to validate (whitespace will
+     *                   be trimmed)
+     * @return true if the input has 13–19 characters and matches a common card
+     * issuer pattern, false otherwise
      */
     private boolean check_card_num(String cardNumber) {
         // Trim the input string to remove any leading or trailing whitespace
@@ -316,12 +357,13 @@ public class PaymentController {
         return matcher.matches();
     }
 
-
     /**
      * Determines whether the given string is a valid email address.
      *
-     * @param email the email address to validate; leading and trailing whitespace are ignored
-     * @return true if the email contains a valid local part, an '@' separator, and a domain with a top-level domain, false otherwise
+     * @param email the email address to validate; leading and trailing whitespace
+     *              are ignored
+     * @return true if the email contains a valid local part, an '@' separator, and
+     * a domain with a top-level domain, false otherwise
      */
     public boolean isValidEmail(String email) {
         // Trim the input string to remove any leading or trailing whitespace
@@ -336,17 +378,19 @@ public class PaymentController {
         return matcher.matches();
     }
 
-
     /**
      * Navigate to the payment success view and display it on the current stage.
      */
-/**
- * Navigate to the payment failure view and display it on the current stage.
- */
+    /**
+     * Navigate to the payment failure view and display it on the current stage.
+     */
     /**
      * Placeholder for navigating to the payment success page.
      *
-     * <p>Currently a no-op; navigation implementation is commented out and this method does not change application state or UI.</p>
+     * <p>
+     * Currently a no-op; navigation implementation is commented out and this method
+     * does not change application state or UI.
+     * </p>
      */
     private void redirect_to_successPage() {
         // try {
@@ -365,14 +409,17 @@ public class PaymentController {
 
     }
 
-
     //
 
     /**
-     * Placeholder that would navigate the UI to the payment failure view but currently performs no action.
+     * Placeholder that would navigate the UI to the payment failure view but
+     * currently performs no action.
      *
-     * <p>The implementation is commented out; its intended behavior is to load the failure FXML, update the
-     * failure controller with reservation data, and replace the current scene.</p>
+     * <p>
+     * The implementation is commented out; its intended behavior is to load the
+     * failure FXML, update the
+     * failure controller with reservation data, and replace the current scene.
+     * </p>
      */
     private void redirect_to_FailPage() {
         // try {
@@ -391,16 +438,17 @@ public class PaymentController {
 
     }
 
-
     //
 
     /**
-     * Navigate to the client reservation list view for the current reservation's client.
+     * Navigate to the client reservation list view for the current reservation's
+     * client.
      * <p>
      * Loads the reservation list FXML, initializes its controller with the current
      * reservation's client ID, and replaces the current scene to display that view.
      *
-     * @param event the ActionEvent that triggered the navigation (e.g., Back button click)
+     * @param event the ActionEvent that triggered the navigation (e.g., Back button
+     *              click)
      */
     @FXML
     private void redirectToListReservation(final ActionEvent event) {

@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class FilmService implements IService<Film> {
 
     private static final Logger LOGGER = Logger.getLogger(FilmService.class.getName());
@@ -126,9 +126,9 @@ public class FilmService implements IService<Film> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            LOGGER.warning("Invalid sort column: " + pageRequest.getSortBy() + ". Using default sorting.");
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            LOGGER.warning("Invalid sort column: " + pageRequest.sortBy() + ". Using default sorting.");
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -147,11 +147,11 @@ public class FilmService implements IService<Film> {
                 }
             }
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             LOGGER.log(Level.SEVERE, "Error retrieving paginated films: " + e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
     }
 
@@ -197,7 +197,7 @@ public class FilmService implements IService<Film> {
         } catch (final SQLException e) {
             FilmService.LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
-        return new Page<>(filmArrayList, pageRequest.getPage(), pageRequest.getSize(), filmArrayList.size());
+        return new Page<>(filmArrayList, pageRequest.page(), pageRequest.size(), filmArrayList.size());
     }
 
     /**

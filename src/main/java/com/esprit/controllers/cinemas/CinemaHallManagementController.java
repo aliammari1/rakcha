@@ -1,13 +1,26 @@
 package com.esprit.controllers.cinemas;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.IntegerRangeValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.models.cinemas.Cinema;
 import com.esprit.models.cinemas.CinemaHall;
 import com.esprit.services.cinemas.CinemaHallService;
 import com.esprit.services.cinemas.CinemaService;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,18 +29,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,14 +45,26 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for managing cinema halls (admin functionality).
- */
+@Log4j2
 public class CinemaHallManagementController {
 
     private static final Logger LOGGER = Logger.getLogger(CinemaHallManagementController.class.getName());
     private final CinemaService cinemaService;
     private final CinemaHallService cinemaHallService;
+    private final StringProperty hallNameProperty = new SimpleStringProperty("");
+    private final ListProperty<Cinema> cinemaListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObjectProperty<Cinema> selectedCinemaProperty = new SimpleObjectProperty<>();
+    private final IntegerProperty rowsProperty = new SimpleIntegerProperty(10);
+    private final IntegerProperty seatsPerRowProperty = new SimpleIntegerProperty(15);
+    private final ListProperty<String> screenTypeListProperty = new SimpleListProperty<>(
+        FXCollections.observableArrayList("Standard", "IMAX", "3D", "4DX", "Dolby Atmos", "VIP"));
+    private final ObjectProperty<String> selectedScreenTypeProperty = new SimpleObjectProperty<>("Standard");
+    private final BooleanProperty isActiveProperty = new SimpleBooleanProperty(true);
+    private final StringProperty descriptionProperty = new SimpleStringProperty("");
+    // Observable collections
+    private final ObservableList<CinemaHall> halls;
+    private final ObservableList<Cinema> cinemas;
+    // FXML injected fields
     @FXML
     private VBox managementContainer;
     @FXML
@@ -71,24 +93,11 @@ public class CinemaHallManagementController {
     private Label totalSeatsLabel;
     @FXML
     private ProgressIndicator loadingIndicator;
-    // Form fields for add/edit
     @FXML
-    private TextField hallNameField;
-    @FXML
-    private ComboBox<Cinema> hallCinemaCombo;
-    @FXML
-    private Spinner<Integer> rowsSpinner;
-    @FXML
-    private Spinner<Integer> seatsPerRowSpinner;
-    @FXML
-    private ComboBox<String> screenTypeCombo;
-    @FXML
-    private CheckBox isActiveCheck;
-    @FXML
-    private TextArea hallDescriptionArea;
-    private ObservableList<CinemaHall> halls;
-    private ObservableList<Cinema> cinemas;
+    private VBox formContainer;
     private CinemaHall selectedHall;
+    // FormsFX Form and Properties
+    private Form hallForm;
 
     public CinemaHallManagementController() {
         this.cinemaService = new CinemaService();
@@ -99,13 +108,66 @@ public class CinemaHallManagementController {
 
     @FXML
     public void initialize() {
-        LOGGER.info("Initializing CinemaHallManagementController");
+        LOGGER.info("Initializing CinemaHallManagementController with FormsFX");
 
         setupTable();
         setupFilters();
-        setupForm();
+        setupFormsFX();
         loadCinemas();
         loadHalls();
+    }
+
+    /**
+     * Creates and configures the FormsFX form for cinema hall editing.
+     */
+    private void setupFormsFX() {
+        // Create the FormsFX form with validation
+        hallForm = Form.of(
+            Group.of(
+                Field.ofStringType(hallNameProperty)
+                    .label("Hall Name")
+                    .placeholder("Enter hall name")
+                    .required("Hall name is required")
+                    .validate(StringLengthValidator.atLeast(2, "Name must be at least 2 characters")),
+
+                Field.ofSingleSelectionType(cinemaListProperty, selectedCinemaProperty)
+                    .label("Cinema")
+                    .required("Please select a cinema")
+            ),
+
+            Group.of(
+                Field.ofIntegerType(rowsProperty)
+                    .label("Number of Rows")
+                    .validate(IntegerRangeValidator.between(1, 30, "Rows must be between 1 and 30")),
+
+                Field.ofIntegerType(seatsPerRowProperty)
+                    .label("Seats per Row")
+                    .validate(IntegerRangeValidator.between(1, 50, "Seats per row must be between 1 and 50"))
+            ),
+
+            Group.of(
+                Field.ofSingleSelectionType(screenTypeListProperty, selectedScreenTypeProperty)
+                    .label("Screen Type"),
+
+                Field.ofBooleanType(isActiveProperty)
+                    .label("Active Status")
+            ),
+
+            Group.of(
+                Field.ofStringType(descriptionProperty)
+                    .label("Description")
+                    .placeholder("Enter hall description (optional)")
+                    .multiline(true)
+            )
+        ).title("Cinema Hall Details");
+
+        // Render the form into the container
+        if (formContainer != null) {
+            FormRenderer renderer = new FormRenderer(hallForm);
+            renderer.getStyleClass().add("form-renderer");
+            formContainer.getChildren().clear();
+            formContainer.getChildren().add(renderer);
+        }
     }
 
     private void setupTable() {
@@ -115,7 +177,7 @@ public class CinemaHallManagementController {
             new SimpleStringProperty(cellData.getValue().getHallName()));
         cinemaColumn.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().getCinema() != null ?
-                cellData.getValue().getCinema().getNom() : "N/A"));
+                cellData.getValue().getCinema().getName() : "N/A"));
         capacityColumn.setCellValueFactory(cellData ->
             new SimpleIntegerProperty(cellData.getValue().getCapacity()).asObject());
         screenTypeColumn.setCellValueFactory(cellData ->
@@ -141,14 +203,6 @@ public class CinemaHallManagementController {
         }
     }
 
-    private void setupForm() {
-        screenTypeCombo.getItems().addAll("Standard", "IMAX", "3D", "4DX", "Dolby Atmos", "VIP");
-        screenTypeCombo.setValue("Standard");
-
-        rowsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, 10));
-        seatsPerRowSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 15));
-    }
-
     private void loadCinemas() {
         new Thread(() -> {
             try {
@@ -156,19 +210,16 @@ public class CinemaHallManagementController {
 
                 Platform.runLater(() -> {
                     cinemas.setAll(cinemaList);
+                    cinemaListProperty.setAll(cinemaList);
 
                     Cinema allOption = new Cinema();
-                    allOption.setNom("All Cinemas");
+                    allOption.setName("All Cinemas");
                     allOption.setId(-1L);
 
                     cinemaFilter.getItems().clear();
                     cinemaFilter.getItems().add(allOption);
                     cinemaFilter.getItems().addAll(cinemas);
                     cinemaFilter.setValue(allOption);
-
-                    if (hallCinemaCombo != null) {
-                        hallCinemaCombo.setItems(cinemas);
-                    }
                 });
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Error loading cinemas", e);
@@ -211,7 +262,7 @@ public class CinemaHallManagementController {
                         // Cinema filter
                         if (selectedCinema != null && selectedCinema.getId() != -1) {
                             if (hall.getCinema() == null ||
-                                hall.getCinema().getId() != selectedCinema.getId()) {
+                                !hall.getCinema().getId().equals(selectedCinema.getId())) {
                                 return false;
                             }
                         }
@@ -220,11 +271,9 @@ public class CinemaHallManagementController {
                         if (!searchText.isEmpty()) {
                             String hallName = hall.getHallName().toLowerCase();
                             String cinemaName = hall.getCinema() != null ?
-                                hall.getCinema().getNom().toLowerCase() : "";
+                                hall.getCinema().getName().toLowerCase() : "";
 
-                            if (!hallName.contains(searchText) && !cinemaName.contains(searchText)) {
-                                return false;
-                            }
+                            return hallName.contains(searchText) || cinemaName.contains(searchText);
                         }
 
                         return true;
@@ -241,39 +290,53 @@ public class CinemaHallManagementController {
         }).start();
     }
 
+    /**
+     * Populates the FormsFX form with data from the selected hall.
+     */
     private void populateForm(CinemaHall hall) {
-        if (hallNameField != null) hallNameField.setText(hall.getHallName());
-        if (hallCinemaCombo != null) hallCinemaCombo.setValue(hall.getCinema());
-        if (screenTypeCombo != null) screenTypeCombo.setValue(hall.getScreenType());
-        if (isActiveCheck != null) isActiveCheck.setSelected(hall.isActive());
-        if (hallDescriptionArea != null) hallDescriptionArea.setText(hall.getDescription());
+        hallNameProperty.set(hall.getHallName() != null ? hall.getHallName() : "");
+        selectedCinemaProperty.set(hall.getCinema());
+        selectedScreenTypeProperty.set(hall.getScreenType() != null ? hall.getScreenType() : "Standard");
+        isActiveProperty.set(hall.isActive());
+        descriptionProperty.set(hall.getDescription() != null ? hall.getDescription() : "");
 
         // Calculate rows and seats per row from capacity
-        int capacity = hall.getCapacity();
+        int capacity = hall.getCapacity() != null ? hall.getCapacity() : 150;
         int rows = (int) Math.ceil(capacity / 15.0);
         int seatsPerRow = capacity / Math.max(rows, 1);
 
-        if (rowsSpinner != null) rowsSpinner.getValueFactory().setValue(rows);
-        if (seatsPerRowSpinner != null) seatsPerRowSpinner.getValueFactory().setValue(seatsPerRow);
+        rowsProperty.set(rows);
+        seatsPerRowProperty.set(seatsPerRow);
     }
 
+    /**
+     * Clears the FormsFX form to default values.
+     */
     private void clearForm() {
         selectedHall = null;
-        if (hallNameField != null) hallNameField.clear();
-        if (hallCinemaCombo != null) hallCinemaCombo.setValue(null);
-        if (screenTypeCombo != null) screenTypeCombo.setValue("Standard");
-        if (rowsSpinner != null) rowsSpinner.getValueFactory().setValue(10);
-        if (seatsPerRowSpinner != null) seatsPerRowSpinner.getValueFactory().setValue(15);
-        if (isActiveCheck != null) isActiveCheck.setSelected(true);
-        if (hallDescriptionArea != null) hallDescriptionArea.clear();
+        hallNameProperty.set("");
+        selectedCinemaProperty.set(null);
+        selectedScreenTypeProperty.set("Standard");
+        rowsProperty.set(10);
+        seatsPerRowProperty.set(15);
+        isActiveProperty.set(true);
+        descriptionProperty.set("");
 
         hallsTable.getSelectionModel().clearSelection();
+
+        // Reset form validation state
+        if (hallForm != null) {
+            hallForm.reset();
+        }
     }
 
     private void updateStatistics() {
         int total = halls.size();
         long active = halls.stream().filter(CinemaHall::isActive).count();
-        int totalSeats = halls.stream().mapToInt(CinemaHall::getCapacity).sum();
+        int totalSeats = halls.stream()
+            .filter(h -> h.getCapacity() != null)
+            .mapToInt(CinemaHall::getCapacity)
+            .sum();
 
         if (totalHallsLabel != null) totalHallsLabel.setText(String.valueOf(total));
         if (activeHallsLabel != null) activeHallsLabel.setText(String.valueOf(active));
@@ -287,19 +350,22 @@ public class CinemaHallManagementController {
 
     @FXML
     private void handleSaveHall() {
-        if (!validateForm()) return;
+        // Use FormsFX validation
+        if (!hallForm.isValid()) {
+            hallForm.persist();  // This triggers validation display
+            showError("Please fix the validation errors before saving.");
+            return;
+        }
 
         showLoading(true);
 
         CinemaHall hall = selectedHall != null ? selectedHall : new CinemaHall();
-        hall.setHallName(hallNameField.getText().trim());
-        hall.setCinema(hallCinemaCombo.getValue());
-        hall.setScreenType(screenTypeCombo.getValue());
-        hall.setCapacity(rowsSpinner.getValue() * seatsPerRowSpinner.getValue());
-        hall.setActive(isActiveCheck.isSelected());
-        if (hallDescriptionArea != null) {
-            hall.setDescription(hallDescriptionArea.getText());
-        }
+        hall.setHallName(hallNameProperty.get().trim());
+        hall.setCinema(selectedCinemaProperty.get());
+        hall.setScreenType(selectedScreenTypeProperty.get());
+        hall.setCapacity(rowsProperty.get() * seatsPerRowProperty.get());
+        hall.setActive(isActiveProperty.get());
+        hall.setDescription(descriptionProperty.get());
 
         new Thread(() -> {
             try {
@@ -323,18 +389,6 @@ public class CinemaHallManagementController {
                 });
             }
         }).start();
-    }
-
-    private boolean validateForm() {
-        if (hallNameField.getText().trim().isEmpty()) {
-            showError("Hall name is required.");
-            return false;
-        }
-        if (hallCinemaCombo.getValue() == null) {
-            showError("Please select a cinema.");
-            return false;
-        }
-        return true;
     }
 
     @FXML
@@ -383,7 +437,7 @@ public class CinemaHallManagementController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/views/admin/SeatManagement.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/admin/SeatManagement.fxml"));
             Parent root = loader.load();
 
             SeatManagementController controller = loader.getController();
@@ -407,7 +461,7 @@ public class CinemaHallManagementController {
         }
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/views/admin/MovieSessionManagement.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/admin/MovieSessionManagement.fxml"));
             Parent root = loader.load();
 
             MovieSessionManagementController controller = loader.getController();
@@ -436,7 +490,7 @@ public class CinemaHallManagementController {
     @FXML
     private void handleBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/views/AdminDashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/users/AdminDashboard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) managementContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -444,6 +498,67 @@ public class CinemaHallManagementController {
             LOGGER.log(Level.SEVERE, "Error navigating back", e);
         }
     }
+
+    // ==================== Dialog methods for FXML compatibility ====================
+
+    @FXML
+    private void createNewHall() {
+        clearForm();
+        showHallDialog();
+    }
+
+    @FXML
+    private void closeHallDialog() {
+        // Find and hide the dialog
+        VBox dialog = (VBox) managementContainer.getScene().lookup("#hallDialog");
+        if (dialog != null) {
+            dialog.setVisible(false);
+            dialog.setManaged(false);
+        }
+    }
+
+    private void showHallDialog() {
+        VBox dialog = (VBox) managementContainer.getScene().lookup("#hallDialog");
+        if (dialog != null) {
+            dialog.setVisible(true);
+            dialog.setManaged(true);
+        }
+    }
+
+    @FXML
+    private void saveHall() {
+        handleSaveHall();
+        closeHallDialog();
+    }
+
+    // View toggle methods for FXML compatibility
+    @FXML
+    private void showGridView() {
+        // Grid view logic
+    }
+
+    @FXML
+    private void showTableView() {
+        // Table view logic
+    }
+
+    // Delete dialog methods
+    @FXML
+    private void cancelDelete() {
+        VBox deleteDialog = (VBox) managementContainer.getScene().lookup("#deleteDialog");
+        if (deleteDialog != null) {
+            deleteDialog.setVisible(false);
+            deleteDialog.setManaged(false);
+        }
+    }
+
+    @FXML
+    private void confirmDelete() {
+        handleDeleteHall();
+        cancelDelete();
+    }
+
+    // ==================== Utility methods ====================
 
     private void showLoading(boolean show) {
         if (loadingIndicator != null) loadingIndicator.setVisible(show);

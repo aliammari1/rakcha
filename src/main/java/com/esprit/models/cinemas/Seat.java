@@ -5,10 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
@@ -21,22 +23,17 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 public class Seat {
 
-    private Long id;
-
     private String rowLabel;
-
     private String seatNumber;
-
+    private CinemaHall cinemaHall;
+    private Long id;
     @Builder.Default
     private String type = "STANDARD"; // STANDARD, VIP, WHEELCHAIR
-
     @Builder.Default
     private Boolean isOccupied = false;
-
-    private CinemaHall cinemaHall;
-
     @Builder.Default
     private List<Ticket> tickets = new ArrayList<>();
 
@@ -60,27 +57,6 @@ public class Seat {
         this.type = type != null ? type : "STANDARD";
         this.cinemaHall = cinemaHall;
         this.tickets = new ArrayList<>();
-        this.priceMultiplier = 1.0;
-        this.isAccessible = false;
-    }
-
-    /**
-     * Create a Seat instance without an id for use when creating new seats (legacy constructor).
-     *
-     * @param seatNumber the seat's number within its row
-     * @param rowNumber  the row index for the seat
-     * @param type       the type of the seat (STANDARD, VIP, WHEELCHAIR)
-     * @param isOccupied whether the seat is currently occupied
-     * @param cinemaHall the cinema hall that contains this seat
-     */
-    @Deprecated(forRemoval = true)
-    public Seat(Integer seatNumber, Integer rowNumber, String type, Boolean isOccupied, CinemaHall cinemaHall) {
-        this.seatNumber = seatNumber != null ? seatNumber.toString() : null;
-        this.rowLabel = rowNumber != null ? String.valueOf((char) (64 + rowNumber)) : null;
-        this.type = type != null ? type : "STANDARD";
-        this.cinemaHall = cinemaHall;
-        this.tickets = new ArrayList<>();
-        this.isOccupied = isOccupied != null ? isOccupied : false;
         this.priceMultiplier = 1.0;
         this.isAccessible = false;
     }

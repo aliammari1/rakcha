@@ -27,6 +27,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class MessageService {
 
@@ -67,8 +68,8 @@ public class MessageService {
             if (rs.next()) {
                 Message message = Message.builder()
                     .id(rs.getLong(1))
-                    .senderId(senderId)
-                    .recipientId(recipientId)
+                    .sender(this.userService.getUserById(senderId))
+                    .recipient(this.userService.getUserById(recipientId))
                     .content(content)
                     .createdAt(now)
                     .read(false)
@@ -124,7 +125,8 @@ public class MessageService {
         List<User> conversations = new ArrayList<>();
         Map<Long, User> userMap = new HashMap<>();
 
-        String query = "SELECT DISTINCT CASE WHEN sender_id = ? THEN recipient_id ELSE sender_id END as other_user_id " +
+        String query = "SELECT DISTINCT CASE WHEN sender_id = ? THEN recipient_id ELSE sender_id END as other_user_id "
+            +
             "FROM messages WHERE sender_id = ? OR recipient_id = ? " +
             "ORDER BY (SELECT MAX(created_at) FROM messages m2 " +
             "WHERE (m2.sender_id = ? AND m2.recipient_id = other_user_id) " +
@@ -315,8 +317,8 @@ public class MessageService {
         java.sql.Timestamp timestamp = rs.getTimestamp("created_at");
         return Message.builder()
             .id(rs.getLong("id"))
-            .senderId(rs.getLong("sender_id"))
-            .recipientId(rs.getLong("recipient_id"))
+            .sender(this.userService.getUserById(rs.getLong("sender_id")))
+            .recipient(this.userService.getUserById(rs.getLong("recipient_id")))
             .content(rs.getString("content"))
             .createdAt(timestamp != null ? timestamp.toLocalDateTime() : java.time.LocalDateTime.now())
             .read(rs.getBoolean("is_read"))

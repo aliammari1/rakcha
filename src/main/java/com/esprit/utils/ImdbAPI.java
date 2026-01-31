@@ -1,5 +1,6 @@
 package com.esprit.utils;
 
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,14 +13,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
-/**
- * Utility class providing helper methods for the RAKCHA application. Contains
- * reusable functionality and common operations.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class ImdbAPI {
 
     private static final Logger LOGGER = Logger.getLogger(ImdbAPI.class.getName());
@@ -83,7 +77,7 @@ public class ImdbAPI {
                     // Too Many Requests - implement retry with backoff
                     retries++;
                     if (retries < MAX_RETRIES) {
-                        Thread.sleep(RETRY_DELAY_MS * retries);
+                        Thread.sleep((long) RETRY_DELAY_MS * retries);
                         continue;
                     }
 

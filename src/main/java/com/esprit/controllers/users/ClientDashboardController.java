@@ -1,20 +1,17 @@
 package com.esprit.controllers.users;
 
+import com.esprit.models.common.Review;
 import com.esprit.models.films.Film;
 import com.esprit.models.films.Ticket;
-import com.esprit.models.series.Series;
-import com.esprit.models.users.User;
-import com.esprit.models.users.Activity;
 import com.esprit.models.users.Achievement;
-import com.esprit.models.products.Order;
-import com.esprit.models.products.OrderItem;
-import com.esprit.models.common.Review;
-import com.esprit.services.series.SeriesService;
-import com.esprit.services.films.FilmService;
-import com.esprit.services.products.OrderService;
-import com.esprit.services.users.WatchProgressService;
+import com.esprit.models.users.Activity;
+import com.esprit.models.users.User;
 import com.esprit.services.common.ReviewService;
+import com.esprit.services.films.FilmService;
 import com.esprit.services.films.TicketService;
+import com.esprit.services.products.OrderService;
+import com.esprit.services.series.SeriesService;
+import com.esprit.services.users.WatchProgressService;
 import com.esprit.utils.SessionManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -22,26 +19,41 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.*;
-import javafx.scene.control.*;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Controller for client analytics dashboard.
- */
+@Log4j2
 public class ClientDashboardController {
 
     private static final Logger LOGGER = Logger.getLogger(ClientDashboardController.class.getName());
@@ -506,9 +518,9 @@ public class ClientDashboardController {
             poster.setFitHeight(75);
             poster.setPreserveRatio(true);
 
-            if (film.getImage() != null) {
+            if (film.getImageUrl() != null) {
                 try {
-                    poster.setImage(new Image(film.getImage(), true));
+                    poster.setImage(new Image(film.getImageUrl(), true));
                 } catch (Exception e) {
                     LOGGER.log(Level.FINE, "Error loading poster", e);
                 }
@@ -517,10 +529,10 @@ public class ClientDashboardController {
             VBox infoBox = new VBox(4);
             HBox.setHgrow(infoBox, Priority.ALWAYS);
 
-            Label titleLabel = new Label(film.getNom());
+            Label titleLabel = new Label(film.getTitle());
             titleLabel.getStyleClass().add("rec-title");
 
-            Label ratingLabel = new Label(String.format("%.1f ★", film.getNote()));
+            Label ratingLabel = new Label(String.format("%.1f ★", film.getRating()));
             ratingLabel.getStyleClass().add("rec-rating");
 
             infoBox.getChildren().addAll(titleLabel, ratingLabel);

@@ -3,6 +3,7 @@ package com.esprit.utils;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import io.github.cdimascio.dotenv.Dotenv;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,21 +11,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * A service class for handling image uploads to Cloudinary.
- * This class encapsulates all Cloudinary operations and provides a simplified
- * API
- * for the rest of the application.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class CloudinaryStorage {
 
     private static final Logger LOGGER = Logger.getLogger(CloudinaryStorage.class.getName());
     private static CloudinaryStorage instance;
-    private Cloudinary cloudinary;
+    private final Cloudinary cloudinary;
 
     /**
      * Private constructor to enforce singleton pattern.

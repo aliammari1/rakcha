@@ -1,5 +1,6 @@
 package com.esprit.utils;
 
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,14 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Utility class for scraping IMDB data including movie URLs and trailer information.
- * Uses Jsoup for HTML parsing and web scraping.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class IMDBScraper {
 
     private static final Logger LOGGER = Logger.getLogger(IMDBScraper.class.getName());

@@ -3,6 +3,7 @@ package com.esprit.services.search;
 import com.esprit.utils.DataSource;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,10 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Ultra-fast universal search engine using in-memory caching.
- * Searches across all entities based on user role.
- */
+@Log4j2
 public class SearchService {
 
     private static final Logger LOGGER = Logger.getLogger(SearchService.class.getName());
@@ -231,54 +229,8 @@ public class SearchService {
         CLIENT, ADMIN, CINEMA_MANAGER
     }
 
-    public static class SearchResult implements Comparable<SearchResult> {
-
-        private final EntityType type;
-        private final Long id;
-        private final String title;
-        private final String subtitle;
-        private final String description;
-        private final String imageUrl;
-        private final float score;
-
-        public SearchResult(EntityType type, Long id, String title, String subtitle,
-                            String description, String imageUrl, float score) {
-            this.type = type;
-            this.id = id;
-            this.title = title;
-            this.subtitle = subtitle;
-            this.description = description;
-            this.imageUrl = imageUrl;
-            this.score = score;
-        }
-
-        public EntityType getType() {
-            return type;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getSubtitle() {
-            return subtitle;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public String getImageUrl() {
-            return imageUrl;
-        }
-
-        public float getScore() {
-            return score;
-        }
+    public record SearchResult(EntityType type, Long id, String title, String subtitle, String description,
+                               String imageUrl, float score) implements Comparable<SearchResult> {
 
         public String getIcon() {
             return type.icon;

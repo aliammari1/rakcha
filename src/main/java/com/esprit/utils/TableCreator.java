@@ -21,6 +21,7 @@ import java.sql.Statement;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class TableCreator {
 
@@ -57,13 +58,31 @@ public class TableCreator {
      * Creates all tables from the SQL file for the detected database type
      */
     public void createAllTablesIfNotExists() {
-        // If PostgreSQL, load from rakcha_db_postgres.sql
+        // Create core application tables first
         if (databaseType == DatabaseType.POSTGRESQL) {
             loadSchemaFromSQLFile("rakcha_db_postgres.sql");
+            // Create enhanced analytics and ML tables
+            loadSchemaFromSQLFile("analytics_ml_tables_postgres.sql");
         } else if (databaseType == DatabaseType.MYSQL) {
             loadSchemaFromSQLFile("rakcha_db.sql");
+            // Create enhanced analytics and ML tables
+            loadSchemaFromSQLFile("analytics_ml_tables.sql");
         } else {
             log.error("SQLite is not supported yet");
+        }
+    }
+
+    /**
+     * Creates only the enhanced analytics and ML tables
+     * This method can be called separately to add new features to existing databases
+     */
+    public void createAnalyticsAndMLTablesIfNotExists() {
+        if (databaseType == DatabaseType.POSTGRESQL) {
+            loadSchemaFromSQLFile("analytics_ml_tables_postgres.sql");
+        } else if (databaseType == DatabaseType.MYSQL) {
+            loadSchemaFromSQLFile("analytics_ml_tables.sql");
+        } else {
+            log.warn("Analytics and ML tables not supported for this database type");
         }
     }
 
@@ -151,8 +170,8 @@ public class TableCreator {
 
                 // Remove comment prefixes added by converters
                 trimmed = trimmed.replaceAll("(?m)^\\s*--\\s*SQLINES.*$", "")
-                        .replaceAll("(?m)^\\s*/\\*\\s*SQLINES.*?\\*/", "")
-                        .trim();
+                    .replaceAll("(?m)^\\s*/\\*\\s*SQLINES.*?\\*/", "")
+                    .trim();
 
                 if (!trimmed.isEmpty()) {
                     try {

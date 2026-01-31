@@ -9,7 +9,7 @@
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.cinemas.MovieSessionManagementController"
            styleClass="immersive-root"
-           stylesheets="@../styles/filmStyle.css, @../styles/admin.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
@@ -239,70 +239,11 @@
         </HBox>
 
         <ScrollPane fitToWidth="true" styleClass="dialog-scroll" VBox.vgrow="ALWAYS">
-          <VBox spacing="20">
+          <!-- FormsFX will render the session form here -->
+          <VBox fx:id="sessionFormContainer" spacing="15">
             <padding>
               <Insets right="10"/>
             </padding>
-
-            <!-- Location -->
-            <VBox spacing="15" styleClass="form-section">
-              <Label text="Location" styleClass="form-section-title"/>
-              <HBox spacing="20">
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                  <Label text="Cinema" styleClass="field-label"/>
-                  <ComboBox fx:id="sessionCinemaCombo" styleClass="glass-combo" promptText="Select cinema"
-                            maxWidth="1.7976931348623157E308"/>
-                </VBox>
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                  <Label text="Hall" styleClass="field-label"/>
-                  <ComboBox fx:id="sessionHallCombo" styleClass="glass-combo" promptText="Select hall"
-                            maxWidth="1.7976931348623157E308"/>
-                </VBox>
-              </HBox>
-            </VBox>
-
-            <!-- Date & Time -->
-            <VBox spacing="15" styleClass="form-section">
-              <Label text="Date &amp; Time" styleClass="form-section-title"/>
-              <HBox spacing="20">
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                  <Label text="Date" styleClass="field-label"/>
-                  <DatePicker fx:id="sessionDatePicker" styleClass="glass-date-picker"
-                              maxWidth="1.7976931348623157E308"/>
-                </VBox>
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                  <Label text="Start Time" styleClass="field-label"/>
-                  <ComboBox fx:id="sessionTimeCombo" styleClass="glass-combo" promptText="Select time"
-                            maxWidth="1.7976931348623157E308"/>
-                </VBox>
-              </HBox>
-            </VBox>
-
-            <!-- Pricing -->
-            <VBox spacing="15" styleClass="form-section">
-              <Label text="Pricing" styleClass="form-section-title"/>
-              <HBox spacing="20">
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                  <Label text="Regular Price" styleClass="field-label"/>
-                  <TextField fx:id="regularPriceField" styleClass="glass-input" promptText="0.00"/>
-                </VBox>
-                <VBox spacing="8" HBox.hgrow="ALWAYS">
-                  <Label text="VIP Price" styleClass="field-label"/>
-                  <TextField fx:id="vipPriceField" styleClass="glass-input" promptText="0.00"/>
-                </VBox>
-              </HBox>
-            </VBox>
-
-            <!-- Options -->
-            <VBox spacing="15" styleClass="form-section">
-              <Label text="Options" styleClass="form-section-title"/>
-              <FlowPane hgap="15" vgap="10">
-                <CheckBox fx:id="is3DCheck" styleClass="glass-checkbox" text="3D"/>
-                <CheckBox fx:id="isIMAXCheck" styleClass="glass-checkbox" text="IMAX"/>
-                <CheckBox fx:id="isDolbyCheck" styleClass="glass-checkbox" text="Dolby Atmos"/>
-                <CheckBox fx:id="isSubtitledCheck" styleClass="glass-checkbox" text="Subtitled"/>
-              </FlowPane>
-            </VBox>
           </VBox>
         </ScrollPane>
 
@@ -372,3 +313,4 @@
     </VBox>
   </VBox>
 </StackPane>
+

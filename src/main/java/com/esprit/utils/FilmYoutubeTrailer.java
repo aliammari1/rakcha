@@ -5,6 +5,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchResult;
 import io.github.cdimascio.dotenv.Dotenv;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,14 +13,7 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Utility class providing helper methods for the RAKCHA application. Contains
- * reusable functionality and common operations.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class FilmYoutubeTrailer {
 
     private static final Logger LOGGER = Logger.getLogger(FilmYoutubeTrailer.class.getName());

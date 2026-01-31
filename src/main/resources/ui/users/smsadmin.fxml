@@ -3,12 +3,13 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="855.0"
       prefWidth="1507.0"
       xmlns="http://javafx.com/javafx/21"
-      fx:controller="com.esprit.controllers.users.SMSAdminController">
+      fx:controller="com.esprit.controllers.users.SMSAdminController"
+      stylesheets="@../styles/rakcha-unified.css">
 
   <HBox VBox.vgrow="ALWAYS">
     <!-- SideBar -->
@@ -33,39 +34,12 @@
           <Insets top="20" right="20" bottom="20" left="20"/>
         </padding>
 
-        <GridPane vgap="15" hgap="10">
-          <!-- Phone Number -->
-          <Label text="Phone Number:" GridPane.rowIndex="0" GridPane.columnIndex="0">
-            <font>
-              <Font size="16.0"/>
-            </font>
-          </Label>
-          <TextField fx:id="phoneNumberTextfield" promptText="Enter phone number (8 digits)"
-                     GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-
-          <!-- Verification Code -->
-          <Label text="Verification Code:" GridPane.rowIndex="1" GridPane.columnIndex="0">
-            <font>
-              <Font size="16.0"/>
-            </font>
-          </Label>
-          <TextField fx:id="codeTextField" promptText="Enter verification code"
-                     GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-
-          <!-- Message -->
-          <Label text="Message:" GridPane.rowIndex="2" GridPane.columnIndex="0">
-            <font>
-              <Font size="16.0"/>
-            </font>
-          </Label>
-          <TextArea fx:id="messageField" promptText="Type your message here..."
-                    prefRowCount="5" wrapText="true"
-                    GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-        </GridPane>
+        <!-- FormsFX Form Container -->
+        <VBox fx:id="smsFormContainer" spacing="10"/>
 
         <!-- Action Buttons -->
         <HBox spacing="10" alignment="CENTER_RIGHT">
-          <Button onAction="#sendSMS" styleClass="primary-button">
+          <Button fx:id="sendSMS" onAction="#sendSMS" styleClass="primary-button">
             <graphic>
               <FontIcon iconLiteral="mdi2s-send"/>
             </graphic>
@@ -104,3 +78,4 @@
     </VBox>
   </HBox>
 </VBox>
+

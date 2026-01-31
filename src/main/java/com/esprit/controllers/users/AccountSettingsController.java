@@ -1,9 +1,18 @@
 package com.esprit.controllers.users;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserService;
 import com.esprit.utils.SessionManager;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -26,20 +35,29 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for user account settings and profile management.
- */
+@Log4j2
 public class AccountSettingsController {
 
     private static final Logger LOGGER = Logger.getLogger(AccountSettingsController.class.getName());
     private final UserService userService;
+    // FormsFX properties for declarative form handling
+    private final StringProperty firstNameProperty = new SimpleStringProperty("");
+    private final StringProperty lastNameProperty = new SimpleStringProperty("");
+    private final StringProperty emailProperty = new SimpleStringProperty("");
+    private final StringProperty phoneProperty = new SimpleStringProperty("");
+    private final StringProperty bioProperty = new SimpleStringProperty("");
+    private final ObjectProperty<LocalDate> birthdateProperty = new SimpleObjectProperty<>();
+    private final StringProperty currentPasswordProperty = new SimpleStringProperty("");
+    private final StringProperty newPasswordProperty = new SimpleStringProperty("");
+    private final StringProperty confirmPasswordProperty = new SimpleStringProperty("");
     @FXML
     private VBox settingsContainer;
     @FXML
@@ -100,6 +118,8 @@ public class AccountSettingsController {
     private ProgressIndicator loadingIndicator;
     private User currentUser;
     private File selectedProfileImage;
+    private Form profileForm;
+    private Form passwordForm;
 
     public AccountSettingsController() {
         this.userService = new UserService();
@@ -115,6 +135,8 @@ public class AccountSettingsController {
             return;
         }
 
+        setupFormsFX();
+        setupEasyBindings();
         setupComboBoxes();
         setupPasswordStrengthChecker();
         loadUserData();
@@ -123,6 +145,110 @@ public class AccountSettingsController {
     private void setupComboBoxes() {
         if (languageCombo != null) {
             languageCombo.getItems().addAll("English", "French", "Arabic", "Spanish", "German");
+        }
+    }
+
+    /**
+     * Sets up the FormsFX forms with declarative validation rules.
+     */
+    private void setupFormsFX() {
+        this.profileForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.firstNameProperty)
+                    .label("First Name")
+                    .validate(StringLengthValidator.atLeast(2, "First name is required")),
+                Field.ofStringType(this.lastNameProperty)
+                    .label("Last Name")
+                    .validate(StringLengthValidator.atLeast(2, "Last name is required")),
+                Field.ofStringType(this.emailProperty)
+                    .label("Email")
+                    .validate(RegexValidator.forPattern(
+                        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
+                        "Valid email is required")),
+                Field.ofStringType(this.phoneProperty)
+                    .label("Phone")
+                    .validate(RegexValidator.forPattern("\\d{8,15}", "Phone must be 8-15 digits"))
+            )
+        );
+
+        this.passwordForm = Form.of(
+            Group.of(
+                Field.ofStringType(this.currentPasswordProperty)
+                    .label("Current Password")
+                    .validate(StringLengthValidator.atLeast(1, "Current password is required")),
+                Field.ofStringType(this.newPasswordProperty)
+                    .label("New Password")
+                    .validate(StringLengthValidator.atLeast(8, "Password must be at least 8 characters")),
+                Field.ofStringType(this.confirmPasswordProperty)
+                    .label("Confirm Password")
+                    .validate(StringLengthValidator.atLeast(8, "Confirm password is required"))
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind subscriptions to sync text fields with FormsFX properties.
+     */
+    private void setupEasyBindings() {
+        if (this.firstNameField != null) {
+            this.firstNameField.textProperty().bindBidirectional(this.firstNameProperty);
+        }
+        if (this.lastNameField != null) {
+            this.lastNameField.textProperty().bindBidirectional(this.lastNameProperty);
+        }
+        if (this.emailField != null) {
+            this.emailField.textProperty().bindBidirectional(this.emailProperty);
+        }
+        if (this.phoneField != null) {
+            this.phoneField.textProperty().bindBidirectional(this.phoneProperty);
+        }
+        if (this.bioField != null) {
+            this.bioField.textProperty().bindBidirectional(this.bioProperty);
+        }
+        if (this.birthdatePicker != null) {
+            this.birthdatePicker.valueProperty().bindBidirectional(this.birthdateProperty);
+        }
+        if (this.currentPasswordField != null) {
+            this.currentPasswordField.textProperty().bindBidirectional(this.currentPasswordProperty);
+        }
+        if (this.newPasswordField != null) {
+            this.newPasswordField.textProperty().bindBidirectional(this.newPasswordProperty);
+        }
+        if (this.confirmPasswordField != null) {
+            this.confirmPasswordField.textProperty().bindBidirectional(this.confirmPasswordProperty);
+        }
+    }
+
+    /**
+     * Cleanup method to unbind properties when the view is closed.
+     */
+    public void cleanup() {
+        if (this.firstNameField != null) {
+            this.firstNameField.textProperty().unbindBidirectional(this.firstNameProperty);
+        }
+        if (this.lastNameField != null) {
+            this.lastNameField.textProperty().unbindBidirectional(this.lastNameProperty);
+        }
+        if (this.emailField != null) {
+            this.emailField.textProperty().unbindBidirectional(this.emailProperty);
+        }
+        if (this.phoneField != null) {
+            this.phoneField.textProperty().unbindBidirectional(this.phoneProperty);
+        }
+        if (this.bioField != null) {
+            this.bioField.textProperty().unbindBidirectional(this.bioProperty);
+        }
+        if (this.birthdatePicker != null) {
+            this.birthdatePicker.valueProperty().unbindBidirectional(this.birthdateProperty);
+        }
+        if (this.currentPasswordField != null) {
+            this.currentPasswordField.textProperty().unbindBidirectional(this.currentPasswordProperty);
+        }
+        if (this.newPasswordField != null) {
+            this.newPasswordField.textProperty().unbindBidirectional(this.newPasswordProperty);
+        }
+        if (this.confirmPasswordField != null) {
+            this.confirmPasswordField.textProperty().unbindBidirectional(this.confirmPasswordProperty);
         }
     }
 
@@ -338,7 +464,8 @@ public class AccountSettingsController {
                 Platform.runLater(() -> {
                     showLoading(false);
                     if (success) {
-                        SessionManager.getInstance().logout();
+                        SessionManager.getInstance();
+                        SessionManager.logout();
                         navigateToLogin();
                     } else {
                         showError("Incorrect password or deletion failed.");
@@ -356,7 +483,8 @@ public class AccountSettingsController {
 
     @FXML
     private void handleLogout() {
-        SessionManager.getInstance().logout();
+        SessionManager.getInstance();
+        SessionManager.logout();
         navigateToLogin();
     }
 

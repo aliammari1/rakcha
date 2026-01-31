@@ -11,7 +11,8 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="855.0"
       prefWidth="1507.0"
       xmlns="http://javafx.com/javafx/21"
-      fx:controller="com.esprit.controllers.products.OrderClientController">
+      fx:controller="com.esprit.controllers.products.OrderClientController"
+      stylesheets="@../styles/rakcha-unified.css">
 
   <HBox VBox.vgrow="ALWAYS">
     <!-- SideBar -->
@@ -107,3 +108,4 @@
     <URL value="@../styles/filmStyle.css"/>
   </stylesheets>
 </VBox>
+

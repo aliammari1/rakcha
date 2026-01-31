@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The Actor class represents an actor in a film.
- */
-
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,6 +22,7 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 
 public class Actor {
 

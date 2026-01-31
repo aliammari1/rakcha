@@ -1,7 +1,7 @@
 package com.esprit.controllers.products;
 
-import com.esprit.models.products.Product;
 import com.esprit.models.common.Review;
+import com.esprit.models.products.Product;
 import com.esprit.utils.TestFXBase;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -344,9 +344,9 @@ class DetailsProductClientControllerTest extends TestFXBase {
 
             List<Review> reviews = createMockReviews();
             double averageRating = reviews.stream()
-                    .mapToInt(Review::getRating)
-                    .average()
-                    .orElse(0);
+                .mapToInt(Review::getRating)
+                .average()
+                .orElse(0);
             assertThat(averageRating).isEqualTo(4.5);
 
             FlowPane detailPane = lookup("#detailFlowPane").query();

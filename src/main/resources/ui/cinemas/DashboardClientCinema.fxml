@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
-<?import javafx.scene.text.Font?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
-
+<?import org.kordamp.ikonli.javafx.*?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootContainer"
            prefHeight="900.0" prefWidth="1500.0"
            xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.cinemas.DashboardClientController"
            style="-fx-background-color: linear-gradient(to bottom right, #0a0a0a, #1a0808, #120404, #0a0a0a);"
-           stylesheets="@../styles/cinema-dashboard.css, @../styles/login-animations.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Animated Background Layer -->
   <AnchorPane styleClass="cinema-animated-background" mouseTransparent="true">
@@ -75,136 +70,136 @@
             AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
             style="-fx-background-color: transparent;">
 
-      <!-- Premium Header -->
-      <HBox spacing="20" alignment="CENTER_LEFT" styleClass="cinema-header"
-            style="-fx-background-color: linear-gradient(to right, rgba(20, 8, 10, 0.98), rgba(15, 5, 8, 0.95), rgba(20, 8, 10, 0.98));
+        <!-- Premium Header -->
+        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="cinema-header"
+              style="-fx-background-color: linear-gradient(to right, rgba(20, 8, 10, 0.98), rgba(15, 5, 8, 0.95), rgba(20, 8, 10, 0.98));
                    -fx-border-color: rgba(139, 0, 0, 0.4); -fx-border-width: 0 0 2 0;
                    -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 20, 0, 0, 5);
                    -fx-padding: 20 30;">
 
-        <!-- Brand Section -->
-        <HBox spacing="15" alignment="CENTER_LEFT"
-              style="-fx-background-color: radial-gradient(center 50% 50%, radius 70%, rgba(139, 0, 0, 0.25), transparent);
+          <!-- Brand Section -->
+          <HBox spacing="15" alignment="CENTER_LEFT"
+                style="-fx-background-color: radial-gradient(center 50% 50%, radius 70%, rgba(139, 0, 0, 0.25), transparent);
                      -fx-background-radius: 15; -fx-padding: 12;">
-          <StackPane>
-            <Circle radius="30"
-                    style="-fx-fill: linear-gradient(to bottom, rgba(139, 0, 0, 0.4), rgba(60, 0, 0, 0.3));
+            <StackPane>
+              <Circle radius="30"
+                      style="-fx-fill: linear-gradient(to bottom, rgba(139, 0, 0, 0.4), rgba(60, 0, 0, 0.3));
                            -fx-stroke: #ff4444; -fx-stroke-width: 2;
                            -fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.5), 10, 0, 0, 0);"/>
-            <FontIcon iconLiteral="mdi2m-movie-open:28:#ff4444"/>
-          </StackPane>
-          <VBox spacing="2">
-            <Label text="CINEMA EXPLORER"
-                   style="-fx-text-fill: #ffffff; -fx-font-family: 'Arial Black';
+              <FontIcon iconLiteral="mdi2m-movie-open:28:#ff4444"/>
+            </StackPane>
+            <VBox spacing="2">
+              <Label text="CINEMA EXPLORER"
+                     style="-fx-text-fill: #ffffff; -fx-font-family: 'Arial Black';
                           -fx-font-size: 20px; -fx-font-weight: bold;
                           -fx-effect: dropshadow(gaussian, #8b0000, 6, 0, 1, 1);"/>
-            <Label text="Discover • Experience • Enjoy"
-                   style="-fx-text-fill: #999999; -fx-font-size: 11px; -fx-font-style: italic;"/>
-          </VBox>
-        </HBox>
+              <Label text="Discover • Experience • Enjoy"
+                     style="-fx-text-fill: #999999; -fx-font-size: 11px; -fx-font-style: italic;"/>
+            </VBox>
+          </HBox>
 
-        <Region HBox.hgrow="ALWAYS"/>
+          <Region HBox.hgrow="ALWAYS"/>
 
-        <!-- Sort ComboBox -->
-        <HBox spacing="10" alignment="CENTER"
-              style="-fx-background-color: linear-gradient(to bottom, rgba(40, 20, 25, 0.9), rgba(25, 12, 15, 0.95));
+          <!-- Sort ComboBox -->
+          <HBox spacing="10" alignment="CENTER"
+                style="-fx-background-color: linear-gradient(to bottom, rgba(40, 20, 25, 0.9), rgba(25, 12, 15, 0.95));
                      -fx-background-radius: 15; -fx-border-color: rgba(139, 0, 0, 0.5);
                      -fx-border-width: 1; -fx-border-radius: 15; -fx-padding: 8 15;">
-          <FontIcon iconLiteral="mdi2s-sort:18:#ff6666"/>
-          <ComboBox fx:id="tricomboBox" prefWidth="140" promptText="Sort by..."
-                    style="-fx-background-color: transparent; -fx-text-fill: white;"/>
-        </HBox>
+            <FontIcon iconLiteral="mdi2s-sort:18:#ff6666"/>
+            <ComboBox fx:id="tricomboBox" prefWidth="140" promptText="Sort by..."
+                      style="-fx-background-color: transparent; -fx-text-fill: white;"/>
+          </HBox>
 
-        <!-- Search Bar -->
-        <HBox spacing="12" alignment="CENTER"
-              style="-fx-background-color: linear-gradient(to bottom, rgba(40, 20, 25, 0.9), rgba(25, 12, 15, 0.95));
+          <!-- Search Bar -->
+          <HBox spacing="12" alignment="CENTER"
+                style="-fx-background-color: linear-gradient(to bottom, rgba(40, 20, 25, 0.9), rgba(25, 12, 15, 0.95));
                      -fx-background-radius: 25; -fx-border-color: rgba(139, 0, 0, 0.5);
                      -fx-border-width: 1.5; -fx-border-radius: 25; -fx-padding: 0 20;">
-          <FontIcon iconLiteral="mdi2m-magnify:20:#ff6666"/>
-          <TextField fx:id="searchbar1" prefHeight="45" prefWidth="280"
-                     promptText="Search cinemas..."
-                     style="-fx-background-color: transparent; -fx-text-fill: white;
+            <FontIcon iconLiteral="mdi2m-magnify:20:#ff6666"/>
+            <TextField fx:id="searchbar1" prefHeight="45" prefWidth="280"
+                       promptText="Search cinemas..."
+                       style="-fx-background-color: transparent; -fx-text-fill: white;
                             -fx-font-size: 14px; -fx-prompt-text-fill: #888888;"/>
-        </HBox>
+          </HBox>
 
-        <!-- Filter Button -->
-        <Button text="Filter" mnemonicParsing="false" onAction="#filtrer"
-                styleClass="animated-button"
-                style="-fx-background-color: linear-gradient(to bottom right, #8b0000, #550000);
+          <!-- Filter Button -->
+          <Button text="Filter" mnemonicParsing="false" onAction="#filtrer"
+                  styleClass="animated-button"
+                  style="-fx-background-color: linear-gradient(to bottom right, #8b0000, #550000);
                        -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;
                        -fx-background-radius: 20; -fx-border-color: #ff4444;
                        -fx-border-width: 1; -fx-border-radius: 20;
                        -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.6), 10, 0, 0, 2);
                        -fx-cursor: hand; -fx-padding: 12 25;">
-          <graphic>
-            <FontIcon iconLiteral="mdi2f-filter:16:#ffffff"/>
-          </graphic>
-        </Button>
-      </HBox>
+            <graphic>
+              <FontIcon iconLiteral="mdi2f-filter:16:#ffffff"/>
+            </graphic>
+          </Button>
+        </HBox>
 
-      <!-- Content Area -->
-      <HBox VBox.vgrow="ALWAYS" spacing="25" style="-fx-padding: 25;">
+        <!-- Content Area -->
+        <HBox VBox.vgrow="ALWAYS" spacing="25" style="-fx-padding: 25;">
 
-        <!-- Cinema List ScrollPane -->
-        <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS"
-                    styleClass="cinema-scroll-pane"
-                    style="-fx-background-color: transparent; -fx-background: transparent;">
-          <FlowPane fx:id="cinemaFlowPane" styleClass="cinema-flow-pane"
-                    hgap="20" vgap="20"
-                    style="-fx-background-color: transparent;"/>
-        </ScrollPane>
+          <!-- Cinema List ScrollPane -->
+          <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS"
+                      styleClass="cinema-scroll-pane"
+                      style="-fx-background-color: transparent; -fx-background: transparent;">
+            <FlowPane fx:id="cinemaFlowPane" styleClass="cinema-flow-pane"
+                      hgap="20" vgap="20"
+                      style="-fx-background-color: transparent;"/>
+          </ScrollPane>
 
-        <!-- Top 3 Sidebar -->
-        <VBox spacing="20" prefWidth="380" maxWidth="400"
-              style="-fx-background-color: linear-gradient(to bottom, rgba(25, 12, 15, 0.98), rgba(18, 8, 10, 0.98));
+          <!-- Top 3 Sidebar -->
+          <VBox spacing="20" prefWidth="380" maxWidth="400"
+                style="-fx-background-color: linear-gradient(to bottom, rgba(25, 12, 15, 0.98), rgba(18, 8, 10, 0.98));
                      -fx-background-radius: 25; -fx-border-color: rgba(139, 0, 0, 0.5);
                      -fx-border-width: 2; -fx-border-radius: 25;
                      -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.4), 20, 0, 0, 8);
                      -fx-padding: 25;">
 
-          <!-- Top 3 Header -->
-          <HBox spacing="15" alignment="CENTER_LEFT">
-            <StackPane>
-              <Circle radius="25"
-                      style="-fx-fill: linear-gradient(to bottom, rgba(255, 200, 0, 0.3), rgba(200, 150, 0, 0.2));
+            <!-- Top 3 Header -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+              <StackPane>
+                <Circle radius="25"
+                        style="-fx-fill: linear-gradient(to bottom, rgba(255, 200, 0, 0.3), rgba(200, 150, 0, 0.2));
                              -fx-stroke: #ffc800; -fx-stroke-width: 2;"/>
-              <FontIcon iconLiteral="mdi2c-crown:24:#ffc800"
-                        style="-fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.6), 8, 0, 0, 0);"/>
-            </StackPane>
-            <VBox spacing="2">
-              <Label text="TOP RATED"
-                     style="-fx-text-fill: #ffc800; -fx-font-family: 'Arial Black';
+                <FontIcon iconLiteral="mdi2c-crown:24:#ffc800"
+                          style="-fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.6), 8, 0, 0, 0);"/>
+              </StackPane>
+              <VBox spacing="2">
+                <Label text="TOP RATED"
+                       style="-fx-text-fill: #ffc800; -fx-font-family: 'Arial Black';
                             -fx-font-size: 24px; -fx-font-weight: bold;
                             -fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.5), 8, 0, 1, 1);"/>
-              <Label text="Best cinemas this week"
-                     style="-fx-text-fill: #888888; -fx-font-size: 11px; -fx-font-style: italic;"/>
-            </VBox>
-          </HBox>
+                <Label text="Best cinemas this week"
+                       style="-fx-text-fill: #888888; -fx-font-size: 11px; -fx-font-style: italic;"/>
+              </VBox>
+            </HBox>
 
-          <!-- Separator -->
-          <HBox alignment="CENTER" spacing="10">
-            <Rectangle width="50" height="2"
-                       style="-fx-fill: linear-gradient(to right, transparent, #8b0000);"/>
-            <FontIcon iconLiteral="mdi2s-star:16:#ffc800"/>
-            <Rectangle width="50" height="2"
-                       style="-fx-fill: linear-gradient(to left, transparent, #8b0000);"/>
-          </HBox>
+            <!-- Separator -->
+            <HBox alignment="CENTER" spacing="10">
+              <Rectangle width="50" height="2"
+                         style="-fx-fill: linear-gradient(to right, transparent, #8b0000);"/>
+              <FontIcon iconLiteral="mdi2s-star:16:#ffc800"/>
+              <Rectangle width="50" height="2"
+                         style="-fx-fill: linear-gradient(to left, transparent, #8b0000);"/>
+            </HBox>
 
-          <!-- Top 3 Content -->
-          <AnchorPane fx:id="Anchortop3" VBox.vgrow="ALWAYS"
-                      style="-fx-background-color: transparent;"/>
+            <!-- Top 3 Content -->
+            <AnchorPane fx:id="Anchortop3" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: transparent;"/>
 
-          <!-- View All Button -->
-          <Button text="View All Cinemas →"
-                  styleClass="animated-button"
-                  style="-fx-background-color: transparent; -fx-text-fill: #ff6666;
+            <!-- View All Button -->
+            <Button text="View All Cinemas →"
+                    styleClass="animated-button"
+                    style="-fx-background-color: transparent; -fx-text-fill: #ff6666;
                          -fx-font-size: 12px; -fx-font-weight: bold;
                          -fx-border-color: rgba(139, 0, 0, 0.4); -fx-border-width: 1;
                          -fx-border-radius: 15; -fx-background-radius: 15;
                          -fx-cursor: hand; -fx-padding: 10 20;"/>
-        </VBox>
-      </HBox>
-    </VBox>
+          </VBox>
+        </HBox>
+      </VBox>
     </AnchorPane>
   </HBox>
 
@@ -415,3 +410,4 @@
   </AnchorPane>
 
 </StackPane>
+

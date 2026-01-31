@@ -1,6 +1,12 @@
 package com.esprit.controllers.series;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.IntegerRangeValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.series.Episode;
+import com.esprit.models.series.Season;
 import com.esprit.models.series.Series;
 import com.esprit.services.series.EpisodeService;
 import com.esprit.services.series.SeriesService;
@@ -9,6 +15,15 @@ import com.esprit.utils.PageRequest;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,31 +47,39 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import lombok.extern.log4j.Log4j2;
+import org.fxmisc.easybind.EasyBind;
+import org.fxmisc.easybind.Subscription;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * JavaFX controller class for the RAKCHA application. Handles UI interactions
- * and manages view logic using FXML.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class EpisodeController {
 
     public static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
     public static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
     private static final Logger LOGGER = Logger.getLogger(EpisodeController.class.getName());
+
+    // FormsFX Properties for reactive form binding
+    private final StringProperty titreProperty = new SimpleStringProperty("");
+    private final IntegerProperty episodeNumberProperty = new SimpleIntegerProperty(1);
+    private final IntegerProperty seasonNumberProperty = new SimpleIntegerProperty(1);
+    private final ObjectProperty<String> seriesProperty = new SimpleObjectProperty<>();
+    private final ListProperty<String> seriesItems = new SimpleListProperty<>(FXCollections.observableArrayList());
+    // EasyBind subscriptions for cleanup
+    private final List<Subscription> subscriptions = new ArrayList<>();
     @FXML
     public ImageView episodeImageView;
+    // FormsFX Form with validation
+    private Form episodeForm;
     @FXML
     private Label numbercheck;
     @FXML
@@ -93,9 +116,14 @@ public class EpisodeController {
         this.tableView.getItems().clear();
         this.tableView.getColumns().clear();
         this.serieF.getItems().clear();
-        this.titreF.setText("");
-        this.numeroepisodeF.setText("");
-        this.saisonF.setText("");
+
+        // Reset FormsFX properties
+        titreProperty.set("");
+        episodeNumberProperty.set(1);
+        seasonNumberProperty.set(1);
+        seriesProperty.set(null);
+        seriesItems.clear();
+
         this.imgpath = "";
         this.videopath = "";
         final EpisodeService iServiceEpisode = new EpisodeService();
@@ -105,6 +133,7 @@ public class EpisodeController {
             this.serieList = iServiceSerie.read(pageRequest).getContent();
             for (final Series s : this.serieList) {
                 this.serieF.getItems().add(s.getName());
+                seriesItems.add(s.getName()); // Also populate FormsFX list
             }
         } catch (final Exception e) {
             throw new RuntimeException(e);
@@ -233,7 +262,7 @@ public class EpisodeController {
         this.videopath = episode.getVideoUrl();
         final TextField titreFild = new TextField(episode.getTitle());
         final TextField numeroepisodeFild = new TextField(String.valueOf(episode.getEpisodeNumber()));
-        final TextField saisonFild = new TextField(String.valueOf(episode.getSeasonId()));
+        final TextField saisonFild = new TextField(String.valueOf(episode.getSeason() != null ? episode.getSeason().getId() : ""));
         final ComboBox<String> serieComboBox = new ComboBox<>();
         for (final Series s : this.serieList) {
             serieComboBox.getItems().add(s.getName());
@@ -268,7 +297,7 @@ public class EpisodeController {
             episode1.setId(episode.getId());
             episode1.setTitle(titreFild.getText());
             episode1.setEpisodeNumber(Integer.parseInt(numeroepisodeFild.getText()));
-            episode1.setSeasonId(Long.parseLong(saisonFild.getText()));
+            episode1.setSeason(Season.builder().id(Long.parseLong(saisonFild.getText())).build());
             episode1.setImageUrl(this.imgpath);
             episode1.setVideoUrl(this.videopath);
             for (final Series s : this.serieList) {
@@ -288,11 +317,72 @@ public class EpisodeController {
     }
 
     /**
-     * References a provided reference.
+     * Initializes the controller with FormsFX form setup and EasyBind subscriptions.
      */
     @FXML
     private void initialize() {
+        setupFormsFX();
+        setupEasyBindings();
         this.ref();
+    }
+
+    /**
+     * Sets up the FormsFX form with validation rules.
+     */
+    private void setupFormsFX() {
+        episodeForm = Form.of(
+            Group.of(
+                Field.ofStringType(titreProperty)
+                    .label("Title")
+                    .validate(StringLengthValidator.atLeast(2, "Title must be at least 2 characters")),
+                Field.ofIntegerType(episodeNumberProperty)
+                    .label("Episode Number")
+                    .validate(IntegerRangeValidator.atLeast(1, "Episode number must be at least 1")),
+                Field.ofIntegerType(seasonNumberProperty)
+                    .label("Season Number")
+                    .validate(IntegerRangeValidator.atLeast(1, "Season number must be at least 1")),
+                Field.ofSingleSelectionType(seriesItems, seriesProperty)
+                    .label("Series")
+                    .required("Please select a series")
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind reactive subscriptions for form fields.
+     */
+    private void setupEasyBindings() {
+        // Bind text fields to properties bidirectionally
+        if (titreF != null) {
+            titreF.textProperty().bindBidirectional(titreProperty);
+        }
+
+        // Subscribe to validation changes using EasyBind
+        Subscription titreSub = EasyBind.subscribe(titreProperty, title -> {
+            if (title != null && !title.isEmpty() && title.length() >= 2) {
+                titrecheck.setText("");
+            }
+        });
+        subscriptions.add(titreSub);
+
+        // Subscribe to series selection
+        if (serieF != null) {
+            Subscription seriesSub = EasyBind.subscribe(serieF.valueProperty(), series -> {
+                seriesProperty.set(series);
+                if (series != null) {
+                    seriecheck.setText("");
+                }
+            });
+            subscriptions.add(seriesSub);
+        }
+    }
+
+    /**
+     * Cleanup subscriptions when controller is destroyed.
+     */
+    public void cleanup() {
+        subscriptions.forEach(Subscription::unsubscribe);
+        subscriptions.clear();
     }
 
     /**
@@ -474,37 +564,38 @@ public class EpisodeController {
     }
 
     /**
-     * Determines whether a title is provided and returns `true` if it is, else it
-     * displays an error message and returns `false`.
+     * Validates the title field using FormsFX property validation.
      *
-     * @returns `true` if a title is provided, otherwise it returns `false` and
-     * provides an error message.
+     * @returns true if the title is valid, false otherwise.
      */
     boolean titrecheck() {
-        if ("" != titreF.getText()) {
+        String title = titreProperty.get();
+        if (title != null && !title.trim().isEmpty() && title.trim().length() >= 2) {
+            this.titrecheck.setText("");
             return true;
         } else {
-            this.titrecheck.setText("Please enter a valid Title");
+            this.titrecheck.setText("Please enter a valid Title (at least 2 characters)");
             return false;
         }
     }
 
     /**
-     * Verifies if the user inputted season value is not empty and it's a numerical
-     * string, if both conditions are true, it returns `true`, otherwise it displays
-     * an error message and returns `false`.
+     * Validates the season number using FormsFX property validation.
      *
-     * @returns `true` if the input string is not empty and can be converted to an
-     * integer, otherwise it returns `false`.
+     * @returns true if valid, false otherwise.
      */
     boolean seasoncheck() {
         final String numero = this.saisonF.getText();
         if (!numero.isEmpty() && this.isStringInt(numero)) {
-            return true;
-        } else {
-            this.seasoncheck.setText("Please enter a valid Season");
-            return false;
+            int seasonNum = Integer.parseInt(numero);
+            if (seasonNum >= 1) {
+                seasonNumberProperty.set(seasonNum);
+                this.seasoncheck.setText("");
+                return true;
+            }
         }
+        this.seasoncheck.setText("Please enter a valid Season number");
+        return false;
     }
 
     /**
@@ -524,19 +615,22 @@ public class EpisodeController {
     }
 
     /**
-     * Checks if the user's input is a non-empty, integer-valued string, and returns
-     * `true` if it is, else returns `false`.
+     * Validates the episode number using FormsFX property validation.
      *
-     * @returns "Please enter a Number".
+     * @returns true if valid, false otherwise.
      */
     boolean numbercheck() {
         final String numero = this.numeroepisodeF.getText();
         if (!numero.isEmpty() && this.isStringInt(numero)) {
-            return true;
-        } else {
-            this.numbercheck.setText("Please enter a Number ");
-            return false;
+            int episodeNum = Integer.parseInt(numero);
+            if (episodeNum >= 1) {
+                episodeNumberProperty.set(episodeNum);
+                this.numbercheck.setText("");
+                return true;
+            }
         }
+        this.numbercheck.setText("Please enter a valid Episode number");
+        return false;
     }
 
     /**
@@ -557,16 +651,14 @@ public class EpisodeController {
     }
 
     /**
-     * Checks if the value of `serieF` is not null, then returns `true`. Otherwise,
-     * it sets the text of a text field called `seriecheck` to "Please select a
-     * Serie" and returns `false`.
+     * Validates the series selection using FormsFX property validation.
      *
-     * @returns `true` if a value is provided for `serieF.getValue()`, otherwise it
-     * returns `false` with an error message indicating that a serie must
-     * be selected.
+     * @returns true if a series is selected, false otherwise.
      */
     boolean seriecheck() {
-        if (null != serieF.getValue()) {
+        String series = seriesProperty.get();
+        if (series != null && !series.trim().isEmpty()) {
+            this.seriecheck.setText("");
             return true;
         } else {
             this.seriecheck.setText("Please select a Serie");
@@ -634,7 +726,7 @@ public class EpisodeController {
                 final URI uri = new URI(requiredPath);
                 episode.setTitle(this.titreF.getText());
                 episode.setEpisodeNumber(Integer.parseInt(this.numeroepisodeF.getText()));
-                episode.setSeasonId(Long.parseLong(this.saisonF.getText()));
+                episode.setSeason(Season.builder().id(Long.parseLong(this.saisonF.getText())).build());
                 episode.setImageUrl(uri.getPath());
                 episode.setVideoUrl(this.videopath);
 
@@ -668,7 +760,7 @@ public class EpisodeController {
                 // Issue #4: TODO - Replace hardcoded phone number with series owner's phone
                 // Get phone from series owner or user object instead of hardcoding
                 final String message = "Episode " + episode.getEpisodeNumber() + " Season "
-                    + episode.getSeasonId() + " from your series: " + selectedSeries.getName() + " is now available!";
+                    + (episode.getSeason() != null ? episode.getSeason().getId() : "") + " from your series: " + selectedSeries.getName() + " is now available!";
                 // this.sendSMS(selectedSeries.getOwnerPhone(), message); // Use dynamic phone
                 // number
                 this.sendSMS("+21653775010", message); // TODO: Replace with dynamic lookup

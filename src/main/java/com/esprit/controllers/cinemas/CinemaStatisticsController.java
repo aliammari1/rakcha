@@ -9,29 +9,13 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Controller responsible for generating and displaying sentiment statistics for
- * various
- * cinemas based on user comments.
- *
- * <p>
- * This controller retrieves movie commentary data from a service, generates
- * sentiment
- * statistics for each cinema using the comments, and creates PieCharts to
- * visualize the
- * statistics. The controller also displays the generated PieCharts in an
- * AnchorPane.
- * </p>
- *
- * @author Esprit Team
- * @version 1.0
- * @since 1.0
- */
+@Log4j2
 public class CinemaStatisticsController {
 
     private final ReviewService cinemaCommentService = new ReviewService();

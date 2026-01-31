@@ -27,11 +27,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -39,10 +41,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for displaying detailed ticket information with QR code.
- * Supports ticket printing, downloading, and cancellation.
- */
+@Log4j2
 public class TicketDetailsController {
 
     private static final Logger LOGGER = Logger.getLogger(TicketDetailsController.class.getName());
@@ -181,12 +180,12 @@ public class TicketDetailsController {
 
         // Movie Information
         if (session != null && session.getFilm() != null) {
-            movieTitleLabel.setText(session.getFilm().getNom());
+            movieTitleLabel.setText(session.getFilm().getTitle());
             genreLabel.setText(session.getFilm().getCategories() != null && !session.getFilm().getCategories().isEmpty() ?
                 session.getFilm().getGenre() : "N/A");
-            durationLabel.setText(session.getFilm().getDuree() + " min");
+            durationLabel.setText(session.getFilm().getDurationMin() + " min");
             // Load movie poster if available
-            loadMoviePoster(session.getFilm().getImage());
+            loadMoviePoster(session.getFilm().getImageUrl());
         } else {
             movieTitleLabel.setText("Unknown Movie");
             genreLabel.setText("N/A");
@@ -196,8 +195,8 @@ public class TicketDetailsController {
         // Cinema Information
         if (session != null && session.getCinemaHall() != null) {
             if (session.getCinemaHall().getCinema() != null) {
-                cinemaNameLabel.setText(session.getCinemaHall().getCinema().getNom());
-                cinemaAddressLabel.setText(session.getCinemaHall().getCinema().getAdresse());
+                cinemaNameLabel.setText(session.getCinemaHall().getCinema().getName());
+                cinemaAddressLabel.setText(session.getCinemaHall().getCinema().getAddress());
             }
             hallNameLabel.setText(session.getCinemaHall().getHallName());
             screenTypeLabel.setText(session.getCinemaHall().getScreenType());
@@ -508,7 +507,7 @@ public class TicketDetailsController {
         // Create ICS file content
         LocalDateTime sessionTime = currentTicket.getMovieSession().getStartTime();
         int duration = currentTicket.getMovieSession().getFilm() != null ?
-            currentTicket.getMovieSession().getFilm().getDuree() : 120;
+            currentTicket.getMovieSession().getFilm().getDurationMin() : 120;
 
         String icsContent = String.format(
             "BEGIN:VCALENDAR\n" +
@@ -556,10 +555,10 @@ public class TicketDetailsController {
             currentTicket.getMovieSession().getCinemaHall() != null &&
             currentTicket.getMovieSession().getCinemaHall().getCinema() != null) {
 
-            String address = currentTicket.getMovieSession().getCinemaHall().getCinema().getAdresse();
+            String address = currentTicket.getMovieSession().getCinemaHall().getCinema().getAddress();
             if (address != null && !address.isEmpty()) {
                 try {
-                    String encodedAddress = java.net.URLEncoder.encode(address, "UTF-8");
+                    String encodedAddress = java.net.URLEncoder.encode(address, StandardCharsets.UTF_8);
                     java.awt.Desktop.getDesktop().browse(
                         new java.net.URI("https://www.google.com/maps/search/?api=1&query=" + encodedAddress)
                     );

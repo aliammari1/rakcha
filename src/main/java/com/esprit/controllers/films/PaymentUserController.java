@@ -1,19 +1,23 @@
 package com.esprit.controllers.films;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.RegexValidator;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
+import com.esprit.enums.TicketStatus;
 import com.esprit.models.cinemas.Cinema;
 import com.esprit.models.cinemas.MovieSession;
 import com.esprit.models.cinemas.Seat;
 import com.esprit.models.films.Ticket;
-import com.esprit.enums.TicketStatus;
 import com.esprit.models.users.Client;
 import com.esprit.services.cinemas.CinemaService;
 import com.esprit.services.cinemas.MovieSessionService;
 import com.esprit.services.cinemas.SeatService;
-
 import com.esprit.services.films.FilmService;
 import com.esprit.services.films.TicketService;
 import com.esprit.utils.PageRequest;
-
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -32,6 +36,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -46,38 +51,20 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import java.util.stream.Collectors;
 
-/**
- * Controller class for handling user payments for cinema tickets.
- *
- * <p>
- * This controller manages the payment process for movie tickets, including
- * credit card validation, payment processing, and receipt generation. It
- * provides
- * a user interface for entering payment details and handles the validation and
- * submission of payment information.
- * </p>
- *
- * <p>
- * Key features include:
- * </p>
- * <ul>
- * <li>Credit card validation with Luhn algorithm</li>
- * <li>PDF receipt generation</li>
- * <li>Integration with Stripe payment processing</li>
- * </ul>
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class PaymentUserController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(PaymentUserController.class.getName());
 
+    // FormsFX properties
+    private final StringProperty cardNumberProperty = new SimpleStringProperty("");
+    private final StringProperty monthExpProperty = new SimpleStringProperty("");
+    private final StringProperty yearExpProperty = new SimpleStringProperty("");
+    private final StringProperty cvcProperty = new SimpleStringProperty("");
     Client client;
+    private Form paymentForm;
     private MovieSession moviesession;
     private List<Seat> selectedSeats;
     @FXML
@@ -312,6 +299,108 @@ public class PaymentUserController implements Initializable {
 
         }
 
+        // Initialize FormsFX
+        setupFormsFX();
+        setupBidirectionalBindings();
+    }
+
+    /**
+     * Configures FormsFX for payment form validation.
+     */
+    private void setupFormsFX() {
+        paymentForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(cardNumberProperty)
+                    .label("Card Number")
+                    .validate(
+                        StringLengthValidator.between(13, 19, "Card number must be between 13 and 19 digits"),
+                        RegexValidator.forPattern("\\d+", "Card number must contain only digits")
+                    ),
+                Field.ofStringType(monthExpProperty)
+                    .label("Expiry Month")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Expiry month is required"),
+                        RegexValidator.forPattern("^(0?[1-9]|1[0-2])$", "Month must be between 1 and 12")
+                    ),
+                Field.ofStringType(yearExpProperty)
+                    .label("Expiry Year")
+                    .validate(
+                        StringLengthValidator.atLeast(4, "Expiry year is required (4 digits)"),
+                        RegexValidator.forPattern("\\d{4}", "Year must be 4 digits")
+                    ),
+                Field.ofStringType(cvcProperty)
+                    .label("CVC")
+                    .validate(
+                        StringLengthValidator.between(3, 4, "CVC must be 3 or 4 digits"),
+                        RegexValidator.forPattern("\\d+", "CVC must contain only digits")
+                    )
+            )
+        );
+    }
+
+    /**
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        if (carte != null) {
+            carte.textProperty().bindBidirectional(cardNumberProperty);
+        }
+
+        if (moisExp != null) {
+            moisExp.textProperty().bindBidirectional(monthExpProperty);
+        }
+
+        if (anneeExp != null) {
+            anneeExp.textProperty().bindBidirectional(yearExpProperty);
+        }
+
+        if (cvc != null) {
+            cvc.textProperty().bindBidirectional(cvcProperty);
+        }
+    }
+
+    /**
+     * Validates the payment form using FormsFX.
+     *
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validatePaymentForm() {
+        paymentForm.persist();
+        if (!paymentForm.isValid()) {
+            StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
+            paymentForm.getGroups().forEach(group ->
+                group.getElements().forEach(element -> {
+                    if (element instanceof Field<?> field) {
+                        if (!field.isValid()) {
+                            errorMessage.append("- ").append(field.getLabel()).append(": ");
+                            field.getErrorMessages().forEach(msg -> errorMessage.append(msg).append(" "));
+                            errorMessage.append("\n");
+                        }
+                    }
+                })
+            );
+            showError("Validation Error", errorMessage.toString());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        if (carte != null) {
+            carte.textProperty().unbindBidirectional(cardNumberProperty);
+        }
+        if (moisExp != null) {
+            moisExp.textProperty().unbindBidirectional(monthExpProperty);
+        }
+        if (anneeExp != null) {
+            anneeExp.textProperty().unbindBidirectional(yearExpProperty);
+        }
+        if (cvc != null) {
+            cvc.textProperty().unbindBidirectional(cvcProperty);
+        }
     }
 
     /**
@@ -364,7 +453,7 @@ public class PaymentUserController implements Initializable {
             if (paymentSuccess) {
                 // First, ensure seats are saved to database and have IDs
                 prepareSeatForDatabase(selectedSeats);
-                
+
                 // Create tickets for each selected seat
                 for (Seat seat : selectedSeats) {
                     // Calculate individual seat price
@@ -378,20 +467,20 @@ public class PaymentUserController implements Initializable {
                     ticket.setClient(this.client);
                     ticket.setMovieSession(this.moviesession);
                     ticket.setSeat(seat);
-                    
+
                     // Set required fields that were missing
                     ticket.setStatus(TicketStatus.CONFIRMED);
                     ticket.setPurchaseTime(java.time.LocalDateTime.now());
                     ticket.setQrCode(generateQRCode(ticket));
-                    
+
                     // Save ticket to database
                     ticketService.create(ticket);
-                    
-                    LOGGER.info(String.format("✅ TICKET CREATED: User ID: %d, Movie: %s, Seat: %s%s, Price: %.2f TND, Status: %s, QR: %s", 
+
+                    LOGGER.info(String.format("✅ TICKET CREATED: User ID: %d, Movie: %s, Seat: %s%s, Price: %.2f TND, Status: %s, QR: %s",
                         client.getId(),
                         moviesession.getFilm().getTitle(),
-                        getRowLetter(seat), 
-                        seat.getSeatNumber(), 
+                        getRowLetter(seat),
+                        seat.getSeatNumber(),
                         seatPrice,
                         ticket.getStatus(),
                         ticket.getQrCode()));
@@ -399,18 +488,18 @@ public class PaymentUserController implements Initializable {
 
                 // Verify tickets were created
                 int ticketCount = verifyTicketsCreated();
-                
+
                 // Show success message
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                 successAlert.setTitle("Payment Successful");
                 successAlert.setHeaderText("Booking Confirmed!");
                 successAlert.setContentText(String.format(
                     "Payment of %.2f TND processed successfully.\n" +
-                    "Your tickets have been reserved for %s.\n" +
-                    "Seats: %s\n" +
-                    "Session: %s\n" +
-                    "Tickets Created: %d\n\n" +
-                    "You can view your tickets in the 'My Tickets' section.",
+                        "Your tickets have been reserved for %s.\n" +
+                        "Seats: %s\n" +
+                        "Session: %s\n" +
+                        "Tickets Created: %d\n\n" +
+                        "You can view your tickets in the 'My Tickets' section.",
                     totalAmount,
                     moviesession.getFilm().getTitle(),
                     selectedSeats.stream()
@@ -433,7 +522,7 @@ public class PaymentUserController implements Initializable {
             showError("Payment Error", "An error occurred while processing your payment: " + e.getMessage());
         }
     }
-    
+
     /**
      * Get row letter for display
      */
@@ -445,27 +534,27 @@ public class PaymentUserController implements Initializable {
             return seat.getRowLabel() != null ? seat.getRowLabel() : "?";
         }
     }
-    
+
     /**
      * Prepare seats for database storage by ensuring they have proper IDs
      * This method handles seats that were created dynamically in the UI
      */
     private void prepareSeatForDatabase(List<Seat> seats) {
         SeatService seatService = new SeatService();
-        
+
         for (Seat seat : seats) {
             if (seat.getId() == null) {
                 // Set cinema hall reference if missing
                 if (seat.getCinemaHall() == null && moviesession != null && moviesession.getCinemaHall() != null) {
                     seat.setCinemaHall(moviesession.getCinemaHall());
                 }
-                
+
                 // Try to find existing seat in database first
                 Seat existingSeat = findExistingSeat(seatService, seat);
                 if (existingSeat != null) {
                     // Use existing seat data
                     seat.setId(existingSeat.getId());
-                    LOGGER.info(String.format("Found existing seat ID %d for %s%s", 
+                    LOGGER.info(String.format("Found existing seat ID %d for %s%s",
                         existingSeat.getId(), getRowLetter(seat), seat.getSeatNumber()));
                 } else {
                     // Create new seat in database
@@ -475,25 +564,25 @@ public class PaymentUserController implements Initializable {
                         Seat createdSeat = findExistingSeat(seatService, seat);
                         if (createdSeat != null) {
                             seat.setId(createdSeat.getId());
-                            LOGGER.info(String.format("Created new seat ID %d for %s%s", 
+                            LOGGER.info(String.format("Created new seat ID %d for %s%s",
                                 createdSeat.getId(), getRowLetter(seat), seat.getSeatNumber()));
                         } else {
                             // Fallback: use position-based ID
                             seat.setId(generateTempSeatId(seat));
-                            LOGGER.warning(String.format("Using fallback ID %d for seat %s%s", 
+                            LOGGER.warning(String.format("Using fallback ID %d for seat %s%s",
                                 seat.getId(), getRowLetter(seat), seat.getSeatNumber()));
                         }
                     } catch (Exception e) {
                         // If creation fails, use fallback ID
                         seat.setId(generateTempSeatId(seat));
-                        LOGGER.warning(String.format("Seat creation failed, using fallback ID %d for %s%s: %s", 
+                        LOGGER.warning(String.format("Seat creation failed, using fallback ID %d for %s%s: %s",
                             seat.getId(), getRowLetter(seat), seat.getSeatNumber(), e.getMessage()));
                     }
                 }
             }
         }
     }
-    
+
     /**
      * Find existing seat in database by hall, row, and seat number
      */
@@ -501,12 +590,12 @@ public class PaymentUserController implements Initializable {
         if (seat.getCinemaHall() == null || seat.getCinemaHall().getId() == null) {
             return null;
         }
-        
+
         try {
             List<Seat> hallSeats = seatService.getSeatsByCinemaHallId(seat.getCinemaHall().getId());
             return hallSeats.stream()
-                .filter(s -> seat.getRowLabel().equals(s.getRowLabel()) && 
-                           seat.getSeatNumber().equals(s.getSeatNumber()))
+                .filter(s -> seat.getRowLabel().equals(s.getRowLabel()) &&
+                    seat.getSeatNumber().equals(s.getSeatNumber()))
                 .findFirst()
                 .orElse(null);
         } catch (Exception e) {
@@ -514,7 +603,7 @@ public class PaymentUserController implements Initializable {
             return null;
         }
     }
-    
+
     /**
      * Generate a temporary seat ID based on seat position
      * This is a workaround for dynamically created seats
@@ -524,11 +613,11 @@ public class PaymentUserController implements Initializable {
         long hallId = moviesession.getCinemaHall() != null ? moviesession.getCinemaHall().getId() : 1L;
         int row = Integer.parseInt(seat.getRowLabel() != null ? seat.getRowLabel() : "1");
         int seatNum = Integer.parseInt(seat.getSeatNumber() != null ? seat.getSeatNumber() : "1");
-        
+
         // Generate unique ID: hallId * 10000 + row * 100 + seatNum
-        return hallId * 10000 + row * 100 + seatNum;
+        return hallId * 10000 + row * 100L + seatNum;
     }
-    
+
     /**
      * Generate a QR code string for the ticket
      */
@@ -538,19 +627,19 @@ public class PaymentUserController implements Initializable {
         String seatInfo = getRowLetter(ticket.getSeat()) + ticket.getSeat().getSeatNumber();
         String sessionTime = ticket.getMovieSession().getStartTime().toString();
         String clientName = ticket.getClient().getFirstName() + " " + ticket.getClient().getLastName();
-        
+
         // Format: RAKCHA-MOVIE_TITLE-SEAT-SESSION_TIME-CLIENT_HASH
-        String qrData = String.format("RAKCHA-%s-%s-%s-%d", 
+        String qrData = String.format("RAKCHA-%s-%s-%s-%d",
             movieTitle.replaceAll("\\s+", "").toUpperCase(),
             seatInfo,
             sessionTime.substring(0, 16).replace(":", "").replace("-", ""),
             Math.abs(clientName.hashCode())
         );
-        
+
         LOGGER.info("Generated QR code: " + qrData);
         return qrData;
     }
-    
+
     /**
      * Verify that tickets were successfully created in the database
      */
@@ -558,26 +647,26 @@ public class PaymentUserController implements Initializable {
         try {
             TicketService verifyService = new TicketService();
             List<Ticket> userTickets = verifyService.getTicketsByUser(client.getId());
-            
-            LOGGER.info(String.format("📊 TICKET VERIFICATION: User %d has %d total tickets in database", 
+
+            LOGGER.info(String.format("📊 TICKET VERIFICATION: User %d has %d total tickets in database",
                 client.getId(), userTickets.size()));
-                
+
             // Count tickets for this specific session
             long sessionTickets = userTickets.stream()
-                .filter(t -> t.getMovieSession() != null && 
-                           t.getMovieSession().getId().equals(moviesession.getId()))
+                .filter(t -> t.getMovieSession() != null &&
+                    t.getMovieSession().getId().equals(moviesession.getId()))
                 .count();
-                
-            LOGGER.info(String.format("🎬 SESSION TICKETS: %d tickets found for session %d (%s)", 
+
+            LOGGER.info(String.format("🎬 SESSION TICKETS: %d tickets found for session %d (%s)",
                 sessionTickets, moviesession.getId(), moviesession.getFilm().getTitle()));
-                
+
             return userTickets.size();
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error verifying tickets: " + e.getMessage(), e);
             return 0;
         }
     }
-    
+
     /**
      * Navigate back to the cinema dashboard
      */
@@ -608,44 +697,33 @@ public class PaymentUserController implements Initializable {
 
     /**
      * Checks that all payment form fields contain valid values.
-     * Enhanced with test card support and better validation.
+     * Enhanced with test card support and FormsFX validation.
      *
      * @return true if all input fields are valid, false otherwise
      */
     private boolean isValidInput() {
+        // Validate using FormsFX
+        if (!validatePaymentForm()) {
+            return false;
+        }
+
         // Check if card number is valid (more flexible for test cards)
-        if (!this.isValidCardNumber(this.carte.getText())) {
+        if (!this.isValidCardNumber(cardNumberProperty.get())) {
             this.showTestCardInfo();
-            return false;
-        }
-
-        if (this.moisExp.getText().isEmpty() || !PaymentUserController.isNum(this.moisExp.getText())
-            || 1 > Integer.parseInt(moisExp.getText()) || 12 < Integer.parseInt(moisExp.getText())) {
-            this.showError("Invalid Expiry Month", "Please enter a valid expiry month (1-12).");
-            return false;
-        }
-
-        if (this.anneeExp.getText().isEmpty() || !PaymentUserController.isNum(this.anneeExp.getText())) {
-            this.showError("Invalid Expiry Year", "Please enter a valid expiry year.");
             return false;
         }
 
         // More lenient year validation for test mode
         int currentYear = LocalDate.now().getYear();
-        int enteredYear = Integer.parseInt(this.anneeExp.getText());
+        int enteredYear = Integer.parseInt(yearExpProperty.get());
         if (enteredYear < currentYear - 10 || enteredYear > currentYear + 20) {
             this.showError("Invalid Expiry Year", "Please enter a reasonable expiry year.");
             return false;
         }
 
-        if (this.cvc.getText().isEmpty() || !PaymentUserController.isNum(this.cvc.getText())) {
-            this.showError("Invalid CVC", "Please enter a valid numeric CVC code.");
-            return false;
-        }
-
         return true;
     }
-    
+
     /**
      * Enhanced card validation that supports test cards
      */
@@ -653,60 +731,60 @@ public class PaymentUserController implements Initializable {
         if (cardNumber == null || cardNumber.trim().isEmpty()) {
             return false;
         }
-        
+
         // Remove spaces and check length
         String cleanCard = cardNumber.replaceAll("\\s+", "");
-        
+
         // Must be between 13-19 digits
         if (!cleanCard.matches("\\d{13,19}")) {
             return false;
         }
-        
+
         // Check for common test cards (always valid in development)
         if (isTestCard(cleanCard)) {
             return true;
         }
-        
+
         // For production, use Luhn algorithm
         return isValidLuhn(cleanCard);
     }
-    
+
     /**
      * Check if this is a known test card
      */
     private boolean isTestCard(String cardNumber) {
         return cardNumber.equals("4242424242424242") ||
-               cardNumber.equals("4000000000000002") ||
-               cardNumber.equals("5555555555554444") ||
-               cardNumber.equals("378282246310005") ||
-               cardNumber.equals("4000000000009995") ||
-               cardNumber.equals("4111111111111111");
+            cardNumber.equals("4000000000000002") ||
+            cardNumber.equals("5555555555554444") ||
+            cardNumber.equals("378282246310005") ||
+            cardNumber.equals("4000000000009995") ||
+            cardNumber.equals("4111111111111111");
     }
-    
+
     /**
      * Validate card number using Luhn algorithm
      */
     private boolean isValidLuhn(String cardNumber) {
         int sum = 0;
         boolean alternate = false;
-        
+
         for (int i = cardNumber.length() - 1; i >= 0; i--) {
             int n = Integer.parseInt(cardNumber.substring(i, i + 1));
-            
+
             if (alternate) {
                 n *= 2;
                 if (n > 9) {
                     n = (n % 10) + 1;
                 }
             }
-            
+
             sum += n;
             alternate = !alternate;
         }
-        
+
         return (sum % 10 == 0);
     }
-    
+
     /**
      * Show test card information to help users
      */
@@ -716,15 +794,14 @@ public class PaymentUserController implements Initializable {
         alert.setHeaderText("Use Test Cards for Development");
         alert.setContentText(
             "For testing, please use one of these test cards:\n\n" +
-            "• 4242 4242 4242 4242 (Visa - Success)\n" +
-            "• 4000 0000 0000 0002 (Visa Debit - Success)\n" +
-            "• 5555 5555 5555 4444 (Mastercard - Success)\n" +
-            "• 4000 0000 0000 9995 (Visa - Declined)\n\n" +
-            "Use any future expiry date (e.g., 12/2025) and any 3-digit CVC (e.g., 123)."
+                "• 4242 4242 4242 4242 (Visa - Success)\n" +
+                "• 4000 0000 0000 0002 (Visa Debit - Success)\n" +
+                "• 5555 5555 5555 4444 (Mastercard - Success)\n" +
+                "• 4000 0000 0000 9995 (Visa - Declined)\n\n" +
+                "Use any future expiry date (e.g., 12/2025) and any 3-digit CVC (e.g., 123)."
         );
         alert.showAndWait();
     }
-
 
 
     /**
@@ -767,12 +844,12 @@ public class PaymentUserController implements Initializable {
         this.moviesession = moviesession;
         this.client = client;
         this.selectedSeats = selectedSeats;
-        
+
         // Update UI elements
         if (filmLabel_Payment != null) {
             filmLabel_Payment.setText(moviesession.getFilm().getTitle());
         }
-        
+
         // Calculate total price considering seat multipliers
         double totalPrice = selectedSeats.stream()
             .mapToDouble(seat -> {
@@ -781,11 +858,11 @@ public class PaymentUserController implements Initializable {
                 return basePrice * multiplier;
             })
             .sum();
-            
+
         if (total != null) {
             total.setText(String.format("%.2f TND", totalPrice));
         }
-        
+
         // Update seat display
         if (selectedSeatsDisplay != null) {
             String seatLabels = selectedSeats.stream()
@@ -803,10 +880,10 @@ public class PaymentUserController implements Initializable {
                 .collect(Collectors.joining(", "));
             selectedSeatsDisplay.setText(seatLabels);
         }
-        
+
         // Update session time display
         if (sessionTimeDisplay != null && moviesession.getStartTime() != null && moviesession.getEndTime() != null) {
-            String timeDisplay = String.format("%s - %s", 
+            String timeDisplay = String.format("%s - %s",
                 moviesession.getStartTime().toLocalTime().toString(),
                 moviesession.getEndTime().toLocalTime().toString());
             sessionTimeDisplay.setText(timeDisplay);
@@ -819,7 +896,7 @@ public class PaymentUserController implements Initializable {
                 nbrplacepPayment_Spinner.getValueFactory().setValue(selectedSeats.size());
             }
         }
-        
+
         // Disable cinema and session selection
         if (cinemacombox_res != null) {
             cinemacombox_res.setDisable(true);
