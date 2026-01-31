@@ -1,5 +1,8 @@
 package com.esprit.controllers.products;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.common.Review;
 import com.esprit.models.products.Product;
 import com.esprit.models.products.ShoppingCart;
@@ -12,6 +15,8 @@ import com.esprit.utils.Chat;
 import com.esprit.utils.PageRequest;
 import com.esprit.utils.SessionManager;
 import com.esprit.utils.SlideOverNavigator;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -46,6 +51,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
@@ -57,37 +63,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Displays a card containing the name, price, and image of a product. The class
- * creates an AnchorPane and adds a Label, a PriceLabel, and an ImageView to it.
- * The ImageView is clickable and will show the details of the product when
- * clicked.
- */
+@Log4j2
 public class AfficherProductClientControllers implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(AfficherProductClientControllers.class.getName());
+
+    // FormsFX properties
+    private final StringProperty commentProperty = new SimpleStringProperty("");
     private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
     private final List<CheckBox> statusCheckBoxes = new ArrayList<>();
     private final List<Product> shoppingcartList = new ArrayList<>();
     private final Chat chat = new Chat();
-
     /**
      * FlowPane for displaying shopping cart items.
      */
     @FXML
     public FlowPane shoppingcartFlowPane;
-
     /**
      * TextField for product search functionality.
      */
     @FXML
     public TextField SearchBar;
-
     /**
      * Button for forwarding messages in chat.
      */
     @FXML
     public Button forward_message;
+    private Form commentForm;
     @FXML
     private AnchorPane filterAnchor;
     @FXML
@@ -125,7 +127,7 @@ public class AfficherProductClientControllers implements Initializable {
      * @param recherche the substring to match against each product's name
      *                  (case-sensitive)
      * @return a list of products whose name contains {@code recherche}, in the same
-     *         order as {@code liste}
+     * order as {@code liste}
      */
     @FXML
     /**
@@ -168,18 +170,22 @@ public class AfficherProductClientControllers implements Initializable {
      * called automatically by JavaFX after loading the FXML file.
      */
     public void initialize(final URL location, final ResourceBundle resources) {
+        // Initialize FormsFX
+        setupFormsFX();
+        setupBidirectionalBindings();
+
         this.loadAcceptedProducts();
         try {
             this.displayAllComments(this.produitId);
         } catch (final Exception e) {
             AfficherProductClientControllers.LOGGER.log(Level.WARNING,
-                    "Comments table not available: " + e.getMessage());
+                "Comments table not available: " + e.getMessage());
         }
         try {
             this.loadAcceptedTop3();
         } catch (final Exception e) {
             AfficherProductClientControllers.LOGGER.log(Level.WARNING,
-                    "Error loading top 3 products: " + e.getMessage());
+                "Error loading top 3 products: " + e.getMessage());
         }
         final ProductService produitService = new ProductService();
         PageRequest pageRequest = PageRequest.defaultPage();
@@ -201,6 +207,49 @@ public class AfficherProductClientControllers implements Initializable {
             }
 
         });
+    }
+
+    /**
+     * Configures FormsFX for comment validation.
+     */
+    private void setupFormsFX() {
+        commentForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(commentProperty)
+                    .label("Comment")
+                    .validate(
+                        StringLengthValidator.atLeast(1, "Comment cannot be empty")
+                    )
+            )
+        );
+    }
+
+    /**
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        if (txtAreaComments != null) {
+            txtAreaComments.textProperty().bindBidirectional(commentProperty);
+        }
+    }
+
+    /**
+     * Validates the comment form using FormsFX.
+     *
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validateCommentForm() {
+        commentForm.persist();
+        return commentForm.isValid();
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        if (txtAreaComments != null) {
+            txtAreaComments.textProperty().unbindBidirectional(commentProperty);
+        }
     }
 
     /**
@@ -242,29 +291,29 @@ public class AfficherProductClientControllers implements Initializable {
      *                `prix`:
      *                The product price - `image`: The product image URL
      * @returns a `Pane` object containing the UI components for displaying a single
-     *          product in a shopping cart.
-     *          <p>
-     *          - `card`: The card container that displays information about the
-     *          selected product, including an image view, name label, description
-     *          label, price label, add to cart button, and chat icon. -
-     *          `imageView`: An image view that displays a picture of the selected
-     *          product. - `nameLabel`: A label that displays the name of the
-     *          selected product. - `descriptionLabel`: A label that displays a
-     *          brief description of the selected product. - `priceLabel`: A label
-     *          that displays the price of the selected product. -
-     *          `addToCartButton`: A button that allows users to add the selected
-     *          product to their cart. - `chatIcon`: An icon that represents the
-     *          chat function, which displays all comments for the selected product
-     *          when clicked.
-     *          <p>
-     *          The main attributes of the returned output are:
-     *          <p>
-     *          - The card container has a white background with a gradient border
-     *          from the top left corner to the bottom right corner. - The image
-     *          view, name label, description label, price label, and add to cart
-     *          button have a font size of 12px, bold font weight, and a padding of
-     *          10px. - The chat icon has an icon literal of "mdi2c-comment" and an
-     *          icon size of 20px.
+     * product in a shopping cart.
+     * <p>
+     * - `card`: The card container that displays information about the
+     * selected product, including an image view, name label, description
+     * label, price label, add to cart button, and chat icon. -
+     * `imageView`: An image view that displays a picture of the selected
+     * product. - `nameLabel`: A label that displays the name of the
+     * selected product. - `descriptionLabel`: A label that displays a
+     * brief description of the selected product. - `priceLabel`: A label
+     * that displays the price of the selected product. -
+     * `addToCartButton`: A button that allows users to add the selected
+     * product to their cart. - `chatIcon`: An icon that represents the
+     * chat function, which displays all comments for the selected product
+     * when clicked.
+     * <p>
+     * The main attributes of the returned output are:
+     * <p>
+     * - The card container has a white background with a gradient border
+     * from the top left corner to the bottom right corner. - The image
+     * view, name label, description label, price label, and add to cart
+     * button have a font size of 12px, bold font weight, and a padding of
+     * 10px. - The chat icon has an icon literal of "mdi2c-comment" and an
+     * icon size of 20px.
      */
     private VBox createProductCard(final Product Product) {
         // Créer une carte pour le produit avec ses informations
@@ -300,9 +349,9 @@ public class AfficherProductClientControllers implements Initializable {
         imageView.setOnMouseClicked(event -> {
             try {
                 final FXMLLoader loader = new FXMLLoader(
-                        this.getClass().getResource("/ui/products/DetailsProduitClient.fxml"));
+                    this.getClass().getResource("/ui/products/DetailsProduitClient.fxml"));
                 AfficherProductClientControllers.LOGGER
-                        .info("Clique sur le nom du produit. ID du produit : " + Product.getId());
+                    .info("Clique sur le nom du produit. ID du produit : " + Product.getId());
                 Node detailsView = loader.load();
                 // Récupérez le contrôleur et passez l'id du produit lors de l'initialisation
                 final DetailsProductClientController controller = loader.getController();
@@ -340,9 +389,9 @@ public class AfficherProductClientControllers implements Initializable {
         nameLabel.setOnMouseClicked(event -> {
             try {
                 final FXMLLoader loader = new FXMLLoader(
-                        this.getClass().getResource("/ui/products/DetailsProduitClient.fxml"));
+                    this.getClass().getResource("/ui/products/DetailsProduitClient.fxml"));
                 AfficherProductClientControllers.LOGGER
-                        .info("Clique sur le nom du produit. ID du produit : " + Product.getId());
+                    .info("Clique sur le nom du produit. ID du produit : " + Product.getId());
                 Node detailsView = loader.load();
                 // Récupérez le contrôleur et passez l'id du produit lors de l'initialisation
                 final DetailsProductClientController controller = loader.getController();
@@ -387,15 +436,15 @@ public class AfficherProductClientControllers implements Initializable {
         });
         card.getChildren().addAll(imageView, nameLabel, descriptionLabel, priceLabel, addToCartButton, chatIcon);
         card.setStyle("""
-                -fx-background-color:#F6F2F2;
-                 -fx-text-fill: #FFFFFF;
-                    -fx-font-size: 12px;
-                    -fx-font-weight: bold;
-                    -fx-padding: 10px;
-                    -fx-border-color: linear-gradient(to top left, #624970, #ae2d3c);/* Couleur de la bordure */
-                    -fx-border-width: 2px; /* Largeur de la bordure */
-                    -fx-border-radius: 5px; /* Rayon de la bordure pour arrondir les coins */\
-                """);
+            -fx-background-color:#F6F2F2;
+             -fx-text-fill: #FFFFFF;
+                -fx-font-size: 12px;
+                -fx-font-weight: bold;
+                -fx-padding: 10px;
+                -fx-border-color: linear-gradient(to top left, #624970, #ae2d3c);/* Couleur de la bordure */
+                -fx-border-width: 2px; /* Largeur de la bordure */
+                -fx-border-radius: 5px; /* Rayon de la bordure pour arrondir les coins */\
+            """);
         card.getStyleClass().add("bg-white");
         cardContainer.getChildren().add(card);
         return cardContainer;
@@ -538,15 +587,15 @@ public class AfficherProductClientControllers implements Initializable {
         orderbutton.setPrefWidth(120);
         orderbutton.setPrefHeight(50);
         orderbutton.setStyle("""
-                -fx-background-color: #624970;
-                 -fx-text-fill: #FCE19A;\
-                   -fx-font-size: 12px;
-                     -fx-font-weight: bold;
-                 -fx-background-color: #6f7b94\
-                """);
+            -fx-background-color: #624970;
+             -fx-text-fill: #FCE19A;\
+               -fx-font-size: 12px;
+                 -fx-font-weight: bold;
+             -fx-background-color: #6f7b94\
+            """);
         orderbutton.setOnAction(event -> {
             final FXMLLoader fxmlLoader = new FXMLLoader(
-                    this.getClass().getResource("/ui/produits/ShoppingCartProduct.fxml"));
+                this.getClass().getResource("/ui/produits/ShoppingCartProduct.fxml"));
             try {
                 Parent root = null;
                 root = fxmlLoader.load();
@@ -566,7 +615,7 @@ public class AfficherProductClientControllers implements Initializable {
                 // le
                 // remplacer par une boîte de dialogue)
                 AfficherProductClientControllers.LOGGER
-                        .info("Erreur lors du chargement du fichier FXML : " + e.getMessage());
+                    .info("Erreur lors du chargement du fichier FXML : " + e.getMessage());
             }
 
         });
@@ -576,12 +625,12 @@ public class AfficherProductClientControllers implements Initializable {
         achatbutton.setLayoutY(370);
         achatbutton.setPrefHeight(50);
         achatbutton.setStyle("""
-                 -fx-background-color: #466288;
-                    -fx-text-fill: #FCE19A;
-                    -fx-font-size: 12px;
-                    -fx-font-weight: bold;
-                    -fx-padding: 10px 10px;\
-                """); // Style du bouton
+             -fx-background-color: #466288;
+                -fx-text-fill: #FCE19A;
+                -fx-font-size: 12px;
+                -fx-font-weight: bold;
+                -fx-padding: 10px 10px;\
+            """); // Style du bouton
         achatbutton.setOnAction(event -> {
             this.fermerShoppingCartCard(shoppingcartContainer);
         });
@@ -597,7 +646,7 @@ public class AfficherProductClientControllers implements Initializable {
             this.fermerShoppingCartCard(shoppingcartContainer);
         });
         card.getChildren().addAll(cartLabel, closeIcon, imageView, nameLabel, quantiteLabel, sommeTotaleLabel,
-                achatbutton, orderbutton);
+            achatbutton, orderbutton);
         shoppingcartContainer.getChildren().add(card);
         return shoppingcartContainer;
     }
@@ -627,7 +676,7 @@ public class AfficherProductClientControllers implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/produits/ShoppingCartProduct.fxml"));
+                this.getClass().getResource("/ui/produits/ShoppingCartProduct.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -683,7 +732,7 @@ public class AfficherProductClientControllers implements Initializable {
      * Fetch the first page of products (page 0, size 10) from ProductService.
      *
      * @return a List of Product objects from the first page (page 0, up to 10
-     *         items)
+     * items)
      */
     private List<Product> getAllCategories() {
         final ProductService categoryservice = new ProductService();
@@ -741,7 +790,7 @@ public class AfficherProductClientControllers implements Initializable {
         // Récupérer tous les cinémas depuis la base de données
         final List<Product> categories = this.getAllCategories();
         return categories.stream().flatMap(produit -> produit.getCategories().stream()).map(c -> c.getName())
-                .distinct().collect(Collectors.toList());
+            .distinct().collect(Collectors.toList());
     }
 
     /**
@@ -766,8 +815,8 @@ public class AfficherProductClientControllers implements Initializable {
         final List<String> selectedCategories = this.getSelectedCategories();
         // Filtrer les produits en fonction des catégories sélectionnées
         final List<Product> filteredProducts = this.getAllCategories().stream()
-                .filter(produit -> selectedCategories.contains(produit.getCategories().get(0).getName()))
-                .collect(Collectors.toList());
+            .filter(produit -> selectedCategories.contains(produit.getCategories().get(0).getName()))
+            .collect(Collectors.toList());
         // Mettre à jour la liste des produits affichés
         this.updateProductFlowPane(filteredProducts);
     }
@@ -795,7 +844,7 @@ public class AfficherProductClientControllers implements Initializable {
     private List<String> getSelectedCategories() {
         // Récupérer les adresses sélectionnées dans l'AnchorPane de filtrage
         return this.addressCheckBoxes.stream().filter(CheckBox::isSelected).map(CheckBox::getText)
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     /**
@@ -841,7 +890,7 @@ public class AfficherProductClientControllers implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/AffichageEvenementClient.fxml"));
+                this.getClass().getResource("/ui/AffichageEvenementClient.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -873,7 +922,7 @@ public class AfficherProductClientControllers implements Initializable {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
             final FXMLLoader loader = new FXMLLoader(
-                    this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
+                this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);
@@ -980,8 +1029,17 @@ public class AfficherProductClientControllers implements Initializable {
      */
     @FXML
     void addComment() {
+        // Validate using FormsFX first
+        if (!validateCommentForm()) {
+            final Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Comment vide");
+            alert.setContentText("Please enter a comment before submitting.");
+            alert.showAndWait();
+            return;
+        }
+
         // Check for bad words and prevent further processing if found
-        final String userMessage = this.txtAreaComments.getText();
+        final String userMessage = commentProperty.get();
         AfficherProductClientControllers.LOGGER.info("User Message: " + userMessage);
         final String badwordDetection = this.chat.badword(userMessage);
         AfficherProductClientControllers.LOGGER.info("Badword Detection Result: " + badwordDetection);
@@ -998,8 +1056,8 @@ public class AfficherProductClientControllers implements Initializable {
             final ReviewService commentService = new ReviewService();
             // Ajoutez le comment à la base de données
             commentService.create(comment);
+            this.txtAreaComments.clear();
         }
-
     }
 
     /**
@@ -1011,7 +1069,7 @@ public class AfficherProductClientControllers implements Initializable {
     private List<Review> getAllComment(final Long idproduit) {
         final ReviewService commentService = new ReviewService();
         final List<Review> allComments = commentService.read(PageRequest.defaultPage()).getContent(); // Récupérer tous
-                                                                                                      // les comments
+        // les comments
         final List<Review> comments = new ArrayList<>();
         // Filtrer les comments pour ne conserver que ceux du cinéma correspondant
         for (final Review comment : allComments) {
@@ -1058,7 +1116,7 @@ public class AfficherProductClientControllers implements Initializable {
      *                first/last name and optional profile image, and the comment
      *                supplies the text
      * @return an HBox containing the user's avatar (circle + ImageView) and a
-     *         card-like container with the user's name and comment text
+     * card-like container with the user's name and comment text
      */
     private HBox addCommentToView(final Review comment) {
         // Création du cercle pour l'image de l'utilisateur
@@ -1092,7 +1150,7 @@ public class AfficherProductClientControllers implements Initializable {
         // Création du conteneur pour la carte du comment
         final HBox cardContainer = new HBox();
         cardContainer.setStyle(
-                "-fx-background-color: white; -fx-padding: 5px ; -fx-border-radius: 8px; -fx-border-color: #000; -fx-background-radius: 8px; ");
+            "-fx-background-color: white; -fx-padding: 5px ; -fx-border-radius: 8px; -fx-border-color: #000; -fx-background-radius: 8px; ");
         // Nom de l'utilisateur
         final Text userName = new Text(comment.getUser().getFirstName() + " " + comment.getUser().getLastName());
         userName.setStyle("-fx-font-family: 'Arial Rounded MT Bold'; -fx-font-weight: bold;");
@@ -1177,7 +1235,7 @@ public class AfficherProductClientControllers implements Initializable {
      *
      * @param produit the Product to display (provides image URL, name, and price)
      * @return a VBox containing a styled product card with the product image, name,
-     *         and price
+     * and price
      */
     public VBox createtopthree(final Product produit) {
         final VBox cardContainer = new VBox(5);
@@ -1214,10 +1272,10 @@ public class AfficherProductClientControllers implements Initializable {
         imageView.setOnMouseClicked(event -> {
             try {
                 final FXMLLoader loader = new FXMLLoader(
-                        this.getClass().getResource("/ui/produits/DetailsProductClient.fxml"));
+                    this.getClass().getResource("/ui/produits/DetailsProductClient.fxml"));
                 Parent root = null;
                 AfficherProductClientControllers.LOGGER
-                        .info("Clique sur le nom du produit. ID du produit : " + produit.getId());
+                    .info("Clique sur le nom du produit. ID du produit : " + produit.getId());
                 root = loader.load();
                 // Récupérez le contrôleur et passez l'id du produit lors de l'initialisation
                 final DetailsProductClientController controller = loader.getController();
@@ -1245,10 +1303,10 @@ public class AfficherProductClientControllers implements Initializable {
         nameLabel.setOnMouseClicked(event -> {
             try {
                 final FXMLLoader loader = new FXMLLoader(
-                        this.getClass().getResource("/ui/produits/DetailsProductClient.fxml"));
+                    this.getClass().getResource("/ui/produits/DetailsProductClient.fxml"));
                 Parent root = null;
                 AfficherProductClientControllers.LOGGER
-                        .info("Clique sur le nom du produit. ID du produit : " + produit.getId());
+                    .info("Clique sur le nom du produit. ID du produit : " + produit.getId());
                 root = loader.load();
                 // Récupérez le contrôleur et passez l'id du produit lors de l'initialisation
                 final DetailsProductClientController controller = loader.getController();

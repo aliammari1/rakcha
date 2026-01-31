@@ -13,7 +13,7 @@
            fx:controller="com.esprit.controllers.users.SignUpController"
            style="-fx-background-color: linear-gradient(to bottom right, #0a0a0a, #1a0808, #120404, #0a0a0a);
                   -fx-effect: dropshadow(gaussian, #8b0000, 40, 0, 0, 0);"
-           stylesheets="@../styles/login-animations.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Background Layer with Film Strip Pattern -->
   <AnchorPane style="-fx-background-color: transparent;" maxWidth="1200.0" maxHeight="680.0"
@@ -599,3 +599,4 @@
   </AnchorPane>
 
 </StackPane>
+

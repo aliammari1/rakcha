@@ -7,16 +7,16 @@ package com.esprit.utils;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class PageRequest {
+
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
+public record PageRequest(int page, int size, String sortBy, String sortDirection) {
 
     public static final int DEFAULT_PAGE = 0;
     public static final int DEFAULT_SIZE = 20;
     public static final int MAX_SIZE = 100;
     public static final String DEFAULT_SORT_DIRECTION = "ASC";
-    private final int page;
-    private final int size;
-    private final String sortBy;
-    private final String sortDirection;
 
     public PageRequest(int page, int size) {
         this(page, size, null, DEFAULT_SORT_DIRECTION);
@@ -27,8 +27,7 @@ public class PageRequest {
         this.page = Math.max(0, page);
         this.size = Math.min(Math.max(1, size), MAX_SIZE);
         this.sortBy = sortBy;
-        this.sortDirection = sortDirection != null &&
-            ("DESC".equalsIgnoreCase(sortDirection) || "ASC".equalsIgnoreCase(sortDirection))
+        this.sortDirection = ("DESC".equalsIgnoreCase(sortDirection) || "ASC".equalsIgnoreCase(sortDirection))
             ? sortDirection.toUpperCase()
             : DEFAULT_SORT_DIRECTION;
     }
@@ -46,26 +45,6 @@ public class PageRequest {
 
     public static PageRequest defaultPage() {
         return new PageRequest(DEFAULT_PAGE, DEFAULT_SIZE);
-    }
-
-
-    public int getPage() {
-        return page;
-    }
-
-
-    public int getSize() {
-        return size;
-    }
-
-
-    public String getSortBy() {
-        return sortBy;
-    }
-
-
-    public String getSortDirection() {
-        return sortDirection;
     }
 
 

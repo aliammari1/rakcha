@@ -51,18 +51,6 @@ public enum UserMail {
     }
 
     /**
-     * Legacy method for backward compatibility - sends plain text email.
-     *
-     * @param recipient     The email address of the recipient
-     * @param messageToSend The plain text message content
-     * @deprecated Use {@link #send(String, String, String)} instead
-     */
-    @Deprecated
-    public static void send(final String recipient, final String messageToSend) {
-        send(recipient, "RAKCHA Notification", messageToSend);
-    }
-
-    /**
      * Sends a verification code email using the professional template.
      *
      * @param recipient        The email address of the recipient

@@ -1,5 +1,8 @@
 package com.esprit.controllers.cinemas;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.controllers.films.SeatSelectionController;
 import com.esprit.enums.CinemaStatus;
 import com.esprit.models.cinemas.Cinema;
@@ -9,17 +12,17 @@ import com.esprit.models.users.Client;
 import com.esprit.services.cinemas.CinemaService;
 import com.esprit.services.cinemas.MovieSessionService;
 import com.esprit.services.common.ReviewService;
-import com.esprit.services.users.UserService;
 import com.esprit.utils.PageRequest;
 import com.esprit.utils.SessionManager;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -47,8 +50,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -56,6 +57,7 @@ import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 import org.controlsfx.control.Rating;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -80,36 +82,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-/**
- * Controller responsible for handling client dashboard operations for cinema
- * management.
- *
- * <p>
- * This controller provides functionality for clients to interact with cinema
- * data including
- * viewing cinema listings, filtering cinemas, viewing movie sessions, adding
- * comments and ratings,
- * and displaying cinema locations on maps. It handles the client-side interface
- * for the cinema
- * management system.
- * </p>
- *
- * <p>
- * Key features include cinema listing and filtering, movie session planning,
- * comment and rating
- * system, map integration, and top-rated cinema recommendations.
- * </p>
- *
- * @author Esprit Team
- * @version 1.0
- * @since 1.0
- */
+@Log4j2
 public class DashboardClientController {
 
     private static final Logger LOGGER = Logger.getLogger(DashboardClientController.class.getName());
     private final List<CheckBox> addressCheckBoxes = new ArrayList<>();
     private final List<CheckBox> namesCheckBoxes = new ArrayList<>();
     private final List<VBox> moviesessionsVBoxList = new ArrayList<>(); // Liste pour stocker les conteneurs de séances
+    // FormsFX properties for declarative form handling
+    private final StringProperty commentTextProperty = new SimpleStringProperty("");
+    private final List<Cinema> l1 = new ArrayList<>();
     @FXML
     private FlowPane cinemaFlowPane;
     @FXML
@@ -135,25 +117,12 @@ public class DashboardClientController {
     private Cinema cinema;
     private TilePane tilePane;
     private Long cinemaId;
-    private List<Cinema> l1 = new ArrayList<>();
     @FXML
     private ComboBox<String> tricomboBox;
     private LocalDate lastSelectedDate;
     @FXML
     private AnchorPane Anchortop3;
-
-    /**
-     * @return List<Cinema>
-     */
-    // closeDetailFilm.setOnAction(new EventHandler<ActionEvent>() {
-    // @Override
-    // public void handle(ActionEvent event) {
-    // PlanningPane.setVisible(false);
-    // listCinemaClient.setOpacity(1);
-    // listCinemaClient.setDisable(false);
-    // }
-
-    // });
+    private Form commentForm;
 
     /**
      * Finds cinemas whose name contains the given search term.
@@ -162,7 +131,7 @@ public class DashboardClientController {
      * @param recherche the substring to match against each cinema's name; cinemas
      *                  with a null name are ignored and matching is case-sensitive
      * @return a List<Cinema> containing cinemas from {@code liste} whose name
-     *         contains {@code recherche}
+     * contains {@code recherche}
      */
     @FXML
     /**
@@ -180,6 +149,50 @@ public class DashboardClientController {
         }
 
         return resultats;
+    }
+
+    /**
+     * Sets up the FormsFX form with declarative validation rules.
+     */
+    private void setupFormsFX() {
+        this.commentForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(this.commentTextProperty)
+                    .label("Comment")
+                    .validate(StringLengthValidator.atLeast(3, "Comment must be at least 3 characters"))
+            )
+        );
+    }
+
+    /**
+     * Sets up EasyBind subscriptions to sync text fields with FormsFX properties.
+     */
+    private void setupEasyBindings() {
+        if (this.txtAreaComments != null) {
+            this.txtAreaComments.textProperty().bindBidirectional(this.commentTextProperty);
+        }
+    }
+
+    /**
+     * @return List<Cinema>
+     */
+    // closeDetailFilm.setOnAction(new EventHandler<ActionEvent>() {
+    // @Override
+    // public void handle(ActionEvent event) {
+    // PlanningPane.setVisible(false);
+    // listCinemaClient.setOpacity(1);
+    // listCinemaClient.setDisable(false);
+    // }
+
+    // });
+
+    /**
+     * Cleanup method to unbind properties when the view is closed.
+     */
+    public void cleanup() {
+        if (this.txtAreaComments != null) {
+            this.txtAreaComments.textProperty().unbindBidirectional(this.commentTextProperty);
+        }
     }
 
     /**
@@ -220,8 +233,8 @@ public class DashboardClientController {
         PageRequest pageRequest = PageRequest.defaultPage();
         final List<Cinema> cinemas = cinemaService.read(pageRequest).getContent();
         final List<Cinema> acceptedCinemasList = cinemas.stream()
-                .filter(cinema -> CinemaStatus.ACCEPTED.getStatus().equals(cinema.getStatus()))
-                .collect(Collectors.toList());
+            .filter(cinema -> CinemaStatus.ACCEPTED.getStatus().equals(cinema.getStatus()))
+            .collect(Collectors.toList());
         if (acceptedCinemasList.isEmpty()) {
             this.showAlert("Aucun cinéma accepté n'est disponible.");
         }
@@ -264,35 +277,35 @@ public class DashboardClientController {
 
         final AnchorPane card = new AnchorPane();
         card.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(30, 15, 18, 0.95), rgba(20, 10, 12, 0.98));" +
-                        "-fx-background-radius: 20px;" +
-                        "-fx-border-color: rgba(139, 0, 0, 0.4);" +
-                        "-fx-border-radius: 20px;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 15, 0, 0, 5);" +
-                        "-fx-cursor: hand;");
+            "-fx-background-color: linear-gradient(to bottom, rgba(30, 15, 18, 0.95), rgba(20, 10, 12, 0.98));" +
+                "-fx-background-radius: 20px;" +
+                "-fx-border-color: rgba(139, 0, 0, 0.4);" +
+                "-fx-border-radius: 20px;" +
+                "-fx-border-width: 2px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 15, 0, 0, 5);" +
+                "-fx-cursor: hand;");
         card.setPrefWidth(480);
         card.setPrefHeight(180);
 
         // Hover effect
         card.setOnMouseEntered(e -> card.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(45, 22, 28, 0.98), rgba(30, 15, 18, 0.98));" +
-                        "-fx-background-radius: 20px;" +
-                        "-fx-border-color: #ff4444;" +
-                        "-fx-border-radius: 20px;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.6), 25, 0, 0, 8);" +
-                        "-fx-cursor: hand;" +
-                        "-fx-scale-x: 1.02;" +
-                        "-fx-scale-y: 1.02;"));
+            "-fx-background-color: linear-gradient(to bottom, rgba(45, 22, 28, 0.98), rgba(30, 15, 18, 0.98));" +
+                "-fx-background-radius: 20px;" +
+                "-fx-border-color: #ff4444;" +
+                "-fx-border-radius: 20px;" +
+                "-fx-border-width: 2px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.6), 25, 0, 0, 8);" +
+                "-fx-cursor: hand;" +
+                "-fx-scale-x: 1.02;" +
+                "-fx-scale-y: 1.02;"));
         card.setOnMouseExited(e -> card.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(30, 15, 18, 0.95), rgba(20, 10, 12, 0.98));" +
-                        "-fx-background-radius: 20px;" +
-                        "-fx-border-color: rgba(139, 0, 0, 0.4);" +
-                        "-fx-border-radius: 20px;" +
-                        "-fx-border-width: 2px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 15, 0, 0, 5);" +
-                        "-fx-cursor: hand;"));
+            "-fx-background-color: linear-gradient(to bottom, rgba(30, 15, 18, 0.95), rgba(20, 10, 12, 0.98));" +
+                "-fx-background-radius: 20px;" +
+                "-fx-border-color: rgba(139, 0, 0, 0.4);" +
+                "-fx-border-radius: 20px;" +
+                "-fx-border-width: 2px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 15, 0, 0, 5);" +
+                "-fx-cursor: hand;"));
 
         // Logo ImageView with enhanced styling
         final ImageView logoImageView = new ImageView();
@@ -301,7 +314,7 @@ public class DashboardClientController {
         logoImageView.setLayoutX(20);
         logoImageView.setLayoutY(30);
         logoImageView.setStyle(
-                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 10, 0, 0, 3);");
+            "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 10, 0, 0, 3);");
         try {
             final String logoString = cinema.getLogoUrl();
             if (logoString != null && !logoString.isEmpty()) {
@@ -318,11 +331,11 @@ public class DashboardClientController {
         nameLabel.setLayoutX(180);
         nameLabel.setLayoutY(30);
         nameLabel.setStyle(
-                "-fx-text-fill: #ffffff;" +
-                        "-fx-font-family: 'Arial Black';" +
-                        "-fx-font-size: 18px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 5, 0, 1, 1);");
+            "-fx-text-fill: #ffffff;" +
+                "-fx-font-family: 'Arial Black';" +
+                "-fx-font-size: 18px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 5, 0, 1, 1);");
         card.getChildren().add(nameLabel);
 
         // Address Label
@@ -330,8 +343,8 @@ public class DashboardClientController {
         adresseLabel.setLayoutX(180);
         adresseLabel.setLayoutY(58);
         adresseLabel.setStyle(
-                "-fx-text-fill: #aaaaaa;" +
-                        "-fx-font-size: 12px;");
+            "-fx-text-fill: #aaaaaa;" +
+                "-fx-font-size: 12px;");
         adresseLabel.setMaxWidth(280);
         card.getChildren().add(adresseLabel);
 
@@ -343,43 +356,43 @@ public class DashboardClientController {
         // Show Planning Button
         final Button planningButton = new Button("Schedule");
         planningButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom right, #8b0000, #550000);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-background-radius: 15px;" +
-                        "-fx-border-color: #ff4444;" +
-                        "-fx-border-width: 1px;" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 8, 0, 0, 2);" +
-                        "-fx-cursor: hand;" +
-                        "-fx-padding: 8 16;");
+            "-fx-background-color: linear-gradient(to bottom right, #8b0000, #550000);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 11px;" +
+                "-fx-background-radius: 15px;" +
+                "-fx-border-color: #ff4444;" +
+                "-fx-border-width: 1px;" +
+                "-fx-border-radius: 15px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 8, 0, 0, 2);" +
+                "-fx-cursor: hand;" +
+                "-fx-padding: 8 16;");
         planningButton.setUserData(cinema);
         planningButton.setOnAction(event -> this.showPlanning(cinema));
         planningButton.setOnMouseEntered(e -> planningButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom right, #aa0000, #660000);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-background-radius: 15px;" +
-                        "-fx-border-color: #ff6666;" +
-                        "-fx-border-width: 1px;" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.7), 12, 0, 0, 3);" +
-                        "-fx-cursor: hand;" +
-                        "-fx-padding: 8 16;"));
+            "-fx-background-color: linear-gradient(to bottom right, #aa0000, #660000);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 11px;" +
+                "-fx-background-radius: 15px;" +
+                "-fx-border-color: #ff6666;" +
+                "-fx-border-width: 1px;" +
+                "-fx-border-radius: 15px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.7), 12, 0, 0, 3);" +
+                "-fx-cursor: hand;" +
+                "-fx-padding: 8 16;"));
         planningButton.setOnMouseExited(e -> planningButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom right, #8b0000, #550000);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-background-radius: 15px;" +
-                        "-fx-border-color: #ff4444;" +
-                        "-fx-border-width: 1px;" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 8, 0, 0, 2);" +
-                        "-fx-cursor: hand;" +
-                        "-fx-padding: 8 16;"));
+            "-fx-background-color: linear-gradient(to bottom right, #8b0000, #550000);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 11px;" +
+                "-fx-background-radius: 15px;" +
+                "-fx-border-color: #ff4444;" +
+                "-fx-border-width: 1px;" +
+                "-fx-border-radius: 15px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.5), 8, 0, 0, 2);" +
+                "-fx-cursor: hand;" +
+                "-fx-padding: 8 16;"));
         buttonContainer.getChildren().add(planningButton);
 
         // Map Button - Improved with text label and better styling
@@ -390,42 +403,42 @@ public class DashboardClientController {
         mapButton.setGraphic(mapIcon);
         mapButton.setTooltip(new javafx.scene.control.Tooltip("View location on map"));
         mapButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom right, #2a6496, #1a4f7a);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-background-radius: 15px;" +
-                        "-fx-border-color: #4a9fd4;" +
-                        "-fx-border-width: 1px;" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(42, 100, 150, 0.5), 8, 0, 0, 2);" +
-                        "-fx-cursor: hand;" +
-                        "-fx-padding: 8 14;");
+            "-fx-background-color: linear-gradient(to bottom right, #2a6496, #1a4f7a);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 11px;" +
+                "-fx-background-radius: 15px;" +
+                "-fx-border-color: #4a9fd4;" +
+                "-fx-border-width: 1px;" +
+                "-fx-border-radius: 15px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(42, 100, 150, 0.5), 8, 0, 0, 2);" +
+                "-fx-cursor: hand;" +
+                "-fx-padding: 8 14;");
         mapButton.setOnAction(event -> this.geocodeAddress(cinema.getAddress()));
         mapButton.setOnMouseEntered(e -> mapButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom right, #3a7db6, #2a6496);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-background-radius: 15px;" +
-                        "-fx-border-color: #6abfe8;" +
-                        "-fx-border-width: 1px;" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(74, 159, 212, 0.7), 12, 0, 0, 3);" +
-                        "-fx-cursor: hand;" +
-                        "-fx-padding: 8 14;"));
+            "-fx-background-color: linear-gradient(to bottom right, #3a7db6, #2a6496);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 11px;" +
+                "-fx-background-radius: 15px;" +
+                "-fx-border-color: #6abfe8;" +
+                "-fx-border-width: 1px;" +
+                "-fx-border-radius: 15px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(74, 159, 212, 0.7), 12, 0, 0, 3);" +
+                "-fx-cursor: hand;" +
+                "-fx-padding: 8 14;"));
         mapButton.setOnMouseExited(e -> mapButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom right, #2a6496, #1a4f7a);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 11px;" +
-                        "-fx-background-radius: 15px;" +
-                        "-fx-border-color: #4a9fd4;" +
-                        "-fx-border-width: 1px;" +
-                        "-fx-border-radius: 15px;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(42, 100, 150, 0.5), 8, 0, 0, 2);" +
-                        "-fx-cursor: hand;" +
-                        "-fx-padding: 8 14;"));
+            "-fx-background-color: linear-gradient(to bottom right, #2a6496, #1a4f7a);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 11px;" +
+                "-fx-background-radius: 15px;" +
+                "-fx-border-color: #4a9fd4;" +
+                "-fx-border-width: 1px;" +
+                "-fx-border-radius: 15px;" +
+                "-fx-effect: dropshadow(gaussian, rgba(42, 100, 150, 0.5), 8, 0, 0, 2);" +
+                "-fx-cursor: hand;" +
+                "-fx-padding: 8 14;"));
         buttonContainer.getChildren().add(mapButton);
 
         card.getChildren().add(buttonContainer);
@@ -470,9 +483,9 @@ public class DashboardClientController {
         ratingLabel.setLayoutX(430);
         ratingLabel.setLayoutY(130);
         ratingLabel.setStyle(
-                "-fx-text-fill: #ffc800;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-font-weight: bold;");
+            "-fx-text-fill: #ffc800;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;");
         card.getChildren().add(ratingLabel);
 
         cardContainer.getChildren().add(card);
@@ -504,54 +517,54 @@ public class DashboardClientController {
             // Create the card with premium styling
             final HBox card = new HBox(15);
             card.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom right, rgba(50, 25, 30, 0.9), rgba(35, 18, 22, 0.95));"
-                            +
-                            "-fx-background-radius: 15px;" +
-                            "-fx-border-color: rgba(255, 200, 0, 0.3);" +
-                            "-fx-border-width: 1px;" +
-                            "-fx-border-radius: 15px;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 10, 0, 0, 3);" +
-                            "-fx-cursor: hand;" +
-                            "-fx-padding: 12px;");
+                "-fx-background-color: linear-gradient(to bottom right, rgba(50, 25, 30, 0.9), rgba(35, 18, 22, 0.95));"
+                    +
+                    "-fx-background-radius: 15px;" +
+                    "-fx-border-color: rgba(255, 200, 0, 0.3);" +
+                    "-fx-border-width: 1px;" +
+                    "-fx-border-radius: 15px;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 10, 0, 0, 3);" +
+                    "-fx-cursor: hand;" +
+                    "-fx-padding: 12px;");
             card.setPrefWidth(340);
             card.setPrefHeight(cardHeight);
             card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
             // Hover effects
             card.setOnMouseEntered(e -> card.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom right, rgba(70, 35, 42, 0.95), rgba(50, 25, 30, 0.98));"
-                            +
-                            "-fx-background-radius: 15px;" +
-                            "-fx-border-color: #ffc800;" +
-                            "-fx-border-width: 1px;" +
-                            "-fx-border-radius: 15px;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.4), 15, 0, 0, 5);" +
-                            "-fx-cursor: hand;" +
-                            "-fx-padding: 12px;"));
+                "-fx-background-color: linear-gradient(to bottom right, rgba(70, 35, 42, 0.95), rgba(50, 25, 30, 0.98));"
+                    +
+                    "-fx-background-radius: 15px;" +
+                    "-fx-border-color: #ffc800;" +
+                    "-fx-border-width: 1px;" +
+                    "-fx-border-radius: 15px;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.4), 15, 0, 0, 5);" +
+                    "-fx-cursor: hand;" +
+                    "-fx-padding: 12px;"));
             card.setOnMouseExited(e -> card.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom right, rgba(50, 25, 30, 0.9), rgba(35, 18, 22, 0.95));"
-                            +
-                            "-fx-background-radius: 15px;" +
-                            "-fx-border-color: rgba(255, 200, 0, 0.3);" +
-                            "-fx-border-width: 1px;" +
-                            "-fx-border-radius: 15px;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 10, 0, 0, 3);" +
-                            "-fx-cursor: hand;" +
-                            "-fx-padding: 12px;"));
+                "-fx-background-color: linear-gradient(to bottom right, rgba(50, 25, 30, 0.9), rgba(35, 18, 22, 0.95));"
+                    +
+                    "-fx-background-radius: 15px;" +
+                    "-fx-border-color: rgba(255, 200, 0, 0.3);" +
+                    "-fx-border-width: 1px;" +
+                    "-fx-border-radius: 15px;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 10, 0, 0, 3);" +
+                    "-fx-cursor: hand;" +
+                    "-fx-padding: 12px;"));
 
             // Rank Badge
             final StackPane rankBadge = new StackPane();
             final javafx.scene.shape.Circle rankCircle = new javafx.scene.shape.Circle(18);
             rankCircle.setStyle(
-                    "-fx-fill: linear-gradient(to bottom, #ffc800, #cc9900);" +
-                            "-fx-stroke: #ffdd44;" +
-                            "-fx-stroke-width: 2;");
+                "-fx-fill: linear-gradient(to bottom, #ffc800, #cc9900);" +
+                    "-fx-stroke: #ffdd44;" +
+                    "-fx-stroke-width: 2;");
             final Label rankLabel = new Label("#" + rank);
             rankLabel.setStyle(
-                    "-fx-text-fill: #1a0808;" +
-                            "-fx-font-family: 'Arial Black';" +
-                            "-fx-font-size: 14px;" +
-                            "-fx-font-weight: bold;");
+                "-fx-text-fill: #1a0808;" +
+                    "-fx-font-family: 'Arial Black';" +
+                    "-fx-font-size: 14px;" +
+                    "-fx-font-weight: bold;");
             rankBadge.getChildren().addAll(rankCircle, rankLabel);
             card.getChildren().add(rankBadge);
 
@@ -560,7 +573,7 @@ public class DashboardClientController {
             logoImageView.setFitWidth(70);
             logoImageView.setFitHeight(70);
             logoImageView.setStyle(
-                    "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.4), 8, 0, 0, 2);");
+                "-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.4), 8, 0, 0, 2);");
             try {
                 final String logoString = cinema.getLogoUrl();
                 if (logoString != null && !logoString.isEmpty()) {
@@ -578,15 +591,15 @@ public class DashboardClientController {
 
             final Label nomLabel = new Label(cinema.getName() != null ? cinema.getName() : "Unknown");
             nomLabel.setStyle(
-                    "-fx-text-fill: #ffffff;" +
-                            "-fx-font-family: 'Arial Black';" +
-                            "-fx-font-size: 14px;" +
-                            "-fx-font-weight: bold;");
+                "-fx-text-fill: #ffffff;" +
+                    "-fx-font-family: 'Arial Black';" +
+                    "-fx-font-size: 14px;" +
+                    "-fx-font-weight: bold;");
 
             final Label adresseLabel = new Label(cinema.getAddress() != null ? cinema.getAddress() : "Unknown");
             adresseLabel.setStyle(
-                    "-fx-text-fill: #aaaaaa;" +
-                            "-fx-font-size: 11px;");
+                "-fx-text-fill: #aaaaaa;" +
+                    "-fx-font-size: 11px;");
             adresseLabel.setMaxWidth(150);
             adresseLabel.setWrapText(true);
 
@@ -594,9 +607,9 @@ public class DashboardClientController {
             double avgRating = ratingCinemaService.getAverageRating(cinema.getId());
             final Label ratingLabel = new Label("★ " + String.format("%.1f", avgRating > 0 ? avgRating : 0));
             ratingLabel.setStyle(
-                    "-fx-text-fill: #ffc800;" +
-                            "-fx-font-size: 12px;" +
-                            "-fx-font-weight: bold;");
+                "-fx-text-fill: #ffc800;" +
+                    "-fx-font-size: 12px;" +
+                    "-fx-font-weight: bold;");
 
             infoContainer.getChildren().addAll(nomLabel, adresseLabel, ratingLabel);
             card.getChildren().add(infoContainer);
@@ -630,7 +643,7 @@ public class DashboardClientController {
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0");
                 final BufferedReader in = new BufferedReader(
-                        new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                    new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
                 String inputLine;
                 final StringBuilder content = new StringBuilder();
                 while (null != (inputLine = in.readLine())) {
@@ -725,26 +738,26 @@ public class DashboardClientController {
             // Highlight today's date with special styling
             if (date.equals(today)) {
                 dayLabel.setStyle(
-                        "-fx-background-color: linear-gradient(to bottom, #ffc800, #cc9900);" +
-                                "-fx-background-radius: 12;" +
-                                "-fx-padding: 10;" +
-                                "-fx-text-fill: #1a0808;" +
-                                "-fx-font-weight: bold;" +
-                                "-fx-font-size: 12px;" +
-                                "-fx-cursor: hand;" +
-                                "-fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.5), 8, 0, 0, 2);");
+                    "-fx-background-color: linear-gradient(to bottom, #ffc800, #cc9900);" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-padding: 10;" +
+                        "-fx-text-fill: #1a0808;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.5), 8, 0, 0, 2);");
             } else {
                 dayLabel.setStyle(
-                        "-fx-background-color: linear-gradient(to bottom, rgba(139, 0, 0, 0.6), rgba(80, 0, 0, 0.5));" +
-                                "-fx-background-radius: 12;" +
-                                "-fx-padding: 10;" +
-                                "-fx-text-fill: white;" +
-                                "-fx-font-weight: bold;" +
-                                "-fx-font-size: 12px;" +
-                                "-fx-border-color: rgba(255, 68, 68, 0.4);" +
-                                "-fx-border-width: 1;" +
-                                "-fx-border-radius: 12;" +
-                                "-fx-cursor: hand;");
+                    "-fx-background-color: linear-gradient(to bottom, rgba(139, 0, 0, 0.6), rgba(80, 0, 0, 0.5));" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-padding: 10;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-border-color: rgba(255, 68, 68, 0.4);" +
+                        "-fx-border-width: 1;" +
+                        "-fx-border-radius: 12;" +
+                        "-fx-cursor: hand;");
             }
 
             dayLabel.setOnMouseClicked(event -> this.displayMovieSessionsForDate(date, cinema));
@@ -754,44 +767,44 @@ public class DashboardClientController {
             dayLabel.setOnMouseEntered(e -> {
                 if (!labelDate.equals(today)) {
                     dayLabel.setStyle(
-                            "-fx-background-color: linear-gradient(to bottom, rgba(180, 0, 0, 0.8), rgba(120, 0, 0, 0.7));"
-                                    +
-                                    "-fx-background-radius: 12;" +
-                                    "-fx-padding: 10;" +
-                                    "-fx-text-fill: white;" +
-                                    "-fx-font-weight: bold;" +
-                                    "-fx-font-size: 12px;" +
-                                    "-fx-border-color: #ff4444;" +
-                                    "-fx-border-width: 1;" +
-                                    "-fx-border-radius: 12;" +
-                                    "-fx-cursor: hand;" +
-                                    "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.5), 10, 0, 0, 3);");
+                        "-fx-background-color: linear-gradient(to bottom, rgba(180, 0, 0, 0.8), rgba(120, 0, 0, 0.7));"
+                            +
+                            "-fx-background-radius: 12;" +
+                            "-fx-padding: 10;" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 12px;" +
+                            "-fx-border-color: #ff4444;" +
+                            "-fx-border-width: 1;" +
+                            "-fx-border-radius: 12;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.5), 10, 0, 0, 3);");
                 }
             });
             dayLabel.setOnMouseExited(e -> {
                 if (labelDate.equals(today)) {
                     dayLabel.setStyle(
-                            "-fx-background-color: linear-gradient(to bottom, #ffc800, #cc9900);" +
-                                    "-fx-background-radius: 12;" +
-                                    "-fx-padding: 10;" +
-                                    "-fx-text-fill: #1a0808;" +
-                                    "-fx-font-weight: bold;" +
-                                    "-fx-font-size: 12px;" +
-                                    "-fx-cursor: hand;" +
-                                    "-fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.5), 8, 0, 0, 2);");
+                        "-fx-background-color: linear-gradient(to bottom, #ffc800, #cc9900);" +
+                            "-fx-background-radius: 12;" +
+                            "-fx-padding: 10;" +
+                            "-fx-text-fill: #1a0808;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 12px;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-effect: dropshadow(gaussian, rgba(255, 200, 0, 0.5), 8, 0, 0, 2);");
                 } else {
                     dayLabel.setStyle(
-                            "-fx-background-color: linear-gradient(to bottom, rgba(139, 0, 0, 0.6), rgba(80, 0, 0, 0.5));"
-                                    +
-                                    "-fx-background-radius: 12;" +
-                                    "-fx-padding: 10;" +
-                                    "-fx-text-fill: white;" +
-                                    "-fx-font-weight: bold;" +
-                                    "-fx-font-size: 12px;" +
-                                    "-fx-border-color: rgba(255, 68, 68, 0.4);" +
-                                    "-fx-border-width: 1;" +
-                                    "-fx-border-radius: 12;" +
-                                    "-fx-cursor: hand;");
+                        "-fx-background-color: linear-gradient(to bottom, rgba(139, 0, 0, 0.6), rgba(80, 0, 0, 0.5));"
+                            +
+                            "-fx-background-radius: 12;" +
+                            "-fx-padding: 10;" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 12px;" +
+                            "-fx-border-color: rgba(255, 68, 68, 0.4);" +
+                            "-fx-border-width: 1;" +
+                            "-fx-border-radius: 12;" +
+                            "-fx-cursor: hand;");
                 }
             });
 
@@ -810,9 +823,9 @@ public class DashboardClientController {
      * @param startDate the first date of the 7-day period (inclusive)
      * @param cinema    the cinema whose sessions are requested
      * @return a map whose keys are each date in the 7-day period beginning at
-     *         {@code startDate} and whose values are
-     *         the lists of {@code MovieSession} scheduled at {@code cinema} on
-     *         those dates
+     * {@code startDate} and whose values are
+     * the lists of {@code MovieSession} scheduled at {@code cinema} on
+     * those dates
      */
     private Map<LocalDate, List<MovieSession>> loadCurrentWeekPlanning(final LocalDate startDate, final Cinema cinema) {
         // Obtenir la date de fin de la semaine courante (dimanche)
@@ -839,7 +852,7 @@ public class DashboardClientController {
         // Charger les séances pour la date spécifiée
         final Map<LocalDate, List<MovieSession>> weekMovieSessionsMap = this.loadCurrentWeekPlanning(date, cinema);
         final List<MovieSession> moviesessionsForDate = weekMovieSessionsMap.getOrDefault(date,
-                Collections.emptyList());
+            Collections.emptyList());
         // Créer un VBox pour contenir les éléments du calendrier
         final VBox planningContent = new VBox();
         planningContent.setSpacing(10);
@@ -897,7 +910,7 @@ public class DashboardClientController {
      *
      * @param moviesession the MovieSession to represent in the card
      * @return a StackPane containing a premium styled card that displays the film
-     *         name, cinema hall name, screening time, and price
+     * name, cinema hall name, screening time, and price
      */
     private StackPane createMovieSessionCard(final MovieSession moviesession) {
         final StackPane cardContainer = new StackPane();
@@ -907,42 +920,42 @@ public class DashboardClientController {
 
         final HBox card = new HBox(15);
         card.setStyle(
-                "-fx-background-color: linear-gradient(to right, rgba(30, 15, 18, 0.95), rgba(45, 22, 28, 0.9));" +
-                        "-fx-background-radius: 18;" +
-                        "-fx-border-color: rgba(139, 0, 0, 0.5);" +
-                        "-fx-border-radius: 18;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-padding: 12;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 12, 0, 0, 4);" +
-                        "-fx-cursor: hand;");
+            "-fx-background-color: linear-gradient(to right, rgba(30, 15, 18, 0.95), rgba(45, 22, 28, 0.9));" +
+                "-fx-background-radius: 18;" +
+                "-fx-border-color: rgba(139, 0, 0, 0.5);" +
+                "-fx-border-radius: 18;" +
+                "-fx-border-width: 1.5;" +
+                "-fx-padding: 12;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 12, 0, 0, 4);" +
+                "-fx-cursor: hand;");
 
         // Hover effects
         card.setOnMouseEntered(e -> card.setStyle(
-                "-fx-background-color: linear-gradient(to right, rgba(50, 25, 30, 0.98), rgba(70, 35, 42, 0.95));" +
-                        "-fx-background-radius: 18;" +
-                        "-fx-border-color: #ff4444;" +
-                        "-fx-border-radius: 18;" +
-                        "-fx-border-width: 2;" +
-                        "-fx-padding: 12;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.5), 20, 0, 0, 5);" +
-                        "-fx-cursor: hand;" +
-                        "-fx-scale-x: 1.02;" +
-                        "-fx-scale-y: 1.02;"));
+            "-fx-background-color: linear-gradient(to right, rgba(50, 25, 30, 0.98), rgba(70, 35, 42, 0.95));" +
+                "-fx-background-radius: 18;" +
+                "-fx-border-color: #ff4444;" +
+                "-fx-border-radius: 18;" +
+                "-fx-border-width: 2;" +
+                "-fx-padding: 12;" +
+                "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.5), 20, 0, 0, 5);" +
+                "-fx-cursor: hand;" +
+                "-fx-scale-x: 1.02;" +
+                "-fx-scale-y: 1.02;"));
         card.setOnMouseExited(e -> card.setStyle(
-                "-fx-background-color: linear-gradient(to right, rgba(30, 15, 18, 0.95), rgba(45, 22, 28, 0.9));" +
-                        "-fx-background-radius: 18;" +
-                        "-fx-border-color: rgba(139, 0, 0, 0.5);" +
-                        "-fx-border-radius: 18;" +
-                        "-fx-border-width: 1.5;" +
-                        "-fx-padding: 12;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 12, 0, 0, 4);" +
-                        "-fx-cursor: hand;"));
+            "-fx-background-color: linear-gradient(to right, rgba(30, 15, 18, 0.95), rgba(45, 22, 28, 0.9));" +
+                "-fx-background-radius: 18;" +
+                "-fx-border-color: rgba(139, 0, 0, 0.5);" +
+                "-fx-border-radius: 18;" +
+                "-fx-border-width: 1.5;" +
+                "-fx-padding: 12;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 12, 0, 0, 4);" +
+                "-fx-cursor: hand;"));
 
         // Film poster with rounded corners
         final StackPane posterContainer = new StackPane();
         posterContainer.setStyle(
-                "-fx-background-color: rgba(0, 0, 0, 0.3);" +
-                        "-fx-background-radius: 12;");
+            "-fx-background-color: rgba(0, 0, 0, 0.3);" +
+                "-fx-background-radius: 12;");
         posterContainer.setPrefWidth(100);
         posterContainer.setPrefHeight(120);
 
@@ -959,7 +972,7 @@ public class DashboardClientController {
 
         try {
             if (moviesession.getFilm() != null && moviesession.getFilm().getImageUrl() != null
-                    && !moviesession.getFilm().getImageUrl().isEmpty()) {
+                && !moviesession.getFilm().getImageUrl().isEmpty()) {
                 final String logoString = moviesession.getFilm().getImageUrl();
                 final Image logoImage = new Image(logoString);
                 filmImageView.setImage(logoImage);
@@ -977,9 +990,9 @@ public class DashboardClientController {
         // Film title
         final Label filmNameLabel = new Label(moviesession.getFilm().getTitle());
         filmNameLabel.setStyle(
-                "-fx-text-fill: white;" +
-                        "-fx-font-size: 18px;" +
-                        "-fx-font-weight: bold;");
+            "-fx-text-fill: white;" +
+                "-fx-font-size: 18px;" +
+                "-fx-font-weight: bold;");
 
         // Cinema hall with icon
         final HBox hallBox = new HBox(8);
@@ -1007,43 +1020,43 @@ public class DashboardClientController {
         // Price badge
         final Label priceLabel = new Label(String.format("%.2f DT", moviesession.getPrice()));
         priceLabel.setStyle(
-                "-fx-background-color: linear-gradient(to right, #ffc800, #cc9900);" +
-                        "-fx-background-radius: 12;" +
-                        "-fx-padding: 6 14;" +
-                        "-fx-text-fill: #1a0808;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 14px;");
+            "-fx-background-color: linear-gradient(to right, #ffc800, #cc9900);" +
+                "-fx-background-radius: 12;" +
+                "-fx-padding: 6 14;" +
+                "-fx-text-fill: #1a0808;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 14px;");
 
         // Book button
         final Button bookButton = new Button("Book Now");
         bookButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #dc143c, #8b0000);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 12px;" +
-                        "-fx-background-radius: 15;" +
-                        "-fx-padding: 8 18;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(220, 20, 60, 0.4), 6, 0, 0, 2);");
+            "-fx-background-color: linear-gradient(to bottom, #dc143c, #8b0000);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 12px;" +
+                "-fx-background-radius: 15;" +
+                "-fx-padding: 8 18;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(220, 20, 60, 0.4), 6, 0, 0, 2);");
 
         bookButton.setOnMouseEntered(e -> bookButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #ff1a4f, #a00000);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 12px;" +
-                        "-fx-background-radius: 15;" +
-                        "-fx-padding: 8 18;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.6), 10, 0, 0, 3);"));
+            "-fx-background-color: linear-gradient(to bottom, #ff1a4f, #a00000);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 12px;" +
+                "-fx-background-radius: 15;" +
+                "-fx-padding: 8 18;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(255, 68, 68, 0.6), 10, 0, 0, 3);"));
         bookButton.setOnMouseExited(e -> bookButton.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, #dc143c, #8b0000);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 12px;" +
-                        "-fx-background-radius: 15;" +
-                        "-fx-padding: 8 18;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-effect: dropshadow(gaussian, rgba(220, 20, 60, 0.4), 6, 0, 0, 2);"));
+            "-fx-background-color: linear-gradient(to bottom, #dc143c, #8b0000);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-size: 12px;" +
+                "-fx-background-radius: 15;" +
+                "-fx-padding: 8 18;" +
+                "-fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(220, 20, 60, 0.4), 6, 0, 0, 2);"));
 
         bookButton.setOnAction(event -> {
             try {
@@ -1080,6 +1093,9 @@ public class DashboardClientController {
      * filterAnchor.
      */
     public void initialize() {
+        setupFormsFX();
+        setupEasyBindings();
+
         if (cinemaFlowPane != null) {
             cinemaFlowPane.getChildren().clear();
             loadAcceptedCinemas(); // This already creates the cinema cards
@@ -1220,9 +1236,9 @@ public class DashboardClientController {
         final List<String> selectedNames = this.getSelectedNames();
         // Filtrer les cinémas en fonction des adresses et/ou des noms sélectionnés
         final List<Cinema> filteredCinemas = getAllCinemas().stream()
-                .filter(cinema -> selectedAddresses.isEmpty() || selectedAddresses.contains(cinema.getAddress()))
-                .filter(cinema -> selectedNames.isEmpty() || selectedNames.contains(cinema.getName()))
-                .collect(Collectors.toList());
+            .filter(cinema -> selectedAddresses.isEmpty() || selectedAddresses.contains(cinema.getAddress()))
+            .filter(cinema -> selectedNames.isEmpty() || selectedNames.contains(cinema.getName()))
+            .collect(Collectors.toList());
         // Afficher les cinémas filtrés
         this.cinemaFlowPane.getChildren().clear();
         this.createCinemaCards(filteredCinemas);
@@ -1232,24 +1248,24 @@ public class DashboardClientController {
      * Get addresses corresponding to the selected address checkboxes.
      *
      * @return a list of address strings for each selected CheckBox; empty if none
-     *         are selected.
+     * are selected.
      */
     private List<String> getSelectedAddresses() {
         // Récupérer les adresses sélectionnées dans l'AnchorPane de filtrage
         return this.addressCheckBoxes.stream().filter(CheckBox::isSelected).map(CheckBox::getText)
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     /**
      * Retrieve the texts of all selected name checkboxes used for filtering.
      *
      * @return a list of selected checkbox texts representing names, or an empty
-     *         list if none are selected.
+     * list if none are selected.
      */
     private List<String> getSelectedNames() {
         // Récupérer les noms sélectionnés dans l'AnchorPane de filtrage
         return this.namesCheckBoxes.stream().filter(CheckBox::isSelected).map(CheckBox::getText)
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     /**
@@ -1291,7 +1307,7 @@ public class DashboardClientController {
     @FXML
     void afficherEventsClient(final ActionEvent event) throws IOException {
         final FXMLLoader loader = new FXMLLoader(
-                this.getClass().getResource("/ui/events/AffichageEvenementClient.fxml"));
+            this.getClass().getResource("/ui/events/AffichageEvenementClient.fxml"));
         final Parent root = loader.load();
         final Scene scene = new Scene(root);
         final Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -1332,7 +1348,7 @@ public class DashboardClientController {
     @FXML
     void afficherProductsClient(final ActionEvent event) throws IOException {
         final FXMLLoader loader = new FXMLLoader(
-                this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
+            this.getClass().getResource("/ui/produits/AfficherProductClient.fxml"));
         final Parent root = loader.load();
         final Scene scene = new Scene(root);
         final Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -1384,9 +1400,9 @@ public class DashboardClientController {
             final SentimentAnalysisController sentimentAnalysisController = new SentimentAnalysisController();
             final String sentimentResult = sentimentAnalysisController.analyzeSentiment(message);
             DashboardClientController.LOGGER
-                    .info(this.cinemaId + " " + new CinemaService().getCinemaById(this.cinemaId));
+                .info(this.cinemaId + " " + new CinemaService().getCinemaById(this.cinemaId));
             final Review commentaire = new Review(new CinemaService().getCinemaById(this.cinemaId),
-                    (Client) SessionManager.getCurrentUser(), message, sentimentResult);
+                (Client) SessionManager.getCurrentUser(), message, sentimentResult);
             DashboardClientController.LOGGER.info(commentaire + " " + SessionManager.getCurrentUser());
             final ReviewService cinemaCommentService = new ReviewService();
             cinemaCommentService.create(commentaire);
@@ -1442,8 +1458,8 @@ public class DashboardClientController {
      *                    commentText supply the avatar, username, and message to
      *                    display
      * @return an HBox containing the user's circular avatar and a text card with
-     *         the user's name and comment, ready to be placed into the comments
-     *         ScrollPane
+     * the user's name and comment, ready to be placed into the comments
+     * ScrollPane
      */
     private HBox addCommentToView(final Review commentaire) {
         // Création du cercle pour l'image de l'utilisateur
@@ -1476,10 +1492,10 @@ public class DashboardClientController {
         // Création du conteneur pour la carte du commentaire
         final HBox cardContainer = new HBox();
         cardContainer.setStyle(
-                "-fx-background-color: white; -fx-padding: 5px ; -fx-border-radius: 8px; -fx-border-color: #000; -fx-background-radius: 8px; ");
+            "-fx-background-color: white; -fx-padding: 5px ; -fx-border-radius: 8px; -fx-border-color: #000; -fx-background-radius: 8px; ");
         // Nom de l'utilisateur
         final Text userName = new Text(
-                commentaire.getUser().getFirstName() + " " + commentaire.getUser().getLastName());
+            commentaire.getUser().getFirstName() + " " + commentaire.getUser().getLastName());
         userName.setStyle("-fx-font-family: 'Arial Rounded MT Bold'; -fx-font-style: bold;");
         // Commentaire
         final Text commentText = new Text(commentaire.getComment());

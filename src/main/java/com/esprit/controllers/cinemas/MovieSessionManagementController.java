@@ -1,5 +1,10 @@
 package com.esprit.controllers.cinemas;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.structure.Group;
+import com.dlsc.formsfx.model.validators.DoubleRangeValidator;
+import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.models.cinemas.Cinema;
 import com.esprit.models.cinemas.CinemaHall;
 import com.esprit.models.cinemas.MovieSession;
@@ -9,9 +14,15 @@ import com.esprit.services.cinemas.CinemaService;
 import com.esprit.services.cinemas.MovieSessionService;
 import com.esprit.services.films.FilmService;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,18 +32,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -44,9 +52,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for managing movie sessions (admin functionality).
- */
+@Log4j2
 public class MovieSessionManagementController {
 
     private static final Logger LOGGER = Logger.getLogger(MovieSessionManagementController.class.getName());
@@ -55,6 +61,23 @@ public class MovieSessionManagementController {
     private final CinemaService cinemaService;
     private final CinemaHallService hallService;
     private final FilmService filmService;
+    private final ListProperty<Film> filmListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObjectProperty<Film> selectedFilmProperty = new SimpleObjectProperty<>();
+    private final ListProperty<CinemaHall> hallListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObjectProperty<CinemaHall> selectedHallProperty = new SimpleObjectProperty<>();
+    private final ListProperty<String> timeSlotListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final ObjectProperty<String> selectedTimeSlotProperty = new SimpleObjectProperty<>("14:00");
+    private final ObjectProperty<LocalDate> sessionDateProperty = new SimpleObjectProperty<>(LocalDate.now().plusDays(1));
+    private final DoubleProperty basePriceProperty = new SimpleDoubleProperty(12.0);
+    private final DoubleProperty vipPriceProperty = new SimpleDoubleProperty(18.0);
+    private final BooleanProperty is3DProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty isIMAXProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty isDolbyProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty isSubtitledProperty = new SimpleBooleanProperty(false);
+    private final ObservableList<MovieSession> sessions;
+    private final ObservableList<Cinema> cinemas;
+    private final ObservableList<CinemaHall> halls;
+    private final ObservableList<Film> films;
     @FXML
     private VBox managementContainer;
     @FXML
@@ -89,29 +112,12 @@ public class MovieSessionManagementController {
     private Label upcomingSessionsLabel;
     @FXML
     private ProgressIndicator loadingIndicator;
-    // Form fields
     @FXML
-    private ComboBox<Film> sessionFilmCombo;
-    @FXML
-    private ComboBox<CinemaHall> sessionHallCombo;
-    @FXML
-    private DatePicker sessionDatePicker;
-    @FXML
-    private ComboBox<String> sessionTimeCombo;
-    @FXML
-    private Spinner<Double> basePriceSpinner;
-    @FXML
-    private CheckBox is3DCheck;
-    @FXML
-    private CheckBox isIMAXCheck;
-    @FXML
-    private TextArea sessionNotesArea;
-    private ObservableList<MovieSession> sessions;
-    private ObservableList<Cinema> cinemas;
-    private ObservableList<CinemaHall> halls;
-    private ObservableList<Film> films;
+    private VBox sessionFormContainer;
     private MovieSession selectedSession;
     private CinemaHall preFilterHall;
+    // FormsFX Form and Properties
+    private Form sessionForm;
 
     public MovieSessionManagementController() {
         this.sessionService = new MovieSessionService();
@@ -126,11 +132,12 @@ public class MovieSessionManagementController {
 
     @FXML
     public void initialize() {
-        LOGGER.info("Initializing MovieSessionManagementController");
+        LOGGER.info("Initializing MovieSessionManagementController with FormsFX");
 
         setupTable();
         setupFilters();
-        setupForm();
+        setupTimeSlots();
+        setupFormsFX();
         loadData();
     }
 
@@ -141,12 +148,75 @@ public class MovieSessionManagementController {
         this.preFilterHall = hall;
     }
 
+    private void setupTimeSlots() {
+        ObservableList<String> timeSlots = FXCollections.observableArrayList();
+        for (int hour = 9; hour <= 23; hour++) {
+            timeSlots.add(String.format("%02d:00", hour));
+            timeSlots.add(String.format("%02d:30", hour));
+        }
+        timeSlotListProperty.setAll(timeSlots);
+    }
+
+    /**
+     * Creates and configures the FormsFX form for session editing.
+     */
+    private void setupFormsFX() {
+        sessionForm = Form.of(
+            Group.of(
+                Field.ofSingleSelectionType(filmListProperty, selectedFilmProperty)
+                    .label("Movie")
+                    .required("Please select a movie"),
+
+                Field.ofSingleSelectionType(hallListProperty, selectedHallProperty)
+                    .label("Hall")
+                    .required("Please select a hall")
+            ),
+
+            Group.of(
+                Field.ofSingleSelectionType(timeSlotListProperty, selectedTimeSlotProperty)
+                    .label("Start Time")
+            ),
+
+            Group.of(
+                Field.ofDoubleType(basePriceProperty)
+                    .label("Regular Price ($)")
+                    .validate(DoubleRangeValidator.between(0.0, 100.0, "Price must be between $0 and $100")),
+
+                Field.ofDoubleType(vipPriceProperty)
+                    .label("VIP Price ($)")
+                    .validate(DoubleRangeValidator.between(0.0, 200.0, "Price must be between $0 and $200"))
+            ),
+
+            Group.of(
+                Field.ofBooleanType(is3DProperty)
+                    .label("3D"),
+
+                Field.ofBooleanType(isIMAXProperty)
+                    .label("IMAX"),
+
+                Field.ofBooleanType(isDolbyProperty)
+                    .label("Dolby Atmos"),
+
+                Field.ofBooleanType(isSubtitledProperty)
+                    .label("Subtitled")
+            )
+        ).title("Session Details");
+
+        // Render the form into the container
+        if (sessionFormContainer != null) {
+            FormRenderer renderer = new FormRenderer(sessionForm);
+            renderer.getStyleClass().add("form-renderer");
+            sessionFormContainer.getChildren().clear();
+            sessionFormContainer.getChildren().add(renderer);
+        }
+    }
+
     private void setupTable() {
         idColumn.setCellValueFactory(cellData ->
             new SimpleIntegerProperty(cellData.getValue().getId().intValue()).asObject());
         filmColumn.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().getFilm() != null ?
-                cellData.getValue().getFilm().getNom() : "N/A"));
+                cellData.getValue().getFilm().getTitle() : "N/A"));
         hallColumn.setCellValueFactory(cellData ->
             new SimpleStringProperty(cellData.getValue().getCinemaHall() != null ?
                 cellData.getValue().getCinemaHall().getHallName() : "N/A"));
@@ -194,24 +264,6 @@ public class MovieSessionManagementController {
         dateFilter.setOnAction(e -> filterSessions());
     }
 
-    private void setupForm() {
-        // Time slots
-        ObservableList<String> timeSlots = FXCollections.observableArrayList();
-        for (int hour = 9; hour <= 23; hour++) {
-            timeSlots.add(String.format("%02d:00", hour));
-            timeSlots.add(String.format("%02d:30", hour));
-        }
-        sessionTimeCombo.setItems(timeSlots);
-        sessionTimeCombo.setValue("14:00");
-
-        // Price spinner
-        basePriceSpinner.setValueFactory(
-            new SpinnerValueFactory.DoubleSpinnerValueFactory(5.0, 50.0, 12.0, 0.5));
-
-        // Default date
-        sessionDatePicker.setValue(LocalDate.now().plusDays(1));
-    }
-
     private void loadData() {
         showLoading(true);
 
@@ -226,10 +278,13 @@ public class MovieSessionManagementController {
                     films.setAll(filmList);
                     sessions.setAll(sessionList);
 
+                    // Update FormsFX lists
+                    filmListProperty.setAll(filmList);
+
                     // Setup filter combos
                     Cinema allCinemas = new Cinema();
                     allCinemas.setId(-1L);
-                    allCinemas.setNom("All Cinemas");
+                    allCinemas.setName("All Cinemas");
 
                     cinemaFilter.getItems().clear();
                     cinemaFilter.getItems().add(allCinemas);
@@ -238,15 +293,11 @@ public class MovieSessionManagementController {
 
                     Film allFilms = new Film();
                     allFilms.setId(-1L);
-                    allFilms.setNom("All Films");
-
+                    allFilms.setTitle("All Films");
                     filmFilter.getItems().clear();
                     filmFilter.getItems().add(allFilms);
                     filmFilter.getItems().addAll(films);
                     filmFilter.setValue(allFilms);
-
-                    // Form combos
-                    sessionFilmCombo.setItems(films);
 
                     // Apply pre-filter if set
                     if (preFilterHall != null) {
@@ -270,7 +321,7 @@ public class MovieSessionManagementController {
     private void loadHallsForCinema(Cinema cinema) {
         if (cinema == null || cinema.getId() == -1) {
             hallFilter.getItems().clear();
-            sessionHallCombo.getItems().clear();
+            hallListProperty.clear();
             return;
         }
 
@@ -280,6 +331,7 @@ public class MovieSessionManagementController {
 
                 Platform.runLater(() -> {
                     halls.setAll(hallList);
+                    hallListProperty.setAll(hallList);
 
                     CinemaHall allHalls = new CinemaHall();
                     allHalls.setId(-1L);
@@ -289,8 +341,6 @@ public class MovieSessionManagementController {
                     hallFilter.getItems().add(allHalls);
                     hallFilter.getItems().addAll(halls);
                     hallFilter.setValue(allHalls);
-
-                    sessionHallCombo.setItems(halls);
                 });
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Error loading halls", e);
@@ -310,36 +360,30 @@ public class MovieSessionManagementController {
 
                 List<MovieSession> filtered = allSessions.stream()
                     .filter(session -> {
-                        // Cinema filter
                         if (selectedCinema != null && selectedCinema.getId() != -1) {
                             if (session.getCinemaHall() == null ||
                                 session.getCinemaHall().getCinema() == null ||
-                                session.getCinemaHall().getCinema().getId() != selectedCinema.getId()) {
+                                !session.getCinemaHall().getCinema().getId().equals(selectedCinema.getId())) {
                                 return false;
                             }
                         }
 
-                        // Hall filter
                         if (selectedHall != null && selectedHall.getId() != -1) {
                             if (session.getCinemaHall() == null ||
-                                session.getCinemaHall().getId() != selectedHall.getId()) {
+                                !session.getCinemaHall().getId().equals(selectedHall.getId())) {
                                 return false;
                             }
                         }
 
-                        // Film filter
                         if (selectedFilm != null && selectedFilm.getId() != -1) {
                             if (session.getFilm() == null ||
-                                session.getFilm().getId() != selectedFilm.getId()) {
+                                !session.getFilm().getId().equals(selectedFilm.getId())) {
                                 return false;
                             }
                         }
 
-                        // Date filter
                         if (selectedDate != null && session.getStartTime() != null) {
-                            if (!session.getStartTime().toLocalDate().equals(selectedDate)) {
-                                return false;
-                            }
+                            return session.getStartTime().toLocalDate().equals(selectedDate);
                         }
 
                         return true;
@@ -356,30 +400,43 @@ public class MovieSessionManagementController {
         }).start();
     }
 
+    /**
+     * Populates the FormsFX form with data from the selected session.
+     */
     private void populateForm(MovieSession session) {
-        sessionFilmCombo.setValue(session.getFilm());
-        sessionHallCombo.setValue(session.getCinemaHall());
+        selectedFilmProperty.set(session.getFilm());
+        selectedHallProperty.set(session.getCinemaHall());
 
         if (session.getStartTime() != null) {
-            sessionDatePicker.setValue(session.getStartTime().toLocalDate());
-            sessionTimeCombo.setValue(session.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            sessionDateProperty.set(session.getStartTime().toLocalDate());
+            selectedTimeSlotProperty.set(session.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
         }
 
-        basePriceSpinner.getValueFactory().setValue(session.getBasePrice());
+        basePriceProperty.set(session.getBasePrice());
+        vipPriceProperty.set(session.getBasePrice() * 1.5); // Estimate VIP price
     }
 
+    /**
+     * Clears the FormsFX form to default values.
+     */
     private void clearForm() {
         selectedSession = null;
-        sessionFilmCombo.setValue(null);
-        sessionHallCombo.setValue(null);
-        sessionDatePicker.setValue(LocalDate.now().plusDays(1));
-        sessionTimeCombo.setValue("14:00");
-        basePriceSpinner.getValueFactory().setValue(12.0);
-        if (is3DCheck != null) is3DCheck.setSelected(false);
-        if (isIMAXCheck != null) isIMAXCheck.setSelected(false);
-        if (sessionNotesArea != null) sessionNotesArea.clear();
+        selectedFilmProperty.set(null);
+        selectedHallProperty.set(null);
+        sessionDateProperty.set(LocalDate.now().plusDays(1));
+        selectedTimeSlotProperty.set("14:00");
+        basePriceProperty.set(12.0);
+        vipPriceProperty.set(18.0);
+        is3DProperty.set(false);
+        isIMAXProperty.set(false);
+        isDolbyProperty.set(false);
+        isSubtitledProperty.set(false);
 
         sessionsTable.getSelectionModel().clearSelection();
+
+        if (sessionForm != null) {
+            sessionForm.reset();
+        }
     }
 
     private void updateStatistics() {
@@ -408,23 +465,26 @@ public class MovieSessionManagementController {
 
     @FXML
     private void handleSaveSession() {
-        if (!validateForm()) return;
+        if (!sessionForm.isValid()) {
+            sessionForm.persist();
+            showError("Please fix the validation errors before saving.");
+            return;
+        }
 
         showLoading(true);
 
         MovieSession session = selectedSession != null ? selectedSession : new MovieSession();
-        session.setFilm(sessionFilmCombo.getValue());
-        session.setCinemaHall(sessionHallCombo.getValue());
+        session.setFilm(selectedFilmProperty.get());
+        session.setCinemaHall(selectedHallProperty.get());
 
-        LocalDate date = sessionDatePicker.getValue();
-        LocalTime time = LocalTime.parse(sessionTimeCombo.getValue());
+        LocalDate date = sessionDateProperty.get();
+        LocalTime time = LocalTime.parse(selectedTimeSlotProperty.get());
         session.setStartTime(LocalDateTime.of(date, time));
 
-        // Calculate end time based on film duration
-        int duration = session.getFilm() != null ? session.getFilm().getDuree() : 120;
-        session.setEndTime(session.getStartTime().plusMinutes(duration + 15)); // Add 15 min buffer
+        int duration = session.getFilm() != null ? session.getFilm().getDurationMin() : 120;
+        session.setEndTime(session.getStartTime().plusMinutes(duration + 15));
 
-        session.setBasePrice(basePriceSpinner.getValue());
+        session.setBasePrice(basePriceProperty.get());
 
         new Thread(() -> {
             try {
@@ -448,26 +508,6 @@ public class MovieSessionManagementController {
                 });
             }
         }).start();
-    }
-
-    private boolean validateForm() {
-        if (sessionFilmCombo.getValue() == null) {
-            showError("Please select a film.");
-            return false;
-        }
-        if (sessionHallCombo.getValue() == null) {
-            showError("Please select a hall.");
-            return false;
-        }
-        if (sessionDatePicker.getValue() == null) {
-            showError("Please select a date.");
-            return false;
-        }
-        if (sessionDatePicker.getValue().isBefore(LocalDate.now())) {
-            showError("Cannot schedule sessions in the past.");
-            return false;
-        }
-        return true;
     }
 
     @FXML
@@ -530,7 +570,7 @@ public class MovieSessionManagementController {
     @FXML
     private void handleBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/esprit/views/AdminDashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/users/AdminDashboard.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) managementContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -538,6 +578,83 @@ public class MovieSessionManagementController {
             LOGGER.log(Level.SEVERE, "Error navigating back", e);
         }
     }
+
+    // ==================== Dialog methods for FXML compatibility ====================
+
+    @FXML
+    private void createSession() {
+        clearForm();
+        showSessionDialog();
+    }
+
+    @FXML
+    private void closeSessionDialog() {
+        VBox dialog = (VBox) managementContainer.getScene().lookup("#sessionDialog");
+        if (dialog != null) {
+            dialog.setVisible(false);
+            dialog.setManaged(false);
+        }
+    }
+
+    private void showSessionDialog() {
+        VBox dialog = (VBox) managementContainer.getScene().lookup("#sessionDialog");
+        if (dialog != null) {
+            dialog.setVisible(true);
+            dialog.setManaged(true);
+        }
+    }
+
+    @FXML
+    private void saveSession() {
+        handleSaveSession();
+        closeSessionDialog();
+    }
+
+    @FXML
+    private void bulkSchedule() {
+        handleBulkCreate();
+    }
+
+    @FXML
+    private void closeBulkDialog() {
+        VBox dialog = (VBox) managementContainer.getScene().lookup("#bulkScheduleDialog");
+        if (dialog != null) {
+            dialog.setVisible(false);
+            dialog.setManaged(false);
+        }
+    }
+
+    @FXML
+    private void createBulkSessions() {
+        handleBulkCreate();
+    }
+
+    // Date navigation methods
+    @FXML
+    private void previousDay() {
+        if (dateFilter.getValue() != null) {
+            dateFilter.setValue(dateFilter.getValue().minusDays(1));
+        }
+    }
+
+    @FXML
+    private void nextDay() {
+        if (dateFilter.getValue() != null) {
+            dateFilter.setValue(dateFilter.getValue().plusDays(1));
+        }
+    }
+
+    @FXML
+    private void goToToday() {
+        dateFilter.setValue(LocalDate.now());
+    }
+
+    @FXML
+    private void addShowtime() {
+        showInfo("Add custom showtime functionality");
+    }
+
+    // ==================== Utility methods ====================
 
     private void showLoading(boolean show) {
         if (loadingIndicator != null) loadingIndicator.setVisible(show);

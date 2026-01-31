@@ -10,36 +10,36 @@
 <?import java.lang.*?>
 <?import java.net.URL?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="743.0" prefWidth="1168.0"
-            styleClass="nav-form" stylesheets="@../styles/dashboard.css"
+            styleClass="nav-form" stylesheets="@../styles/rakcha-unified.css"
             xmlns="http://javafx.com/javafx/21"
             fx:controller="com.esprit.controllers.series.EpisodeClientController">
   <children>
     <Pane layoutY="-1.0" prefHeight="698.0" prefWidth="183.0" styleClass="nav-form"
-          stylesheets="@../styles/dashboard.css">
+          stylesheets="@../styles/rakcha-unified.css">
       <children>
         <Label alignment="BOTTOM_LEFT" layoutX="14.0" layoutY="172.0" prefHeight="32.0"
-               prefWidth="122.0" styleClass="nav-btn" stylesheets="@../styles/dashboard.css"
+               prefWidth="122.0" styleClass="nav-btn" stylesheets="@../styles/rakcha-unified.css"
                text="Name :" textFill="#fafafa">
           <font>
             <Font name="Agency FB Bold" size="18.0"/>
           </font>
         </Label>
         <Label alignment="BOTTOM_LEFT" layoutX="12.0" layoutY="245.0" prefHeight="32.0"
-               prefWidth="122.0" styleClass="nav-btn" stylesheets="@../styles/dashboard.css"
+               prefWidth="122.0" styleClass="nav-btn" stylesheets="@../styles/rakcha-unified.css"
                text="Summary :" textFill="#fafafa">
           <font>
             <Font name="Agency FB" size="18.0"/>
           </font>
         </Label>
         <Label alignment="BOTTOM_LEFT" layoutX="12.0" layoutY="325.0" prefHeight="32.0"
-               prefWidth="122.0" styleClass="nav-btn" stylesheets="@../styles/dashboard.css"
+               prefWidth="122.0" styleClass="nav-btn" stylesheets="@../styles/rakcha-unified.css"
                text="Director :" textFill="#fafafa">
           <font>
             <Font name="Agency FB" size="18.0"/>
           </font>
         </Label>
         <Label layoutX="15.0" layoutY="426.0" prefHeight="32.0" prefWidth="122.0"
-               styleClass="nav-btn" stylesheets="@../styles/dashboard.css" text="Country :"
+               styleClass="nav-btn" stylesheets="@../styles/rakcha-unified.css" text="Country :"
                textFill="#fafafa">
           <font>
             <Font name="Agency FB" size="18.0"/>
@@ -74,15 +74,15 @@
       </children>
     </Pane>
     <ListView fx:id="ListEpisode" layoutX="181.0" prefHeight="743.0" prefWidth="223.0"
-              styleClass="combo-box-red" stylesheets="@../styles/dashboard.css"/>
+              styleClass="combo-box-red" stylesheets="@../styles/rakcha-unified.css"/>
     <Pane layoutX="382.0" layoutY="4.0" prefHeight="482.0" prefWidth="514.0"
-          stylesheets="@../styles/dashboard.css">
+          stylesheets="@../styles/rakcha-unified.css">
       <children>
         <MediaView fx:id="midiavideo" fitHeight="650.0" fitWidth="700.0" layoutX="54.0"
                    layoutY="93.0"/>
         <Button id="jouerbtn" fx:id="jouerbtn" alignment="CENTER" contentDisplay="CENTER"
                 layoutX="447.0" layoutY="495.0" mnemonicParsing="false" prefHeight="32.0"
-                prefWidth="83.0" stylesheets="@../styles/dashbord.css" text="Play"
+                prefWidth="83.0" stylesheets="@../styles/rakcha-unified.css" text="Play"
                 textFill="#e7dede">
           <font>
             <Font name="Bodoni MT Black" size="12.0"/>
@@ -94,7 +94,7 @@
         </Button>
         <Button fx:id="pausebtn" alignment="CENTER" contentDisplay="CENTER" layoutX="547.0"
                 layoutY="494.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="74.0"
-                stylesheets="@../styles/dashbord.css" text="Pause" textFill="#e7dddd"
+                stylesheets="@../styles/rakcha-unified.css" text="Pause" textFill="#e7dddd"
                 textOverrun="WORD_ELLIPSIS">
           <font>
             <Font name="Bodoni MT Black" size="12.0"/>
@@ -106,7 +106,7 @@
         </Button>
         <Button fx:id="arreterbtn" alignment="CENTER" contentDisplay="CENTER"
                 layoutX="636.0" layoutY="494.0" mnemonicParsing="false" prefHeight="32.0"
-                prefWidth="77.0" stylesheets="@../styles/dashbord.css" text="Stop"
+                prefWidth="77.0" stylesheets="@../styles/rakcha-unified.css" text="Stop"
                 textFill="#efdada">
           <font>
             <Font name="Bodoni MT Black" size="12.0"/>
@@ -158,3 +158,4 @@
     </Pane>
   </children>
 </AnchorPane>
+

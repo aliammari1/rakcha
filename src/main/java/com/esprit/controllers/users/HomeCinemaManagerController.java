@@ -1,9 +1,6 @@
 package com.esprit.controllers.users;
 
 import com.esprit.models.cinemas.MovieSession;
-import com.esprit.models.common.Category;
-import com.esprit.models.films.Actor;
-import com.esprit.models.films.Film;
 import com.esprit.models.users.User;
 import com.esprit.services.cinemas.MovieSessionService;
 import com.esprit.services.common.CategoryService;
@@ -36,6 +33,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,15 +41,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Controller for the Cinema Manager Home Dashboard interface.
- * Provides an overview of cinema operations and quick access to manager
- * functions.
- *
- * @author RAKCHA Team
- * @version 1.0.0
- * @since 1.0.0
- */
+@Log4j2
 public class HomeCinemaManagerController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(HomeCinemaManagerController.class.getName());
@@ -117,7 +107,7 @@ public class HomeCinemaManagerController implements Initializable {
                         if (SessionManager.getCurrentUser() != null) {
                             User currentUser = SessionManager.getCurrentUser();
                             welcomeLabel.setText("Welcome, " + currentUser.getFirstName() + " "
-                                    + currentUser.getLastName() + "!");
+                                + currentUser.getLastName() + "!");
                         } else {
                             welcomeLabel.setText("Welcome, Cinema Manager!");
                         }
@@ -209,7 +199,7 @@ public class HomeCinemaManagerController implements Initializable {
     private void addSessionItem(String movieTitle, String time, String hall) {
         HBox sessionItem = new HBox(10);
         sessionItem
-                .setStyle("-fx-padding: 10; -fx-background-color: rgba(60, 60, 60, 0.5); -fx-background-radius: 10;");
+            .setStyle("-fx-padding: 10; -fx-background-color: rgba(60, 60, 60, 0.5); -fx-background-radius: 10;");
 
         Label movieLabel = new Label(movieTitle);
         movieLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
@@ -263,7 +253,7 @@ public class HomeCinemaManagerController implements Initializable {
     private void addActivityItem(String activity, String timestamp) {
         HBox activityItem = new HBox(10);
         activityItem
-                .setStyle("-fx-padding: 10; -fx-background-color: rgba(60, 60, 60, 0.5); -fx-background-radius: 10;");
+            .setStyle("-fx-padding: 10; -fx-background-color: rgba(60, 60, 60, 0.5); -fx-background-radius: 10;");
 
         Label activityLabel = new Label(activity);
         activityLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
@@ -288,22 +278,22 @@ public class HomeCinemaManagerController implements Initializable {
         if (particle1 != null && particle2 != null) {
             // Floating animation for particles
             Timeline particleAnimation = new Timeline(
-                    new KeyFrame(Duration.seconds(0),
-                            new KeyValue(particle1.layoutXProperty(), particle1.getLayoutX())),
-                    new KeyFrame(Duration.seconds(3),
-                            new KeyValue(particle1.layoutXProperty(), particle1.getLayoutX() + 50)),
-                    new KeyFrame(Duration.seconds(6),
-                            new KeyValue(particle1.layoutXProperty(), particle1.getLayoutX())));
+                new KeyFrame(Duration.seconds(0),
+                    new KeyValue(particle1.layoutXProperty(), particle1.getLayoutX())),
+                new KeyFrame(Duration.seconds(3),
+                    new KeyValue(particle1.layoutXProperty(), particle1.getLayoutX() + 50)),
+                new KeyFrame(Duration.seconds(6),
+                    new KeyValue(particle1.layoutXProperty(), particle1.getLayoutX())));
             particleAnimation.setCycleCount(Timeline.INDEFINITE);
             particleAnimation.play();
 
             Timeline particle2Animation = new Timeline(
-                    new KeyFrame(Duration.seconds(0),
-                            new KeyValue(particle2.layoutYProperty(), particle2.getLayoutY())),
-                    new KeyFrame(Duration.seconds(4),
-                            new KeyValue(particle2.layoutYProperty(), particle2.getLayoutY() - 30)),
-                    new KeyFrame(Duration.seconds(8),
-                            new KeyValue(particle2.layoutYProperty(), particle2.getLayoutY())));
+                new KeyFrame(Duration.seconds(0),
+                    new KeyValue(particle2.layoutYProperty(), particle2.getLayoutY())),
+                new KeyFrame(Duration.seconds(4),
+                    new KeyValue(particle2.layoutYProperty(), particle2.getLayoutY() - 30)),
+                new KeyFrame(Duration.seconds(8),
+                    new KeyValue(particle2.layoutYProperty(), particle2.getLayoutY())));
             particle2Animation.setCycleCount(Timeline.INDEFINITE);
             particle2Animation.play();
         }

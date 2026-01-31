@@ -1,7 +1,7 @@
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.products.AnalyseOrder"
            styleClass="immersive-root"
-           stylesheets="@../styles/dashboard.css, @../styles/film-animations.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Cinematic Background -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
@@ -27,48 +27,48 @@
         <!-- Header -->
         <HBox spacing="15" alignment="CENTER_LEFT" styleClass="immersive-header">
           <Label text="Order Analysis" styleClass="brand-title" style="-fx-text-fill: white;">
-             <font>
-               <Font name="Arial Rounded MT Bold" size="32.0"/>
-             </font>
-             <graphic>
-               <FontIcon iconLiteral="mdi2c-chart-line:32:white" />
-             </graphic>
+            <font>
+              <Font name="Arial Rounded MT Bold" size="32.0"/>
+            </font>
+            <graphic>
+              <FontIcon iconLiteral="mdi2c-chart-line:32:white"/>
+            </graphic>
           </Label>
         </HBox>
 
         <!-- Charts Grid -->
         <GridPane hgap="25" vgap="25" VBox.vgrow="ALWAYS">
           <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
-            <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
           </columnConstraints>
           <rowConstraints>
-            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="ALWAYS"/>
           </rowConstraints>
 
           <!-- Order Rate Chart -->
           <VBox spacing="10" styleClass="glass-panel" GridPane.columnIndex="0">
-             <padding>
-                <Insets top="15" right="15" bottom="15" left="15"/>
-             </padding>
-             <Label text="Order Growth Over Time" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
-             <LineChart fx:id="TauxOrder" VBox.vgrow="ALWAYS" legendVisible="false">
+            <padding>
+              <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Order Growth Over Time" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
+            <LineChart fx:id="TauxOrder" VBox.vgrow="ALWAYS" legendVisible="false">
               <xAxis>
-                <CategoryAxis fx:id="xAxis" label="Date" side="BOTTOM" />
+                <CategoryAxis fx:id="xAxis" label="Date" side="BOTTOM"/>
               </xAxis>
               <yAxis>
-                <NumberAxis label="Orders" side="LEFT" />
+                <NumberAxis label="Orders" side="LEFT"/>
               </yAxis>
             </LineChart>
           </VBox>
 
           <!-- Category Rate Chart -->
           <VBox spacing="10" styleClass="glass-panel" GridPane.columnIndex="1">
-             <padding>
-                <Insets top="15" right="15" bottom="15" left="15"/>
-             </padding>
-             <Label text="Orders by Category" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
-             <StackedBarChart fx:id="TauxCategorie" VBox.vgrow="ALWAYS" legendVisible="true">
+            <padding>
+              <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Orders by Category" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
+            <StackedBarChart fx:id="TauxCategorie" VBox.vgrow="ALWAYS" legendVisible="true">
               <xAxis>
                 <CategoryAxis side="BOTTOM" fx:id="xOrderAxis" label="Category"/>
               </xAxis>
@@ -83,3 +83,4 @@
     </center>
   </BorderPane>
 </StackPane>
+

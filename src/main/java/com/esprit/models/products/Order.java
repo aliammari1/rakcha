@@ -1,20 +1,18 @@
 package com.esprit.models.products;
 
+import com.esprit.enums.OrderStatus;
 import com.esprit.models.users.Client;
 import com.esprit.models.users.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-/**
- * The Order class represents an order made by a client.
- */
-
+@Log4j2
 @Data
 @Builder
 @NoArgsConstructor
@@ -27,31 +25,25 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
-
 public class Order {
 
-    private Long id;
-
-    private Client client;
-
-    private User user;
-
-    private java.time.LocalDateTime orderDate;
-
-    private String status;
-
     private String shippingAddress;
-
-    private String deliveryAddress;
-
-    private String city;
-
-    private String postalCode;
-
-    private String country;
-
     private String phoneNumber;
-
+    private Long id;
+    /**
+     * The client who placed the order.
+     */
+    private Client client;
+    private java.time.LocalDateTime orderDate;
+    /**
+     * Order status using OrderStatus enum for type safety.
+     */
+    @Builder.Default
+    private OrderStatus status = OrderStatus.PENDING;
+    private String deliveryAddress;
+    private String city;
+    private String postalCode;
+    private String country;
     private String paymentMethod;
 
     private Double totalAmount;
@@ -64,12 +56,12 @@ public class Order {
      *
      * @param client          the client who placed the order
      * @param orderDate       the date when the order was placed
-     * @param status          the order's current status (e.g., pending, completed)
+     * @param status          the order's current status
      * @param shippingAddress the delivery or billing address for the order
      * @param phoneNumber     the contact telephone number for the order
      * @param totalAmount     the total amount of the order
      */
-    public Order(final Client client, final java.time.LocalDateTime orderDate, final String status,
+    public Order(final Client client, final java.time.LocalDateTime orderDate, final OrderStatus status,
                  final String shippingAddress, final String phoneNumber, final Double totalAmount) {
         this.client = client;
         this.orderDate = orderDate;
@@ -77,23 +69,6 @@ public class Order {
         this.shippingAddress = shippingAddress;
         this.phoneNumber = phoneNumber;
         this.totalAmount = totalAmount;
-        this.orderItems = new ArrayList<>();
-    }
-
-    /**
-     * Legacy constructor with Date type.
-     *
-     * @deprecated Use LocalDateTime constructor instead
-     */
-    @Deprecated(forRemoval = true)
-    public Order(final Date orderDate, final String status, final Client client, final String phoneNumber,
-                 final String shippingAddress, final float totalAmount) {
-        this.orderDate = new java.sql.Timestamp(orderDate.getTime()).toLocalDateTime();
-        this.status = status;
-        this.client = client;
-        this.phoneNumber = phoneNumber;
-        this.shippingAddress = shippingAddress;
-        this.totalAmount = Double.valueOf(totalAmount);
         this.orderItems = new ArrayList<>();
     }
 
@@ -162,13 +137,11 @@ public class Order {
 
     /**
      * Convenience method to get payment method.
-     * Currently returns a default value based on order status.
-     * Can be extended to include actual payment method field if needed.
      *
      * @return the payment method
      */
     public String getPaymentMethod() {
-        return "Credit Card";
+        return this.paymentMethod != null ? this.paymentMethod : "Credit Card";
     }
 
     /**
@@ -181,21 +154,23 @@ public class Order {
     }
 
     /**
-     * Convenience method to get user (alias for client).
+     * Convenience method to get user (returns client as User).
      *
      * @return the user who placed the order
      */
     public User getUser() {
-        return this.user;
+        return this.client;
     }
 
     /**
-     * Convenience method to set user (alias for client).
+     * Convenience method to set user (sets client if User is a Client).
      *
      * @param user the user who placed the order
      */
     public void setUser(User user) {
-        this.user = user;
+        if (user instanceof Client) {
+            this.client = (Client) user;
+        }
     }
 
     /**
@@ -269,7 +244,6 @@ public class Order {
     public void setCountry(String country) {
         this.country = country;
     }
-
 }
 
 

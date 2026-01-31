@@ -1,5 +1,8 @@
 package com.esprit.controllers.series;
 
+import com.dlsc.formsfx.model.structure.Field;
+import com.dlsc.formsfx.model.structure.Form;
+import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.models.common.Review;
 import com.esprit.models.series.Episode;
 import com.esprit.models.series.Series;
@@ -7,6 +10,8 @@ import com.esprit.models.users.Client;
 import com.esprit.services.common.ReviewService;
 import com.esprit.services.series.EpisodeService;
 import com.esprit.utils.SessionManager;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -26,6 +32,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
+import lombok.extern.log4j.Log4j2;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
@@ -43,17 +50,15 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Provides functionality for uploading and viewing episodes of a series, as
- * well as adding feedback to the series. It also initializes a list of episodes
- * and displays them in a ListView. Additionally, it provides methods for
- * playing, pausing, and stopping media players for each episode.
- */
+@Log4j2
 public class EpisodeClientController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(EpisodeClientController.class.getName());
 
+    // FormsFX properties
+    private final StringProperty feedbackProperty = new SimpleStringProperty("");
     private final EpisodeService iServiceEpisode = new EpisodeService();
+    private Form feedbackForm;
     @FXML
     private Button uploadButton;
     @FXML
@@ -168,7 +173,7 @@ public class EpisodeClientController implements Initializable {
                     }
 
                     this.setText("\n   Title :" + item.getTitle() + "\n  Number: " + item.getEpisodeNumber()
-                            + "\n   Season : " + item.getSeasonId());
+                        + "\n   Season : " + (item.getSeason() != null ? item.getSeason().getId() : ""));
                     this.setStyle("-fx-font-size: 14; -fx-font-family: 'Arial'; -fx-font-weight: bold;");
                     idep = item.getId();
                 }
@@ -200,11 +205,91 @@ public class EpisodeClientController implements Initializable {
 
     @Override
     public void initialize(final URL url, final ResourceBundle resourceBundle) {
+        setupFormsFX();
+        setupBidirectionalBindings();
+    }
+
+    /**
+     * Configures FormsFX for feedback validation.
+     */
+    private void setupFormsFX() {
+        feedbackForm = Form.of(
+            com.dlsc.formsfx.model.structure.Group.of(
+                Field.ofStringType(feedbackProperty)
+                    .label("Feedback")
+                    .validate(
+                        StringLengthValidator.atLeast(5, "Feedback must be at least 5 characters")
+                    )
+            )
+        );
+    }
+
+    /**
+     * Sets up bidirectional bindings between UI fields and FormsFX properties.
+     */
+    private void setupBidirectionalBindings() {
+        if (txtDescriptionFeedBack != null) {
+            txtDescriptionFeedBack.textProperty().bindBidirectional(feedbackProperty);
+        }
+    }
+
+    /**
+     * Validates the feedback form using FormsFX.
+     *
+     * @return true if the form is valid, false otherwise
+     */
+    private boolean validateFeedbackForm() {
+        feedbackForm.persist();
+        if (!feedbackForm.isValid()) {
+            StringBuilder errorMessage = new StringBuilder("Please fix the following errors:\n");
+            feedbackForm.getGroups().forEach(group ->
+                group.getElements().forEach(element -> {
+                    if (element instanceof Field<?> field) {
+                        if (!field.isValid()) {
+                            errorMessage.append("- ").append(field.getLabel()).append(": ");
+                            field.getErrorMessages().forEach(msg -> errorMessage.append(msg).append(" "));
+                            errorMessage.append("\n");
+                        }
+                    }
+                })
+            );
+            showError("Validation Error", errorMessage.toString());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Shows an error dialog.
+     *
+     * @param title   the dialog title
+     * @param message the error message
+     */
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    /**
+     * Cleans up bindings when the controller is destroyed.
+     */
+    public void cleanup() {
+        if (txtDescriptionFeedBack != null) {
+            txtDescriptionFeedBack.textProperty().unbindBidirectional(feedbackProperty);
+        }
     }
 
     @FXML
     void ajouterFeedBack(final ActionEvent event) {
-        final String description = this.txtDescriptionFeedBack.getText();
+        // Validate using FormsFX
+        if (!validateFeedbackForm()) {
+            return;
+        }
+
+        final String description = feedbackProperty.get();
         Date date = null;
         try {
             final LocalDate currentDate = LocalDate.now();
@@ -225,7 +310,7 @@ public class EpisodeClientController implements Initializable {
     @FXML
     public void afficherserie(final MouseEvent event) throws IOException {
         final Parent root = FXMLLoader
-                .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/SeriesClient.fxml")));
+            .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/SeriesClient.fxml")));
         final Scene scene = new Scene(root);
         final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);

@@ -254,7 +254,7 @@ class ListOrderControllerTest extends TestFXBase {
             // Verify results match despite case difference
             for (Order order : table.getItems()) {
                 String clientName = (order.getClient().getFirstName() + " " + order.getClient().getLastName())
-                        .toLowerCase();
+                    .toLowerCase();
                 assertThat(clientName).contains("john");
             }
 

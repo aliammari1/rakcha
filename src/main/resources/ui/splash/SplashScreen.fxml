@@ -15,7 +15,7 @@
            fx:controller="com.esprit.controllers.SplashScreenController"
            prefWidth="1400" prefHeight="900"
            style="-fx-background-color: #000000;"
-           stylesheets="@../styles/splash-cinematic.css"
+           stylesheets="@../styles/rakcha-unified.css"
 >
 
   <!-- Background Layer - Animated Film Grain Effect -->
@@ -127,28 +127,23 @@
 
         <!-- Loading Section -->
         <VBox alignment="CENTER" spacing="15" styleClass="loading-section">
-          <!-- Loading Text -->
-          <Label fx:id="loadingText"
-                 text="Loading exclusive content..."
-                 styleClass="loading-text"/>
 
-          <!-- Cinematic Loading Bar -->
-          <StackPane styleClass="loading-bar-container" prefWidth="500">
-            <Rectangle fx:id="loadingBarBackground"
-                       width="500" height="8"
-                       arcWidth="8" arcHeight="8"
-                       styleClass="loading-bar-bg"/>
-            <Rectangle fx:id="loadingBar"
-                       width="0" height="8"
-                       arcWidth="8" arcHeight="8"
-                       styleClass="loading-bar"
-                       StackPane.alignment="CENTER_LEFT"/>
-          </StackPane>
+          <Label fx:id="loadingText" text="Loading..." styleClass="loading-text"/>
 
-          <!-- Loading Percentage -->
-          <Label fx:id="loadingPercentage"
-                 text="0%"
-                 styleClass="loading-percentage"/>
+          <HBox alignment="CENTER">
+            <StackPane styleClass="loading-bar-container" prefWidth="500" maxWidth="500" alignment="CENTER_LEFT">
+              <Rectangle fx:id="loadingBarBackground"
+                         width="500" height="8"
+                         arcWidth="8" arcHeight="8"
+                         styleClass="loading-bar-bg"/>
+              <Rectangle fx:id="loadingBar"
+                         width="0" height="8"
+                         arcWidth="8" arcHeight="8"
+                         styleClass="loading-bar"/>
+            </StackPane>
+          </HBox>
+
+          <Label fx:id="loadingPercentage" text="0%" styleClass="loading-percentage"/>
         </VBox>
       </VBox>
 

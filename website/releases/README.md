@@ -95,6 +95,7 @@ configurations:
 *
 
 *
+
 Linux
 .deb
 package
@@ -110,6 +111,7 @@ resolution
 *
 
 *
+
 Linux
 app-image
 **:

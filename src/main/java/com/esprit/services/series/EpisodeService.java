@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-@Log4j2
 /**
  * Service class providing business logic for the RAKCHA application. Implements
  * CRUD operations and business rules for data management.
@@ -26,6 +25,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+@Log4j2
 public class EpisodeService implements IService<Episode> {
 
     private static final Logger LOGGER = Logger.getLogger(EpisodeService.class.getName());
@@ -53,7 +53,7 @@ public class EpisodeService implements IService<Episode> {
     public void create(final Episode episode) {
         final String req = "INSERT INTO episodes (season_id, episode_number, title, image_url, video_url, duration_min) VALUES (?, ?, ?, ?, ?, ?)";
         try (final PreparedStatement st = this.connection.prepareStatement(req)) {
-            st.setLong(1, episode.getSeasonId());
+            st.setLong(1, episode.getSeason().getId());
             st.setInt(2, episode.getEpisodeNumber());
             st.setString(3, episode.getTitle());
             st.setString(4, episode.getImageUrl());
@@ -78,7 +78,7 @@ public class EpisodeService implements IService<Episode> {
     public void update(final Episode episode) {
         final String req = "UPDATE episodes SET season_id = ?, episode_number = ?, title = ?, image_url = ?, video_url = ?, duration_min = ? WHERE id = ?";
         try (final PreparedStatement st = this.connection.prepareStatement(req)) {
-            st.setLong(1, episode.getSeasonId());
+            st.setLong(1, episode.getSeason().getId());
             st.setInt(2, episode.getEpisodeNumber());
             st.setString(3, episode.getTitle());
             st.setString(4, episode.getImageUrl());
@@ -182,9 +182,9 @@ public class EpisodeService implements IService<Episode> {
 
         // Validate sort column to prevent SQL injection
         if (pageRequest.hasSorting() &&
-            !PaginationQueryBuilder.isValidSortColumn(pageRequest.getSortBy(), ALLOWED_SORT_COLUMNS)) {
-            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.getSortBy());
-            pageRequest = PageRequest.of(pageRequest.getPage(), pageRequest.getSize());
+            !PaginationQueryBuilder.isValidSortColumn(pageRequest.sortBy(), ALLOWED_SORT_COLUMNS)) {
+            log.warn("Invalid sort column: {}. Using default sorting.", pageRequest.sortBy());
+            pageRequest = PageRequest.of(pageRequest.page(), pageRequest.size());
         }
 
         try {
@@ -204,11 +204,11 @@ public class EpisodeService implements IService<Episode> {
 
             }
 
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), totalElements);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), totalElements);
 
         } catch (final SQLException e) {
             log.error("Error retrieving paginated episodes: {}", e.getMessage(), e);
-            return new Page<>(content, pageRequest.getPage(), pageRequest.getSize(), 0);
+            return new Page<>(content, pageRequest.page(), pageRequest.size(), 0);
         }
 
     }
@@ -223,7 +223,7 @@ public class EpisodeService implements IService<Episode> {
     private Episode buildEpisodeFromResultSet(ResultSet rs) throws SQLException {
         return Episode.builder()
             .id(rs.getLong("id"))
-            .seasonId(rs.getLong("season_id"))
+            .season(com.esprit.models.series.Season.builder().id(rs.getLong("season_id")).build())
             .episodeNumber(rs.getInt("episode_number"))
             .title(rs.getString("title"))
             .imageUrl(rs.getString("image_url"))

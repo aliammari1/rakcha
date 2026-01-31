@@ -9,7 +9,7 @@
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.cinemas.CinemaHallManagementController"
            styleClass="immersive-root"
-           stylesheets="@../styles/filmStyle.css, @../styles/admin.css">
+           stylesheets="@../styles/rakcha-unified.css">
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
@@ -194,82 +194,11 @@
       </HBox>
 
       <ScrollPane fitToWidth="true" maxHeight="500" styleClass="dialog-scroll">
-        <VBox spacing="20">
+        <!-- FormsFX will render the form here -->
+        <VBox fx:id="formContainer" spacing="15">
           <padding>
             <Insets right="10"/>
           </padding>
-
-          <!-- Basic Info -->
-          <VBox spacing="15" styleClass="form-section">
-            <Label text="Basic Information" styleClass="form-section-title"/>
-
-            <HBox spacing="20">
-              <VBox spacing="8" HBox.hgrow="ALWAYS">
-                <Label text="Hall Name" styleClass="field-label"/>
-                <TextField fx:id="hallNameField" styleClass="glass-input" promptText="Enter hall name"/>
-              </VBox>
-              <VBox spacing="8" HBox.hgrow="ALWAYS">
-                <Label text="Cinema" styleClass="field-label"/>
-                <ComboBox fx:id="hallCinemaCombo" styleClass="glass-combo" promptText="Select cinema"
-                          maxWidth="1.7976931348623157E308"/>
-              </VBox>
-            </HBox>
-
-            <HBox spacing="20">
-              <VBox spacing="8" HBox.hgrow="ALWAYS">
-                <Label text="Hall Type" styleClass="field-label"/>
-                <ComboBox fx:id="hallTypeCombo" styleClass="glass-combo" promptText="Select type"
-                          maxWidth="1.7976931348623157E308"/>
-              </VBox>
-              <VBox spacing="8" HBox.hgrow="ALWAYS">
-                <Label text="Status" styleClass="field-label"/>
-                <ComboBox fx:id="hallStatusCombo" styleClass="glass-combo" promptText="Select status"
-                          maxWidth="1.7976931348623157E308"/>
-              </VBox>
-            </HBox>
-          </VBox>
-
-          <!-- Seat Configuration -->
-          <VBox spacing="15" styleClass="form-section">
-            <Label text="Seat Configuration" styleClass="form-section-title"/>
-
-            <HBox spacing="20">
-              <VBox spacing="8" HBox.hgrow="ALWAYS">
-                <Label text="Number of Rows" styleClass="field-label"/>
-                <Spinner fx:id="rowsSpinner" styleClass="glass-spinner" min="1" max="30" initialValue="10"/>
-              </VBox>
-              <VBox spacing="8" HBox.hgrow="ALWAYS">
-                <Label text="Seats Per Row" styleClass="field-label"/>
-                <Spinner fx:id="seatsPerRowSpinner" styleClass="glass-spinner" min="1" max="50" initialValue="15"/>
-              </VBox>
-            </HBox>
-
-            <HBox spacing="15" alignment="CENTER_LEFT">
-              <CheckBox fx:id="vipSeatsCheck" styleClass="glass-checkbox" text="Include VIP Seats"/>
-              <CheckBox fx:id="accessibleSeatsCheck" styleClass="glass-checkbox" text="Include Accessible Seats"/>
-            </HBox>
-          </VBox>
-
-          <!-- Features -->
-          <VBox spacing="15" styleClass="form-section">
-            <Label text="Hall Features" styleClass="form-section-title"/>
-
-            <FlowPane hgap="10" vgap="10">
-              <CheckBox fx:id="imax3dCheck" styleClass="feature-checkbox" text="IMAX 3D"/>
-              <CheckBox fx:id="dolbyAtmosCheck" styleClass="feature-checkbox" text="Dolby Atmos"/>
-              <CheckBox fx:id="screenXCheck" styleClass="feature-checkbox" text="ScreenX"/>
-              <CheckBox fx:id="fourDXCheck" styleClass="feature-checkbox" text="4DX"/>
-              <CheckBox fx:id="reclinerSeatsCheck" styleClass="feature-checkbox" text="Recliner Seats"/>
-              <CheckBox fx:id="laserProjectionCheck" styleClass="feature-checkbox" text="Laser Projection"/>
-            </FlowPane>
-          </VBox>
-
-          <!-- Description -->
-          <VBox spacing="8">
-            <Label text="Description" styleClass="field-label"/>
-            <TextArea fx:id="hallDescriptionArea" styleClass="glass-textarea" promptText="Enter hall description..."
-                      prefRowCount="3"/>
-          </VBox>
         </VBox>
       </ScrollPane>
 
@@ -304,3 +233,4 @@
     </VBox>
   </VBox>
 </StackPane>
+

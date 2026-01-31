@@ -23,6 +23,7 @@ import java.util.logging.Logger;
  * @version 1.0.0
  * @since 1.0.0
  */
+
 @Log4j2
 public class SeasonService {
 
@@ -45,7 +46,7 @@ public class SeasonService {
     public void create(Season season) throws SQLException {
         String query = "INSERT INTO seasons (series_id, season_number, title) VALUES (?, ?, ?)";
         try (PreparedStatement pst = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setLong(1, season.getSeriesId());
+            pst.setLong(1, season.getSeries().getId());
             pst.setInt(2, season.getSeasonNumber());
             pst.setString(3, season.getTitle());
             pst.executeUpdate();
@@ -70,7 +71,7 @@ public class SeasonService {
     public void update(Season season) throws SQLException {
         String query = "UPDATE seasons SET series_id = ?, season_number = ?, title = ? WHERE id = ?";
         try (PreparedStatement pst = connection.prepareStatement(query)) {
-            pst.setLong(1, season.getSeriesId());
+            pst.setLong(1, season.getSeries().getId());
             pst.setInt(2, season.getSeasonNumber());
             pst.setString(3, season.getTitle());
             pst.setLong(4, season.getId());
@@ -311,7 +312,7 @@ public class SeasonService {
     private Season mapResultSetToSeason(ResultSet rs) throws SQLException {
         return Season.builder()
             .id(rs.getLong("id"))
-            .seriesId(rs.getLong("series_id"))
+            .series(com.esprit.models.series.Series.builder().id(rs.getLong("series_id")).build())
             .seasonNumber(rs.getInt("season_number"))
             .title(rs.getString("title"))
             .build();
@@ -327,7 +328,7 @@ public class SeasonService {
     private Episode mapResultSetToEpisode(ResultSet rs) throws SQLException {
         return Episode.builder()
             .id(rs.getLong("id"))
-            .seasonId(rs.getLong("season_id"))
+            .season(Season.builder().id(rs.getLong("season_id")).build())
             .episodeNumber(rs.getInt("episode_number"))
             .title(rs.getString("title"))
             .imageUrl(rs.getString("image_url"))
