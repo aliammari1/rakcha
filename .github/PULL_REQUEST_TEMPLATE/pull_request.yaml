@@ -1,0 +1,151 @@
+name: Pull Request
+description: Submit changes to the codebase
+title: "[TYPE] Brief description of changes"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for contributing to RAKCHA! 🎉
+
+        Please fill out this form to help us review your changes efficiently.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Brief description of what changes you're making
+      placeholder: |
+        - Added feature X
+        - Fixed bug Y
+        - Updated documentation Z
+    validations:
+      required: true
+
+  - type: input
+    id: related_issues
+    attributes:
+      label: Related Issue(s)
+      description: "Reference any related issues (e.g., Closes #123, Related to #456)"
+      placeholder: "Closes #123"
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type of Change
+      description: What type of change does this PR include?
+      options:
+        - "🐛 Bug Fix"
+        - "✨ New Feature"
+        - "📚 Documentation"
+        - "♻️ Refactoring"
+        - "🧪 Tests"
+        - "⚡ Performance"
+        - "🎨 UI/UX"
+        - "🔐 Security"
+        - "🔨 Chore/Maintenance"
+      multiple: false
+    validations:
+      required: true
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: What Changed?
+      description: Detailed list of changes
+      placeholder: |
+        - Modified file X to add feature Y
+        - Updated tests in Z
+        - Changed API endpoint from A to B
+    validations:
+      required: true
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: How Was This Tested?
+      description: Describe the testing you've done
+      placeholder: |
+        - Tested locally on Windows 10
+        - Ran unit tests: `npm test` (all pass)
+        - Manual testing of the UI
+        - Tested edge case X
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component(s) Affected
+      description: Which component(s) does this change affect?
+      multiple: true
+      options:
+        - Desktop App
+        - Mobile App
+        - Web Platform
+        - API
+        - Database
+        - Authentication
+        - Documentation
+        - CI/CD
+        - Other
+
+  - type: textarea
+    id: breaks
+    attributes:
+      label: Breaking Changes
+      description: Does this introduce any breaking changes? If yes, describe them.
+      placeholder: "No breaking changes\" or \"Breaking: X now requires Y"
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots/Videos (if applicable)
+      description: Add screenshots or videos showing UI changes
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional Notes
+      description: Anything else reviewers should know?
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Ensure all items are checked before submitting
+      options:
+        - label: I have tested my changes locally
+          required: true
+        - label: I have added tests for new functionality
+          required: false
+        - label: I have updated the documentation
+          required: false
+        - label: My code follows the style guidelines
+          required: true
+        - label: All tests pass (`mvn test`, `npm test`, `flutter test`)
+          required: true
+        - label: I have not introduced any breaking changes
+          required: false
+        - label: I have followed the commit message guidelines
+          required: true
+        - label: I have read the CONTRIBUTING guide
+          required: true
+        - label: I agree to the Code of Conduct
+          required: true
+
+  - type: checkboxes
+    id: conflicts
+    attributes:
+      label: Conflicts
+      description: Check if applicable
+      options:
+        - label: There are merge conflicts (we'll help resolve)
+        - label: This depends on another PR (link below)
+
+  - type: textarea
+    id: depends
+    attributes:
+      label: Dependencies
+      description: If this depends on another PR, link it here
+      placeholder: "Depends on #456"

@@ -325,7 +325,7 @@ npm test
 ### Communication Channels
 - **GitHub Issues**: Bug reports and feature requests
 - **Discussions**: General questions and ideas
-- **Email**: ammari.ali.0001@gmail.com
+- **Email**: contact@aliammari.com
 - **Live Platform**: https://rakcha.vercel.app
 
 ## 📝 License & Legal
