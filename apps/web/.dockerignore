@@ -1,0 +1,10 @@
+vendor/
+node_modules/
+.git/
+.env
+.env.local
+.env.*.local
+var/
+.idea/
+.DS_Store
+*.log

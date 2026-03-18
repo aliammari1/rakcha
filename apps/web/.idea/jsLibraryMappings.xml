@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="PROJECT" libraries="{42d5adcbca, LANG, buttons, dataTables, dataTables.dataTables, es-module-shims, fullcalendar, jquery, jquery-3.6.0, noty, star-rating, sweetalert2, theme}" />
+  </component>
+</project>
