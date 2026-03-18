@@ -93,7 +93,7 @@ send
 an
 email
 to
-security@rakcha.com
+contact@aliammari.com
 with
 details
 about

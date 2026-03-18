@@ -60,7 +60,7 @@ report
 unacceptable
 behavior
 to
-maintainers@rakcha.com.
+contact@aliammari.com.
 
 ## How Can I Contribute?
 
@@ -581,13 +581,7 @@ to
 discuss
 development:
 
--
-
-💬 [Discord Server](https://discord.gg/rakcha)
--
-📝 [Developer Forum](https://forum.rakcha.com)
--
-📧 [Mailing List](mailto:dev@rakcha.com)
+📧 [Mailing List](mailto:contact@aliammari.com)
 
 Thank
 you

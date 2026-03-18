@@ -1,0 +1,234 @@
+# RAKCHA COMMERCIAL USE LICENSE
+
+**Copyright © 2023-2026 Ali Ammari & RAKCHA Contributors**
+
+---
+
+## 1. PERMISSIONS
+
+You are free to:
+
+- ✅ **Study & Learn** — Study the source code for educational purposes
+- ✅ **Personal Use** — Use the software for personal, non-commercial projects
+- ✅ **Educational Use** — Use in academic institutions and educational contexts
+- ✅ **Open Source Contributions** — Fork, modify, and contribute improvements back
+- ✅ **Internal Testing** — Test within your organization for evaluation
+- ✅ **Security Research** — Conduct security audits and report vulnerabilities
+- ✅ **Code References** — Reference implementation patterns in your own projects
+
+---
+
+## 2. RESTRICTIONS
+
+❌ **Commercial use is NOT permitted** without explicit written permission from the copyright holder.
+
+### What Constitutes Commercial Use
+
+Commercial use includes, but is not limited to:
+
+- **Selling Products** — Selling or redistributing this code or derivative products
+- **Commercial Services** — Using to provide paid services to clients or customers
+- **Profit-Generating Activities** — Using in any activity that generates revenue or profit
+- **SaaS Platforms** — Hosting as a service offering or SaaS product
+- **Embedded Licensing** — Incorporating into proprietary or paid products
+- **Competing Products** — Creating competing commercial products based on this code
+- **Client Delivery** — Delivering to clients as part of commercial services
+- **Monetization** — Any usage where monetary value is extracted
+
+---
+
+## 3. OPEN SOURCE EXCEPTIONS
+
+The following are **explicitly allowed**:
+
+- 🔓 **Open Source Projects** — Use in open-source projects with compatible licenses
+- 🔓 **Non-Profit** — Use by non-profit organizations for charitable purposes
+- 🔓 **Research** — Use in academic research and publications
+- 🔓 **Community Contributions** — Contributing improvements back to the community
+
+---
+
+## 4. COMMERCIAL USE REQUEST
+
+To use RAKCHA in commercial contexts, contact the copyright holder:
+
+```
+Email: contact@aliammari.com
+Subject: "Commercial Use License Request - Rakcha"
+
+Include in your request:
+- Organization name and website
+- Contact person and title
+- Specific use case description
+- Intended implementation timeline
+- Expected scale/volume
+- Geographic regions
+- Duration of license needed
+```
+
+### Commercial License Options
+
+- **Startup License** — For early-stage companies (discounted rates)
+- **Enterprise License** — For large-scale implementations
+- **OEM License** — For product integrations
+- **Custom Licensing** — For specific use cases
+- **Volume Discounts** — Available for scale deployments
+
+---
+
+## 5. THIRD-PARTY COMPONENTS
+
+This project utilizes third-party libraries, frameworks, and assets. These components retain their original licenses and copyrights.
+
+### Third-Party License Compliance
+
+**You are responsible for:**
+
+- ✓ Reviewing all third-party licenses in the project
+- ✓ Understanding each third-party component's terms
+- ✓ Obtaining separate commercial licenses if required by third-party components
+- ✓ Ensuring your usage complies with all applicable licenses
+
+### Key Third-Party Components
+
+| Component | License | Commercial Use |
+|-----------|---------|-----------------|
+| Java/JavaFX | GPL/Commercial | Requires separate license |
+| Flutter/Dart | Apache 2.0 | ✅ Allowed |
+| Symfony | MIT | ✅ Allowed |
+| Firebase | Google ToS | Subject to Google terms |
+| Apache Commons | Apache 2.0 | ✅ Allowed |
+
+---
+
+## 6. WARRANTY DISCLAIMER
+
+THIS SOFTWARE IS PROVIDED **"AS IS"** WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+
+**The copyright holder disclaims:**
+
+- ⚠️ Fitness for a particular purpose
+- ⚠️ Merchantability
+- ⚠️ Non-infringement of third-party rights
+- ⚠️ Compatibility with other software
+- ⚠️ Data loss or corruption
+- ⚠️ Security vulnerabilities
+
+---
+
+## 7. LIABILITY LIMITATION
+
+**IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR:**
+
+- Indirect, incidental, special, or consequential damages
+- Loss of profits, revenue, data, or business opportunities
+- System failures or performance issues
+- Any damages arising from use or inability to use the software
+
+**This limitation applies even if the copyright holder has been advised of the possibility of such damages.**
+
+---
+
+## 8. MODIFICATIONS & DERIVATIVES
+
+If you modify RAKCHA:
+
+- 📝 **Must indicate changes** — Clearly document all modifications
+- 🏷️ **Retain attribution** — Keep original copyright notices
+- 📄 **License derivative** — Derivatives must be licensed under compatible terms
+- 📱 **Cannot claim authorship** — Cannot represent modified versions as original
+- 🔗 **Include source** — Make source code available for modified versions
+
+---
+
+## 9. ATTRIBUTION
+
+When using or referencing RAKCHA, you must:
+
+- Include the copyright notice above
+- Include a link to the original project: https://github.com/aliammari1/rakcha
+- Maintain the LICENSE file in all distributions
+- Include a NOTICE file if modified
+
+### Recommended Attribution Format
+
+```
+This project uses RAKCHA (https://github.com/aliammari1/rakcha)
+Copyright © 2023-2026 Ali Ammari & Contributors
+Licensed under the Commercial Use License
+```
+
+---
+
+## 10. TERMINATION
+
+Your rights under this license are automatically terminated if you:
+
+- Violate any terms of this license
+- Engage in commercial use without authorization
+- Remove or modify copyright notices
+- Distribute under different terms
+
+Upon termination, you must:
+- Stop all usage of the software
+- Destroy all copies
+- Remove all derivative works from production
+
+---
+
+## 11. ENFORCEMENT
+
+The copyright holder reserves the right to:
+
+- Enforce terms through legal action
+- Seek damages for violations
+- Request cease and desist for unauthorized use
+- Pursue injunctive relief
+
+---
+
+## 12. DISPUTE RESOLUTION
+
+Any disputes shall be governed by:
+
+- **Jurisdiction** — Laws of [Applicable Country/State]
+- **Venue** — [Applicable Court]
+- **Resolution** — Good faith negotiation first, then arbitration/litigation
+
+---
+
+## 13. AMENDMENTS
+
+This license may be updated periodically. Changes will be:
+
+- Announced in the repository
+- Effective for new usage only
+- Not retroactively applied to existing valid uses
+
+Check this file regularly for updates.
+
+---
+
+## 14. CONTACT & LICENSING
+
+For licensing inquiries, permissions, or questions:
+
+```
+Email: contact@aliammari.com
+GitHub: https://github.com/aliammari1/rakcha
+Website: [Your website]
+```
+
+**Response time:** Typically within 5-7 business days
+
+---
+
+<div align="center">
+
+**Copyright © 2023-2026 Ali Ammari & RAKCHA Contributors**
+
+Last Updated: March 2026
+
+[⬆ Back to top](#rakcha-commercial-use-license)
+
+</div>
