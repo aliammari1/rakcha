@@ -1,0 +1,37 @@
+# Java / Maven (Desktop)
+apps/desktop/target/
+apps/desktop/.env
+*.class
+*.jar
+
+# PHP / Symfony (Web)
+apps/web/vendor/
+apps/web/var/
+apps/web/node_modules/
+apps/web/public/build/
+apps/web/public/uploads/
+apps/web/.env.local
+
+# Flutter / Dart (Mobile)
+apps/mobile/.dart_tool/
+apps/mobile/.flutter-plugins
+apps/mobile/.flutter-plugins-dependencies
+apps/mobile/build/
+apps/mobile/.packages
+
+# Generated API clients
+apps/desktop/src/generated/
+apps/web/src/Generated/
+apps/mobile/lib/generated/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Docker
+mysql_data/
+
+# OS
+.DS_Store
+Thumbs.db
