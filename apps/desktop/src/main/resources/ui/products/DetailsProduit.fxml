@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.Rating?>
+<?import org.kordamp.ikonli.javafx.*?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+           fx:controller="com.esprit.controllers.products.DetailsProductClientController"
+           styleClass="immersive-root"
+           stylesheets="@../styles/rakcha-unified.css">
+
+  <!-- Cinematic Background -->
+  <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
+    <Circle radius="300" layoutX="200" layoutY="200" styleClass="ambient-orb orb-primary" opacity="0.15"/>
+    <Circle radius="400" layoutX="1400" layoutY="700" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <FontIcon iconLiteral="mdi2s-shopping:100" layoutX="100" layoutY="500" styleClass="floating-icon" opacity="0.05"/>
+  </AnchorPane>
+
+  <!-- Main Shell -->
+  <BorderPane styleClass="main-shell">
+    <left>
+      <fx:include source="/ui/sidebar.fxml"/>
+    </left>
+
+    <center>
+      <VBox spacing="20">
+        <padding>
+          <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+
+        <!-- Header -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="immersive-header">
+          <Label text="Product Details" styleClass="brand-title" style="-fx-text-fill: white;">
+            <font>
+              <Font name="Arial Rounded MT Bold" size="32.0"/>
+            </font>
+            <graphic>
+              <FontIcon iconLiteral="mdi2i-information:32:white"/>
+            </graphic>
+          </Label>
+          <Region HBox.hgrow="ALWAYS"/>
+          <Button onAction="#navigateBack" styleClass="glass-btn">
+            <graphic>
+              <FontIcon iconLiteral="mdi2a-arrow-left:20:white"/>
+            </graphic>
+            <tooltip>
+              <Tooltip text="Back to Products"/>
+            </tooltip>
+            <text>Back</text>
+          </Button>
+        </HBox>
+
+        <!-- Content Area -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+          <!-- Product Details FlowPane -->
+          <StackPane HBox.hgrow="ALWAYS" styleClass="glass-panel">
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+              <FlowPane fx:id="detailFlowPane" hgap="20" vgap="20" alignment="TOP_CENTER">
+                <padding>
+                  <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+              </FlowPane>
+            </ScrollPane>
+          </StackPane>
+
+          <!-- Right Side Panel -->
+          <VBox spacing="20" maxWidth="350.0" minWidth="300.0">
+            <!-- Actions -->
+            <VBox spacing="10" styleClass="glass-panel">
+              <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+              </padding>
+              <Button onAction="#addToCart" styleClass="hero-btn, primary" maxWidth="Infinity">
+                <graphic>
+                  <FontIcon iconLiteral="mdi2c-cart-plus:20:white"/>
+                </graphic>
+                <text>Add to Cart</text>
+              </Button>
+            </VBox>
+
+            <!-- Rating -->
+            <VBox spacing="10" styleClass="glass-panel">
+              <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+              </padding>
+              <Label text="Rate Product" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
+              <Rating fx:id="ratingControl" maxWidth="Infinity" partialRating="true"/>
+              <Button onAction="#submitRating" styleClass="glass-btn" text="Submit Rating" maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Comments -->
+            <VBox spacing="10" styleClass="glass-panel" VBox.vgrow="ALWAYS">
+              <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+              </padding>
+              <Label text="Comments" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
+              <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true"
+                          style="-fx-background-color: transparent; -fx-background: transparent;">
+                <FlowPane fx:id="commentsFlowPane" styleClass="comments-container" vgap="10"/>
+              </ScrollPane>
+              <Separator opacity="0.3"/>
+              <TextArea fx:id="commentInput" promptText="Write a comment..." styleClass="text-area-red" prefRowCount="3"
+                        wrapText="true"/>
+              <Button onAction="#submitComment" styleClass="glass-btn" text="Post Comment" maxWidth="Infinity">
+                <graphic>
+                  <FontIcon iconLiteral="mdi2s-send:16:white"/>
+                </graphic>
+              </Button>
+            </VBox>
+          </VBox>
+        </HBox>
+      </VBox>
+    </center>
+  </BorderPane>
+</StackPane>
+
