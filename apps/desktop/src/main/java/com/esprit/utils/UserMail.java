@@ -131,9 +131,9 @@ public enum UserMail {
         final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
         // Sender's email ID needs to be mentioned
-        final String from = dotenv.get("EMAIL_FROM", "ammari.ali.0001@gmail.com");
+        final String from = dotenv.get("EMAIL_FROM", "contact@aliammari.com");
         // Gmail requires the full email address as username
-        final String username = dotenv.get("EMAIL_USERNAME", "ammari.ali.0001@gmail.com");
+        final String username = dotenv.get("EMAIL_USERNAME", "contact@aliammari.com");
         String password = dotenv.get("JAVAMAIL_APP_PASSWORD");
 
         // Validate password is set
