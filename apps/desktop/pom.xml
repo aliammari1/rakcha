@@ -1,0 +1,934 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.example</groupId>
+  <artifactId>RAKCHA</artifactId>
+  <version>1.0.10</version>
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <file.encoding>UTF-8</file.encoding>
+
+    <!-- JPackage properties -->
+    <main-class>com.esprit.MainApp</main-class>
+    <app.name>RAKCHA</app.name>
+    <app.version>${project.version}</app.version>
+
+    <!-- Windows installer properties -->
+    <windows.upgrade.uuid>12345678-abcd-1234-abcd-123456789012</windows.upgrade.uuid>
+    <windows.vendor>RAKCHA Team</windows.vendor>
+
+    <!-- JVM modules for jlink -->
+    <jvm.modules>
+      javafx.media,javafx.controls,javafx.fxml,javafx.swing,java.logging,java.base,java.desktop,java.sql,java.xml,java.net.http,java.naming,java.management
+    </jvm.modules>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+    <repository>
+      <id>maven-central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- SQLite JDBC Driver -->
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>sqlite-jdbc</artifactId>
+      <version>3.51.1.0</version>
+    </dependency>
+
+    <!-- Add this in the <dependencies> section -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.7.8</version>
+    </dependency>
+    <!-- XML Processing Dependencies -->
+    <!-- JAXB and Activation APIs - Jakarta version -->
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+      <version>4.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>2.2.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-activation</artifactId>
+      <version>2.1.0-M1</version>
+    </dependency>
+
+    <!-- Additional XML support -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>4.0.6</version>
+    </dependency>
+
+    <!-- Jackson XML support for compatibility -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <version>2.20.1</version>
+    </dependency>
+
+    <!-- Logging Dependencies - Log4j2 -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.24.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.24.3</version>
+    </dependency>
+    <!-- SLF4J 1.x to Log4j2 bridge - provides StaticLoggerBinder for old libraries -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>2.24.3</version>
+    </dependency>
+
+    <!-- Jsoup for web scraping -->
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.21.2</version>
+    </dependency>
+
+    <!-- Apache Lucene for high-performance full-text search -->
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-core</artifactId>
+      <version>10.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+      <version>10.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-analysis-common</artifactId>
+      <version>10.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-suggest</artifactId>
+      <version>10.3.2</version>
+    </dependency>
+
+    <!-- Caffeine for high-performance caching -->
+    <dependency>
+      <groupId>com.github.ben-manes.caffeine</groupId>
+      <artifactId>caffeine</artifactId>
+      <version>3.2.3</version>
+    </dependency>
+
+    <!-- Testing Dependencies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>6.1.0-M1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- TestFX for JavaFX UI Testing -->
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-core</artifactId>
+      <version>4.0.18</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-junit5</artifactId>
+      <version>4.0.18</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Monocle for headless JavaFX testing (PdfSam distribution compatible with JavaFX 21) -->
+    <dependency>
+      <groupId>org.pdfsam</groupId>
+      <artifactId>javafx-monocle</artifactId>
+      <version>21</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- AssertJ for fluent assertions -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>4.0.0-M1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Hamcrest matchers -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>3.0</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Modern UI Packages -->
+    <dependency>
+      <groupId>com.github.PlusHaze</groupId>
+      <artifactId>TrayNotification</artifactId>
+      <version>a8bfa597eb</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>9.5.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cloudinary</groupId>
+      <artifactId>cloudinary-http5</artifactId>
+      <version>2.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.cloudinary</groupId>
+      <artifactId>cloudinary-taglib</artifactId>
+      <version>2.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.cdimascio</groupId>
+      <artifactId>dotenv-java</artifactId>
+      <version>3.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>21.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>21.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.controlsfx</groupId>
+      <artifactId>controlsfx</artifactId>
+      <version>11.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <version>21.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client-jackson2</artifactId>
+      <version>2.1.0-rc1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-youtube</artifactId>
+      <version>v3-rev20251125-2.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client</artifactId>
+      <version>2.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.5.0-b01</version>
+    </dependency>
+    <dependency>
+      <groupId>net.synedra</groupId>
+      <artifactId>validatorfx</artifactId>
+      <version>0.6.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.stripe</groupId>
+      <artifactId>stripe-java</artifactId>
+      <version>31.1.0-beta.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-email</artifactId>
+      <version>1.6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.21.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.20.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vonage</groupId>
+      <artifactId>server-sdk</artifactId>
+      <version>9.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20250517</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.scribejava</groupId>
+      <artifactId>scribejava-apis</artifactId>
+      <version>8.3.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.scribejava</groupId>
+      <artifactId>scribejava-httpclient-okhttp</artifactId>
+      <version>8.3.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.scribejava</groupId>
+      <artifactId>scribejava-httpclient-ahc</artifactId>
+      <version>8.3.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.asynchttpclient</groupId>
+      <artifactId>async-http-client</artifactId>
+      <version>3.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
+      <version>3.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>3.5.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>3.5.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.twilio.sdk</groupId>
+      <artifactId>twilio</artifactId>
+      <version>11.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.itextpdf</groupId>
+      <artifactId>itextpdf</artifactId>
+      <version>5.5.13.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-web</artifactId>
+      <version>21.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-swing</artifactId>
+      <version>21.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-media</artifactId>
+      <version>21.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-javafx</artifactId>
+      <version>12.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-core</artifactId>
+      <version>12.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-materialdesign2-pack</artifactId>
+      <version>12.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.paypal.sdk</groupId>
+      <artifactId>rest-api-sdk</artifactId>
+      <version>1.14.0</version>
+    </dependency>
+    <dependency>
+      <groupId>eu.iamgio</groupId>
+      <artifactId>animated</artifactId>
+      <version>1.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.apanimesh061</groupId>
+      <artifactId>VaderSentimentJava</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mindrot</groupId>
+      <artifactId>jbcrypt</artifactId>
+      <version>0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.typhon0</groupId>
+      <artifactId>AnimateFX</artifactId>
+      <version>1.3.0</version>
+    </dependency>
+    <!-- Lombok for reducing boilerplate code -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.42</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- JavaFaker for generating fake data -->
+    <dependency>
+      <groupId>com.github.javafaker</groupId>
+      <artifactId>javafaker</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+
+    <!-- HikariCP for Connection Pooling -->
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>7.0.2</version>
+    </dependency>
+
+    <!-- FAANG-Level Machine Learning Dependencies -->
+    <!-- TensorFlow Java for machine learning -->
+    <dependency>
+      <groupId>org.tensorflow</groupId>
+      <artifactId>tensorflow-core-platform</artifactId>
+      <version>0.5.0</version>
+    </dependency>
+
+    <!-- Weka for data mining and classification -->
+    <dependency>
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>weka-stable</artifactId>
+      <version>3.8.6</version>
+    </dependency>
+
+    <!-- OpenCV Java for computer vision -->
+    <dependency>
+      <groupId>org.openpnp</groupId>
+      <artifactId>opencv</artifactId>
+      <version>4.9.0-0</version>
+    </dependency>
+
+    <!-- MapDB for embedded database engine -->
+    <dependency>
+      <groupId>org.mapdb</groupId>
+      <artifactId>mapdb</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
+    <!-- Real-time Communication Dependencies -->
+    <!-- Embedded Jetty for WebSocket server -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>12.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>11.0.24</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>websocket-jetty-server</artifactId>
+      <version>11.0.26</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.websocket</groupId>
+      <artifactId>websocket-jetty-client</artifactId>
+      <version>11.0.24</version>
+    </dependency>
+
+    <!-- Vert.x for reactive programming -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-core</artifactId>
+      <version>5.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
+      <version>5.0.0</version>
+    </dependency>
+
+    <!-- RxJava for reactive streams -->
+    <dependency>
+      <groupId>io.reactivex.rxjava3</groupId>
+      <artifactId>rxjava</artifactId>
+      <version>3.1.10</version>
+    </dependency>
+
+    <!-- Voice Recognition Dependencies -->
+    <!-- Note: CMU Sphinx dependencies are not readily available in standard repositories -->
+    <!-- Using Java Sound API for audio processing and simulation for speech recognition -->
+    <!-- In production, this would be replaced with a proper speech recognition service -->
+
+    <!-- Advanced UI Dependencies -->
+    <!-- JavaFX 3D for immersive experiences -->
+    <dependency>
+      <groupId>org.fxyz3d</groupId>
+      <artifactId>fxyz3d</artifactId>
+      <version>0.6.0</version>
+    </dependency>
+
+    <!-- Performance and Monitoring -->
+    <!-- Micrometer for metrics -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+      <version>1.14.2</version>
+    </dependency>
+
+    <!-- H2 Database for embedded SQL -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>2.3.232</version>
+    </dependency>
+
+    <!-- OkHttp for HTTP client operations -->
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>4.12.0</version>
+    </dependency>
+
+    <!-- Jackson for JSON processing (enhanced) -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.18.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.18.2</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.mkpaz</groupId>
+      <artifactId>atlantafx-base</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+    <!-- CODE SIMPLIFICATION LIBRARIES - Reduce boilerplate significantly            -->
+    <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- EasyBind - Eliminates verbose Callback/ChangeListener patterns -->
+    <!-- Reduces binding code by ~60% using lambda-friendly API -->
+    <dependency>
+      <groupId>org.fxmisc.easybind</groupId>
+      <artifactId>easybind</artifactId>
+      <version>1.0.3</version>
+    </dependency>
+
+    <!-- FormsFX - Auto-generates forms with validation -->
+    <!-- Replaces hundreds of lines of manual form/validation code -->
+    <dependency>
+      <groupId>com.dlsc.formsfx</groupId>
+      <artifactId>formsfx-core</artifactId>
+      <version>11.6.0</version>
+    </dependency>
+
+    <!-- PreferencesFX - Settings UI generation -->
+    <!-- Auto-creates preference dialogs from simple definitions -->
+    <dependency>
+      <groupId>com.dlsc.preferencesfx</groupId>
+      <artifactId>preferencesfx-core</artifactId>
+      <version>11.17.0</version>
+    </dependency>
+
+    <!-- GemsFX - Pre-built advanced controls -->
+    <!-- On-screen keyboard, PDF viewer, search fields, etc. -->
+    <dependency>
+      <groupId>com.dlsc.gemsfx</groupId>
+      <artifactId>gemsfx</artifactId>
+      <version>2.67.0</version>
+    </dependency>
+
+    <!-- CssFX - Live CSS reload during development -->
+    <!-- Zero restart CSS editing - massive productivity boost -->
+    <dependency>
+      <groupId>fr.brouillard.oss</groupId>
+      <artifactId>cssfx</artifactId>
+      <version>11.5.1</version>
+    </dependency>
+
+    <!-- RichTextFX - Rich text editing -->
+    <!-- Syntax highlighting, code editors, styled text areas -->
+    <dependency>
+      <groupId>org.fxmisc.richtext</groupId>
+      <artifactId>richtextfx</artifactId>
+      <version>0.11.3</version>
+    </dependency>
+
+    <!-- ReactFX - Reactive event streams -->
+    <!-- Simplifies event handling and async operations -->
+    <dependency>
+      <groupId>org.reactfx</groupId>
+      <artifactId>reactfx</artifactId>
+      <version>2.0-M5</version>
+    </dependency>
+
+    <!-- Flowless - Efficient virtualized lists/tables -->
+    <!-- Better performance for large data sets than standard ListView -->
+    <dependency>
+      <groupId>org.fxmisc.flowless</groupId>
+      <artifactId>flowless</artifactId>
+      <version>0.7.3</version>
+    </dependency>
+
+    <!-- UndoFX - Undo/Redo manager -->
+    <!-- Easy undo support for any operation -->
+    <dependency>
+      <groupId>org.fxmisc.undo</groupId>
+      <artifactId>undofx</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+
+    <!-- WellBehavedFX - Better event handling -->
+    <!-- Composable input maps, cleaner keyboard/mouse handling -->
+    <dependency>
+      <groupId>org.fxmisc.wellbehaved</groupId>
+      <artifactId>wellbehavedfx</artifactId>
+      <version>0.3.3</version>
+    </dependency>
+
+    <!-- TilesFX - Dashboard tiles -->
+    <!-- Pre-built dashboard components for analytics views -->
+    <dependency>
+      <groupId>eu.hansolo</groupId>
+      <artifactId>tilesfx</artifactId>
+      <version>21.0.7</version>
+    </dependency>
+
+    <!-- Medusa - Gauges and meters -->
+    <!-- Professional gauge controls for dashboards -->
+    <dependency>
+      <groupId>eu.hansolo</groupId>
+      <artifactId>medusa</artifactId>
+      <version>17.1.7</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <extensions>
+      <!-- Used to inject the OS and architecture values in a consistent manner -->
+      <extension>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>1.7.1</version>
+      </extension>
+    </extensions>
+    <resources>
+      <resource>
+        <!-- Here we are processing the platform-specific jpackage command files, adding in Maven
+         properties for configuration. -->
+        <directory>${project.basedir}/src/packaging</directory>
+        <filtering>true</filtering>
+        <targetPath>${project.build.directory}/packaging</targetPath>
+      </resource>
+      <!-- Add the default resource path back in - by overriding above it disables the default -->
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>**/*.webp</exclude>
+          <exclude>**/*.jpg</exclude>
+          <exclude>**/*.jpeg</exclude>
+          <exclude>**/*.png</exclude>
+          <exclude>**/*.gif</exclude>
+          <exclude>**/*.ico</exclude>
+          <exclude>**/*.pdf</exclude>
+          <exclude>**/*.mp4</exclude>
+          <exclude>**/*.mp3</exclude>
+          <exclude>**/*.wav</exclude>
+        </excludes>
+      </resource>
+      <!-- Add binary resources without filtering -->
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*.webp</include>
+          <include>**/*.jpg</include>
+          <include>**/*.jpeg</include>
+          <include>**/*.png</include>
+          <include>**/*.gif</include>
+          <include>**/*.ico</include>
+          <include>**/*.pdf</include>
+          <include>**/*.mp4</include>
+          <include>**/*.mp3</include>
+          <include>**/*.wav</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <!-- Maven Compiler Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>21</source>
+          <target>21</target>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.38</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
+      <!-- Maven Surefire Plugin for running tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+        <configuration>
+          <argLine>-Dtestfx.robot=glass -Dtestfx.headless=true -Dglass.platform=Monocle
+            -Dmonocle.platform=Headless
+            -Dprism.order=sw -Dprism.text=t2k -Djava.awt.headless=true
+          </argLine>
+          <forkCount> 1</forkCount>
+          <reuseForks>true</reuseForks>
+          <testFailureIgnore>false</testFailureIgnore>
+        </configuration>
+      </plugin>
+
+      <!-- Maven JAR Plugin - Create executable JAR -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>${main-class}</mainClass>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+            </manifest>
+            <manifestEntries>
+              <Implementation-Title>${project.name}</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <Implementation-Vendor>ESPRIT</Implementation-Vendor>
+              <Built-By>RAKCHA Team</Built-By>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- JavaFX Maven Plugin -->
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>0.0.8</version>
+        <configuration>
+          <mainClass>${main-class}</mainClass>
+        </configuration>
+      </plugin>
+
+      <!-- OpenRewrite Plugin for Code Refactoring and Best Practices -->
+      <plugin>
+        <groupId>org.openrewrite.maven</groupId>
+        <artifactId>rewrite-maven-plugin</artifactId>
+        <version>5.36.0</version>
+        <configuration>
+          <exportDatatables>true</exportDatatables>
+          <configLocation>rewrite.yml</configLocation>
+          <activeRecipes>
+            <recipe>org.openrewrite.recipes.JavaRecipeBestPractices</recipe>
+            <recipe>org.openrewrite.java.migrate.UpgradeToJava17</recipe>
+            <recipe>org.openrewrite.recipes.OpenRewriteBestPractices</recipe>
+            <recipe>org.openrewrite.recommendations.CodeHealth</recipe>
+            <recipe>org.openrewrite.recommendations.CodeStyle</recipe>
+            <recipe>org.openrewrite.staticanalysis.MissingOverrideAnnotation</recipe>
+            <recipe>org.openrewrite.staticanalysis.CodeCleanup</recipe>
+            <recipe>org.openrewrite.staticanalysis.AddSerialVersionUidToSerializable</recipe>
+            <recipe>org.openrewrite.staticanalysis.ExplicitInitialization</recipe>
+            <recipe>org.openrewrite.staticanalysis.FinalizePrivateFields</recipe>
+            <recipe>org.openrewrite.staticanalysis.MethodNameCasing</recipe>
+            <recipe>org.openrewrite.staticanalysis.UnnecessaryParentheses</recipe>
+            <recipe>org.openrewrite.staticanalysis.UseDiamondOperator</recipe>
+            <recipe>com.esprit.recipes.AddJavadocComments</recipe>
+          </activeRecipes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.3</version>
+        <configuration>
+          <source>21</source>
+          <encoding>UTF-8</encoding>
+          <docencoding>UTF-8</docencoding>
+          <charset>UTF-8</charset>
+          <reportOutputDirectory>${project.build.directory}/reports</reportOutputDirectory>
+          <destDir>apidocs</destDir>
+          <tags>
+            <tag>
+              <name>apiNote</name>
+              <placement>a</placement>
+              <head>API Note:</head>
+            </tag>
+            <tag>
+              <name>implSpec</name>
+              <placement>a</placement>
+              <head>Implementation Requirements:</head>
+            </tag>
+            <tag>
+              <name>implNote</name>
+              <placement>a</placement>
+              <head>Implementation Note:</head>
+            </tag>
+            <tag>
+              <name>returns</name>
+              <placement>m</placement>
+              <head>Returns:</head>
+            </tag>
+          </tags>
+        </configuration>
+      </plugin>
+
+      <!-- SpotBugs Plugin for Static Analysis -->
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.8.2.0</version>
+        <configuration>
+          <effort>Max</effort>
+          <threshold>Low</threshold>
+          <failOnError>false</failOnError>
+          <xmlOutput>true</xmlOutput>
+          <spotbugsXmlOutputDirectory>${project.build.directory}/spotbugs</spotbugsXmlOutputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- JPackage Maven Plugin for Native Installers -->
+      <plugin>
+        <groupId>com.github.akman</groupId>
+        <artifactId>jpackage-maven-plugin</artifactId>
+        <version>0.1.5</version>
+        <configuration>
+          <!-- JDK Configuration -->
+          <toolhome>${java.home}</toolhome>
+
+          <!-- Application Metadata -->
+          <name>${app.name}</name>
+          <appversion>${app.version}</appversion>
+          <vendor>ESPRIT</vendor>
+          <description>RAKCHA Desktop Application - Movie and Cinema Management System</description>
+          <copyright>Copyright © 2025 ESPRIT</copyright>
+
+          <!-- Main Configuration -->
+          <mainjar>${project.build.finalName}.jar</mainjar>
+          <mainclass>${main-class}</mainclass>
+          <dest>target/dist</dest>
+          <temp>target/jpackage-temp</temp>
+          <verbose>true</verbose>
+
+          <!-- Input Directory - contains all JARs (main + dependencies) -->
+          <input>target/classpath-jars</input>
+
+          <!-- JVM Options -->
+          <javaoptions>-Xms256m -Xmx1024m -Dfile.encoding=UTF-8
+            -Dlogback.configurationFile=logback.xml
+          </javaoptions>
+
+          <!-- Resource Directory -->
+          <resourcedir>src/packaging</resourcedir>
+
+          <!-- NOTE: Windows-specific configuration is handled in the workflow file for
+          platform-specific builds -->
+        </configuration>
+        <executions>
+          <execution>
+            <id>build-installer</id>
+            <phase>install</phase>
+            <goals>
+              <goal>jpackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/classpath-jars</outputDirectory>
+              <includeScope>runtime</includeScope>
+
+              <!-- Exclude JavaFX because we'll get that from JMODs if we need to. -->
+              <excludeGroupIds>org.openjfx</excludeGroupIds>
+
+              <!-- Exclude anything else here where the artifacts are machine specific. We'll add
+              them back later. -->
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <!-- Maven Deploy Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.1.1</version>
+      </plugin>
+
+      <!-- Maven Site Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>4.0.0-M13</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>

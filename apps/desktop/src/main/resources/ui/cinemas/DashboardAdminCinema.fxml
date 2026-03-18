@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.*?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+           fx:controller="com.esprit.controllers.cinemas.DashboardAdminController"
+           styleClass="immersive-root"
+           stylesheets="@../styles/rakcha-unified.css">
+
+  <!-- Cinematic Background with Gradient Mesh -->
+  <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
+
+    <!-- Ambient Light Orbs -->
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
+    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb orb-accent" opacity="0.12"/>
+
+    <!-- Floating Cinema Elements -->
+    <FontIcon iconLiteral="mdi2m-movie-open:40" layoutX="100" layoutY="500"
+              styleClass="floating-icon" opacity="0.08"/>
+    <FontIcon iconLiteral="mdi2t-ticket:35" layoutX="1300" layoutY="300"
+              styleClass="floating-icon" opacity="0.06"/>
+    <FontIcon iconLiteral="mdi2s-star:25" layoutX="400" layoutY="700" styleClass="floating-star" opacity="0.1"/>
+    <FontIcon iconLiteral="mdi2s-star-outline:20" layoutX="950" layoutY="150"
+              styleClass="floating-star" opacity="0.08"/>
+  </AnchorPane>
+
+  <!-- Main Application Shell -->
+  <BorderPane styleClass="main-shell">
+    <left>
+      <fx:include source="/ui/sidebar.fxml"/>
+    </left>
+
+    <center>
+      <!-- Main Content with ScrollPane -->
+      <ScrollPane fitToWidth="true" fitToHeight="true"
+                  hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+                  style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox spacing="20" style="-fx-background-color: transparent;">
+          <padding>
+            <Insets top="25" right="25" bottom="25" left="25"/>
+          </padding>
+
+          <!-- Header -->
+          <HBox spacing="15" alignment="CENTER_LEFT" styleClass="immersive-header">
+            <Label text="Cinema Management" style="-fx-text-fill: white;" styleClass="brand-title">
+              <font>
+                <Font name="Arial Rounded MT Bold" size="32.0"/>
+              </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="tfSearch" prefHeight="42.0" prefWidth="248.0"
+                       promptText="Search cinemas..." styleClass="search-input"/>
+            <Button mnemonicParsing="false" styleClass="glass-btn">
+              <graphic>
+                <FontIcon iconLiteral="mdi2m-magnify:20"/>
+              </graphic>
+            </Button>
+            <FontIcon iconLiteral="mdi2h-home:20" styleClass="icon-button"
+                      onMouseClicked="#filtrer" style="-fx-cursor: hand;"/>
+          </HBox>
+
+          <!-- Content Area -->
+          <VBox spacing="15" VBox.vgrow="ALWAYS">
+            <!-- Cinemas List Table -->
+            <TableView fx:id="listCinema" VBox.vgrow="ALWAYS" styleClass="table-view-dark">
+              <columns>
+                <TableColumn fx:id="colCinema" text="Name"/>
+                <TableColumn fx:id="colAdresse" text="Address"/>
+                <TableColumn fx:id="colResponsable" text="Responsible"/>
+                <TableColumn fx:id="colLogo" text="Logo"/>
+                <TableColumn fx:id="colStatut" text="Status"/>
+                <TableColumn fx:id="colAction" text="Actions"/>
+              </columns>
+            </TableView>
+          </VBox>
+        </VBox>
+      </ScrollPane>
+    </center>
+  </BorderPane>
+
+  <!-- Filter Dialog -->
+  <AnchorPane fx:id="filterAnchor" visible="false" styleClass="filter-dialog">
+    <VBox spacing="10">
+      <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+      </padding>
+      <Button onAction="#filtrercinema" styleClass="sale" text="Apply Filter"/>
+    </VBox>
+  </AnchorPane>
+</StackPane>
+
