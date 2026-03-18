@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21"
+            fx:controller="com.esprit.controllers.ar.ARPreviewController"
+            prefWidth="1600" prefHeight="900"
+            stylesheets="@../styles/rakcha-unified.css"
+            style="-fx-background-color: #1a1a1a;">
+
+  <!-- Left: Sidebar -->
+  <left>
+    <fx:include source="../sidebar.fxml"/>
+  </left>
+
+  <!-- Center: Main AR Content -->
+  <center>
+    <VBox spacing="0" style="-fx-background-color: #1a1a1a;">
+      <!-- Header -->
+      <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-background-color: #2d2d2d; -fx-padding: 15;">
+        <Label text="🎬 AR Preview Experience"
+               style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="statusLabel" text="Ready" style="-fx-text-fill: #aaaaaa; -fx-font-size: 14px;"/>
+        <ProgressIndicator fx:id="loadingIndicator" visible="false" prefWidth="24" prefHeight="24"/>
+      </HBox>
+
+      <!-- Main content area -->
+      <HBox VBox.vgrow="ALWAYS" spacing="0">
+        <!-- AR WebView -->
+        <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #000000;">
+          <WebView fx:id="arWebView" VBox.vgrow="ALWAYS"/>
+        </VBox>
+
+        <!-- Control Panel -->
+        <VBox fx:id="controlPanel" prefWidth="320" spacing="20"
+              style="-fx-background-color: #2d2d2d; -fx-padding: 20;">
+
+          <!-- Cinema Section -->
+          <VBox spacing="12">
+            <Label text="🎭 Cinema Tour" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Separator style="-fx-background-color: #444444;"/>
+
+            <Label text="Select Cinema:" style="-fx-text-fill: #cccccc; -fx-font-size: 12px;"/>
+            <ComboBox fx:id="cinemaSelector" promptText="Choose a cinema..." maxWidth="Infinity"
+                      style="-fx-background-color: #3d3d3d; -fx-text-fill: white;"/>
+
+            <Button fx:id="startTourButton" text="🚀 Start 360° Tour"
+                    onAction="#startTheaterTour" disable="true" maxWidth="Infinity"
+                    style="-fx-background-color: #ff6b35; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+          </VBox>
+
+          <!-- Film Section -->
+          <VBox spacing="12">
+            <Label text="🎬 AR Movie Experience"
+                   style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Separator style="-fx-background-color: #444444;"/>
+
+            <Label text="Select Film:" style="-fx-text-fill: #cccccc; -fx-font-size: 12px;"/>
+            <ComboBox fx:id="filmSelector" promptText="Choose a film..." maxWidth="Infinity"
+                      style="-fx-background-color: #3d3d3d; -fx-text-fill: white;"/>
+
+            <Button fx:id="showTrailerButton" text="🎥 Show AR Trailer"
+                    onAction="#showARTrailer" disable="true" maxWidth="Infinity"
+                    style="-fx-background-color: #4a90d9; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+
+            <Button fx:id="showActorInfoButton" text="👥 View Actor Info"
+                    onAction="#showActorInfo" disable="true" maxWidth="Infinity"
+                    style="-fx-background-color: #6c5ce7; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+          </VBox>
+
+          <!-- Exit Button -->
+          <Region VBox.vgrow="ALWAYS"/>
+
+          <VBox spacing="12">
+            <Separator style="-fx-background-color: #444444;"/>
+            <Button fx:id="exitARButton" text="⬅ Exit AR Mode"
+                    onAction="#exitAR" maxWidth="Infinity"
+                    style="-fx-background-color: #555555; -fx-text-fill: white; -fx-cursor: hand;"/>
+          </VBox>
+
+          <!-- Instructions -->
+          <VBox spacing="8" style="-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-background-radius: 8;">
+            <Label text="💡 Tips" style="-fx-text-fill: #ff6b35; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <Label text="• Drag to rotate view" style="-fx-text-fill: #888888; -fx-font-size: 11px;" wrapText="true"/>
+            <Label text="• Scroll to zoom in/out" style="-fx-text-fill: #888888; -fx-font-size: 11px;" wrapText="true"/>
+            <Label text="• Click hotspots for info" style="-fx-text-fill: #888888; -fx-font-size: 11px;"
+                   wrapText="true"/>
+          </VBox>
+        </VBox>
+      </HBox>
+    </VBox>
+  </center>
+</BorderPane>

@@ -1,0 +1,53 @@
+package com.esprit.models.users;
+
+import com.esprit.enums.UserRole;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.log4j.Log4j2;
+
+import java.sql.Date;
+
+@Log4j2
+@Data
+@NoArgsConstructor
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+/**
+ * Entity class for the RAKCHA application. Provides data persistence using
+ * Hibernate/JPA annotations.
+ *
+ * @author RAKCHA Team
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+
+
+public class CinemaManager extends User {
+
+    /**
+     * Create a CinemaManager initialized with the provided personal and contact
+     * details; the instance has no identifier assigned.
+     *
+     * @param firstName     the cinema manager's first name
+     * @param lastName      the cinema manager's last name
+     * @param phoneNumber   the cinema manager's phone number
+     * @param password      the cinema manager's password
+     * @param role          the cinema manager's role in the system
+     * @param address       the cinema manager's address
+     * @param birthDate     the cinema manager's birth date
+     * @param email         the cinema manager's email address
+     * @param photoDeProfil the path to the cinema manager's profile photo
+     */
+    public CinemaManager(final String firstName, final String lastName, final String phoneNumber, final String password,
+                         final UserRole role, final String address, final Date birthDate, final String email,
+                         final String profilePictureUrl) {
+        super(firstName, lastName, phoneNumber, password, role, address, birthDate, email, profilePictureUrl);
+    }
+
+}
+
+
