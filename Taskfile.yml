@@ -1,0 +1,94 @@
+version: "3"
+
+tasks:
+  # ─── Desktop (Java 21 / Maven) ───
+  desktop:build:
+    dir: apps/desktop
+    cmds:
+      - mvn clean install -DskipTests
+
+  desktop:run:
+    dir: apps/desktop
+    cmds:
+      - mvn javafx:run
+
+  desktop:test:
+    dir: apps/desktop
+    cmds:
+      - mvn test
+
+  # ─── Web (Symfony 6.4 / Composer) ───
+  web:install:
+    dir: apps/web
+    cmds:
+      - composer install
+      - npm install
+
+  web:dev:
+    dir: apps/web
+    cmds:
+      - symfony server:start -d
+    desc: Start Symfony dev server (detached) — requires Symfony CLI (https://symfony.com/download)
+
+  web:build:
+    dir: apps/web
+    cmds:
+      - npm run build
+
+  web:test:
+    dir: apps/web
+    cmds:
+      - php bin/phpunit
+
+  web:migrate:
+    dir: apps/web
+    cmds:
+      - php bin/console doctrine:migrations:migrate --no-interaction
+
+  # ─── Mobile (Flutter / Dart) ───
+  mobile:get:
+    dir: apps/mobile
+    cmds:
+      - flutter pub get
+
+  mobile:run:
+    dir: apps/mobile
+    cmds:
+      - flutter run
+
+  mobile:build:apk:
+    dir: apps/mobile
+    cmds:
+      - flutter build apk
+
+  mobile:build:ios:
+    dir: apps/mobile
+    cmds:
+      - flutter build ios
+    desc: macOS only — cannot run on Linux or Windows
+
+  mobile:test:
+    dir: apps/mobile
+    cmds:
+      - flutter test
+
+  # ─── Cross-project ───
+  test:all:
+    cmds:
+      - task: desktop:test
+      - task: web:test
+      - task: mobile:test
+
+  setup:
+    desc: First-time setup for all apps
+    cmds:
+      - task: web:install
+      - task: mobile:get
+      - task: desktop:build
+
+  api:generate:
+    desc: Generate API clients from OpenAPI spec
+    cmds:
+      - openapi-generator-cli generate -i shared/api-spec/openapi.yaml -g java -o apps/desktop/src/generated
+      - openapi-generator-cli generate -i shared/api-spec/openapi.yaml -g php -o apps/web/src/Generated
+      - openapi-generator-cli generate -i shared/api-spec/openapi.yaml -g dart -o apps/mobile/lib/generated
