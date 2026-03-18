@@ -670,7 +670,7 @@ This project is licensed under a **Commercial Use License** - see the [LICENSE](
 
 **Commercial Use**: If you wish to use this project or any part of it for **commercial purposes**, please contact:
 
-📧 **ammari.ali.0001@gmail.com**
+📧 **contact@aliammari.com**
 
 ---
 
