@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.*?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+           fx:controller="com.esprit.controllers.series.SeasonManagementController"
+           styleClass="immersive-root"
+           stylesheets="@../styles/rakcha-unified.css">
+
+  <!-- Cinematic Background -->
+  <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
+    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb orb-accent" opacity="0.12"/>
+  </AnchorPane>
+
+  <!-- Main Application Shell -->
+  <BorderPane styleClass="main-shell">
+    <left>
+      <fx:include source="../sidebar.fxml"/>
+    </left>
+
+    <center>
+      <VBox spacing="20" style="-fx-background-color: transparent;">
+        <padding>
+          <Insets top="25" right="25" bottom="25" left="25"/>
+        </padding>
+
+        <!-- Header -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="immersive-header">
+          <Button onAction="#goBack" styleClass="back-btn-glass">
+            <graphic>
+              <FontIcon iconLiteral="mdi2a-arrow-left:22"/>
+            </graphic>
+          </Button>
+          <VBox spacing="3">
+            <Label text="Season Management" style="-fx-text-fill: white;" styleClass="brand-title">
+              <font>
+                <Font name="Arial Rounded MT Bold" size="28.0"/>
+              </font>
+            </Label>
+            <Label fx:id="seriesNameLabel" text="Series: Loading..." styleClass="subtitle-label"/>
+          </VBox>
+          <Region HBox.hgrow="ALWAYS"/>
+          <Button onAction="#refreshData" styleClass="glass-btn" text="Refresh">
+            <graphic>
+              <FontIcon iconLiteral="mdi2r-refresh:18"/>
+            </graphic>
+          </Button>
+        </HBox>
+
+        <!-- Content Area -->
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+          <!-- Left Side - Season Form -->
+          <VBox spacing="20" styleClass="glass-panel" maxWidth="400" minWidth="350">
+            <padding>
+              <Insets top="25" right="25" bottom="25" left="25"/>
+            </padding>
+
+            <!-- Series Info Card -->
+            <HBox spacing="15" styleClass="series-info-card" alignment="CENTER_LEFT">
+              <ImageView fx:id="seriesPosterImage" fitHeight="80" fitWidth="55" preserveRatio="true"/>
+              <VBox spacing="5">
+                <Label fx:id="seriesTitleLabel" text="Series Title" styleClass="series-card-title"/>
+                <Label fx:id="seriesYearLabel" text="2024" styleClass="series-card-meta"/>
+                <HBox spacing="5" alignment="CENTER_LEFT">
+                  <FontIcon iconLiteral="mdi2f-folder-multiple:14" styleClass="meta-icon"/>
+                  <Label fx:id="totalSeasonsLabel" text="0 Seasons" styleClass="series-card-meta"/>
+                </HBox>
+              </VBox>
+            </HBox>
+
+            <Separator styleClass="glass-separator"/>
+
+            <!-- Form Title -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+              <FontIcon iconLiteral="mdi2p-playlist-plus:24" styleClass="form-icon"/>
+              <Label fx:id="formTitleLabel" text="Add New Season" styleClass="form-title"/>
+            </HBox>
+
+            <!-- Season Form -->
+            <GridPane vgap="12" hgap="10">
+              <columnConstraints>
+                <ColumnConstraints minWidth="100" prefWidth="100"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+              </columnConstraints>
+
+              <!-- Season Number -->
+              <Label text="Season #:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="label-light"/>
+              <Spinner fx:id="seasonNumberSpinner" styleClass="glass-spinner"
+                       GridPane.rowIndex="0" GridPane.columnIndex="1" editable="true"/>
+              <Label fx:id="seasonNumberError" textFill="#ff6b6b"
+                     GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="error-label"/>
+
+              <!-- Season Title -->
+              <Label text="Title:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="label-light"/>
+              <TextField fx:id="seasonTitleField" styleClass="text-field-glass"
+                         promptText="e.g., The Beginning"
+                         GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+              <Label fx:id="seasonTitleError" textFill="#ff6b6b"
+                     GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="error-label"/>
+
+              <!-- Description -->
+              <Label text="Description:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="label-light"/>
+              <TextArea fx:id="seasonDescriptionArea" styleClass="text-area-glass"
+                        promptText="Season description (optional)..."
+                        prefRowCount="3" wrapText="true"
+                        GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <!-- Action Buttons -->
+            <HBox spacing="12" alignment="CENTER">
+              <Button fx:id="saveButton" onAction="#saveSeason" styleClass="hero-btn primary" text="Save Season">
+                <graphic>
+                  <FontIcon iconLiteral="mdi2c-content-save:18"/>
+                </graphic>
+              </Button>
+              <Button onAction="#clearForm" styleClass="hero-btn secondary" text="Clear">
+                <graphic>
+                  <FontIcon iconLiteral="mdi2e-eraser:18"/>
+                </graphic>
+              </Button>
+            </HBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Quick Actions -->
+            <VBox spacing="10">
+              <Label text="Quick Actions" styleClass="section-title-small"/>
+              <Button onAction="#manageEpisodes" styleClass="action-btn-full" text="Manage Episodes"
+                      HBox.hgrow="ALWAYS">
+                <graphic>
+                  <FontIcon iconLiteral="mdi2f-format-list-bulleted:18"/>
+                </graphic>
+              </Button>
+              <Button onAction="#viewSeriesDetails" styleClass="action-btn-outline" text="View Series"
+                      HBox.hgrow="ALWAYS">
+                <graphic>
+                  <FontIcon iconLiteral="mdi2t-television:18"/>
+                </graphic>
+              </Button>
+            </VBox>
+          </VBox>
+
+          <!-- Right Side - Seasons List -->
+          <VBox HBox.hgrow="ALWAYS" spacing="15">
+            <!-- List Header -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+              <Label text="Seasons" styleClass="section-title"/>
+              <Label fx:id="seasonCountLabel" text="(0)" styleClass="count-badge"/>
+              <Region HBox.hgrow="ALWAYS"/>
+              <TextField fx:id="searchField" promptText="Search seasons..." styleClass="search-input-small"
+                         prefWidth="200"/>
+            </HBox>
+
+            <!-- Seasons Table -->
+            <TableView fx:id="seasonsTable" VBox.vgrow="ALWAYS" styleClass="table-view-dark">
+              <columns>
+                <TableColumn fx:id="seasonNumberColumn" text="#" prefWidth="60" sortable="true"/>
+                <TableColumn fx:id="seasonTitleColumn" text="Title" prefWidth="200"/>
+                <TableColumn fx:id="episodeCountColumn" text="Episodes" prefWidth="100"/>
+                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150" sortable="false"/>
+              </columns>
+              <placeholder>
+                <VBox alignment="CENTER" spacing="15" styleClass="empty-placeholder">
+                  <FontIcon iconLiteral="mdi2f-folder-open-outline:48" styleClass="empty-icon"/>
+                  <Label text="No seasons yet" styleClass="empty-title"/>
+                  <Label text="Create the first season for this series" styleClass="empty-subtitle"/>
+                </VBox>
+              </placeholder>
+            </TableView>
+
+            <!-- Footer Actions -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+              <Button onAction="#deleteSelected" styleClass="danger-btn" text="Delete Selected">
+                <graphic>
+                  <FontIcon iconLiteral="mdi2t-trash-can:18"/>
+                </graphic>
+              </Button>
+              <Button onAction="#exportSeasons" styleClass="glass-btn" text="Export to PDF">
+                <graphic>
+                  <FontIcon iconLiteral="mdi2f-file-pdf-box:18"/>
+                </graphic>
+              </Button>
+            </HBox>
+          </VBox>
+        </HBox>
+      </VBox>
+    </center>
+  </BorderPane>
+
+  <!-- Loading Overlay -->
+  <VBox fx:id="loadingOverlay" styleClass="loading-overlay" alignment="CENTER" visible="false" managed="false">
+    <ProgressIndicator styleClass="progress-indicator-large"/>
+    <Label text="Loading..." styleClass="loading-text"/>
+  </VBox>
+</StackPane>
+

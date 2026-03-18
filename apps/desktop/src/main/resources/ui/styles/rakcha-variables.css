@@ -1,0 +1,147 @@
+/* ==================== RAKCHA Variables.css ==================== */
+/**
+ * RAKCHA Custom Theme Variables
+ * Cinema-inspired color palette and custom properties
+ * 
+ * This file contains JavaFX CSS variable definitions for:
+ * - AtlantaFX theme compatibility
+ * - FormsFX library support
+ * - Custom RAKCHA branding
+ * 
+ * This file should be loaded FIRST in every scene to ensure all custom
+ * variables are available globally to prevent CSS resolution warnings.
+ */
+
+/* ===== RAKCHA Brand Colors - Global Definition ===== */
+.root {
+    /* Primary Cinema Red Palette - JavaFX Lookup Units */
+    -rakcha-red-50: #fff5f5;
+    -rakcha-red-100: #ffe3e3;
+    -rakcha-red-200: #ffc9c9;
+    -rakcha-red-300: #ffa8a8;
+    -rakcha-red-400: #ff8787;
+    -rakcha-red-500: #ff6b6b;
+    -rakcha-red-600: #fa5252;
+    -rakcha-red-700: #f03e3e;
+    -rakcha-red-800: #e03131;
+    -rakcha-red-900: #c92a2a;
+
+    /* Cinema Dark Palette */
+    -rakcha-dark-50: #f8f9fa;
+    -rakcha-dark-100: #f1f3f5;
+    -rakcha-dark-200: #e9ecef;
+    -rakcha-dark-300: #dee2e6;
+    -rakcha-dark-400: #ced4da;
+    -rakcha-dark-500: #adb5bd;
+    -rakcha-dark-600: #868e96;
+    -rakcha-dark-700: #495057;
+    -rakcha-dark-800: #343a40;
+    -rakcha-dark-900: #212529;
+
+    /* Gold Accent (Premium) */
+    -rakcha-gold: #ffd700;
+    -rakcha-gold-dark: #b8860b;
+
+    /* Status Colors */
+    -rakcha-success: #40c057;
+    -rakcha-warning: #fab005;
+    -rakcha-error: #fa5252;
+    -rakcha-info: #339af0;
+
+    /* FormsFX Compatibility - Define missing variables to suppress warnings */
+    -fx-text-inner-color: #ffffff;
+    -fx-highlight-text-fill: #ffffff;
+    -fx-focus-color: #fa5252;
+    -fx-faint-focus-color: rgba(250, 82, 82, 0.1);
+
+    /* AtlantaFX Accent Colors - Map to RAKCHA red palette */
+    -color-accent-subtle: -rakcha-red-100;
+    -color-accent-muted: -rakcha-red-300;
+    -color-accent-emphasis: -rakcha-red-600;
+    -color-accent-fg: -rakcha-red-600;
+    -color-accent-bg: #ffe3e3;
+
+    /* Additional AtlantaFX color variables for compatibility */
+    -color-bg-default: #ffffff;
+    -color-bg-secondary: #f5f5f5;
+    -color-fg-default: #000000;
+    -color-fg-secondary: #666666;
+    -color-border-default: #dddddd;
+}
+
+/* ===== Dark Theme Overrides ===== */
+.root.dark {
+    /* FormsFX dark mode */
+    -fx-text-inner-color: #e0e0e0;
+    -fx-highlight-text-fill: #000000;
+
+    /* AtlantaFX dark mode accent colors */
+    -color-accent-subtle: #660033;
+    -color-accent-muted: #c92a2a;
+    -color-accent-emphasis: -rakcha-red-600;
+    -color-accent-fg: -rakcha-red-500;
+    -color-accent-bg: rgba(250, 82, 82, 0.2);
+
+    /* Dark mode backgrounds */
+    -color-bg-default: #1e1e1e;
+    -color-bg-secondary: #2a2a2a;
+    -color-fg-default: #e0e0e0;
+    -color-fg-secondary: #999999;
+    -color-border-default: #444444;
+}
+
+/* ===== Light Theme Overrides ===== */
+.root.light {
+    /* FormsFX light mode */
+    -fx-text-inner-color: #000000;
+    -fx-highlight-text-fill: #ffffff;
+
+    /* AtlantaFX light mode */
+    -color-accent-subtle: -rakcha-red-100;
+    -color-accent-muted: -rakcha-red-300;
+    -color-accent-emphasis: -rakcha-red-600;
+    -color-accent-fg: -rakcha-red-600;
+    -color-accent-bg: #ffe3e3;
+
+    /* Light mode backgrounds */
+    -color-bg-default: #ffffff;
+    -color-bg-secondary: #f5f5f5;
+    -color-fg-default: #000000;
+    -color-fg-secondary: #666666;
+    -color-border-default: #dddddd;
+}
+
+/* ===== Suppress TextArea CSS Conversion Warnings ===== */
+/* FormsFX SimpleTextArea - use explicit color values, not string lookups */
+.simple-textarea {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000000;
+    -fx-padding: 5px;
+}
+
+.simple-textarea:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-color: -rakcha-red-600;
+}
+
+.dark .simple-textarea {
+    -fx-background-color: #2a2a2a;
+    -fx-text-fill: #e0e0e0;
+}
+
+.dark .simple-textarea:focused {
+    -fx-background-color: #2a2a2a;
+    -fx-border-color: -rakcha-red-600;
+}
+
+/* ===== Text Input Styling ===== */
+.text-input {
+    -fx-highlight-fill: -rakcha-red-100;
+    -fx-highlight-text-fill: #000000;
+}
+
+.dark .text-input {
+    -fx-highlight-fill: -rakcha-red-600;
+    -fx-highlight-text-fill: #ffffff;
+}
+
