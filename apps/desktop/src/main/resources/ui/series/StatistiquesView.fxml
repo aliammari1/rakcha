@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="855.0"
+      prefWidth="1507.0"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="com.esprit.controllers.series.SeriesStatisticsController"
+      stylesheets="@../styles/rakcha-unified.css"
+      spacing="20" style="-fx-background-color: #1a1a1a;">
+
+  <padding>
+    <Insets top="25" right="25" bottom="25" left="25"/>
+  </padding>
+
+  <!-- Title -->
+  <Label text="Series Statistics" style="-fx-text-fill: white;">
+    <font>
+      <Font name="Arial Rounded MT Bold" size="32.0"/>
+    </font>
+  </Label>
+
+  <!-- Content Placeholder -->
+  <VBox VBox.vgrow="ALWAYS" alignment="CENTER" spacing="20">
+    <Label text="Series Statistics Dashboard"
+           style="-fx-text-fill: #cccccc; -fx-font-size: 18px;"/>
+    <Label text="Content coming soon..."
+           style="-fx-text-fill: #888888; -fx-font-size: 14px;"/>
+  </VBox>
+</VBox>

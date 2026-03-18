@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="mainContainer" maxHeight="-Infinity" maxWidth="-Infinity"
+      minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0"
+      spacing="20.0"
+      style="-fx-background-color: linear-gradient(to bottom, #1a1a1a, #2d2d2d); -fx-padding: 20;"
+      stylesheets="@../styles/rakcha-unified.css"
+      xmlns="http://javafx.com/javafx/11.0.1" fx:controller="com.esprit.controllers.voice.MultiModalInputController">
+  <children>
+    <!-- Header -->
+    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Multi-Modal Input Control"/>
+
+    <!-- Status Section -->
+    <VBox spacing="10.0">
+      <children>
+        <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #cccccc;" text="System Status"/>
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+          <children>
+            <Label fx:id="statusLabel" style="-fx-font-size: 14px; -fx-text-fill: #00aa00; -fx-font-weight: bold;"
+                   text="Initializing..."/>
+            <ProgressIndicator fx:id="processingIndicator" prefHeight="20.0" prefWidth="20.0" visible="false"/>
+          </children>
+        </HBox>
+      </children>
+    </VBox>
+
+    <!-- Control Buttons -->
+    <VBox spacing="15.0">
+      <children>
+        <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #cccccc;" text="Input Controls"/>
+        <HBox fx:id="controlsContainer" alignment="CENTER_LEFT" spacing="15.0">
+          <children>
+            <Button fx:id="voiceToggleButton" mnemonicParsing="false" prefWidth="150.0" text="Voice OFF"/>
+            <Button fx:id="gestureToggleButton" mnemonicParsing="false" prefWidth="150.0" text="Gesture OFF"/>
+            <Button fx:id="accessibilityButton" mnemonicParsing="false" prefWidth="150.0" text="Accessibility"/>
+          </children>
+        </HBox>
+      </children>
+    </VBox>
+
+    <!-- Test Command Section -->
+    <VBox spacing="10.0">
+      <children>
+        <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #cccccc;" text="Test Voice Commands"/>
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+          <children>
+            <TextField fx:id="testCommandField" prefWidth="400.0" promptText="Enter a voice command to test..."
+                       style="-fx-background-color: #3d3d3d; -fx-text-fill: white; -fx-prompt-text-fill: #888888; -fx-border-color: #555555; -fx-border-radius: 5;"/>
+            <Button fx:id="testCommandButton" mnemonicParsing="false" text="Execute"/>
+          </children>
+        </HBox>
+        <Label style="-fx-font-size: 12px; -fx-text-fill: #888888;"
+               text="Examples: 'search for action movies', 'go to my profile', 'book a ticket'"/>
+      </children>
+    </VBox>
+
+    <!-- Command History -->
+    <VBox spacing="10.0" VBox.vgrow="ALWAYS">
+      <children>
+        <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #cccccc;" text="Activity Log"/>
+        <TextArea fx:id="commandHistoryArea" prefHeight="200.0"
+                  style="-fx-background-color: #2d2d2d; -fx-text-fill: #cccccc; -fx-border-color: #555555; -fx-border-radius: 5; -fx-control-inner-background: #2d2d2d;"
+                  VBox.vgrow="ALWAYS"/>
+      </children>
+    </VBox>
+
+    <!-- Feedback Container for dynamic content -->
+    <VBox fx:id="feedbackContainer" spacing="10.0"/>
+
+    <!-- Help Section -->
+    <VBox spacing="5.0">
+      <children>
+        <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #cccccc;" text="Keyboard Shortcuts"/>
+        <Label style="-fx-font-size: 12px; -fx-text-fill: #888888;" text="Ctrl+F1: Toggle Voice Recognition"/>
+        <Label style="-fx-font-size: 12px; -fx-text-fill: #888888;" text="Ctrl+F2: Toggle Gesture Recognition"/>
+        <Label style="-fx-font-size: 12px; -fx-text-fill: #888888;" text="Ctrl+F3: Toggle Accessibility Mode"/>
+        <Label style="-fx-font-size: 12px; -fx-text-fill: #888888;" text="ESC: Stop All Recognition"/>
+      </children>
+    </VBox>
+  </children>
+  <padding>
+    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+  </padding>
+</VBox>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="855.0"
+      prefWidth="1507.0"
+      xmlns="http://javafx.com/javafx/21"
+      fx:controller="com.esprit.controllers.users.SMSAdminController"
+      stylesheets="@../styles/rakcha-unified.css">
+
+  <HBox VBox.vgrow="ALWAYS">
+    <!-- SideBar -->
+    <fx:include source="/ui/sidebar.fxml"/>
+
+    <!-- Main Content -->
+    <VBox spacing="20" HBox.hgrow="ALWAYS">
+      <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+      </padding>
+
+      <!-- Header -->
+      <Label text="SMS Notifications" styleClass="section-title">
+        <font>
+          <Font name="Arial Rounded MT Bold" size="32.0"/>
+        </font>
+      </Label>
+
+      <!-- SMS Form -->
+      <VBox spacing="15" styleClass="bg-white" maxWidth="600.0">
+        <padding>
+          <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <!-- FormsFX Form Container -->
+        <VBox fx:id="smsFormContainer" spacing="10"/>
+
+        <!-- Action Buttons -->
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+          <Button fx:id="sendSMS" onAction="#sendSMS" styleClass="primary-button">
+            <graphic>
+              <FontIcon iconLiteral="mdi2s-send"/>
+            </graphic>
+            <text>Send SMS</text>
+          </Button>
+          <Button styleClass="secondary-button">
+            <graphic>
+              <FontIcon iconLiteral="mdi2r-refresh"/>
+            </graphic>
+            <text>Clear</text>
+          </Button>
+        </HBox>
+      </VBox>
+
+      <!-- Message History -->
+      <VBox VBox.vgrow="ALWAYS" styleClass="bg-white">
+        <padding>
+          <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label text="Message History" styleClass="subsection-title">
+          <font>
+            <Font name="Arial Bold" size="24.0"/>
+          </font>
+        </Label>
+
+        <TableView fx:id="messageHistory" VBox.vgrow="ALWAYS">
+          <columns>
+            <TableColumn text="Date/Time"/>
+            <TableColumn text="Recipient"/>
+            <TableColumn text="Message"/>
+            <TableColumn text="Status"/>
+          </columns>
+        </TableView>
+      </VBox>
+    </VBox>
+  </HBox>
+</VBox>
+
