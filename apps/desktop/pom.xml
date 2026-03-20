@@ -638,7 +638,7 @@
     <dependency>
       <groupId>eu.hansolo</groupId>
       <artifactId>medusa</artifactId>
-      <version>17.1.7</version>
+      <version>21.0.9</version>
     </dependency>
   </dependencies>
   <build>
