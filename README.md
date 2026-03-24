@@ -282,11 +282,24 @@ rakcha/
 
 ## 📚 Documentation
 
+### Getting Started
+- **[📖 Wiki Home](wiki/README.md)** — Complete documentation hub
+- **[🚀 Quick Start Guide](wiki/Quick-Start.md)** — Get up and running in minutes
+- **[💡 Project Overview](wiki/Project-Overview.md)** — Understand RAKCHA
+- **[🎯 Use Cases & Case Studies](wiki/use-cases/README.md)** — Real-world applications
+
+### Technical Documentation
 - [Desktop App Guide](apps/desktop/README.md) — JavaFX architecture and features
 - [Mobile App Guide](apps/mobile/README.md) — Flutter development and deployment
 - [Web App Guide](apps/web/README.md) — Symfony backend and API reference
+- [Architecture Overview](wiki/Architecture.md) — System design and technical architecture
+- [Technology Stack](wiki/Technology-Stack.md) — Technologies and tools used
 - [API Documentation](shared/api-spec/openapi.yaml) — OpenAPI specification
 - [Database Schema](shared/database/) — Entity relationships and migrations
+
+### Help & Support
+- [FAQ](wiki/FAQ.md) — Frequently asked questions
+- [Troubleshooting Guide](wiki/Troubleshooting.md) — Common issues and solutions
 - [Contributing Guide](CONTRIBUTING.md) — Development workflow and standards
 
 ---
@@ -365,29 +378,35 @@ Found a bug? Want a feature? Let us know!
 
 ## 💡 Use Cases
 
+RAKCHA serves multiple audiences with specific needs. **[View detailed use cases and case studies →](wiki/use-cases/README.md)**
+
 ### Cinema Owners & Operators
 - Manage multiple cinema locations
 - Streamline ticket sales and reservations
 - Integrate concession products and merchandise
 - Access real-time analytics and reporting
+- **[Read cinema management case study →](wiki/use-cases/README.md#cinema-management-use-case)**
 
 ### Entertainment Entrepreneurs
 - Launch your own cinema marketplace
 - Manage film and series content
 - Build a customer loyalty program
 - Process payments and manage inventory
+- **[See streaming platform example →](wiki/use-cases/README.md#streaming-platform-use-case)**
 
 ### Platform Companies
 - White-label the system
 - Extend with custom features
 - Integrate with existing systems
 - Scale to thousands of users
+- **[Explore multi-venue operations →](wiki/use-cases/README.md#multi-venue-use-case)**
 
 ### Developers & Integrators
 - RESTful API for custom integrations
 - Webhook support for real-time events
 - OpenAPI specification for code generation
 - Comprehensive API documentation
+- **[View API reference →](wiki/guides/API-Reference.md)**
 
 ---
 
