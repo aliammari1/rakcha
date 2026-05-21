@@ -18,14 +18,15 @@ class CategoriesController extends AbstractController
     #[Route('/', name: 'app_categories_index', methods: ['GET'])]
     public function index(CategoriesRepository $categoriesRepository): Response
     {
-
+        // Performance Optimization: Fetch all categories once to avoid redundant O(N) database queries in loops
+        $categoriesList = $categoriesRepository->findAll();
         $form = $this->createForm(CategoriesType::class, new Categories());
         $updateForms = array();
-        for ($i = 0; $i < count($categoriesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(CategoriesType::class, $categoriesRepository->findAll()[$i])->createView();
+        for ($i = 0; $i < count($categoriesList); $i++) {
+            $updateForms[$i] = $this->createForm(CategoriesType::class, $categoriesList[$i])->createView();
         }
         return $this->render('back/categoriesTables.html.twig', [
-            'categories' => $categoriesRepository->findAll(),
+            'categories' => $categoriesList,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);

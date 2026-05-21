@@ -23,12 +23,13 @@ class UsersController extends AbstractController
     #[Route('/usersDash', name: 'app_users_index', methods: ['GET', 'POST'])]
     public function index(UsersRepository $usersRepository, EntityManagerInterface $em, PaginatorInterface $paginator, Request $request): Response
     {
+        // Performance Optimization: Fetch all users once to avoid redundant O(N) database queries in loops
+        $users = $usersRepository->findAll();
         $form = $this->createForm(AdminFormType::class, new Users());
         $updateForms = array();
-        for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $usersRepository->findAll()[$i])->createView();
+        for ($i = 0; $i < count($users); $i++) {
+            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $users[$i])->createView();
         }
-        $users = $usersRepository->findAll();
         $pagination = $paginator->paginate(
             $users,
             $request->query->getInt('page', 1),
@@ -69,13 +70,14 @@ class UsersController extends AbstractController
     #[Route('/users/new', name: 'app_users_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, UsersRepository $usersRepository, PaginatorInterface $paginator, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+        $users = $usersRepository->findAll();
         $user = new Users();
         $updateForms = array();
-        for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $usersRepository->findAll()[$i])->createView();
+        for ($i = 0; $i < count($users); $i++) {
+            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $users[$i])->createView();
         }
         $pagination = $paginator->paginate(
-            $usersRepository->findAll(), /* query NOT result */
+            $users, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             5 /*limit per page*/
         );
@@ -126,7 +128,7 @@ class UsersController extends AbstractController
         $hasErrorsCreate = true;
         return $this->render('back/UserTables.html.twig', [
             'pagination' => $pagination,
-            'users' => $usersRepository->findAll(),
+            'users' => $users,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate,
@@ -142,13 +144,13 @@ class UsersController extends AbstractController
     #[Route('/users/{id}/edit/{formUpdateNumber}/', name: 'app_users_edit', methods: ['GET', 'POST'])]
     public function edit($formUpdateNumber, Request $request, Users $user, EntityManagerInterface $entityManager, UsersRepository $usersRepository, PaginatorInterface $paginator, UserPasswordHasherInterface $userPasswordHasher): Response
     {
-        $updateForms = array();
         $users = $usersRepository->findAll();
+        $updateForms = array();
         for ($i = 0; $i < count($users); $i++) {
             $updateForms[$i] = $this->createForm(RegistrationFormType::class, $users[$i])->createView();
         }
         $pagination = $paginator->paginate(
-            $usersRepository->findAll(),
+            $users,
             $request->query->getInt('page', 1),
             5
         );
@@ -194,7 +196,7 @@ class UsersController extends AbstractController
         $entityManager->refresh($user);
         return $this->render('back/UserTables.html.twig', [
             'pagination' => $pagination,
-            'users' => $usersRepository->findAll(),
+            'users' => $users,
             "formUpdateNumber" => $formUpdateNumber,
             'updateform' => $updateform->createView(),
             'form' => $form->createView(),
