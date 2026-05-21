@@ -22,15 +22,17 @@ class SeriesController extends AbstractController
     #[Route('/', name: 'app_series_index', methods: ['GET'])]
     public function index(SeriesRepository $seriesRepository, EntityManagerInterface $entityManager): Response
     {
+        // Performance Optimization: Fetch all series once to avoid redundant O(N) database queries in loops
+        $seriesList = $seriesRepository->findAll();
         $statisticsData = $seriesRepository->getStatisticsByCategory();
         $form = $this->createForm(SeriesType::class, new Series());
         $updateForms = array();
-        for ($i = 0; $i < count($seriesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(SeriesType::class, $seriesRepository->findAll()[$i])->createView();
+        for ($i = 0; $i < count($seriesList); $i++) {
+            $updateForms[$i] = $this->createForm(SeriesType::class, $seriesList[$i])->createView();
         }
         return $this->render('back/seriesTables.html.twig', [
             'statisticsData' => $statisticsData,
-            'series' => $seriesRepository->findAll(),
+            'series' => $seriesList,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
