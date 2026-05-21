@@ -1,0 +1,17 @@
+version = 1
+
+test_patterns = [
+  "apps/web/tests/**",
+  "apps/desktop/src/test/**",
+  "apps/mobile/test/**"
+]
+
+exclude_patterns = [
+  "apps/web/vendor/**"
+]
+
+[[analyzers]]
+name = "php"
+
+[[analyzers]]
+name = "java"
