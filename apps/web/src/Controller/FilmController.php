@@ -54,9 +54,6 @@ class FilmController extends AbstractController
                 $file->move($destination, $filename);
                 $film->setimage("/img/films/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->persist($film); //creation the query of create 
             $entityManager->flush(); //execute the query
@@ -108,9 +105,6 @@ class FilmController extends AbstractController
                 $file->move($destination, $filename);
                 $film->setimage("/img/films/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->flush();
             $this->addFlash('films', 'film edited successfully');

@@ -53,9 +53,6 @@ class ActorController extends AbstractController
                 $file->move($destination, $filename);
                 $actor->setimage("/img/actors/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $filename = rand(1, 99999) . '.' . $extension;
             $file->move($this->getParameter('kernel.project_dir') . "/public/img/actors", $filename);
@@ -111,9 +108,6 @@ class ActorController extends AbstractController
                 $file->move($destination, $filename);
                 $actor->setimage("/img/actors/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->flush();
             $this->addFlash('actors', 'actor edited successfully');
