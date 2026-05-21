@@ -17,15 +17,13 @@ class ActorController extends AbstractController
     #[Route('/', name: 'app_actor_index', methods: ['GET'])]
     public function index(ActorRepository $actorRepository): Response
     {
-        // Performance Optimization: Fetch all actors once to avoid redundant O(N) database queries in loops
-        $actors = $actorRepository->findAll();
         $form = $this->createForm(ActorType::class, new Actor());
         $updateForms = array();
-        for ($i = 0; $i < count($actors); $i++) {
-            $updateForms[$i] = $this->createForm(ActorType::class, $actors[$i])->createView();
+        for ($i = 0; $i < count($actorRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(ActorType::class, $actorRepository->findAll()[$i])->createView();
         }
         return $this->render('back/actorTables.html.twig', [
-            'actors' => $actors,
+            'actors' => $actorRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -34,10 +32,9 @@ class ActorController extends AbstractController
     #[Route('/new', name: 'app_actor_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ActorRepository $actorRepository): Response
     {
-        $actors = $actorRepository->findAll();
         $updateForms = array();
-        for ($i = 0; $i < count($actors); $i++) {
-            $updateForms[$i] = $this->createForm(ActorType::class, $actors[$i])->createView();
+        for ($i = 0; $i < count($actorRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(ActorType::class, $actorRepository->findAll()[$i])->createView();
         }
         $actor = new Actor();
         $form = $this->createForm(ActorType::class, $actor);
@@ -71,7 +68,7 @@ class ActorController extends AbstractController
         }
         $hasErrorsCreate = true;
         return $this->render('back/actorTables.html.twig', [
-            'actors' => $actors,
+            'actors' => $actorRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate
@@ -127,7 +124,7 @@ class ActorController extends AbstractController
 
         return $this->render('back/actorTables.html.twig', [
             "formUpdateNumber" => $formUpdateNumber,
-            'actors' => $actors,
+            'actors' => $actorRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'updateform' => $updateform->createView(),

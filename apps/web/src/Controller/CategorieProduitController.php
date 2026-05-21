@@ -17,15 +17,14 @@ class CategorieProduitController extends AbstractController
     #[Route('/', name: 'app_categorie_produit_index', methods: ['GET'])]
     public function index(CategorieProduitRepository $categorieProduitRepository): Response
     {
-        // Performance Optimization: Fetch all categories once to avoid redundant O(N) database queries in loops
-        $categories = $categorieProduitRepository->findAll();
+
         $form = $this->createForm(CategorieProduitType::class, new CategorieProduit());
         $updateForms = array();
-        for ($i = 0; $i < count($categories); $i++) {
-            $updateForms[$i] = $this->createForm(CategorieProduitType::class, $categories[$i])->createView();
+        for ($i = 0; $i < count($categorieProduitRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(CategorieProduitType::class, $categorieProduitRepository->findAll()[$i])->createView();
         }
         return $this->render('back/categoriProduitTable.html.twig', [
-            'categorieproduit' => $categories,
+            'categorieproduit' => $categorieProduitRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);

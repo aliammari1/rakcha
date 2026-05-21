@@ -26,15 +26,13 @@ class EpisodesController extends AbstractController
     #[Route('/', name: 'app_episodes_index', methods: ['GET'])]
     public function index(EpisodesRepository $episodesRepository): Response
     {
-        // Performance Optimization: Fetch all episodes once to avoid redundant O(N) database queries in loops
-        $episodes = $episodesRepository->findAll();
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
-        for ($i = 0; $i < count($episodes); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
+        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
         }
         return $this->render('back/episodesTables.html.twig', [
-            'episodes' => $episodes,
+            'episodes' => $episodesRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -43,14 +41,13 @@ class EpisodesController extends AbstractController
     #[Route('/listeEpisodes', name: 'app_episodes_liste', methods: ['GET'])]
     public function listeEpisodes(EpisodesRepository $episodesRepository): Response
     {
-        $episodes = $episodesRepository->findAll();
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
-        for ($i = 0; $i < count($episodes); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
+        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
         }
         return $this->render('front/listEpisodes.html.twig', [
-            'episodes' => $episodes,
+            'episodes' => $episodesRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -59,12 +56,11 @@ class EpisodesController extends AbstractController
     #[Route('/new', name: 'app_episodes_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, EpisodesRepository $episodesRepository): Response
     {
-        $episodes = $episodesRepository->findAll();
         $episode = new Episodes();
         $form = $this->createForm(EpisodesType::class, $episode);
         $updateForms = array();
-        for ($i = 0; $i < count($episodes); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
+        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
         }
         $form->handleRequest($request);
 
@@ -119,7 +115,7 @@ class EpisodesController extends AbstractController
 
 
         return $this->render('back/episodesTables.html.twig', [
-            'episodes' => $episodes,
+            'episodes' => $episodesRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
