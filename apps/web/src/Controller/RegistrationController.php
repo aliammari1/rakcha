@@ -56,9 +56,6 @@ class RegistrationController extends AbstractController
                 $file->move($destination, $filename);
                 $user->setPhotoDeProfil("/img/users/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\users";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
 
             if ($user->getRole() == 'client')
