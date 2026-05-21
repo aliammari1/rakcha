@@ -72,10 +72,12 @@ class CinemaController extends AbstractController
     #[Route('/listeCinemaAdmin', name: 'app_cinemaAdmin_index', methods: ['GET', 'POST'])]
     public function listeCinemaAdmin(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        // Performance Optimization: Fetch all cinemas once to avoid redundant O(N) database queries in loops
+        $cinemas = $cinemaRepository->findAll();
         $form = $this->createForm(CinemaType::class, new Cinema());
         $updateForms = array();
-        for ($i = 0; $i < count($cinemaRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(CinemaType::class, $cinemaRepository->findAll()[$i])->createView();
+        for ($i = 0; $i < count($cinemas); $i++) {
+            $updateForms[$i] = $this->createForm(CinemaType::class, $cinemas[$i])->createView();
         }
 
 
@@ -84,7 +86,7 @@ class CinemaController extends AbstractController
             $this->addFlash('error', $errorMessage);
         }
         return $this->render('back/CinemasTableAdmin.html.twig', [
-            'cinemas' => $cinemaRepository->findAll(),
+            'cinemas' => $cinemas,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
 
@@ -103,11 +105,11 @@ class CinemaController extends AbstractController
     #[Route('/new', name: 'app_cinema_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository): Response
     {
-
+        $cinemas = $cinemaRepository->findAll();
         $cinema = new Cinema();
         $updateForms = array();
-        for ($i = 0; $i < count($cinemaRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(CinemaType::class, $cinemaRepository->findAll()[$i])->createView();
+        for ($i = 0; $i < count($cinemas); $i++) {
+            $updateForms[$i] = $this->createForm(CinemaType::class, $cinemas[$i])->createView();
         }
 
         $form = $this->createForm(CinemaType::class, $cinema);
@@ -138,7 +140,7 @@ class CinemaController extends AbstractController
         }
         $hasErrorsCreate = true;
         return $this->render('back/CinemasTable.html.twig', [
-            'cinemas' => $cinemaRepository->findAll(),
+            'cinemas' => $cinemas,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate,
@@ -156,8 +158,8 @@ class CinemaController extends AbstractController
     #[Route('/{idCinema}/edit/{formUpdateNumber}/', name: 'app_cinema_edit', methods: ['GET', 'POST'])]
     public function edit($formUpdateNumber, Request $request, Cinema $cinema, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository): Response
     {
-        $updateForms = array();
         $cinemas = $cinemaRepository->findAll();
+        $updateForms = array();
         for ($i = 0; $i < count($cinemas); $i++) {
             $updateForms[$i] = $this->createForm(CinemaType::class, $cinemas[$i])->createView();
         }
@@ -191,7 +193,7 @@ class CinemaController extends AbstractController
         }
         $entityManager->refresh($cinema);
         return $this->render('back/CinemasTable.html.twig', [
-            'cinemas' => $cinemaRepository->findAll(),
+            'cinemas' => $cinemas,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             "formUpdateNumber" => $formUpdateNumber,
