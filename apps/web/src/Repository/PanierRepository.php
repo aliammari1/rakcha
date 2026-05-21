@@ -60,8 +60,8 @@ class PanierRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p')
             ->select('SUM(p.quantite)')
-            ->andWhere('p.produit = :produit')
-            ->andWhere('p.user = :user')
+            ->andWhere('p.idproduit = :produit')
+            ->andWhere('p.idclient = :user')
             ->setParameter('produit', $produit)
             ->setParameter('user', $user);
 

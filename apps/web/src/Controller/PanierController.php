@@ -97,7 +97,7 @@ class PanierController extends AbstractController
     public function afficherPanier(PanierRepository $panierRepository): Response
     {
         // Récupérer les données du panier à partir du repository
-        $panierItems = $panierRepository->findAll(); // Par exemple, à adapter selon vos besoins
+        $panierItems = $panierRepository->findBy(['idclient' => $this->getUser()]); // Par exemple, à adapter selon vos besoins
 
         // Rendre la vue avec les données du panier
         return $this->render('front/listPanier.html.twig', [

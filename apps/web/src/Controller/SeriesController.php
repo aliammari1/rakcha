@@ -111,9 +111,6 @@ class SeriesController extends AbstractController
                 $file->move($destination, $filename);
                 $series->setImage("/img/series/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->persist($series);
             $entityManager->flush();
@@ -177,9 +174,6 @@ class SeriesController extends AbstractController
                 $file->move($destination, $filename);
                 $series->setImage("/img/series/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->flush();
 

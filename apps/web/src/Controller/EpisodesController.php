@@ -78,9 +78,6 @@ class EpisodesController extends AbstractController
                 $file->move($destination, $filename);
                 $episode->setImage("/img/series/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
 
             //Traitement du video 
@@ -151,9 +148,6 @@ class EpisodesController extends AbstractController
                 $file->move($destination, $filename);
                 $episode->setImage("/img/series/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             //Traitement du video 
             $videoFile = $form->get('video')->getData();

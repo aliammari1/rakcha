@@ -126,9 +126,6 @@ class CinemaController extends AbstractController
                 $file->move($destination, $filename);
                 $cinema->setLogo("/img/cinemas/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\cinemas";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $cinema->setStatut('Pending');
             $cinema->setResponsable($this->getUser()->getId());
@@ -181,9 +178,6 @@ class CinemaController extends AbstractController
                 $file->move($destination, $filename);
                 $cinema->setLogo("/img/cinemas/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\cinemas";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $entityManager->flush();
 
