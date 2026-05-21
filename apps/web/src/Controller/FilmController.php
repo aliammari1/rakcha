@@ -17,15 +17,13 @@ class FilmController extends AbstractController
     #[Route('/', name: 'app_film_index', methods: ['GET'])]
     public function index(FilmRepository $filmRepository): Response
     {
-        // Performance Optimization: Fetch all films once to avoid redundant O(N) database queries in loops
-        $films = $filmRepository->findAll();
         $form = $this->createForm(FilmType::class, new Film());
         $updateForms = array();
-        for ($i = 0; $i < count($films); $i++) {
-            $updateForms[$i] = $this->createForm(FilmType::class, $films[$i])->createView();
+        for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
         }
         return $this->render('back/filmTables.html.twig', [
-            'films' => $films,
+            'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -34,10 +32,10 @@ class FilmController extends AbstractController
     #[Route('/new', name: 'app_film_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
-        $films = $filmRepository->findAll();
+
         $updateForms = array();
-        for ($i = 0; $i < count($films); $i++) {
-            $updateForms[$i] = $this->createForm(FilmType::class, $films[$i])->createView();
+        for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
+            $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
         }
         $film = new Film();
         $form = $this->createForm(FilmType::class, $film);
@@ -70,7 +68,7 @@ class FilmController extends AbstractController
         }
         $hasErrorsCreate = true;
         return $this->render('back/filmTables.html.twig', [
-            'films' => $films,
+            'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate
@@ -121,7 +119,7 @@ class FilmController extends AbstractController
         $entityManager->refresh($film);
         return $this->render('back/filmTables.html.twig', [
             "formUpdateNumber" => $formUpdateNumber,
-            'films' => $films,
+            'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'updateform' => $updateform->createView(),
