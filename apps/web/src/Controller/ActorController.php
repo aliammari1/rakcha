@@ -17,6 +17,7 @@ class ActorController extends AbstractController
     #[Route('/', name: 'app_actor_index', methods: ['GET'])]
     public function index(ActorRepository $actorRepository): Response
     {
+        // Performance Optimization: Fetch entities once to avoid redundant O(N) database queries
         $actors = $actorRepository->findAll();
         $form = $this->createForm(ActorType::class, new Actor());
         $updateForms = array();

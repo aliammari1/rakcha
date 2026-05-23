@@ -17,6 +17,7 @@ class CategoryController extends AbstractController
     #[Route('/', name: 'app_category_index', methods: ['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
+        // Performance Optimization: Fetch entities once to avoid redundant O(N) database queries
         $categories = $categoryRepository->findAll();
         $form = $this->createForm(CategoryType::class, new Category());
         $updateForms = array();
