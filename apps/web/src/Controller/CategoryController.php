@@ -17,13 +17,14 @@ class CategoryController extends AbstractController
     #[Route('/', name: 'app_category_index', methods: ['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
+        $categories = $categoryRepository->findAll();
         $form = $this->createForm(CategoryType::class, new Category());
         $updateForms = array();
-        for ($i = 0; $i < count($categoryRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(CategoryType::class, $categoryRepository->findAll()[$i])->createView();
+        foreach ($categories as $i => $category) {
+            $updateForms[$i] = $this->createForm(CategoryType::class, $category)->createView();
         }
         return $this->render('back/categoryTables.html.twig', [
-            'categorys' => $categoryRepository->findAll(),
+            'categorys' => $categories,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -32,9 +33,10 @@ class CategoryController extends AbstractController
     #[Route('/new', name: 'app_category_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository): Response
     {
+        $categories = $categoryRepository->findAll();
         $updateForms = array();
-        for ($i = 0; $i < count($categoryRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(CategoryType::class, $categoryRepository->findAll()[$i])->createView();
+        foreach ($categories as $i => $category) {
+            $updateForms[$i] = $this->createForm(CategoryType::class, $category)->createView();
         }
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
@@ -49,7 +51,7 @@ class CategoryController extends AbstractController
         }
         $hasErrorsCreate = true;
         return $this->render('back/categoryTables.html.twig', [
-            'categorys' => $categoryRepository->findAll(),
+            'categorys' => $categories,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate
@@ -68,9 +70,9 @@ class CategoryController extends AbstractController
     public function edit(Request $request, Category $category, EntityManagerInterface $entityManager, $formUpdateNumber, CategoryRepository $categoryRepository): Response
     {
         $updateForms = array();
-        $catrogories = $categoryRepository->findAll();
-        for ($i = 0; $i < count($catrogories); $i++) {
-            $updateForms[$i] = $this->createForm(CategoryType::class, $catrogories[$i])->createView();
+        $categories = $categoryRepository->findAll();
+        foreach ($categories as $i => $cat) {
+            $updateForms[$i] = $this->createForm(CategoryType::class, $cat)->createView();
         }
         $form = $this->createForm(CategoryType::class, new Category());
         $updateform = $this->createForm(CategoryType::class, $category);
@@ -84,7 +86,7 @@ class CategoryController extends AbstractController
         $entityManager->refresh($category);
         return $this->render('back/categoryTables.html.twig', [
             "formUpdateNumber" => $formUpdateNumber,
-            'categorys' => $categoryRepository->findAll(),
+            'categorys' => $categories,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'updateform' => $updateform->createView(),
