@@ -20,6 +20,7 @@ class SeanceController extends AbstractController
     #[Route('/', name: 'app_seance_index', methods: ['GET', 'POST'])]
     public function index(SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
+        // Performance Optimization: Fetch entities once to avoid redundant O(N) database queries
         $seances = $seanceRepository->findAll();
         $form = $this->createForm(SeanceType::class, new Seance());
         $updateForms = array();
