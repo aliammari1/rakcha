@@ -17,3 +17,7 @@
 node_modules
 
 .env
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
