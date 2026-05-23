@@ -72,6 +72,7 @@ class CinemaController extends AbstractController
     #[Route('/listeCinemaAdmin', name: 'app_cinemaAdmin_index', methods: ['GET', 'POST'])]
     public function listeCinemaAdmin(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        // Performance Optimization: Fetch entities once to avoid redundant O(N) database queries
         $cinemas = $cinemaRepository->findAll();
         $form = $this->createForm(CinemaType::class, new Cinema());
         $updateForms = array();
