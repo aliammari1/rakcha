@@ -27,11 +27,13 @@ class ProduitController extends AbstractController
     {
         $form = $this->createForm(ProduitType::class, new Produit());
         $updateForms = array();
-        for ($i = 0; $i < count($produitRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(ProduitType::class, $produitRepository->findAll()[$i])->createView();
+        // Bolt Optimization: Fetch all products once to avoid redundant database queries in the loop and render call.
+        $produits = $produitRepository->findAll();
+        for ($i = 0; $i < count($produits); $i++) {
+            $updateForms[$i] = $this->createForm(ProduitType::class, $produits[$i])->createView();
         }
         return $this->render('back/produittable.html.twig', [
-            'produit' => $produitRepository->findAll(),
+            'produit' => $produits,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -84,8 +86,10 @@ class ProduitController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
         $updateForms = array();
-        for ($i = 0; $i < count($produitRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(ProduitType::class, $produitRepository->findAll()[$i])->createView();
+        // Bolt Optimization: Fetch all products once to avoid redundant database queries in the loop and render call.
+        $produits = $produitRepository->findAll();
+        for ($i = 0; $i < count($produits); $i++) {
+            $updateForms[$i] = $this->createForm(ProduitType::class, $produits[$i])->createView();
         }
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
@@ -119,7 +123,7 @@ class ProduitController extends AbstractController
 
         $hasErrorsCreate = true;
         return $this->render('back/produittable.html.twig', [
-            'produit' => $produitRepository->findAll(),
+            'produit' => $produits,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate,
@@ -162,8 +166,10 @@ class ProduitController extends AbstractController
     {
 
         $updateForms = array();
-        for ($i = 0; $i < count($produitRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(ProduitType::class, $produitRepository->findAll()[$i])->createView();
+        // Bolt Optimization: Fetch all products once to avoid redundant database queries in the loop and render call.
+        $produits = $produitRepository->findAll();
+        for ($i = 0; $i < count($produits); $i++) {
+            $updateForms[$i] = $this->createForm(ProduitType::class, $produits[$i])->createView();
         }
 
         $form = $this->createForm(ProduitType::class, $produit);
@@ -196,7 +202,7 @@ class ProduitController extends AbstractController
         $entityManager->refresh($produit);
 
         return $this->render('back/produittable.html.twig', [
-            'produit' => $produitRepository->findAll(),
+            'produit' => $produits,
             'form' => $form->createView(),
             'updateform' => $updateform->createView(),
             'updateForms' => $updateForms,
