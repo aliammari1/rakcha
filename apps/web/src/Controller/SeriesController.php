@@ -24,12 +24,10 @@ class SeriesController extends AbstractController
     {
         $statisticsData = $seriesRepository->getStatisticsByCategory();
         $form = $this->createForm(SeriesType::class, new Series());
-        $updateForms = array();
-        // Bolt: Fetch once to avoid redundant O(N) database queries
+        // Bolt: Fetch once to avoid redundant O(N) database queries and use array_map for brevity
         $series = $seriesRepository->findAll();
-        for ($i = 0; $i < count($series); $i++) {
-            $updateForms[$i] = $this->createForm(SeriesType::class, $series[$i])->createView();
-        }
+        $updateForms = array_map(fn($serie) => $this->createForm(SeriesType::class, $serie)->createView(), $series);
+
         return $this->render('back/seriesTables.html.twig', [
             'statisticsData' => $statisticsData,
             'series' => $series,
