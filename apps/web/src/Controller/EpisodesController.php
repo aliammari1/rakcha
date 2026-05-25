@@ -27,12 +27,10 @@ class EpisodesController extends AbstractController
     public function index(EpisodesRepository $episodesRepository): Response
     {
         $form = $this->createForm(EpisodesType::class, new Episodes());
-        $updateForms = array();
-        // Bolt: Fetch once to avoid redundant O(N) database queries
+        // Bolt: Fetch once to avoid redundant O(N) database queries and use array_map for brevity
         $episodes = $episodesRepository->findAll();
-        for ($i = 0; $i < count($episodes); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
-        }
+        $updateForms = array_map(fn($episode) => $this->createForm(EpisodesType::class, $episode)->createView(), $episodes);
+
         return $this->render('back/episodesTables.html.twig', [
             'episodes' => $episodes,
             'form' => $form->createView(),
@@ -44,12 +42,10 @@ class EpisodesController extends AbstractController
     public function listeEpisodes(EpisodesRepository $episodesRepository): Response
     {
         $form = $this->createForm(EpisodesType::class, new Episodes());
-        $updateForms = array();
-        // Bolt: Fetch once to avoid redundant O(N) database queries
+        // Bolt: Fetch once to avoid redundant O(N) database queries and use array_map for brevity
         $episodes = $episodesRepository->findAll();
-        for ($i = 0; $i < count($episodes); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
-        }
+        $updateForms = array_map(fn($episode) => $this->createForm(EpisodesType::class, $episode)->createView(), $episodes);
+
         return $this->render('front/listEpisodes.html.twig', [
             'episodes' => $episodes,
             'form' => $form->createView(),
@@ -62,12 +58,9 @@ class EpisodesController extends AbstractController
     {
         $episode = new Episodes();
         $form = $this->createForm(EpisodesType::class, $episode);
-        $updateForms = array();
-        // Bolt: Fetch once to avoid redundant O(N) database queries
+        // Bolt: Fetch once to avoid redundant O(N) database queries and use array_map for brevity
         $episodes = $episodesRepository->findAll();
-        for ($i = 0; $i < count($episodes); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
-        }
+        $updateForms = array_map(fn($ep) => $this->createForm(EpisodesType::class, $ep)->createView(), $episodes);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
