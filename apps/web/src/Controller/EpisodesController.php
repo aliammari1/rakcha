@@ -28,11 +28,13 @@ class EpisodesController extends AbstractController
     {
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
+        // Bolt: Fetch once to avoid redundant O(N) database queries
+        $episodes = $episodesRepository->findAll();
+        for ($i = 0; $i < count($episodes); $i++) {
+            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
         }
         return $this->render('back/episodesTables.html.twig', [
-            'episodes' => $episodesRepository->findAll(),
+            'episodes' => $episodes,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -43,11 +45,13 @@ class EpisodesController extends AbstractController
     {
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
+        // Bolt: Fetch once to avoid redundant O(N) database queries
+        $episodes = $episodesRepository->findAll();
+        for ($i = 0; $i < count($episodes); $i++) {
+            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
         }
         return $this->render('front/listEpisodes.html.twig', [
-            'episodes' => $episodesRepository->findAll(),
+            'episodes' => $episodes,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -59,8 +63,10 @@ class EpisodesController extends AbstractController
         $episode = new Episodes();
         $form = $this->createForm(EpisodesType::class, $episode);
         $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
+        // Bolt: Fetch once to avoid redundant O(N) database queries
+        $episodes = $episodesRepository->findAll();
+        for ($i = 0; $i < count($episodes); $i++) {
+            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodes[$i])->createView();
         }
         $form->handleRequest($request);
 
@@ -115,7 +121,7 @@ class EpisodesController extends AbstractController
 
 
         return $this->render('back/episodesTables.html.twig', [
-            'episodes' => $episodesRepository->findAll(),
+            'episodes' => $episodes,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
