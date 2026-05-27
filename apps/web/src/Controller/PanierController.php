@@ -96,8 +96,8 @@ class PanierController extends AbstractController
     #[Route('/listepanier', name: 'app_panier_liste', methods: ['GET'])]
     public function afficherPanier(PanierRepository $panierRepository): Response
     {
-        // Récupérer les données du panier à partir du repository
-        $panierItems = $panierRepository->findAll(); // Par exemple, à adapter selon vos besoins
+        // BOLT: Filter by current user to ensure data privacy and reduce hydration overhead
+        $panierItems = $panierRepository->findBy(['idclient' => $this->getUser()]);
 
         // Rendre la vue avec les données du panier
         return $this->render('front/listPanier.html.twig', [
@@ -173,15 +173,8 @@ class PanierController extends AbstractController
         // Initialiser le total à 0
         $total = 0;
 
-        // Récupérer les entités Panier correspondant aux IDs des produits
-
-        $paniers = [];
-        foreach ($productIds as $productId) {
-            $panier = $panierRepository->findOneBy(['idpanier' => $productId]);
-            if ($panier) {
-                $paniers[] = $panier;
-            }
-        }
+        // BOLT: Batch fetch all panier items to eliminate N+1 query problem
+        $paniers = $panierRepository->findBy(['idpanier' => $productIds]);
 
         // Calculer le total pour tous les produits
         foreach ($paniers as $panier) {
