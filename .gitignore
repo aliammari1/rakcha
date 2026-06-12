@@ -19,11 +19,6 @@ apps/mobile/.flutter-plugins-dependencies
 apps/mobile/build/
 apps/mobile/.packages
 
-# Generated API clients
-apps/desktop/src/generated/
-apps/web/src/Generated/
-apps/mobile/lib/generated/
-
 # IDE
 .idea/
 .vscode/
