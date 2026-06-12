@@ -1,0 +1,63 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    "group:monorepos",
+    "group:recommended"
+  ],
+  "timezone": "Africa/Tunis",
+  "schedule": ["before 6am on monday"],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 10,
+  "rangeStrategy": "bump",
+  "lockFileMaintenance": { "enabled": true },
+  "vulnerabilityAlerts": { "labels": ["security"] },
+  "packageRules": [
+    {
+      "description": "Desktop — JavaFX/JavaFX-Maven (Maven, apps/desktop)",
+      "matchManagers": ["maven"],
+      "matchFileNames": ["apps/desktop/**"],
+      "addLabels": ["desktop", "java"],
+      "groupName": "desktop maven deps"
+    },
+    {
+      "description": "Web — Symfony/Twig (Composer, apps/web)",
+      "matchManagers": ["composer"],
+      "matchFileNames": ["apps/web/**"],
+      "addLabels": ["web", "php"],
+      "groupName": "symfony packages",
+      "matchPackagePrefixes": ["symfony/"]
+    },
+    {
+      "description": "Mobile — Flutter/Dart (pub, apps/mobile)",
+      "matchManagers": ["pub"],
+      "matchFileNames": ["apps/mobile/**"],
+      "addLabels": ["mobile", "flutter"]
+    },
+    {
+      "description": "Firebase Functions (npm)",
+      "matchManagers": ["npm"],
+      "matchFileNames": ["apps/mobile/firebase/functions/**"],
+      "addLabels": ["firebase", "functions"]
+    },
+    {
+      "description": "GitHub Actions — pin digests, group",
+      "matchManagers": ["github-actions"],
+      "addLabels": ["ci"],
+      "groupName": "github actions",
+      "pinDigests": true
+    },
+    {
+      "description": "Docker images",
+      "matchManagers": ["docker-compose", "dockerfile"],
+      "addLabels": ["docker"]
+    },
+    {
+      "description": "Automerge safe dev/patch updates",
+      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "automerge": true
+    }
+  ]
+}
