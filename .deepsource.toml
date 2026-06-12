@@ -5,7 +5,7 @@ name = "php"
 enabled = true
 
   [analyzers.meta]
-  runtime_version = "8.3"
+  runtime_version = "8.2"
 
 [[analyzers]]
 name = "java"
