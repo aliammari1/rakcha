@@ -1,6 +1,6 @@
 <?php
 
-return [
+$bundles = [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
@@ -18,3 +18,11 @@ return [
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
 ];
+
+// Registered only once the package is installed (run `composer update
+// nelmio/security-bundle`); guarded so the app still boots before then.
+if (class_exists(Nelmio\SecurityBundle\NelmioSecurityBundle::class)) {
+    $bundles[Nelmio\SecurityBundle\NelmioSecurityBundle::class] = ['all' => true];
+}
+
+return $bundles;
