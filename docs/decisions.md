@@ -49,6 +49,38 @@ callable directly over HTTPS. A callable keeps the integration consistent with
 the "independent apps" reality — no new shared REST surface to maintain. Model:
 **`claude-haiku-4-5`** (fast, cheap, ample for short recommendation prompts).
 
+## Why SLSA provenance + OSV-Scanner + CycloneDX SBOM
+
+The CI already scanned (CodeQL, Trivy) but emitted no **attestations**. The
+release workflow now signs **SLSA build provenance**
+(`actions/attest-build-provenance`) for each jpackage installer, so a downloader
+can prove a `.msi`/`.dmg`/`.deb` came from this repo's workflow
+(`gh attestation verify <installer> --repo aliammari1/rakcha`). A single
+**OSV-Scanner** pass covers all four lockfiles (`pom.xml`, `composer.lock`,
+`pubspec.lock`, `package-lock.json`), and **cdxgen** emits one aggregated
+**CycloneDX** SBOM across the Maven/Composer/npm/pub ecosystems.
+
+## Why a CSP via NelmioSecurityBundle (with `unsafe-inline`, for now)
+
+The Symfony app shipped **no CSP** while loading from several CDNs (jsDelivr
+dominant). NelmioSecurityBundle now adds a Content-Security-Policy plus HSTS,
+nosniff, and Referrer-Policy. The 71 Twig templates contain ~46 inline
+`<script>` blocks and many inline styles, so a strict nonce-only CSP would
+require rewriting every template; the baseline CSP instead **locks the host
+allowlist** to the CDNs actually used and keeps `'unsafe-inline'` as a
+documented, temporary allowance. Dropping `'unsafe-inline'` via nonces is a
+tracked backlog item. Even so, this blocks unlisted hosts/objects/frames — a
+large improvement over no CSP.
+
+## Why App Check is enforced on the concierge callable
+
+The `cinemaConcierge` callable fans out to the paid Anthropic API. It now runs
+with `runWith({ enforceAppCheck: true })` (gen-1) and additionally asserts
+`context.app`, so only the real apps (with valid App Check tokens) can spend the
+budget — anti-abuse on a money-touching AI endpoint. (gen-1 → gen-2 migration is
+a tracked follow-up alongside Symfony 6.4→7.4 and PIT/Infection mutation
+testing.)
+
 ## Cloudflare / hosting honesty
 
 Symfony (PHP) cannot run on Cloudflare Workers. The docs site (this MkDocs build)
