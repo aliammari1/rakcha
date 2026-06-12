@@ -32,9 +32,9 @@ components** that share a problem domain but **not** a codebase or a runtime API
 > **The honest architecture.** These are **three independent apps**, not one API
 > with many clients. The desktop client talks to the database over JDBC — it does
 > **not** call the web app over HTTP. The web app is a classic server-rendered
-> Twig site (36 controllers, 71 templates), not an API product. The
-> `shared/api-spec/openapi.yaml` file is an unimplemented stub that no controller
-> serves, and no client generator is wired. The only cross-app integration is the
+> Twig site (36 controllers, 71 templates), not an API product. An earlier
+> `shared/api-spec/openapi.yaml` stub described routes that no controller served,
+> with no client generator wired — it was removed. The only cross-app integration is the
 > **AI cinema concierge**, a Firebase callable that the mobile and web apps each
 > reach directly over HTTPS.
 
@@ -119,7 +119,7 @@ rakcha/
 │   └── mobile/     # FlutterFlow Flutter app  — README in apps/mobile
 │       └── firebase/functions/  # Node functions + AI concierge
 ├── docs/           # mkdocs-material site (architecture, per-app, schema)
-├── shared/         # schema migration + (stub) api-spec
+├── shared/         # schema migration + shared config (no API spec — see decisions)
 ├── renovate.json   # single dependency bot for all ecosystems
 └── mkdocs.yml
 ```
@@ -139,6 +139,26 @@ playground**, because there is no real API.
 ```bash
 pip install -r requirements-docs.txt && mkdocs serve
 ```
+
+---
+
+## Demos & deployment
+
+Each app ships its own demo — there's no single deploy because they're
+independent. Full steps in [`docs/deployment.md`](docs/deployment.md).
+
+| Component | How to try it | Hosting |
+|---|---|---|
+| **Desktop** | Download a native installer (`.msi`/`.dmg`/`.deb`) from [**Releases**](../../releases) | GitHub Releases (jpackage matrix — already wired) |
+| **Web** | Symfony app deployable to **Render** (Docker + free Postgres) | Render free tier — `apps/web/Dockerfile` ships ready |
+| **Mobile** | `flutter build apk` → Releases / Firebase App Distribution; **TestFlight** for iOS | Firebase |
+| **Docs** | This site → **Cloudflare Pages** | CF Pages (the only CF-compatible piece) |
+
+> **Honest hosting note.** Cloudflare Workers run **JS/WASM, not PHP** — so the
+> Symfony web app can't live on Cloudflare. After researching the 2026 free-tier
+> landscape (Fly.io/Koyeb dropped free compute; Railway is now a 30-day trial),
+> the web demo targets **Render** (PHP via Docker + free Postgres); only the
+> static docs go to Cloudflare Pages.
 
 ---
 
@@ -171,8 +191,27 @@ and personal use; commercial use requires a license — see [LICENSE](LICENSE).
 ## Branding
 
 The hero/social images are a **TODO** — see [BANNER.md](BANNER.md) for the
-cinema-letterbox (2.39:1, theatre-red/charcoal) art direction.
-`assets/banner.svg` is a committed local placeholder.
+finalized cinema-letterbox (2.39:1, theatre-red/charcoal) image-gen prompt.
+`assets/banner.svg` is a committed local placeholder so the hero never 404s.
+Set the **1280×640** social preview under Settings → Social preview once the
+PNG is generated.
+
+## GitHub topics
+
+Suggested repo topics (Settings → Topics) for discoverability:
+
+```
+cinema  movies  polyglot  monorepo  javafx  symfony  twig  php
+flutter  flutterflow  firebase  langgraph  anthropic  jpackage
+maven  doctrine  desktop-app  mkdocs
+```
+
+The honest trending hook is the **rare polyglot stack** — one cinema domain
+across a JavaFX desktop client, a Symfony/Twig server-rendered web app, a
+FlutterFlow mobile app, and Firebase functions — plus the **jpackage native
+installers** (the strongest demo magnet here) and the FlutterFlow showcase.
+There is intentionally **no "API-first / one-spec-many-clients"** claim — it was
+never real.
 
 <div align="center">
 

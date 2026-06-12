@@ -5,8 +5,9 @@ Short, honest notes on why RAKCHA is built the way it is.
 ## Why three independent apps, not one API + clients?
 
 The original "one OpenAPI spec → Java/PHP/Dart clients" framing was **never
-implemented** — `shared/api-spec/openapi.yaml` is a 144-line stub that no
-controller serves, and no generator is wired. Rather than pretend, the apps are
+implemented** — the old `shared/api-spec/openapi.yaml` was a 144-line stub that
+no controller served, with no generator wired, so it (and `openapitools.json`)
+were **removed**. Rather than pretend, the apps are
 treated as what they actually are: three independent products against a shared
 domain. The desktop app uses **JDBC** (best ergonomics for a thick JavaFX
 client), the web app uses **Symfony/Twig** server-side rendering (SEO-friendly,
