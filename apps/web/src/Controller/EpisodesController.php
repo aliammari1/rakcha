@@ -26,13 +26,15 @@ class EpisodesController extends AbstractController
     #[Route('/', name: 'app_episodes_index', methods: ['GET'])]
     public function index(EpisodesRepository $episodesRepository): Response
     {
+        // ⚡ Optimization: Fetch all episodes once to avoid O(N) database queries in the loop
+        $episodes = $episodesRepository->findAll();
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
+        foreach ($episodes as $episode) {
+            $updateForms[] = $this->createForm(EpisodesType::class, $episode)->createView();
         }
         return $this->render('back/episodesTables.html.twig', [
-            'episodes' => $episodesRepository->findAll(),
+            'episodes' => $episodes,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -41,13 +43,15 @@ class EpisodesController extends AbstractController
     #[Route('/listeEpisodes', name: 'app_episodes_liste', methods: ['GET'])]
     public function listeEpisodes(EpisodesRepository $episodesRepository): Response
     {
+        // ⚡ Optimization: Fetch all episodes once to avoid O(N) database queries in the loop
+        $episodes = $episodesRepository->findAll();
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
+        foreach ($episodes as $episode) {
+            $updateForms[] = $this->createForm(EpisodesType::class, $episode)->createView();
         }
         return $this->render('front/listEpisodes.html.twig', [
-            'episodes' => $episodesRepository->findAll(),
+            'episodes' => $episodes,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -56,11 +60,13 @@ class EpisodesController extends AbstractController
     #[Route('/new', name: 'app_episodes_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, EpisodesRepository $episodesRepository): Response
     {
+        // ⚡ Optimization: Fetch all episodes once to avoid O(N) database queries in the loop
+        $episodes = $episodesRepository->findAll();
         $episode = new Episodes();
         $form = $this->createForm(EpisodesType::class, $episode);
         $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
+        foreach ($episodes as $e) {
+            $updateForms[] = $this->createForm(EpisodesType::class, $e)->createView();
         }
         $form->handleRequest($request);
 
@@ -115,7 +121,7 @@ class EpisodesController extends AbstractController
 
 
         return $this->render('back/episodesTables.html.twig', [
-            'episodes' => $episodesRepository->findAll(),
+            'episodes' => $episodes,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -267,8 +273,8 @@ class EpisodesController extends AbstractController
 
             /*     
             // Envoi du SMS après l'ajout de la série
-          $twilioSid = "ACd3d2094ef7f546619e892605940f1631";
-          $twilioToken = "8d56f8a04d84ff2393de4ea888f677a1";
+          $twilioSid = "REDACTED";
+          $twilioToken = "REDACTED";
           $twilioPhoneNumber = "+17573640849";
           $phoneNumber = '+21653775010'; // Remplacez par le numéro de téléphone réel de votre base de données
 
@@ -293,8 +299,8 @@ class EpisodesController extends AbstractController
             // Vérifier si le sentiment est négatif
             if ($sentiment == 'neu') {
                 // Le sentiment est négatif, envoyer un SMS à l'utilisateur pour demander pourquoi il n'a pas aimé l'épisode
-                $twilioSid = "ACb62dae18a1cdf503d09534ba7f13db8d";
-                $twilioToken = "3763cdf1b024cff8330fab6501d95d75";
+                $twilioSid = "REDACTED";
+                $twilioToken = "REDACTED";
                 $twilioPhoneNumber = "+13347218426";
                 $phoneNumber = '+216' . strval($this->getUser()->getNumTelephone()); // Remplacez par le numéro de téléphone réel de votre base de données
                 try {
