@@ -29,6 +29,14 @@ apps/mobile/lib/generated/
 .vscode/
 *.iml
 
+# Docs (mkdocs-material build output)
+/site/
+
+# Coverage / test artifacts
+apps/web/coverage.xml
+apps/web/.phpunit.result.cache
+apps/mobile/coverage/
+
 # Docker
 mysql_data/
 
