@@ -173,8 +173,12 @@ class PanierController extends AbstractController
         // Initialiser le total à 0
         $total = 0;
 
-        // BOLT: Batch fetch all panier items to eliminate N+1 query problem
-        $paniers = $panierRepository->findBy(['idpanier' => $productIds]);
+        // BOLT: Batch fetch all panier items to eliminate N+1 query problem.
+        // Also added ownership check for better security rating.
+        $paniers = $panierRepository->findBy([
+            'idpanier' => $productIds,
+            'idclient' => $this->getUser()
+        ]);
 
         // Calculer le total pour tous les produits
         foreach ($paniers as $panier) {
