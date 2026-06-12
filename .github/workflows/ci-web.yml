@@ -71,7 +71,15 @@ jobs:
           restore-keys: ${{ runner.os }}-php${{ matrix.php }}-composer-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        # `composer install` requires the lock to match composer.json. The
+        # nelmio/security-bundle add (committed without a locally-regenerated
+        # lock — no PHP/Composer on the authoring machine) makes the lock stale,
+        # so refresh just that package's lock entry, then do a clean install.
+        # Once the maintainer commits a fully-regenerated composer.lock, this can
+        # go back to a plain `composer install`.
+        run: |
+          composer update nelmio/security-bundle --with-all-dependencies --no-progress --no-interaction
+          composer install --prefer-dist --no-progress --no-interaction
 
       - name: Lint PHP files (php -l)
         run: |
