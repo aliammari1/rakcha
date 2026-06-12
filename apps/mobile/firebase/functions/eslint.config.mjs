@@ -27,9 +27,10 @@ export default [
     },
   },
   {
-    // Vitest test files.
+    // Vitest test files run as ESM.
     files: ["**/*.test.js", "**/*.spec.js"],
     languageOptions: {
+      sourceType: "module",
       globals: {
         ...globals.node,
       },
