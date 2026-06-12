@@ -1,7 +1,7 @@
 {% extends 'baseFront.html.twig' %}
 
 {% block pageStyle %}
-    {{ encore_entry_link_tags('app') }}
+    {# Encore removed — assets are served from the jsDelivr CDN (see base.html.twig). #}
     <style>
         .chart {
             width: 500px;
@@ -247,7 +247,7 @@
 
     </script>
 
-    {{ encore_entry_link_tags('app') }}
+    {# Encore removed — Chart.js loaded directly from CDN below. #}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         window.onload = () => {
