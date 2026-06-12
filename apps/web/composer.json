@@ -26,6 +26,7 @@
     "league/omnipay": "^3.2",
     "liip/imagine-bundle": "^2.1",
     "madcoda/php-youtube-api": "^1.2",
+    "nelmio/security-bundle": "^3.4",
     "nyholm/psr7": "^1.8",
     "omnipay/paypal": "^3.0",
     "phpdocumentor/reflection-docblock": "^5.3",
