@@ -12,5 +12,5 @@ name = "java"
 enabled = true
 
 exclude_patterns = [
-    "apps/web/vendor/**",
+    "apps/web/vendor/**"
 ]
