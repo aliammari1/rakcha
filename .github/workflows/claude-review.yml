@@ -1,0 +1,53 @@
+name: Claude Review
+
+# Multi-language @claude code review for the polyglot monorepo (JavaFX desktop,
+# Symfony/Twig web, FlutterFlow mobile, Firebase functions). Triggered on PRs
+# and on-demand via an `@claude` mention. Requires ANTHROPIC_API_KEY secret.
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+jobs:
+  claude:
+    # Run on PRs, or only when a human @mentions claude in a comment.
+    if: >
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 1
+
+      - name: Claude code review
+        uses: anthropics/claude-code-action@ebcdfe6dc6bb7511eb63e59e07df256dbcf59a2e # v1.0.145
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Review this change in the RAKCHA polyglot monorepo. The three apps
+            are INDEPENDENT (no shared REST API):
+              - apps/desktop : JavaFX 21 + Maven (JDBC to the DB)
+              - apps/web     : Symfony 6.4 server-rendered MVC (Twig)
+              - apps/mobile  : FlutterFlow-exported (review hand-written code only,
+                               not lib/flutter_flow / lib/backend)
+              - apps/mobile/firebase/functions : Node (LangGraph + Anthropic)
+            Focus on correctness, security (auth, SQL/JDBC, secrets), and the
+            relevant language's idioms. Skip generated code.
