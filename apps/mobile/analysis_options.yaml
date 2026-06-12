@@ -1,7 +1,22 @@
-
-
+# Analysis scoped to HAND-WRITTEN code only. The bulk of lib/ is exported by
+# FlutterFlow and is excluded so CI lints/coverage reflect code we maintain.
+include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
+    # FlutterFlow-generated / vendor code — not hand-maintained.
+    - lib/flutter_flow/**
     - lib/custom_code/**
-    - lib/flutter_flow/custom_functions.dart
+    - lib/backend/**
+    - lib/index.dart
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+  errors:
+    # Generated code occasionally trips these; keep them non-fatal globally.
+    todo: ignore
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_final_locals: true
+    avoid_print: true
