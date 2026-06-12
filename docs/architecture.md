@@ -32,9 +32,9 @@ graph TD
   **71 Twig templates** to HTML. Only a handful of endpoints return small AJAX
   `JsonResponse` payloads (cart total, bookmark toggle, etc.). It is **not** an
   API product.
-- **`shared/api-spec/openapi.yaml` is a stub.** It documents `/api/cinemas` and
-  `/api/films` routes that no controller actually serves, and `openapitools.json`
-  wires no generator. Treat it as historical, not authoritative.
+- **There is no shared REST API.** An earlier `shared/api-spec/openapi.yaml`
+  documented `/api/cinemas` / `/api/films` routes that no controller served, and
+  `openapitools.json` wired no generator — both were **removed** as vaporware.
 - **The only cross-app integration** is the AI concierge: a Firebase callable
   that the mobile and web apps each reach **directly over HTTPS** — independently.
 

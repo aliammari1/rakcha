@@ -56,4 +56,5 @@ nav:
   - Mobile (FlutterFlow): apps/mobile.md
   - Firebase functions & AI: apps/functions.md
   - Database schema: database.md
+  - Deployment & demos: deployment.md
   - Engineering decisions: decisions.md

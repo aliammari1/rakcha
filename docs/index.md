@@ -14,9 +14,9 @@ codebase or a runtime API:
 !!! warning "No shared REST API"
     These are **three independent apps**. The desktop client talks to the
     database over JDBC; it does **not** call the web app over HTTP. There is no
-    "one spec → many clients" code-generation pipeline — `shared/api-spec/openapi.yaml`
-    is an unimplemented stub that no controller serves. Read these docs with that
-    reality in mind.
+    "one spec → many clients" code-generation pipeline — the old
+    `shared/api-spec/openapi.yaml` stub (served by no controller) was removed.
+    Read these docs with that reality in mind.
 
 ## What's here
 
