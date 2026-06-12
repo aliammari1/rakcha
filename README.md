@@ -162,6 +162,23 @@ independent. Full steps in [`docs/deployment.md`](docs/deployment.md).
 
 ---
 
+## Security & supply chain
+
+Polyglot security tooling, one pass across every stack:
+
+| Concern | What's wired |
+|---|---|
+| **Signed provenance** | **SLSA build provenance** (`actions/attest-build-provenance`) on every jpackage installer — verify with `gh attestation verify <installer> --repo aliammari1/rakcha` |
+| **Vuln scanning** | **OSV-Scanner** over `pom.xml` + `composer.lock` + `pubspec.lock` + `package-lock.json` in one pass, plus Trivy fs/config and CodeQL |
+| **SBOM** | **CycloneDX** (`cdxgen`) — one aggregated `bom.json` for all four ecosystems |
+| **Web CSP** | **NelmioSecurityBundle** Content-Security-Policy + HSTS / nosniff / Referrer-Policy on the Symfony app (host-locked CDN allowlist) |
+| **AI anti-abuse** | **Firebase App Check enforced** on the `cinemaConcierge` callable — protects the Anthropic budget |
+
+Actions are SHA-pinned. See [`docs/decisions.md`](docs/decisions.md) for the
+rationale and the tracked follow-ups (Symfony 6.4→7.4, PIT/Infection, nonce CSP).
+
+---
+
 ## Engineering decisions
 
 A few deliberate choices (full notes in [`docs/decisions.md`](docs/decisions.md)):
@@ -211,10 +228,21 @@ across a JavaFX desktop client, a Symfony/Twig server-rendered web app, a
 FlutterFlow mobile app, and Firebase functions — plus the **jpackage native
 installers** (the strongest demo magnet here) and the FlutterFlow showcase.
 There is intentionally **no "API-first / one-spec-many-clients"** claim — it was
-never real.
+never real. The full discoverability/launch plan lives in [`GROWTH.md`](GROWTH.md).
+
+---
+
+## Related & links
+
+- **Documentation** — mkdocs-material site ([`mkdocs.yml`](mkdocs.yml)) → Cloudflare Pages
+- **Per-app READMEs** — [desktop](apps/desktop/README.md) · [web](apps/web/README.md) · [mobile](apps/mobile/README.md)
+- **Downloads** — native installers on [Releases](../../releases)
+- **Growth/launch kit** — [`GROWTH.md`](GROWTH.md) · **Branding** — [`BANNER.md`](BANNER.md)
+- **Contributing** — [`CONTRIBUTING.md`](CONTRIBUTING.md) · **Security** — [`SECURITY.md`](SECURITY.md) · **Conduct** — [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md)
+- **Maintainer** — [@aliammari1](https://github.com/aliammari1)
 
 <div align="center">
 
-**Made with ❤️ for cinema, across four stacks.**
+**Made with ❤️ for cinema, across four stacks.** · [⭐ Star RAKCHA](../../stargazers)
 
 </div>
