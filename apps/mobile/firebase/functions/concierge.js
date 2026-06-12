@@ -15,8 +15,18 @@
  * Set the Anthropic key before deploying:
  *   firebase functions:config:set anthropic.key="sk-ant-..."   (gen-1 config)
  *   — or set the ANTHROPIC_API_KEY env var for the function.
+ *
+ * Anti-abuse: App Check is ENFORCED. The callable is registered with
+ * `{ enforceAppCheck: true }` so the Firebase runtime rejects requests without
+ * a valid App Check token before this code runs; we additionally assert
+ * `context.app` so the protection still holds if the function is invoked
+ * through a path where runtime enforcement is unavailable. This keeps the
+ * Anthropic budget from being drained by clients that aren't the real apps.
  */
-const functions = require("firebase-functions");
+// gen-1 (v1) functions API: this module uses functions.config() and the
+// (data, context) callable signature, and enforces App Check via runWith().
+// (gen-1 → gen-2 migration is tracked in the modernization backlog.)
+const functions = require("firebase-functions/v1");
 const { ChatAnthropic } = require("@langchain/anthropic");
 const { StateGraph, Annotation, START, END } = require("@langchain/langgraph");
 
@@ -112,7 +122,25 @@ function buildGraph(model) {
  * Callable entry point. Request data: { prompt: string, favoriteGenres?: string[] }.
  * Response: { recommendations: [{ title, reason, genres }] }.
  */
-const cinemaConcierge = functions.https.onCall(async (data) => {
+const cinemaConcierge = functions
+  // gen-1 App Check enforcement: the runtime rejects requests without a valid
+  // App Check token before the handler runs.
+  .runWith({ enforceAppCheck: true })
+  .https.onCall(async (data, context) => {
+    // Defense in depth: reject if App Check did not attach a verified app.
+    // With enforceAppCheck the runtime already blocks these, but asserting
+    // here protects against emulator / misconfigured-deploy bypasses.
+    if (!context || !context.app) {
+      throw new functions.https.HttpsError(
+        "failed-precondition",
+        "App Check verification failed — request rejected.",
+      );
+    }
+    return runConcierge(data);
+  });
+
+/** Core concierge logic, separated so it can be unit-tested without App Check. */
+async function runConcierge(data) {
   const prompt = (data && data.prompt ? String(data.prompt) : "").trim();
   if (!prompt) {
     throw new functions.https.HttpsError(
@@ -141,6 +169,6 @@ const cinemaConcierge = functions.https.onCall(async (data) => {
       `Concierge failed: ${err.message}`,
     );
   }
-});
+}
 
 module.exports = { cinemaConcierge, parseRecommendations, buildGraph };
