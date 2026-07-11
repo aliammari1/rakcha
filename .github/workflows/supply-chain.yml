@@ -37,7 +37,7 @@ jobs:
       - name: Run OSV-Scanner over the monorepo
         # Recursive scan finds pom.xml, composer.lock, package-lock.json, and
         # pubspec.lock automatically. SARIF is uploaded to code scanning.
-        uses: google/osv-scanner-action/osv-scanner-action@40a8d5f88f165aa3f10ba98a1f209a89e74045d1 # v2.2.4
+        uses: google/osv-scanner-action/osv-scanner-action@7222d1c7ee4f96d71d883e0d3c603f1e1705eca9 # v2.3.5
         with:
           scan-args: |-
             --recursive
