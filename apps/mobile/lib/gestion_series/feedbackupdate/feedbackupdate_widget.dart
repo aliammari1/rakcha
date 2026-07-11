@@ -199,11 +199,6 @@ class _FeedbackupdateWidgetState extends State<FeedbackupdateWidget> {
                                       if (snapshot.data!.isEmpty) {
                                         return Container();
                                       }
-                                      final taskReviewRecord =
-                                          taskReviewRecordList.isNotEmpty
-                                              ? taskReviewRecordList.first
-                                              : null;
-
                                       return TextFormField(
                                         controller: _model.taskTextController1,
                                         focusNode: _model.taskFocusNode1,

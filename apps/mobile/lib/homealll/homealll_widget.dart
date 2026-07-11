@@ -125,9 +125,6 @@ class _HomealllWidgetState extends State<HomealllWidget> {
                         ),
                       );
                     }
-
-                    final circleImageUsersRecord = snapshot.data!;
-
                     return Container(
                       width: 120.0,
                       height: 120.0,
