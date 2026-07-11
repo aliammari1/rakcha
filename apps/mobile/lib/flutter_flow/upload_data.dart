@@ -252,7 +252,7 @@ Future<List<SelectedFile>?> selectFiles({
   List<String>? allowedExtensions,
   bool multiFile = false,
 }) async {
-  final pickedFiles = await FilePicker.platform.pickFiles(
+  final pickedFiles = await FilePicker.pickFiles(
     type: allowedExtensions != null ? FileType.custom : FileType.any,
     allowedExtensions: allowedExtensions,
     withData: true,
