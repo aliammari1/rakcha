@@ -1,11 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 
+// Firebase web/mobile API keys are publishable identifiers, but we still
+// externalize them so the value lives in build config rather than source.
+// Provide it at build/run time with:
+//   flutter run --dart-define=FIREBASE_API_KEY=...
+// The documented fallback value lives in apps/mobile/.env.example (not here).
+const String _kFirebaseApiKey = String.fromEnvironment('FIREBASE_API_KEY');
+
 Future initFirebase() async {
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: FirebaseOptions(
-            apiKey: "AIzaSyD5K3yznoR8ytbujRi2K4TnRpkL8rQQmcE",
+            apiKey: _kFirebaseApiKey,
             authDomain: "rakcha-hn94a9.firebaseapp.com",
             projectId: "rakcha-hn94a9",
             storageBucket: "rakcha-hn94a9.appspot.com",

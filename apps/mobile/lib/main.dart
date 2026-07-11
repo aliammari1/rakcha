@@ -36,8 +36,8 @@ class _MyAppState extends State<MyApp> {
 
   late AppStateNotifier _appStateNotifier;
   late GoRouter _router;
-  String getRoute([RouteMatch? routeMatch]) {
-    final RouteMatch lastMatch =
+  String getRoute([RouteMatchBase? routeMatch]) {
+    final RouteMatchBase lastMatch =
         routeMatch ?? _router.routerDelegate.currentConfiguration.last;
     final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
         ? lastMatch.matches
@@ -187,7 +187,7 @@ class _NavBarPageState extends State<NavBarPage> {
             customWidget: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                FaIcon(
                   FontAwesomeIcons.robot,
                   color: currentIndex == 1
                       ? FlutterFlowTheme.of(context).primary
@@ -225,7 +225,7 @@ class _NavBarPageState extends State<NavBarPage> {
             customWidget: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                FaIcon(
                   FontAwesomeIcons.film,
                   color: currentIndex == 3
                       ? FlutterFlowTheme.of(context).primary

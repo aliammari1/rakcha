@@ -1149,11 +1149,9 @@ class _AddFilmWidgetState extends State<AddFilmWidget> {
                                       context: context,
                                       initialDate: getCurrentTimestamp,
                                       firstDate:
-                                          (DateTime.fromMicrosecondsSinceEpoch(
-                                                  642117600000000) ??
-                                              DateTime(1900)),
-                                      lastDate: (getCurrentTimestamp ??
-                                          DateTime(2050)),
+                                          DateTime.fromMicrosecondsSinceEpoch(
+                                              642117600000000),
+                                      lastDate: getCurrentTimestamp,
                                       builder: (context, child) {
                                         return wrapInMaterialDatePickerTheme(
                                           context,
@@ -1254,7 +1252,7 @@ class _AddFilmWidgetState extends State<AddFilmWidget> {
                                 return;
                               }
                               if (_model
-                                      .uploadedFileUrl_uploadData123.isEmpty) {
+                                  .uploadedFileUrl_uploadData123.isEmpty) {
                                 return;
                               }
                               if (_model.dropDownValue == null) {

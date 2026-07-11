@@ -20,5 +20,10 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    # AI cinema concierge — reaches the Firebase callable directly over HTTPS.
+    App\Service\ConciergeClient:
+        arguments:
+            $callableUrl: '%env(default::CONCIERGE_CALLABLE_URL)%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

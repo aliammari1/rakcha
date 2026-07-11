@@ -10,7 +10,10 @@ apps/web/var/
 apps/web/node_modules/
 apps/web/public/build/
 apps/web/public/uploads/
+# Real Symfony dotenv files (secrets); keep .env.example tracked.
 apps/web/.env.local
+apps/web/.env.test
+apps/web/.env.*.local
 
 # Flutter / Dart (Mobile)
 apps/mobile/.dart_tool/
@@ -19,15 +22,18 @@ apps/mobile/.flutter-plugins-dependencies
 apps/mobile/build/
 apps/mobile/.packages
 
-# Generated API clients
-apps/desktop/src/generated/
-apps/web/src/Generated/
-apps/mobile/lib/generated/
-
 # IDE
 .idea/
 .vscode/
 *.iml
+
+# Docs (mkdocs-material build output)
+/site/
+
+# Coverage / test artifacts
+apps/web/coverage.xml
+apps/web/.phpunit.result.cache
+apps/mobile/coverage/
 
 # Docker
 mysql_data/
@@ -35,3 +41,11 @@ mysql_data/
 # OS
 .DS_Store
 Thumbs.db
+
+# Internal growth/marketing notes (not for public)
+GROWTH.md
+BANNER.md
+SUBMITTING_TO_AWESOME.md
+launch-kit.md
+star-strategy.md
+modernization-backlog.md

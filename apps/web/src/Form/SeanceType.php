@@ -25,7 +25,7 @@ class SeanceType extends AbstractType
         $this->cinemaRepository = $cinemaRepository;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options) : void
     {
         $builder
             ->add('idCinema', EntityType::class, [
@@ -59,7 +59,7 @@ class SeanceType extends AbstractType
             ->add('hf')
             ->add('prix');
 
-        $formModifier = function (FormInterface $form, Cinema $cinema = null) {
+        $formModifier = function (FormInterface $form, ?Cinema $cinema = null) {
             $salles = $cinema ? $cinema->getSalles() : [];
 
             $films = $cinema ? $cinema->getFilms()->map(function ($film) {
@@ -97,7 +97,7 @@ class SeanceType extends AbstractType
         );
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver) : void
     {
         $resolver->setDefaults([
             'data_class' => Seance::class,

@@ -191,11 +191,6 @@ class _FeedbackajoutWidgetState extends State<FeedbackajoutWidget> {
                                       if (snapshot.data!.isEmpty) {
                                         return Container();
                                       }
-                                      final taskReviewRecord =
-                                          taskReviewRecordList.isNotEmpty
-                                              ? taskReviewRecordList.first
-                                              : null;
-
                                       return TextFormField(
                                         controller: _model.taskTextController1,
                                         focusNode: _model.taskFocusNode1,

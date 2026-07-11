@@ -1,0 +1,99 @@
+name: Release — Desktop installers (jpackage)
+
+# Builds native installers for the JavaFX desktop app on all three OSes using
+# the jpackage-maven-plugin already wired in apps/desktop/pom.xml, then
+# attaches them to a GitHub Release.
+#   - Windows  -> .msi
+#   - macOS    -> .dmg
+#   - Linux    -> .deb
+# Trigger by pushing a tag like `desktop-v1.0.10` or running manually.
+
+on:
+  push:
+    tags:
+      - "desktop-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version label for the manual build (e.g. 1.0.10)"
+        required: false
+        default: "dev"
+
+permissions:
+  contents: write
+  # SLSA build provenance for the jpackage installers (sigstore attestation).
+  id-token: write
+  attestations: write
+
+defaults:
+  run:
+    working-directory: apps/desktop
+
+jobs:
+  build:
+    name: ${{ matrix.os }} → ${{ matrix.type }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            type: msi
+          - os: macos-latest
+            type: dmg
+          - os: ubuntu-latest
+            type: deb
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Set up JDK 21 (Liberica Full — bundles JavaFX + jpackage)
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        with:
+          distribution: liberica
+          java-version: "21"
+          java-package: jdk+fx
+          cache: maven
+
+      - name: Linux packaging deps (fakeroot for .deb)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y fakeroot binutils
+
+      - name: Build native installer (jpackage via mvn install)
+        run: mvn -B --no-transfer-progress -DskipTests clean install
+
+      - name: Collect installer artifact
+        id: collect
+        shell: bash
+        run: |
+          mkdir -p dist-out
+          # jpackage writes to target/dist (see pom <dest>).
+          found=$(find target/dist -maxdepth 2 -type f \( -name "*.${{ matrix.type }}" \) | head -n1 || true)
+          if [ -z "$found" ]; then
+            echo "No .${{ matrix.type }} produced; listing target/dist:" >&2
+            ls -R target/dist || true
+            exit 1
+          fi
+          cp "$found" dist-out/
+          echo "path=apps/desktop/dist-out" >> "$GITHUB_OUTPUT"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: RAKCHA-${{ matrix.type }}
+          path: apps/desktop/dist-out/*
+          if-no-files-found: error
+
+      - name: Generate SLSA build provenance for the installer
+        # Signs an in-toto provenance attestation for each .msi/.dmg/.deb so
+        # downloaders can verify it was built by this workflow:
+        #   gh attestation verify <installer> --repo aliammari1/rakcha
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-path: apps/desktop/dist-out/*
+
+      - name: Attach to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
+        with:
+          files: apps/desktop/dist-out/*
+          fail_on_unmatched_files: true

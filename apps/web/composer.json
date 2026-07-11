@@ -4,13 +4,12 @@
   "minimum-stability": "stable",
   "prefer-stable": true,
   "require": {
-    "php": ">=8.1",
+    "php": ">=8.2",
     "ext-ctype": "*",
     "ext-curl": "*",
     "ext-iconv": "*",
-    "bacon/bacon-qr-code": "*",
+    "bacon/bacon-qr-code": "^3.1",
     "davmixcool/php-sentiment-analyzer": "^1.2",
-    "doctrine/annotations": "^2.0",
     "doctrine/dbal": "^3",
     "doctrine/doctrine-bundle": "^2.10",
     "doctrine/doctrine-migrations-bundle": "^3.2",
@@ -18,14 +17,15 @@
     "embed/embed": "^4.4",
     "guzzlehttp/guzzle": "^7.8",
     "intervention/image": "^2.7",
-    "kartik-v/bootstrap-star-rating": "@dev",
-    "knplabs/knp-paginator-bundle": "^5.9",
+    "kartik-v/bootstrap-star-rating": "^4.1",
+    "knplabs/knp-paginator-bundle": "^6.5",
     "knpuniversity/oauth2-client-bundle": "^2.18",
     "league/flysystem": "^3.29",
     "league/oauth2-google": "^4.0",
     "league/omnipay": "^3.2",
     "liip/imagine-bundle": "^2.1",
     "madcoda/php-youtube-api": "^1.2",
+    "nelmio/security-bundle": "^3.4",
     "nyholm/psr7": "^1.8",
     "omnipay/paypal": "^3.0",
     "phpdocumentor/reflection-docblock": "^5.3",
@@ -33,9 +33,9 @@
     "scheb/2fa-bundle": "^6.0",
     "scheb/2fa-totp": "^6.0",
     "scheb/2fa-trusted-device": "^6.0",
-    "spatie/browsershot": "^3.61",
+    "spatie/browsershot": "^5.0",
     "spatie/image-optimizer": "^1.8",
-    "stevenmaguire/oauth2-microsoft": "*",
+    "stevenmaguire/oauth2-microsoft": "^2.2",
     "stripe/stripe-php": "^14.4",
     "symfony/asset": "6.4.*",
     "symfony/console": "6.4.*",
@@ -80,6 +80,7 @@
       "composer/package-versions-deprecated": true,
       "endroid/installer": true,
       "php-http/discovery": true,
+      "phpstan/extension-installer": true,
       "symfony/flex": true,
       "symfony/runtime": true
     },
@@ -109,15 +110,16 @@
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     },
-    "vercel": [
-      "@php --ini"
-    ],
     "post-install-cmd": [
       "@auto-scripts"
     ],
     "post-update-cmd": [
       "@auto-scripts"
-    ]
+    ],
+    "phpstan": "phpstan analyse --memory-limit=1G",
+    "cs-check": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --dry-run --diff",
+    "cs-fix": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
+    "test": "phpunit"
   },
   "conflict": {
     "symfony/symfony": "*"
@@ -130,10 +132,16 @@
     }
   },
   "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.64",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^1.12",
+    "phpstan/phpstan-symfony": "^1.4",
+    "phpunit/phpunit": "^9.6",
     "symfony/browser-kit": "6.4.*",
     "symfony/css-selector": "6.4.*",
     "symfony/debug-bundle": "6.4.*",
     "symfony/maker-bundle": "^1.63",
+    "symfony/phpunit-bridge": "^7.1",
     "symfony/stopwatch": "6.4.*",
     "symfony/var-dumper": "6.4.*",
     "symfony/web-profiler-bundle": "6.4.*"

@@ -1,0 +1,63 @@
+name: Trivy
+
+# Filesystem + config (Dockerfile / docker-compose) vulnerability and misconfig
+# scanning. trivy-action is SHA-pinned (it had a 2026 tag-hijack).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "27 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Trivy fs + config scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Trivy filesystem scan (deps/lockfiles)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-fs.sarif
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+
+      - name: Trivy config scan (Dockerfiles / compose)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: config
+          scan-ref: .
+          format: sarif
+          output: trivy-config.sarif
+          severity: CRITICAL,HIGH
+
+      - name: Upload fs results to code scanning
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
+        with:
+          sarif_file: trivy-fs.sarif
+          category: trivy-fs
+        if: always()
+
+      - name: Upload config results to code scanning
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
+        with:
+          sarif_file: trivy-config.sarif
+          category: trivy-config
+        if: always()

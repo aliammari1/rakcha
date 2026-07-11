@@ -1114,8 +1114,7 @@ class _AddCinemaPageWidgetState extends State<AddCinemaPageWidget> {
                                                         ),
                                                       }.withoutNulls,
                                                       extra: <String, dynamic>{
-                                                        'cinema':
-                                                            widget.cinema,
+                                                        'cinema': widget.cinema,
                                                       },
                                                     );
                                                   },
