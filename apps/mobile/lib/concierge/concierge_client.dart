@@ -43,7 +43,7 @@ class ConciergeException implements Exception {
 
 class ConciergeClient {
   ConciergeClient({required this.callableUrl, http.Client? httpClient})
-    : _http = httpClient ?? http.Client();
+      : _http = httpClient ?? http.Client();
 
   /// HTTPS URL of the deployed `cinemaConcierge` callable, e.g.
   /// https://us-central1-rakcha-hn94a9.cloudfunctions.net/cinemaConcierge
@@ -85,9 +85,8 @@ class ConciergeClient {
     }
     // Firebase callables wrap the function's return value in {"result": ...}.
     final dynamic result = decoded['result'] ?? decoded;
-    final dynamic recs = result is Map<String, dynamic>
-        ? result['recommendations']
-        : null;
+    final dynamic recs =
+        result is Map<String, dynamic> ? result['recommendations'] : null;
     if (recs is! List<dynamic>) {
       return const <FilmRecommendation>[];
     }
