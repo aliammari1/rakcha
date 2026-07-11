@@ -18,7 +18,7 @@
     "guzzlehttp/guzzle": "^7.8",
     "intervention/image": "^2.7",
     "kartik-v/bootstrap-star-rating": "^4.1",
-    "knplabs/knp-paginator-bundle": "^5.9",
+    "knplabs/knp-paginator-bundle": "^6.5",
     "knpuniversity/oauth2-client-bundle": "^2.18",
     "league/flysystem": "^3.29",
     "league/oauth2-google": "^4.0",
