@@ -67,8 +67,6 @@ class _PlanningInterfaceWidgetState extends State<PlanningInterfaceWidget> {
             ),
           );
         }
-        List<SeanceRecord> planningInterfaceSeanceRecordList = snapshot.data!;
-
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();

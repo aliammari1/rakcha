@@ -357,11 +357,6 @@ class _SerieaffichageWidgetState extends State<SerieaffichageWidget> {
                                         if (snapshot.data!.isEmpty) {
                                           return Container();
                                         }
-                                        final imageSerieRecord =
-                                            imageSerieRecordList.isNotEmpty
-                                                ? imageSerieRecordList.first
-                                                : null;
-
                                         return ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(8.0),
@@ -672,11 +667,6 @@ class _SerieaffichageWidgetState extends State<SerieaffichageWidget> {
                                             if (snapshot.data!.isEmpty) {
                                               return Container();
                                             }
-                                            final imageSerieRecord =
-                                                imageSerieRecordList.isNotEmpty
-                                                    ? imageSerieRecordList.first
-                                                    : null;
-
                                             return ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(6.0),
