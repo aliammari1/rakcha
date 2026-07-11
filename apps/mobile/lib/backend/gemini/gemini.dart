@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:firebase_ai/firebase_ai.dart';
 import 'package:http/http.dart' as http;
 import '/flutter_flow/flutter_flow_util.dart';
 
@@ -13,7 +13,7 @@ Future<String?> geminiGenerateText(
   String prompt,
 ) async {
   final model =
-      GenerativeModel(model: 'gemini-1.5-pro', apiKey: _kGeminiApiKey);
+      FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash');
   final content = [Content.text(prompt)];
 
   try {
@@ -33,7 +33,8 @@ Future<String?> geminiCountTokens(
   String prompt,
 ) async {
   final model =
-      GenerativeModel(model: 'gemini-1.5-pro', apiKey: _kGeminiApiKey);
+      FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash');
+  ;
   final content = [Content.text(prompt)];
 
   try {
@@ -70,14 +71,15 @@ Future<String?> geminiTextFromImage(
   );
 
   final model =
-      GenerativeModel(model: 'gemini-1.5-flash', apiKey: _kGeminiApiKey);
+      FirebaseAI.googleAI().generativeModel(model: 'gemini-2.5-flash');
+  ;
   final imageBytes = uploadImageBytes != null
       ? uploadImageBytes.bytes
       : await loadImageBytesFromUrl(imageNetworkUrl!);
   final content = [
     Content.multi([
       TextPart(prompt),
-      DataPart('image/jpeg', imageBytes!),
+      InlineDataPart('image/jpeg', imageBytes!),
     ])
   ];
 

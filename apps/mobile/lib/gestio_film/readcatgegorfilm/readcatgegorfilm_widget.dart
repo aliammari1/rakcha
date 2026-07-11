@@ -427,25 +427,31 @@ class _ReadcatgegorfilmWidgetState extends State<ReadcatgegorfilmWidget> {
                                                             ),
                                                       ),
                                                       showBadge: true,
-                                                      shape: badges
-                                                          .BadgeShape.circle,
-                                                      badgeColor:
-                                                          Color(0xFFF9AE58),
-                                                      elevation: 3.0,
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  8.0,
-                                                                  8.0,
-                                                                  8.0,
-                                                                  8.0),
+                                                      badgeStyle: badges.BadgeStyle(
+                                                          badgeColor:
+                                                              Color(0xFFF9AE58),
+                                                          shape: badges
+                                                              .BadgeShape
+                                                              .circle,
+                                                          elevation: 3.0,
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      8.0,
+                                                                      8.0,
+                                                                      8.0,
+                                                                      8.0)),
                                                       position:
                                                           badges.BadgePosition
                                                               .topEnd(),
-                                                      animationType: badges
-                                                          .BadgeAnimationType
-                                                          .scale,
-                                                      toAnimate: true,
+                                                      badgeAnimation: const badges
+                                                          .BadgeAnimation.scale(
+                                                        animationDuration:
+                                                            Duration(
+                                                                milliseconds:
+                                                                    300),
+                                                        loopAnimation: false,
+                                                      ),
                                                       child: Container(
                                                         width: 40.0,
                                                         height: 40.0,
