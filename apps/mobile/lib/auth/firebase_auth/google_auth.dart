@@ -2,7 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final _googleSignIn = GoogleSignIn(scopes: ['profile', 'email']);
+final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+bool _googleSignInInitialized = false;
+
+Future<void> _ensureGoogleSignInInitialized() async {
+  if (_googleSignInInitialized) return;
+  await _googleSignIn.initialize();
+  _googleSignInInitialized = true;
+}
 
 Future<UserCredential?> googleSignInFunc() async {
   if (kIsWeb) {
@@ -10,14 +17,31 @@ Future<UserCredential?> googleSignInFunc() async {
     return await FirebaseAuth.instance.signInWithPopup(GoogleAuthProvider());
   }
 
-  await signOutWithGoogle().catchError((_) => null);
-  final auth = await (await _googleSignIn.signIn())?.authentication;
-  if (auth == null) {
-    return null;
+  await _ensureGoogleSignInInitialized();
+
+  GoogleSignInAccount googleUser;
+  try {
+    // authenticate() replaces signIn() — but it THROWS on cancel/failure
+    // instead of returning null, so cancellation has to be caught explicitly.
+    googleUser = await _googleSignIn.authenticate();
+  } on GoogleSignInException catch (e) {
+    if (e.code == GoogleSignInExceptionCode.canceled) {
+      return null;
+    }
+    rethrow;
   }
+
+  // .authentication is synchronous now and only carries the idToken.
+  // An access token is a separate, explicit authorization step in v7.
+  final idToken = googleUser.authentication.idToken;
+  final authorization = await googleUser.authorizationClient
+      .authorizeScopes(['email', 'profile']);
+
   final credential = GoogleAuthProvider.credential(
-      idToken: auth.idToken, accessToken: auth.accessToken);
+    idToken: idToken,
+    accessToken: authorization.accessToken,
+  );
   return FirebaseAuth.instance.signInWithCredential(credential);
 }
 
-Future signOutWithGoogle() => _googleSignIn.signOut();
+Future<void> signOutWithGoogle() => _googleSignIn.signOut();

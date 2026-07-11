@@ -756,7 +756,7 @@ class RootPageContext {
 
 extension GoRouterLocationExtension on GoRouter {
   String getCurrentLocation() {
-    final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
+    final RouteMatchBase lastMatch = routerDelegate.currentConfiguration.last;
     final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
         ? lastMatch.matches
         : routerDelegate.currentConfiguration;

@@ -415,8 +415,7 @@ class _EditeProductWidgetState extends State<EditeProductWidget> {
                                   autofocus: true,
                                   obscureText: false,
                                   decoration: InputDecoration(
-                                    labelText:
-                                        widget.produit?.prix.toString(),
+                                    labelText: widget.produit?.prix.toString(),
                                     hintText: 'Price',
                                     hintStyle: FlutterFlowTheme.of(context)
                                         .bodySmall
