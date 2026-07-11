@@ -1,6 +1,6 @@
 <?php
 
-$bundles = [
+return [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
@@ -17,12 +17,5 @@ $bundles = [
     SymfonyCasts\Bundle\ResetPassword\SymfonyCastsResetPasswordBundle::class => ['all' => true],
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
+    Nelmio\SecurityBundle\NelmioSecurityBundle::class => ['all' => true],
 ];
-
-// Registered only once the package is installed (run `composer update
-// nelmio/security-bundle`); guarded so the app still boots before then.
-if (class_exists(Nelmio\SecurityBundle\NelmioSecurityBundle::class)) {
-    $bundles[Nelmio\SecurityBundle\NelmioSecurityBundle::class] = ['all' => true];
-}
-
-return $bundles;
