@@ -16,7 +16,6 @@
 ###< liip/imagine-bundle ###
 node_modules
 
-.env
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
