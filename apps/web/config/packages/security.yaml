@@ -1,6 +1,4 @@
 security:
-  # https://symfony.com/doc/current/security/authenticator_manager.html
-  enable_authenticator_manager: true
   hide_user_not_found: false
   access_denied_url: /
   role_hierarchy:
