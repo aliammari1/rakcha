@@ -675,7 +675,7 @@ class _UpdateFilmWidgetState extends State<UpdateFilmWidget> {
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
-                              prefixIcon: Icon(
+                              prefixIcon: FaIcon(
                                 FontAwesomeIcons.youtubeSquare,
                                 color: FlutterFlowTheme.of(context).primaryText,
                               ),
