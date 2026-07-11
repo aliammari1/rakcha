@@ -59,7 +59,7 @@ class SeanceType extends AbstractType
             ->add('hf')
             ->add('prix');
 
-        $formModifier = function (FormInterface $form, Cinema $cinema = null) {
+        $formModifier = function (FormInterface $form, ?Cinema $cinema = null) {
             $salles = $cinema ? $cinema->getSalles() : [];
 
             $films = $cinema ? $cinema->getFilms()->map(function ($film) {
