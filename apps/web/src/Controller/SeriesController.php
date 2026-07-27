@@ -24,13 +24,13 @@ class SeriesController extends AbstractController
     {
         $statisticsData = $seriesRepository->getStatisticsByCategory();
         $form = $this->createForm(SeriesType::class, new Series());
-        $updateForms = array();
-        for ($i = 0; $i < count($seriesRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(SeriesType::class, $seriesRepository->findAll()[$i])->createView();
-        }
+        // Bolt: Fetch once to avoid redundant O(N) database queries and use array_map for brevity
+        $series = $seriesRepository->findAll();
+        $updateForms = array_map(fn($serie) => $this->createForm(SeriesType::class, $serie)->createView(), $series);
+
         return $this->render('back/seriesTables.html.twig', [
             'statisticsData' => $statisticsData,
-            'series' => $seriesRepository->findAll(),
+            'series' => $series,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -119,11 +119,12 @@ class SeriesController extends AbstractController
             $entityManager->flush();
             /*
            // Envoi du SMS après l'ajout de la série
-        $twilioSid = "ACd3d2094ef7f546619e892605940f1631";
-        $twilioToken = "8d56f8a04d84ff2393de4ea888f677a1";
-        $twilioPhoneNumber = "+17573640849";
-        $phoneNumber = '+21653775010'; // Remplacez par le numéro de téléphone réel de votre base de données
+        $twilioSid = $_ENV['TWILIO_SID_SECONDARY'] ?? null;
+        $twilioToken = $_ENV['TWILIO_TOKEN_SECONDARY'] ?? null;
+        $twilioPhoneNumber = $_ENV['TWILIO_PHONE_NUMBER_SECONDARY'] ?? null;
+        $phoneNumber = $_ENV['TWILIO_DEFAULT_RECIPIENT'] ?? null;
 
+      if ($twilioSid && $twilioToken && $twilioPhoneNumber && $phoneNumber) {
       try {
           $client = new Client($twilioSid, $twilioToken);
           $client->messages->create(
