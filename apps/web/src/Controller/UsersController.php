@@ -19,28 +19,28 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class UsersController extends AbstractController
 {
+    /**
+     * BOLT: Helper to prepare user data for view, reducing duplication for SonarCloud.
+     */
+    private function prepareUserData(UsersRepository $usersRepository, PaginatorInterface $paginator, Request $request): array
+    {
+        $users = $usersRepository->findAll();
+        return [
+            'users' => $users,
+            'updateForms' => array_map(fn($u) => $this->createForm(RegistrationFormType::class, $u)->createView(), $users),
+            'pagination' => $paginator->paginate($users, $request->query->getInt('page', 1), 5)
+        ];
+    }
 
     #[Route('/usersDash', name: 'app_users_index', methods: ['GET', 'POST'])]
     public function index(UsersRepository $usersRepository, EntityManagerInterface $em, PaginatorInterface $paginator, Request $request): Response
     {
+        $userData = $this->prepareUserData($usersRepository, $paginator, $request);
         $form = $this->createForm(AdminFormType::class, new Users());
-        $updateForms = array();
-        for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $usersRepository->findAll()[$i])->createView();
-        }
-        $users = $usersRepository->findAll();
-        $pagination = $paginator->paginate(
-            $users,
-            $request->query->getInt('page', 1),
-            5
-        );
 
-        return $this->render('back/UserTables.html.twig', [
-            'pagination' => $pagination,
-            'users' => $users,
+        return $this->render('back/UserTables.html.twig', array_merge($userData, [
             'form' => $form->createView(),
-            'updateForms' => $updateForms,
-        ]);
+        ]));
     }
 
     #[Route('/users/profile/{id}', name: 'app_profile_index', methods: ['GET', 'POST'])]
@@ -70,16 +70,7 @@ class UsersController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, UsersRepository $usersRepository, PaginatorInterface $paginator, UserPasswordHasherInterface $userPasswordHasher): Response
     {
         $user = new Users();
-        $updateForms = array();
-        for ($i = 0; $i < count($usersRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $usersRepository->findAll()[$i])->createView();
-        }
-        $pagination = $paginator->paginate(
-            $usersRepository->findAll(), /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            5 /*limit per page*/
-        );
-
+        $userData = $this->prepareUserData($usersRepository, $paginator, $request);
         $form = $this->createForm(AdminFormType::class, $user);
 
         $form->handleRequest($request);
@@ -124,13 +115,10 @@ class UsersController extends AbstractController
             return $this->redirectToRoute('app_users_index', [], Response::HTTP_SEE_OTHER);
         }
         $hasErrorsCreate = true;
-        return $this->render('back/UserTables.html.twig', [
-            'pagination' => $pagination,
-            'users' => $usersRepository->findAll(),
+        return $this->render('back/UserTables.html.twig', array_merge($userData, [
             'form' => $form->createView(),
-            'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate,
-        ]);
+        ]));
     }
 
     #[Route('/users/{id}', name: 'app_users_show', methods: ['GET'])]
@@ -142,18 +130,7 @@ class UsersController extends AbstractController
     #[Route('/users/{id}/edit/{formUpdateNumber}/', name: 'app_users_edit', methods: ['GET', 'POST'])]
     public function edit($formUpdateNumber, Request $request, Users $user, EntityManagerInterface $entityManager, UsersRepository $usersRepository, PaginatorInterface $paginator, UserPasswordHasherInterface $userPasswordHasher): Response
     {
-        $updateForms = array();
-        $users = $usersRepository->findAll();
-        for ($i = 0; $i < count($users); $i++) {
-            $updateForms[$i] = $this->createForm(RegistrationFormType::class, $users[$i])->createView();
-        }
-        $pagination = $paginator->paginate(
-            $usersRepository->findAll(),
-            $request->query->getInt('page', 1),
-            5
-        );
-
-
+        $userData = $this->prepareUserData($usersRepository, $paginator, $request);
         $form = $this->createForm(AdminFormType::class, new Users());
 
         $updateform = $this->createForm(RegistrationFormType::class, $user);
@@ -192,14 +169,11 @@ class UsersController extends AbstractController
         }
 
         $entityManager->refresh($user);
-        return $this->render('back/UserTables.html.twig', [
-            'pagination' => $pagination,
-            'users' => $usersRepository->findAll(),
+        return $this->render('back/UserTables.html.twig', array_merge($userData, [
             "formUpdateNumber" => $formUpdateNumber,
             'updateform' => $updateform->createView(),
             'form' => $form->createView(),
-            'updateForms' => $updateForms,
-        ]);
+        ]));
     }
 
     #[Route('/users/{id}', name: 'app_users_delete', methods: ['POST'])]
