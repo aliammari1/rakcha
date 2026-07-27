@@ -20,13 +20,15 @@ class SeanceController extends AbstractController
     #[Route('/', name: 'app_seance_index', methods: ['GET', 'POST'])]
     public function index(SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
+        // Performance Optimization: Fetch entities once to avoid redundant O(N) database queries
+        $seances = $seanceRepository->findAll();
         $form = $this->createForm(SeanceType::class, new Seance());
         $updateForms = array();
-        for ($i = 0; $i < count($seanceRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(SeanceType::class, $seanceRepository->findAll()[$i])->createView();
+        foreach ($seances as $i => $seance) {
+            $updateForms[$i] = $this->createForm(SeanceType::class, $seance)->createView();
         }
         return $this->render('back/SeancesTable.html.twig', [
-            'seances' => $seanceRepository->findAll(),
+            'seances' => $seances,
             'cinemas' => $cinemaRepository->findAll(),
             'films' => $filmRepository->findAll(),
             'salles' => $salleRepository->findAll(),
@@ -38,10 +40,11 @@ class SeanceController extends AbstractController
     #[Route('/new', name: 'app_seance_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
+        $seances = $seanceRepository->findAll();
         $seance = new Seance();
         $updateForms = array();
-        for ($i = 0; $i < count($seanceRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(SeanceType::class, $seanceRepository->findAll()[$i])->createView();
+        foreach ($seances as $i => $s) {
+            $updateForms[$i] = $this->createForm(SeanceType::class, $s)->createView();
         }
         $form = $this->createForm(SeanceType::class, $seance);
         $form->handleRequest($request);
@@ -55,7 +58,7 @@ class SeanceController extends AbstractController
 
         $hasErrorsCreate = true;
         return $this->render('back/SeancesTable.html.twig', [
-            'seances' => $seanceRepository->findAll(),
+            'seances' => $seances,
             'cinemas' => $cinemaRepository->findAll(),
             'films' => $filmRepository->findAll(),
             'salles' => $salleRepository->findAll(),
@@ -78,8 +81,8 @@ class SeanceController extends AbstractController
     {
         $updateForms = array();
         $seances = $seanceRepository->findAll();
-        for ($i = 0; $i < count($seances); $i++) {
-            $updateForms[$i] = $this->createForm(SeanceType::class, $seances[$i])->createView();
+        foreach ($seances as $i => $s) {
+            $updateForms[$i] = $this->createForm(SeanceType::class, $s)->createView();
         }
         $form = $this->createForm(SeanceType::class, new Seance());
 
@@ -94,7 +97,7 @@ class SeanceController extends AbstractController
         }
         $entityManager->refresh($seance);
         return $this->render('back/SeancesTable.html.twig', [
-            'seances' => $seanceRepository->findAll(),
+            'seances' => $seances,
             'cinemas' => $cinemaRepository->findAll(),
             'films' => $filmRepository->findAll(),
             'salles' => $salleRepository->findAll(),
