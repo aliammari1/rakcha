@@ -19,11 +19,13 @@ class FilmController extends AbstractController
     {
         $form = $this->createForm(FilmType::class, new Film());
         $updateForms = array();
-        for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
+        // Bolt Optimization: Fetch all films once to avoid redundant database queries in the loop and render call.
+        $films = $filmRepository->findAll();
+        for ($i = 0; $i < count($films); $i++) {
+            $updateForms[$i] = $this->createForm(FilmType::class, $films[$i])->createView();
         }
         return $this->render('back/filmTables.html.twig', [
-            'films' => $filmRepository->findAll(),
+            'films' => $films,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
@@ -34,8 +36,10 @@ class FilmController extends AbstractController
     {
 
         $updateForms = array();
-        for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
-            $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
+        // Bolt Optimization: Fetch all films once to avoid redundant database queries in the loop and render call.
+        $films = $filmRepository->findAll();
+        for ($i = 0; $i < count($films); $i++) {
+            $updateForms[$i] = $this->createForm(FilmType::class, $films[$i])->createView();
         }
         $film = new Film();
         $form = $this->createForm(FilmType::class, $film);
@@ -68,7 +72,7 @@ class FilmController extends AbstractController
         }
         $hasErrorsCreate = true;
         return $this->render('back/filmTables.html.twig', [
-            'films' => $filmRepository->findAll(),
+            'films' => $films,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'hasErrorsCreate' => $hasErrorsCreate
@@ -87,6 +91,7 @@ class FilmController extends AbstractController
     public function edit(Request $request, Film $film, $formUpdateNumber, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
         $updateForms = array();
+        // Bolt Optimization: Fetch all films once to avoid redundant database queries in the loop and render call.
         $films = $filmRepository->findAll();
         for ($i = 0; $i < count($films); $i++) {
             $updateForms[$i] = $this->createForm(FilmType::class, $films[$i])->createView();
@@ -119,7 +124,7 @@ class FilmController extends AbstractController
         $entityManager->refresh($film);
         return $this->render('back/filmTables.html.twig', [
             "formUpdateNumber" => $formUpdateNumber,
-            'films' => $filmRepository->findAll(),
+            'films' => $films,
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'updateform' => $updateform->createView(),
