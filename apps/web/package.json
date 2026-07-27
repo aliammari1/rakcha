@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@babel/core": "^7.17.0",
+    "@babel/core": "^7.29.0",
     "@babel/preset-env": "^7.16.0",
     "@splidejs/splide": "^4.1.4",
     "animate.css": "^4.1.1",
