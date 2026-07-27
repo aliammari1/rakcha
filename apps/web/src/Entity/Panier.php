@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\PanierRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PanierRepository::class)]
@@ -27,15 +25,6 @@ class Panier
 
     #[ORM\Column(name: 'quantite', type: 'integer', nullable: true)]
     private ?int $quantite = null;
-    private Collection $idClient;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->idClient = new ArrayCollection();
-    }
 
     public function getIdpanier(): ?int
     {
@@ -74,30 +63,6 @@ class Panier
     public function setQuantite(int $quantite): static
     {
         $this->quantite = $quantite;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Users>
-     */
-    public function getIdClient(): Collection
-    {
-        return $this->idClient;
-    }
-
-    public function addIdClient(Users $idClient): static
-    {
-        if (!$this->idClient->contains($idClient)) {
-            $this->idClient->add($idClient);
-        }
-
-        return $this;
-    }
-
-    public function removeIdClient(Users $idClient): static
-    {
-        $this->idClient->removeElement($idClient);
 
         return $this;
     }

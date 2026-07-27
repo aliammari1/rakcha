@@ -155,7 +155,7 @@ class CommandeController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
 
-        $selectedItemIds = $request->query->get('selectedItemIds');
+        $selectedItemIds = $request->request->get('selectedItemIds');
         $commande = new Commande();
         $form = $this->createForm(CommandeType::class, $commande);
         $form->handleRequest($request);
@@ -185,11 +185,13 @@ class CommandeController extends AbstractController
 
 
                 $entityManager->persist($commandeItem);
-            }
 
-            $quantite = $panierItem->getQuantite();
-            $newquantite = $panierItem->getIdproduit()->getQuantiteP() - $quantite;
-            $panierItem->getIdproduit()->setQuantiteP($newquantite);
+                $quantite = $panierItem->getQuantite();
+                $newquantite = $panierItem->getIdproduit()->getQuantiteP() - $quantite;
+                $panierItem->getIdproduit()->setQuantiteP($newquantite);
+
+                $entityManager->remove($panierItem);
+            }
         }
         $entityManager->flush();
 

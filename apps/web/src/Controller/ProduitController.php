@@ -104,9 +104,6 @@ class ProduitController extends AbstractController
                 $file->move($destination, $filename);
                 $produit->setImage("/img/produit/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\produit";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
 
 
@@ -183,9 +180,6 @@ class ProduitController extends AbstractController
                 $file->move($destination, $filename);
                 $produit->setImage("/img/produit/" . $filename);
 
-                // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\produit";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
 
             $entityManager->flush();
