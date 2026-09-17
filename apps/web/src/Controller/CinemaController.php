@@ -19,6 +19,8 @@ class CinemaController extends AbstractController
     #[Route('/', name: 'app_cinema_index', methods: ['GET', 'POST'])]
     public function index(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         // Get the currently logged-in user
         $user = $this->getUser()->getId();
 
@@ -72,6 +74,8 @@ class CinemaController extends AbstractController
     #[Route('/listeCinemaAdmin', name: 'app_cinemaAdmin_index', methods: ['GET', 'POST'])]
     public function listeCinemaAdmin(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createForm(CinemaType::class, new Cinema());
         $updateForms = array();
         for ($i = 0; $i < count($cinemaRepository->findAll()); $i++) {
@@ -103,6 +107,7 @@ class CinemaController extends AbstractController
     #[Route('/new', name: 'app_cinema_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
         $cinema = new Cinema();
         $updateForms = array();
@@ -156,6 +161,11 @@ class CinemaController extends AbstractController
     #[Route('/{idCinema}/edit/{formUpdateNumber}/', name: 'app_cinema_edit', methods: ['GET', 'POST'])]
     public function edit($formUpdateNumber, Request $request, Cinema $cinema, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        if ($cinema->getResponsable() !== $this->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You are not authorized to edit this cinema.');
+        }
+
         $updateForms = array();
         $cinemas = $cinemaRepository->findAll();
         for ($i = 0; $i < count($cinemas); $i++) {
@@ -203,6 +213,11 @@ class CinemaController extends AbstractController
     #[Route('/{idCinema}', name: 'app_cinema_delete', methods: ['POST'])]
     public function delete(Request $request, Cinema $cinema, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        if ($cinema->getResponsable() !== $this->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You are not authorized to delete this cinema.');
+        }
+
         if ($this->isCsrfTokenValid('delete' . $cinema->getIdCinema(), $request->request->get('_token'))) {
             $entityManager->remove($cinema);
 
@@ -216,6 +231,8 @@ class CinemaController extends AbstractController
     #[Route('/Accept/{idCinema}', name: 'app_cinema_accept', methods: ['POST'])]
     public function Accept(Request $request, Cinema $cinema, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         if ($this->isCsrfTokenValid('accept' . $cinema->getIdCinema(), $request->request->get('_token'))) {
             // Mettre à jour le statut du cinéma
             $cinema->setStatut('Accepted');
@@ -228,6 +245,8 @@ class CinemaController extends AbstractController
     #[Route('/reject/{idCinema}', name: 'app_cinema_reject', methods: ['POST'])]
     public function reject(Request $request, Cinema $cinema, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         if ($this->isCsrfTokenValid('reject' . $cinema->getIdCinema(), $request->request->get('_token'))) {
             $entityManager->remove($cinema);
             $entityManager->flush();
