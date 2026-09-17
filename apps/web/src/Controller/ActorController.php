@@ -57,9 +57,6 @@ class ActorController extends AbstractController
                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
-            $filename = rand(1, 99999) . '.' . $extension;
-            $file->move($this->getParameter('kernel.project_dir') . "/public/img/actors", $filename);
-            $actor->setImage("/img/actors/" . $filename);
             $entityManager->persist($actor);
             $entityManager->flush();
             $this->addFlash('actors', 'actor added successfully');

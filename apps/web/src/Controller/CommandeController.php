@@ -26,10 +26,7 @@ class CommandeController extends AbstractController
 
     private $passerelle;
 
-    //Page d'accueil
-    private $manager;
-
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct()
     {
         $this->passerelle = Omnipay::create('PayPal_Rest');
         $this->passerelle->initialize([
@@ -37,7 +34,6 @@ class CommandeController extends AbstractController
             'secret' => $_ENV['PAYPAL_SECRET_KEY'],
             'testMode' => true,
         ]);
-        $this->manager = $manager;
     }
 
     //Page d'error de la transaction

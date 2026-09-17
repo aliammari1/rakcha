@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ReservationFormType;
+use App\Entity\Users;
 use App\Repository\ActorRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\FilmRepository;
@@ -42,8 +43,9 @@ class ListfilmsController extends AbstractController
             $urls[] = $url;
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            if ($this->getUser()) {
-                $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $this->getUser()->getId()]);
+            $user = $this->getUser();
+            if ($user instanceof Users) {
+                $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $user->getId()]);
             } else {
                 $ratings[] = 0;
             }
@@ -86,6 +88,8 @@ class ListfilmsController extends AbstractController
     #[Route('/listfilms/bookmarks', name: 'app_film_bookmarks_index')]
     public function bookmarks(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        $user = $this->currentUser();
         $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
         $films = $filmRepository->findBy(['isBookmarked' => true]);
         $videoUrls = array();
@@ -100,7 +104,7 @@ class ListfilmsController extends AbstractController
             $urls[] = $url;
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $this->getUser()->getId()]);
+            $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $user->getId()]);
             $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
             if (!empty($videoList)) {
                 $firstVideo = $videoList[0]['id']['videoId'];
@@ -286,5 +290,15 @@ class ListfilmsController extends AbstractController
             return $this->json(["success" => false, "message" => $e->getMessage()]);
         }
         return $this->json(["success" => true, 'seatsArray' => $seatsArray, 'data' => $data]);
+    }
+
+    private function currentUser(): Users
+    {
+        $user = $this->getUser();
+        if (!$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
+
+        return $user;
     }
 }
