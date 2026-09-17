@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Friendships;
+use App\Entity\Users;
 use App\Repository\FriendshipsRepository;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,10 +29,18 @@ class FriendshipsController extends AbstractController
     {
         try {
             $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-            $data = json_decode($request->getContent(), true);
+            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            $receiverId = $data['receiver'] ?? null;
+            if (!is_int($receiverId) && !ctype_digit((string) $receiverId)) {
+                throw $this->createNotFoundException('Receiver not found.');
+            }
+            $receiver = $usersRepository->find((int) $receiverId);
+            if (!$receiver instanceof Users) {
+                throw $this->createNotFoundException('Receiver not found.');
+            }
             $friendship = new Friendships();
-            $friendship->setSender($this->getUser());
-            $friendship->setReceiver($usersRepository->findOneById($data['receiver']));
+            $friendship->setSender($this->currentUser());
+            $friendship->setReceiver($receiver);
             $friendship->setStatut('pending friend request');
             $entityManager->persist($friendship);
             $entityManager->flush();
@@ -53,8 +62,11 @@ class FriendshipsController extends AbstractController
     public function accept(Request $request, FriendshipsRepository $friendshipsRepository, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $data = json_decode($request->getContent(), true);
-        $friendship = $friendshipsRepository->findOneBy(['sender' => $usersRepository->findOneById($data['receiver']), 'receiver' => $this->getUser()]);
+        $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $friendship = $friendshipsRepository->findOneBy(['sender' => $this->receiverFromRequest($data, $usersRepository), 'receiver' => $this->currentUser()]);
+        if (!$friendship instanceof Friendships) {
+            throw $this->createNotFoundException('Friend request not found.');
+        }
         $friendship->setStatut('accepted friend request');
         $entityManager->persist($friendship);
         $entityManager->flush();
@@ -65,8 +77,11 @@ class FriendshipsController extends AbstractController
     public function cancel(Request $request, FriendshipsRepository $friendshipsRepository, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $data = json_decode($request->getContent(), true);
-        $friendship = $friendshipsRepository->findOneBy(['sender' => $this->getUser(), 'receiver' => $usersRepository->findOneById($data['receiver'])]);
+        $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $friendship = $friendshipsRepository->findOneBy(['sender' => $this->currentUser(), 'receiver' => $this->receiverFromRequest($data, $usersRepository)]);
+        if (!$friendship instanceof Friendships) {
+            throw $this->createNotFoundException('Friend request not found.');
+        }
         $friendship->setStatut('cancel friend request');
         $entityManager->remove($friendship);
         $entityManager->flush();
@@ -78,11 +93,40 @@ class FriendshipsController extends AbstractController
     public function reject(Request $request, FriendshipsRepository $friendshipsRepository, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $data = json_decode($request->getContent(), true);
-        $friendship = $friendshipsRepository->findOneBy(['sender' => $this->getUser(), 'receiver' => $usersRepository->findOneById($data['receiver'])]);
+        $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $friendship = $friendshipsRepository->findOneBy(['sender' => $this->currentUser(), 'receiver' => $this->receiverFromRequest($data, $usersRepository)]);
+        if (!$friendship instanceof Friendships) {
+            throw $this->createNotFoundException('Friend request not found.');
+        }
         $friendship->setStatut('cancel friend request');
         $entityManager->remove($friendship);
         $entityManager->flush();
         return new JsonResponse(['success' => true], Response::HTTP_OK);
+    }
+
+    private function currentUser(): Users
+    {
+        $user = $this->getUser();
+        if (!$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
+
+        return $user;
+    }
+
+    /** @param array<string, mixed> $data */
+    private function receiverFromRequest(array $data, UsersRepository $usersRepository): Users
+    {
+        $receiverId = $data['receiver'] ?? null;
+        if (!is_int($receiverId) && !ctype_digit((string) $receiverId)) {
+            throw $this->createNotFoundException('Receiver not found.');
+        }
+
+        $receiver = $usersRepository->find((int) $receiverId);
+        if (!$receiver instanceof Users) {
+            throw $this->createNotFoundException('Receiver not found.');
+        }
+
+        return $receiver;
     }
 }

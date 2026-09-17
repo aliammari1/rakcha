@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Cinema;
+use App\Entity\Users;
 use App\Form\CinemaType;
 use App\Repository\CinemaRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,7 +23,7 @@ class CinemaController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
         // Get the currently logged-in user
-        $user = $this->getUser()->getId();
+        $user = $this->currentUser()->getId();
 
         // Fetch cinemas where the responsible ID matches the ID of the current user
         $userCinemas = $cinemaRepository->findBy(['responsable' => $user]);
@@ -34,13 +35,6 @@ class CinemaController extends AbstractController
         $updateForms = [];
         foreach ($userCinemas as $cinema) {
             $updateForms[] = $this->createForm(CinemaType::class, $cinema)->createView();
-        }
-
-        // Handle errors (if any)
-        if (!empty($errors)) {
-            // Afficher une alerte avec l'erreur
-            $errorMessage = $errors[0]->getMessage();
-            $this->addFlash('error', $errorMessage);
         }
 
         return $this->render('back/CinemasTable.html.twig', [
@@ -82,11 +76,6 @@ class CinemaController extends AbstractController
             $updateForms[$i] = $this->createForm(CinemaType::class, $cinemaRepository->findAll()[$i])->createView();
         }
 
-
-        if (!empty($errors)) {
-            $errorMessage = $errors[0]->getMessage();
-            $this->addFlash('error', $errorMessage);
-        }
         return $this->render('back/CinemasTableAdmin.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
             'form' => $form->createView(),
@@ -136,7 +125,7 @@ class CinemaController extends AbstractController
                 copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
             }
             $cinema->setStatut('Pending');
-            $cinema->setResponsable($this->getUser()->getId());
+            $cinema->setResponsable($this->currentUser()->getId());
             $entityManager->persist($cinema);
             $entityManager->flush();
             return $this->redirectToRoute('app_cinema_index', [], Response::HTTP_SEE_OTHER);
@@ -162,7 +151,7 @@ class CinemaController extends AbstractController
     public function edit($formUpdateNumber, Request $request, Cinema $cinema, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-        if ($cinema->getResponsable() !== $this->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
+        if ($cinema->getResponsable() !== $this->currentUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('You are not authorized to edit this cinema.');
         }
 
@@ -214,7 +203,7 @@ class CinemaController extends AbstractController
     public function delete(Request $request, Cinema $cinema, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-        if ($cinema->getResponsable() !== $this->getUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
+        if ($cinema->getResponsable() !== $this->currentUser()->getId() && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('You are not authorized to delete this cinema.');
         }
 
@@ -253,5 +242,15 @@ class CinemaController extends AbstractController
         }
 
         return $this->redirectToRoute('app_cinemaAdmin_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    private function currentUser(): Users
+    {
+        $user = $this->getUser();
+        if (!$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
+
+        return $user;
     }
 }
