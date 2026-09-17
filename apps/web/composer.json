@@ -1,4 +1,6 @@
 {
+  "name": "rakcha/web",
+  "description": "Rakcha Symfony web application",
   "type": "project",
   "license": "proprietary",
   "minimum-stability": "stable",
@@ -15,7 +17,7 @@
     "doctrine/doctrine-migrations-bundle": "^3.2",
     "doctrine/orm": "^2.16",
     "embed/embed": "^4.4",
-    "guzzlehttp/guzzle": "^7.8",
+    "guzzlehttp/guzzle": "^7.15",
     "intervention/image": "^2.7",
     "kartik-v/bootstrap-star-rating": "^4.1",
     "knplabs/knp-paginator-bundle": "^6.5",
