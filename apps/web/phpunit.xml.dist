@@ -20,8 +20,8 @@
              needs no external database service. -->
         <env name="DATABASE_URL" value="sqlite:///:memory:" />
         <env name="LOCK_DSN" value="flock" />
-        <env name="STRIPE_KEY" value="pk_test_placeholder" />
-        <env name="STRIPE_SECRET_KEY" value="sk_test_placeholder" />
+        <env name="STRIPE_KEY" value="stripe-publishable-key-not-configured" />
+        <env name="STRIPE_SECRET_KEY" value="stripe-secret-key-not-configured" />
         <env name="PAYPAL_CLIENT_ID" value="test_client_id" />
         <env name="PAYPAL_SECRET_KEY" value="test_secret" />
         <env name="PAYPAL_CURRENCY" value="USD" />
