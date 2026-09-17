@@ -358,6 +358,71 @@ final class PaymentSecurityTest extends TestCase
         $this->assertSame(1, $controller->chargeCount);
     }
 
+    public function testSeatConcurrencyEnforcesDeterministicLockOrdering(): void
+    {
+        $user = new Users();
+        $user->setEmail('user@example.com');
+        $user->setRoles(['ROLE_USER']);
+
+        $salle = new Salle();
+        $refSalle = new ReflectionClass(Salle::class);
+        $propSalleId = $refSalle->getProperty('idSalle');
+        $propSalleId->setAccessible(true);
+        $propSalleId->setValue($salle, 1);
+
+        $seance = new Seance();
+        $refSeance = new ReflectionClass(Seance::class);
+        $propSeanceId = $refSeance->getProperty('idSeance');
+        $propSeanceId->setAccessible(true);
+        $propSeanceId->setValue($seance, 10);
+        $seance->setPrix(12.0);
+        $seance->setIdSalle($salle);
+
+        $createSeat = function (int $id) use ($salle) {
+            $s = new Seat();
+            $s->setStatut('vide');
+            $s->setSalle($salle);
+            return $s;
+        };
+
+        $seats = [
+            101 => $createSeat(101),
+            105 => $createSeat(105),
+            109 => $createSeat(109),
+        ];
+
+        $lockedOrder = [];
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getConnection')->willReturn($this->createMock(Connection::class));
+        $em->method('find')->willReturnCallback(function ($class, $id, $lockMode) use (&$lockedOrder, $seats) {
+            $lockedOrder[] = $id;
+            return $seats[$id] ?? null;
+        });
+
+        $seanceRepo = $this->createMock(SeanceRepository::class);
+        $seanceRepo->method('find')->with(10)->willReturn($seance);
+        $seatRepo = $this->createMock(SeatRepository::class);
+
+        $controller = new class extends paymentStripeController {
+            protected function executeStripeCharge(int $amountInCents, string $token, string $description): void {}
+        };
+        $controller->setContainer($this->createMockContainer($user));
+
+        // Client passes unordered and duplicated seat IDs [109, 101, 105, 101]
+        $payload = [
+            'seanceId' => 10,
+            'seatIds' => [109, 101, 105, 101],
+            'stripeToken' => 'tok_order_test',
+        ];
+        $request = new Request([], [], [], [], [], [], json_encode($payload));
+
+        $response = $controller->createCharge($request, $seatRepo, $seanceRepo, $em);
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+
+        // Locks must be acquired strictly in ascending sorted order: 101, 105, 109
+        $this->assertSame([101, 105, 109], $lockedOrder);
+    }
+
     public function testPaypalPaymentDerivesAuthoritativeAmountAndIgnoresClientSuppliedAmount(): void
     {
         $user = new Users();
