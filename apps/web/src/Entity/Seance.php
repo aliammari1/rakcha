@@ -57,17 +57,11 @@ class Seance
     private Collection $idUser;
 
     /**
-     * @var Collection<int, Seat>
-     */
-    private Collection $seats;
-
-    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->idUser = new ArrayCollection();
-        $this->seats = new ArrayCollection();
     }
 
     public function getIdSeance(): ?int
