@@ -505,12 +505,12 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
-      <version>11.0.26</version>
+      <version>11.0.31</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
       <artifactId>websocket-jetty-server</artifactId>
-      <version>11.0.26</version>
+      <version>11.0.31</version>
     </dependency>
     <!-- Vert.x for reactive programming -->
     <dependency>
