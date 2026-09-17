@@ -630,4 +630,100 @@ final class PaymentSecurityTest extends TestCase
         $this->assertNotSame('payé', $commande->getStatu());
         $this->assertStringContainsString('error page content', $response->getContent());
     }
+
+    public function testPaypalSuccessRejectsMismatchedCurrency(): void
+    {
+        $user = new Users();
+        $user->setEmail('shopper@example.com');
+        $user->setRoles(['ROLE_USER']);
+
+        $commande = new Commande();
+        $commande->setIdclient($user);
+        $commande->setStatu('En cours');
+
+        $product = new Produit();
+        $product->setNom('Ticket');
+        $product->setPrix(50);
+
+        $item = new Commandeitem();
+        $item->setIdProduit($product);
+        $item->setQuantity(1);
+
+        $commandeRepo = $this->createMock(CommandeRepository::class);
+        $commandeRepo->method('find')->with('77')->willReturn($commande);
+
+        $itemRepo = $this->createMock(EntityRepository::class);
+        $itemRepo->method('findBy')->with(['idcommande' => $commande])->willReturn([$item]);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getRepository')->with(Commandeitem::class)->willReturn($itemRepo);
+        $em->expects($this->never())->method('flush');
+
+        // Gateway returns currency 'EUR' while configured is 'USD'
+        $captureResponse = $this->createMock(ResponseInterface::class);
+        $captureResponse->method('isSuccessful')->willReturn(true);
+        $captureResponse->method('getData')->willReturn([
+            'id' => 'PAY-123',
+            'state' => 'approved',
+            'transactions' => [
+                [
+                    'amount' => [
+                        'total' => '50.00',
+                        'currency' => 'EUR', // Mismatched currency!
+                    ]
+                ]
+            ]
+        ]);
+
+        $captureRequest = $this->createMock(RequestInterface::class);
+        $captureRequest->method('send')->willReturn($captureResponse);
+
+        $gateway = $this->createMock(RestGateway::class);
+        $gateway->method('completePurchase')->willReturn($captureRequest);
+
+        $controller = new CommandeController($em);
+
+        $twig = $this->createMock(\Twig\Environment::class);
+        $twig->method('render')->willReturn('error page content: currency mismatch');
+
+        $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $authChecker->method('isGranted')->willReturn(true);
+        $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
+        $tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $tokenStorage->method('getToken')->willReturn($token);
+
+        $container = $this->createMock(ContainerInterface::class);
+        $container->method('has')->willReturnCallback(function ($id) {
+            return in_array($id, [
+                'security.authorization_checker',
+                'security.token_storage',
+                'twig',
+                'parameter_bag',
+            ], true);
+        });
+        $container->method('get')->willReturnCallback(function ($id) use ($authChecker, $tokenStorage, $twig) {
+            if ($id === 'security.authorization_checker') return $authChecker;
+            if ($id === 'security.token_storage') return $tokenStorage;
+            if ($id === 'twig') return $twig;
+            return null;
+        });
+
+        $controller->setContainer($container);
+
+        $refController = new ReflectionClass(CommandeController::class);
+        $propGateway = $refController->getProperty('passerelle');
+        $propGateway->setAccessible(true);
+        $propGateway->setValue($controller, $gateway);
+
+        $request = new Request([
+            'commandeId' => '77',
+            'paymentId' => 'PAY-123',
+            'PayerID' => 'PAYER-456'
+        ]);
+
+        $response = $controller->success($request, $commandeRepo, $em);
+
+        $this->assertNotSame('payé', $commande->getStatu());
+        $this->assertStringContainsString('currency mismatch', $response->getContent());
+    }
 }
