@@ -18,14 +18,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SeanceType extends AbstractType
 {
-    private $cinemaRepository;
-
-    public function __construct(CinemaRepository $cinemaRepository)
-    {
-        $this->cinemaRepository = $cinemaRepository;
-    }
-
-    public function buildForm(FormBuilderInterface $builder, array $options) : void
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('idCinema', EntityType::class, [
@@ -36,7 +29,7 @@ class SeanceType extends AbstractType
                     new NotBlank(),
                 ],
                 'label' => 'Cinema',
-                'query_builder' => function (CinemaRepository $er) {
+                'query_builder' => static function (CinemaRepository $er) {
                     return $er->createQueryBuilder('c')
                         ->where('c.statut = :statut')
                         ->setParameter('statut', 'Accepted');
@@ -49,7 +42,7 @@ class SeanceType extends AbstractType
                 'label' => 'Room',
             ])
             ->add('idFilm', EntityType::class, [
-                'class' => \App\Entity\Film::class,
+                'class' => Film::class,
                 'choice_label' => 'nom',
                 'placeholder' => 'Choose a film',
                 'label' => 'Film',
@@ -59,10 +52,10 @@ class SeanceType extends AbstractType
             ->add('hf')
             ->add('prix');
 
-        $formModifier = function (FormInterface $form, ?Cinema $cinema = null) {
+        $formModifier = static function (FormInterface $form, ?Cinema $cinema = null) {
             $salles = $cinema ? $cinema->getSalles() : [];
 
-            $films = $cinema ? $cinema->getFilms()->map(function ($film) {
+            $films = $cinema ? $cinema->getFilms()->map(static function ($film) {
                 return $film;
             })->toArray() : [];
 
@@ -73,7 +66,7 @@ class SeanceType extends AbstractType
                 'choice_label' => 'nomSalle',
                 'placeholder' => 'Choose a room',
                 'attr' => ['class' => 'custom-select'],
-                'label' => 'Room'
+                'label' => 'Room',
             ]);
 
             $form->add('idFilm', EntityType::class, [
@@ -83,21 +76,20 @@ class SeanceType extends AbstractType
                 'choice_label' => 'nom',
                 'placeholder' => 'Choose a film',
                 'attr' => ['class' => 'custom-select'],
-                'label' => 'Film'
+                'label' => 'Film',
             ]);
         };
 
-
         $builder->get('idCinema')->addEventListener(
             FormEvents::POST_SUBMIT,
-            function (FormEvent $event) use ($formModifier) {
+            static function (FormEvent $event) use ($formModifier) {
                 $cinema = $event->getForm()->getData();
                 $formModifier($event->getForm()->getParent(), $cinema);
             }
         );
     }
 
-    public function configureOptions(OptionsResolver $resolver) : void
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Seance::class,
