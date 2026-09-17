@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\CommentaireProduit;
 use App\Entity\Produit;
+use App\Entity\Users;
 use App\Form\CommentaireProduitType;
 use App\Repository\CommentaireProduitRepository;
 use App\Repository\ProduitRepository;
@@ -39,7 +40,11 @@ class CommentaireProduitController extends AbstractController
         $commentaireProduit = new CommentaireProduit();
         $commentaireProduit->setIdproduit($produit);
 
-        $commentaireProduit->setIdClient($this->getUser());
+        $user = $this->getUser();
+        if (!$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
+        $commentaireProduit->setIdClient($user);
 
         $form = $this->createForm(CommentaireProduitType::class, $commentaireProduit);
         $form->handleRequest($request);

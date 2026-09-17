@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Twilio\Rest\Client;
@@ -221,7 +220,7 @@ class EpisodesController extends AbstractController
     }
 
     #[Route('/episodes/{idEpisode}/watch', name: 'app_episode_watch')]
-    public function watch(Request $request, int $idEpisode, SessionInterface $session, EntityManagerInterface $entityManager): Response
+    public function watch(Request $request, int $idEpisode, EntityManagerInterface $entityManager): Response
     {
         // Récupérer les données de l'épisode depuis la base de données
         $episode = $entityManager->getRepository(Episodes::class)->find($idEpisode);
@@ -232,6 +231,9 @@ class EpisodesController extends AbstractController
 
         // Récupérer un utilisateur spécifique de la base de données
         $user = $this->getUser();
+        if ($user !== null && !$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
         $photoDeProfil = $user ? $user->getPhotoDeProfil() : null;
 
         // Récupérer les feedbacks associés à l'épisode depuis la base de données
@@ -258,7 +260,7 @@ class EpisodesController extends AbstractController
                 $feedback->setIdEpisode($idEpisode);
 
                 // Associer l'utilisateur au feedback
-                $feedback->setIdUser($this->getUser()->getId());
+                $feedback->setIdUser($this->currentUser()->getId());
             // Définir la description saisie par l'utilisateur dans l'objet Feedback
             $feedback->setDescription($description);
             // Analyse de sentiment avec php-sentiment-analyzer
@@ -303,7 +305,7 @@ class EpisodesController extends AbstractController
                 $twilioSid = "ACb62dae18a1cdf503d09534ba7f13db8d";
                 $twilioToken = "3763cdf1b024cff8330fab6501d95d75";
                 $twilioPhoneNumber = "+13347218426";
-                $phoneNumber = '+216' . strval($this->getUser()->getNumTelephone()); // Remplacez par le numéro de téléphone réel de votre base de données
+                $phoneNumber = '+216' . strval($this->currentUser()->getNumTelephone()); // Remplacez par le numéro de téléphone réel de votre base de données
                 try {
                     $client = new Client($twilioSid, $twilioToken);
                     $client->messages->create(
@@ -320,7 +322,7 @@ class EpisodesController extends AbstractController
                 }
             }
             // Message flash pour informer l'utilisateur que le sentiment a été traité
-            $session->getFlashBag()->add('success', 'Le sentiment du feedback a été traité avec succès.');
+            $this->addFlash('success', 'Le sentiment du feedback a été traité avec succès.');
             // Rediriger l'utilisateur vers la même page pour éviter la soumission multiple du formulaire
             return $this->redirectToRoute('app_episode_watch', ['idEpisode' => $idEpisode]);
             }
@@ -348,5 +350,15 @@ class EpisodesController extends AbstractController
 
         // Retourner la catégorie de sentiment
         return $maxSentiment;
+    }
+
+    private function currentUser(): Users
+    {
+        $user = $this->getUser();
+        if (!$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
+
+        return $user;
     }
 }
