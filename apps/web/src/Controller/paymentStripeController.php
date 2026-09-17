@@ -63,6 +63,9 @@ class paymentStripeController extends AbstractController
 
             foreach ($seatIds as $seatId) {
                 // Acquire pessimistic write lock to prevent race conditions & double-booking
+                // ORM EntityManager supports the lock mode; phpstan-doctrine
+                // currently resolves the inherited persistence signature only.
+                /** @phpstan-ignore-next-line method.invokedWithTooManyArguments */
                 $seat = $entityManager->find(Seat::class, $seatId, LockMode::PESSIMISTIC_WRITE);
                 if (!$seat) {
                     $entityManager->rollback();
