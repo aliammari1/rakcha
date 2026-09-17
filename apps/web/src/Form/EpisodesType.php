@@ -12,7 +12,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-
 class EpisodesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

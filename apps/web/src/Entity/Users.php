@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UsersRepository;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,8 +19,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
-
-
     #[ORM\Column(name: 'id', type: 'integer')]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -34,14 +31,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'string', message: 'The name must be a string')]
     private string $nom;
 
-
     #[ORM\Column(name: 'prenom', type: 'string', length: 50)]
     #[Assert\NotBlank(message: 'The surname cannot be blank')]
     #[Assert\NotNull(message: 'The surname cannot be null')]
     #[Assert\Length(min: 2, max: 50, minMessage: 'The surname must have at least {{ limit }} characters', maxMessage: 'The surname cannot exceed {{ limit }} characters')]
     #[Assert\Type(type: 'string', message: 'The surname must be a string')]
     private string $prenom;
-
 
     #[ORM\Column(name: 'num_telephone', type: 'integer', nullable: true)]
     #[Assert\NotBlank(message: 'The telephone number cannot be blank')]
@@ -50,10 +45,8 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'integer', message: 'The telephone number must be an integer')]
     private ?int $numTelephone;
 
-
     #[ORM\Column(name: 'password', type: 'string', length: 180)]
     private string $password;
-
 
     #[ORM\Column(name: 'role', type: 'string', length: 50)]
     #[Assert\NotBlank(message: 'The role cannot be blank')]
@@ -62,7 +55,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'string', message: 'The role must be a string')]
     private string $role;
 
-
     #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: true)]
     #[Assert\NotBlank(message: 'The address cannot be blank')]
     #[Assert\NotNull(message: 'The address cannot be null')]
@@ -70,14 +62,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'string', message: 'The address must be a string')]
     private ?string $adresse = null;
 
-
     #[ORM\Column(name: 'date_de_naissance', type: 'date', nullable: true)]
     #[Assert\NotBlank(message: 'The date of birth cannot be blank')]
     #[Assert\NotNull(message: 'The date of birth cannot be null')]
     #[Assert\LessThanOrEqual(value: 'today', message: 'The date of birth cannot be in the future')]
     #[Assert\Type(type: '\DateTimeInterface', message: 'The date of birth must be a valid date')]
-    private ?DateTimeInterface $dateDeNaissance = null;
-
+    private ?\DateTimeInterface $dateDeNaissance = null;
 
     #[ORM\Column(name: 'email', type: 'string', length: 180, unique: true)]
     #[Assert\NotBlank(message: 'The email cannot be blank')]
@@ -86,14 +76,11 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\Type(type: 'string', message: 'The email must be a string')]
     private string $email;
 
-
     #[ORM\Column(name: 'photo_de_profil', type: 'string', length: 255, nullable: true)]
     private ?string $photoDeProfil = null;
 
-
     #[ORM\OneToMany(mappedBy: 'idClient', targetEntity: CommentaireProduit::class)]
     private Collection $idComm;
-
 
     /**
      * @var Collection<int, Cinema>
@@ -110,7 +97,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[ORM\ManyToMany(targetEntity: Seance::class, inversedBy: 'idUser')]
     private Collection $idSeance;
 
-
     #[ORM\Column(name: 'is_verified', type: 'boolean')]
     private bool $isVerified;
     #[Assert\NotBlank(message: 'The password cannot be blank')]
@@ -120,7 +106,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     private string $plainPassword;
     #[ORM\Column(type: 'json')]
     private array $roles = [];
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $totpSecret;
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Friendships::class)]
     private Collection $incomingFriendRequests;
@@ -263,12 +249,12 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
         return $this;
     }
 
-    public function getDateDeNaissance(): ?DateTimeInterface
+    public function getDateDeNaissance(): ?\DateTimeInterface
     {
         return $this->dateDeNaissance;
     }
 
-    public function setDateDeNaissance(?DateTimeInterface $dateDeNaissance): static
+    public function setDateDeNaissance(?\DateTimeInterface $dateDeNaissance): static
     {
         $this->dateDeNaissance = $dateDeNaissance;
 
@@ -355,7 +341,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
      */
     public function getUsername(): string
     {
-        return (string)$this->email;
+        return (string) $this->email;
     }
 
     /**
@@ -420,6 +406,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     public function setTotpSecret(?string $totpSecret): self
     {
         $this->totpSecret = $totpSecret;
+
         return $this;
     }
 
@@ -440,14 +427,13 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
      */
     public function getUserIdentifier(): string
     {
-        return (string)$this->email;
+        return (string) $this->email;
     }
 
     public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
     {
         return new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA1, 30, 6);
     }
-
 
     /**
      * @return Collection<int, Friendships>

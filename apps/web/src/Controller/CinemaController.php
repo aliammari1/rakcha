@@ -8,11 +8,9 @@ use App\Form\CinemaType;
 use App\Repository\CinemaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 #[Route('/cinema')]
 class CinemaController extends AbstractController
@@ -44,7 +42,6 @@ class CinemaController extends AbstractController
         ]);
     }
 
-
     #[Route('/location/{idCinema}', name: 'app_cinema_location', methods: ['GET', 'POST'])]
     public function localiser(int $idCinema, EntityManagerInterface $entityManager): Response
     {
@@ -64,15 +61,14 @@ class CinemaController extends AbstractController
         ]);
     }
 
-
     #[Route('/listeCinemaAdmin', name: 'app_cinemaAdmin_index', methods: ['GET', 'POST'])]
     public function listeCinemaAdmin(CinemaRepository $cinemaRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $form = $this->createForm(CinemaType::class, new Cinema());
-        $updateForms = array();
-        for ($i = 0; $i < count($cinemaRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($cinemaRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(CinemaType::class, $cinemaRepository->findAll()[$i])->createView();
         }
 
@@ -80,7 +76,6 @@ class CinemaController extends AbstractController
             'cinemas' => $cinemaRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
-
         ]);
     }
 
@@ -92,15 +87,14 @@ class CinemaController extends AbstractController
         ]);
     }
 
-
     #[Route('/new', name: 'app_cinema_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, CinemaRepository $cinemaRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
         $cinema = new Cinema();
-        $updateForms = array();
-        for ($i = 0; $i < count($cinemaRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($cinemaRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(CinemaType::class, $cinemaRepository->findAll()[$i])->createView();
         }
 
@@ -115,22 +109,24 @@ class CinemaController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/cinemas";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/cinemas';
                 $file->move($destination, $filename);
-                $cinema->setLogo("/img/cinemas/" . $filename);
+                $cinema->setLogo('/img/cinemas/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\cinemas";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\cinemas';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
             $cinema->setStatut('Pending');
             $cinema->setResponsable($this->currentUser()->getId());
             $entityManager->persist($cinema);
             $entityManager->flush();
+
             return $this->redirectToRoute('app_cinema_index', [], Response::HTTP_SEE_OTHER);
         }
         $hasErrorsCreate = true;
+
         return $this->render('back/CinemasTable.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
             'form' => $form->createView(),
@@ -155,9 +151,9 @@ class CinemaController extends AbstractController
             throw $this->createAccessDeniedException('You are not authorized to edit this cinema.');
         }
 
-        $updateForms = array();
+        $updateForms = [];
         $cinemas = $cinemaRepository->findAll();
-        for ($i = 0; $i < count($cinemas); $i++) {
+        for ($i = 0; $i < count($cinemas); ++$i) {
             $updateForms[$i] = $this->createForm(CinemaType::class, $cinemas[$i])->createView();
         }
         $form = $this->createForm(CinemaType::class, new Cinema());
@@ -165,7 +161,6 @@ class CinemaController extends AbstractController
         $updateform = $this->createForm(CinemaType::class, $cinema);
 
         $updateform->handleRequest($request);
-
 
         if ($updateform->isSubmitted() && $updateform->isValid()) {
             $file = $updateform['logo']->getData();
@@ -175,27 +170,27 @@ class CinemaController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/cinemas";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/cinemas';
                 $file->move($destination, $filename);
-                $cinema->setLogo("/img/cinemas/" . $filename);
+                $cinema->setLogo('/img/cinemas/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\cinemas";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\cinemas';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_cinema_index', [], Response::HTTP_SEE_OTHER);
         }
         $entityManager->refresh($cinema);
+
         return $this->render('back/CinemasTable.html.twig', [
             'cinemas' => $cinemaRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
-            "formUpdateNumber" => $formUpdateNumber,
+            'formUpdateNumber' => $formUpdateNumber,
             'updateform' => $updateform->createView(),
-
         ]);
     }
 
@@ -207,7 +202,7 @@ class CinemaController extends AbstractController
             throw $this->createAccessDeniedException('You are not authorized to delete this cinema.');
         }
 
-        if ($this->isCsrfTokenValid('delete' . $cinema->getIdCinema(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$cinema->getIdCinema(), $request->request->get('_token'))) {
             $entityManager->remove($cinema);
 
             $entityManager->flush();
@@ -216,13 +211,12 @@ class CinemaController extends AbstractController
         return $this->redirectToRoute('app_cinema_index', [], Response::HTTP_SEE_OTHER);
     }
 
-
     #[Route('/Accept/{idCinema}', name: 'app_cinema_accept', methods: ['POST'])]
     public function Accept(Request $request, Cinema $cinema, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        if ($this->isCsrfTokenValid('accept' . $cinema->getIdCinema(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('accept'.$cinema->getIdCinema(), $request->request->get('_token'))) {
             // Mettre à jour le statut du cinéma
             $cinema->setStatut('Accepted');
             $entityManager->flush();
@@ -236,7 +230,7 @@ class CinemaController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        if ($this->isCsrfTokenValid('reject' . $cinema->getIdCinema(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('reject'.$cinema->getIdCinema(), $request->request->get('_token'))) {
             $entityManager->remove($cinema);
             $entityManager->flush();
         }

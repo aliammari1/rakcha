@@ -6,14 +6,12 @@ use App\Repository\CinemaRepository;
 use App\Repository\FilmRepository;
 use App\Repository\SalleRepository;
 use App\Repository\SeanceRepository;
-use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PlanningController extends AbstractController
 {
-
     #[Route('/planningPost/{idCinema}', name: 'app_planning_post', methods: ['POST'])]
     public function planningPost($idCinema)
     {
@@ -24,7 +22,7 @@ class PlanningController extends AbstractController
     public function index($idCinema, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository, SeanceRepository $seanceRepository): Response
     {
         // Obtenir la date du début et de la fin de la semaine courante
-        $currentDate = new DateTime();
+        $currentDate = new \DateTime();
         $startWeek = $currentDate->format('Y-m-d');
         $endWeek = $currentDate->modify('+6 day')->format('Y-m-d');
 
@@ -43,8 +41,8 @@ class PlanningController extends AbstractController
         foreach ($seances as $seance) {
             $seanceData[] = [
                 'title' => $seance->getIdFilm()->getNom(),
-                'start' => $seance->getDate()->format('Y-m-d') . 'T' . $seance->getHd()->format('H:i:s'),
-                'end' => $seance->getDate()->format('Y-m-d') . 'T' . $seance->getHf()->format('H:i:s'),
+                'start' => $seance->getDate()->format('Y-m-d').'T'.$seance->getHd()->format('H:i:s'),
+                'end' => $seance->getDate()->format('Y-m-d').'T'.$seance->getHf()->format('H:i:s'),
                 'image' => $seance->getIdFilm()->getImage(), // Ajout de l'image du film
                 'prix' => $seance->getPrix(),
                 'salle' => $seance->getIdSalle()->getNomSalle(),

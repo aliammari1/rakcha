@@ -8,12 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 #[ORM\Entity(repositoryClass: CinemaRepository::class)]
 #[ORM\Table(name: 'cinema')]
 class Cinema
 {
-
     #[ORM\Column(name: 'id_cinema', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -29,7 +27,6 @@ class Cinema
     )]
     private string $nom;
 
-
     #[ORM\Column(name: 'adresse', type: 'string', length: 100, nullable: false)]
     #[Assert\NotBlank(message: 'The cinema adresse is required.')]
     #[Assert\Length(
@@ -38,21 +35,18 @@ class Cinema
     )]
     private string $adresse;
 
-
     #[ORM\Column(name: 'responsable', type: 'integer', nullable: false)]
     private int $responsable;
-
 
     #[ORM\Column(name: 'logo', type: 'string', length: 1000, nullable: false)]
     #[Assert\NotBlank(message: 'The cinema logo is required.')]
     #[Assert\File(
-        mimeTypes: ["image/jpeg", "image/png", "image/jpg"],
-        mimeTypesMessage: "Only JPEG, JPG and PNG images are allowed.",
-        maxSize: "5M", // Taille maximale de 5 Mo
-        maxSizeMessage: "The file is too large. Maximum allowed size is {{ limit }} {{ suffix }}."
+        mimeTypes: ['image/jpeg', 'image/png', 'image/jpg'],
+        mimeTypesMessage: 'Only JPEG, JPG and PNG images are allowed.',
+        maxSize: '5M', // Taille maximale de 5 Mo
+        maxSizeMessage: 'The file is too large. Maximum allowed size is {{ limit }} {{ suffix }}.'
     )]
     private ?string $logo = null;
-
 
     #[ORM\Column(name: 'Statut', type: 'string', length: 50, nullable: false)]
     private string $statut;
@@ -66,17 +60,15 @@ class Cinema
     #[ORM\ManyToMany(targetEntity: Users::class, inversedBy: 'idCinema')]
     private Collection $idUser;
 
-
-    #[ORM\OneToMany(targetEntity: Salle::class, mappedBy: "cinema")]
+    #[ORM\OneToMany(targetEntity: Salle::class, mappedBy: 'cinema')]
     #[ORM\JoinColumn(name: 'cinema_id', referencedColumnName: 'id_cinema', onDelete: 'CASCADE')]
     private $salles;
-
 
     #[ORM\ManyToMany(targetEntity: Film::class, mappedBy: 'cinemas')]
     private Collection $films;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -84,7 +76,6 @@ class Cinema
         $this->salles = new ArrayCollection();
         $this->films = new ArrayCollection();
     }
-
 
     public function getIdCinema(): ?int
     {

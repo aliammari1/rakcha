@@ -86,7 +86,7 @@ class SponsorController extends AbstractController
     #[Route('/{id}', name: 'app_sponsor_delete', methods: ['POST'])]
     public function delete(Request $request, Sponsor $sponsor, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $sponsor->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$sponsor->getId(), $request->request->get('_token'))) {
             $entityManager->remove($sponsor);
             $entityManager->flush();
         }

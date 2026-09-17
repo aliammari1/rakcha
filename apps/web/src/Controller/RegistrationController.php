@@ -36,7 +36,6 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -51,20 +50,21 @@ class RegistrationController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/users";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/users';
                 $file->move($destination, $filename);
-                $user->setPhotoDeProfil("/img/users/" . $filename);
+                $user->setPhotoDeProfil('/img/users/'.$filename);
 
                 // Copy the file to another location
                 $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\users";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
 
-            if ($user->getRole() == 'client')
+            if ('client' == $user->getRole()) {
                 $user->setRoles(['ROLE_CLIENT']);
-            else if ($user->getRole() == 'responsable de cinema')
+            } elseif ('responsable de cinema' == $user->getRole()) {
                 $user->setRoles(['ROLE_RESPONSABLE_DE_CINEMA']);
+            }
 
             $user->setIsVerified(true);
             $entityManager->persist($user);
@@ -120,10 +120,11 @@ class RegistrationController extends AbstractController
 
         // @TODO Change the redirect on success
         $this->addFlash('success', 'Your email address has been verified.');
+
         return $this->redirectToRoute('app_profile_index', ['id' => $user->getId()]);
     }
 
-    #[Route("/verify/resend", name: "app_verify_resend_email")]
+    #[Route('/verify/resend', name: 'app_verify_resend_email')]
     public function resendVerifyEmail()
     {
         return $this->render('registration/resend_verify_email.html.twig');

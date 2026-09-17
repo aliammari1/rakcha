@@ -29,7 +29,7 @@ class FriendshipsController extends AbstractController
     {
         try {
             $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
             $receiverId = $data['receiver'] ?? null;
             if (!is_int($receiverId) && !ctype_digit((string) $receiverId)) {
                 throw $this->createNotFoundException('Receiver not found.');
@@ -47,6 +47,7 @@ class FriendshipsController extends AbstractController
         } catch (\Exception $e) {
             return new JsonResponse(['success' => false, 'error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
         return new JsonResponse(['success' => true], Response::HTTP_OK);
     }
 
@@ -62,7 +63,7 @@ class FriendshipsController extends AbstractController
     public function accept(Request $request, FriendshipsRepository $friendshipsRepository, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         $friendship = $friendshipsRepository->findOneBy(['sender' => $this->receiverFromRequest($data, $usersRepository), 'receiver' => $this->currentUser()]);
         if (!$friendship instanceof Friendships) {
             throw $this->createNotFoundException('Friend request not found.');
@@ -70,6 +71,7 @@ class FriendshipsController extends AbstractController
         $friendship->setStatut('accepted friend request');
         $entityManager->persist($friendship);
         $entityManager->flush();
+
         return new JsonResponse(['success' => true], Response::HTTP_OK);
     }
 
@@ -77,7 +79,7 @@ class FriendshipsController extends AbstractController
     public function cancel(Request $request, FriendshipsRepository $friendshipsRepository, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         $friendship = $friendshipsRepository->findOneBy(['sender' => $this->currentUser(), 'receiver' => $this->receiverFromRequest($data, $usersRepository)]);
         if (!$friendship instanceof Friendships) {
             throw $this->createNotFoundException('Friend request not found.');
@@ -85,15 +87,15 @@ class FriendshipsController extends AbstractController
         $friendship->setStatut('cancel friend request');
         $entityManager->remove($friendship);
         $entityManager->flush();
+
         return new JsonResponse(['success' => true], Response::HTTP_OK);
     }
-
 
     #[Route('/rejectFriendRequest', name: 'reject_friend_request', methods: ['POST'])]
     public function reject(Request $request, FriendshipsRepository $friendshipsRepository, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         $friendship = $friendshipsRepository->findOneBy(['sender' => $this->currentUser(), 'receiver' => $this->receiverFromRequest($data, $usersRepository)]);
         if (!$friendship instanceof Friendships) {
             throw $this->createNotFoundException('Friend request not found.');
@@ -101,6 +103,7 @@ class FriendshipsController extends AbstractController
         $friendship->setStatut('cancel friend request');
         $entityManager->remove($friendship);
         $entityManager->flush();
+
         return new JsonResponse(['success' => true], Response::HTTP_OK);
     }
 

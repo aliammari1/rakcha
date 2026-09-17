@@ -21,7 +21,7 @@ final class SmokeTest extends WebTestCase
     public function testUnknownRouteReturnsNotFound(): void
     {
         $client = self::createClient();
-        $client->request('GET', '/this-route-does-not-exist-' . uniqid());
+        $client->request('GET', '/this-route-does-not-exist-'.uniqid());
 
         self::assertSame(404, $client->getResponse()->getStatusCode());
     }

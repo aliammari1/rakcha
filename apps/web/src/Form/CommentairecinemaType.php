@@ -9,7 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-
 class CommentairecinemaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -18,8 +17,8 @@ class CommentairecinemaType extends AbstractType
             ->add('commentaire', TextareaType::class, [
                 'label' => 'Your Comment',
                 'attr' => [
-                    'class' => 'form-control'
-                ]
+                    'class' => 'form-control',
+                ],
             ])
             ->add('Send', SubmitType::class);
     }
