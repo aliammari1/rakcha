@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Panier;
 use App\Entity\Produit;
+use App\Entity\Users;
 use App\Repository\PanierRepository;
-use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 class PanierController extends AbstractController
 {
@@ -26,20 +25,22 @@ class PanierController extends AbstractController
     }
 
     #[Route('/panier/add/{idProduit}', name: 'panier_add')]
-    public function addToPanier(Request $request, Produit $produit, PanierRepository $panierRepository, EntityManagerInterface $entityManager, UsersRepository $usersRepository): Response
+    public function addToPanier(Request $request, Produit $produit, PanierRepository $panierRepository, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
         // Récupérer la quantité à partir des données du formulaire et la convertir en entier
-        $quantite = (int)$request->request->get('quantite');
+        $quantite = (int) $request->request->get('quantite');
 
         // Récupérer l'utilisateur client à associer au panier (remplacez par la logique appropriée)
-
 
         // Récupérer la quantité disponible en stock pour le produit
         $quantiteEnStock = $produit->getQuantitep();
 
         // Récupérer les quantités de produits dans le panier pour l'utilisateur actuel
-        $quantitesDansPanier = $panierRepository->getQuantitesDansPanierParProduit($this->getUser());
-
+        $quantitesDansPanier = $panierRepository->getQuantitesDansPanierParProduit($user);
 
         // Vérifier si la clé existe dans $quantitesDansPanier
         if (!isset($quantitesDansPanier[$produit->getIdproduit()])) {
@@ -47,18 +48,18 @@ class PanierController extends AbstractController
             $quantitesDansPanier[$produit->getIdproduit()] = 0;
         }
 
-// Comparer avec la quantité disponible en stock
+        // Comparer avec la quantité disponible en stock
         if ($quantiteEnStock < $quantite + $quantitesDansPanier[$produit->getIdproduit()] || $quantite <= 0) {
             // Stock insuffisant, afficher une alerte et ne pas ajouter au panier
             $this->addFlash('error', 'Stock insuffisant.');
+
             return $this->redirectToRoute('app_panier_liste');
         }
-
 
         // Récupérer le panier de l'utilisateur pour le produit donné
         $panier = $panierRepository->findOneBy([
             'idproduit' => $produit,
-            'idclient' => $this->getUser(),
+            'idclient' => $user,
         ]);
 
         if ($panier) {
@@ -68,7 +69,7 @@ class PanierController extends AbstractController
             // Si le produit n'existe pas dans le panier, créer une nouvelle entrée dans le panier
             $panier = new Panier();
             $panier->setIdproduit($produit);
-            $panier->setClient($this->getUser());
+            $panier->setClient($user);
             $panier->setQuantite($quantite);
         }
 
@@ -80,10 +81,9 @@ class PanierController extends AbstractController
         return $this->redirectToRoute('app_panier_liste');
     }
 
-
     public function storeSelectedProducts(Request $request, SessionInterface $session): Response
     {
-        $produitsSelectionnes = $request->request->get('produits_selectionnes', []);
+        $produitsSelectionnes = $request->request->all('produits_selectionnes');
 
         // Stockez les produits sélectionnés dans la session
         $session->set('produits_selectionnes', $produitsSelectionnes);
@@ -91,7 +91,6 @@ class PanierController extends AbstractController
         // Redirigez vers l'action 'new' où vous créerez la commande
         return $this->redirectToRoute('app_commande_new');
     }
-
 
     #[Route('/listepanier', name: 'app_panier_liste', methods: ['GET'])]
     public function afficherPanier(PanierRepository $panierRepository): Response
@@ -105,12 +104,9 @@ class PanierController extends AbstractController
         ]);
     }
 
-
     #[Route('/panier/delete/{idPanier}', name: 'panier_delete')]
     public function deletePanier(Request $request, $idPanier, EntityManagerInterface $entityManager): Response
     {
-
-
         // Récupérer le panier à supprimer
         $panier = $entityManager->getRepository(Panier::class)->find($idPanier);
 
@@ -173,12 +169,11 @@ class PanierController extends AbstractController
 
             // Répondre avec une réponse JSON indiquant que la mise à jour a réussi
             return new Response(json_encode(['success' => true]));
-        } else {
-            // Retourner une réponse indiquant un stock insuffisant
-            return new Response(json_encode(['success' => false, 'message' => 'Stock insuffisant']), Response::HTTP_BAD_REQUEST);
         }
-    }
 
+        // Retourner une réponse indiquant un stock insuffisant
+        return new Response(json_encode(['success' => false, 'message' => 'Stock insuffisant']), Response::HTTP_BAD_REQUEST);
+    }
 
     #[Route('/panier/calculate-total', name: 'panier_calculate_total', methods: ['POST'])]
     public function calculateTotal(Request $request, PanierRepository $panierRepository): Response
@@ -186,7 +181,6 @@ class PanierController extends AbstractController
         // Récupérer les IDs des produits depuis les données JSON envoyées par la requête
         $content = json_decode($request->getContent(), true);
         $productIds = $content['itemIds'];
-
 
         // Initialiser le total à 0
         $total = 0;
@@ -209,6 +203,4 @@ class PanierController extends AbstractController
         // Retourner le total au format JSON
         return new JsonResponse(['total' => $total]);
     }
-
-
 }
