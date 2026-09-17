@@ -6,7 +6,6 @@ use App\Repository\SeriesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 #[ORM\Entity(repositoryClass: SeriesRepository::class)]
 #[ORM\Table(name: 'series')]
 #[ORM\Index(name: 'idcategorie', columns: ['idcategorie'])]
@@ -59,7 +58,6 @@ class Series
 
     #[ORM\Column(name: 'nbDislikes', type: 'integer', nullable: true)]
     private ?int $nbdislikes = 0; // Initialiser à zéro
-
 
     #[ORM\ManyToOne(targetEntity: Categories::class)]
     #[ORM\JoinColumn(name: 'idcategorie', referencedColumnName: 'idcategorie')]
@@ -189,6 +187,4 @@ class Series
 
         return $this;
     }
-
-
 }

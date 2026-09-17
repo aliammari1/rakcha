@@ -6,7 +6,6 @@ use App\Entity\Categories;
 use App\Form\CategoriesType;
 use App\Repository\CategoriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,12 +17,12 @@ class CategoriesController extends AbstractController
     #[Route('/', name: 'app_categories_index', methods: ['GET'])]
     public function index(CategoriesRepository $categoriesRepository): Response
     {
-
         $form = $this->createForm(CategoriesType::class, new Categories());
-        $updateForms = array();
-        for ($i = 0; $i < count($categoriesRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($categoriesRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(CategoriesType::class, $categoriesRepository->findAll()[$i])->createView();
         }
+
         return $this->render('back/categoriesTables.html.twig', [
             'categories' => $categoriesRepository->findAll(),
             'form' => $form->createView(),
@@ -80,7 +79,7 @@ class CategoriesController extends AbstractController
     #[Route('/{idcategorie}', name: 'app_categories_delete', methods: ['POST'])]
     public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $category->getIdcategorie(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$category->getIdcategorie(), $request->request->get('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
         }

@@ -8,16 +8,11 @@ use App\Controller\EpisodesController;
 use App\Controller\SeriesController;
 use App\Entity\Cinema;
 use App\Entity\CommentaireProduit;
-use App\Entity\Episodes;
-use App\Entity\Produit;
-use App\Entity\Series;
 use App\Entity\Users;
 use App\Repository\CinemaRepository;
 use App\Repository\CommentaireProduitRepository;
 use App\Repository\EpisodesRepository;
-use App\Repository\ProduitRepository;
 use App\Repository\SeriesRepository;
-use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -36,15 +31,16 @@ final class AuthorizationSecurityTest extends TestCase
     private function createMockContainer(?Users $user, array $grantedAttributes = []): ContainerInterface
     {
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $authChecker->method('isGranted')->willReturnCallback(function ($attribute) use ($grantedAttributes, $user) {
-            if ($attribute === 'IS_AUTHENTICATED_REMEMBERED' || $attribute === 'IS_AUTHENTICATED_FULLY') {
-                return $user !== null;
+        $authChecker->method('isGranted')->willReturnCallback(static function ($attribute) use ($grantedAttributes, $user) {
+            if ('IS_AUTHENTICATED_REMEMBERED' === $attribute || 'IS_AUTHENTICATED_FULLY' === $attribute) {
+                return null !== $user;
             }
+
             return in_array($attribute, $grantedAttributes, true);
         });
 
         $tokenStorage = $this->createMock(TokenStorageInterface::class);
-        if ($user !== null) {
+        if (null !== $user) {
             $token = new UsernamePasswordToken($user, 'main', $user->getRoles());
             $tokenStorage->method('getToken')->willReturn($token);
         } else {
@@ -66,7 +62,7 @@ final class AuthorizationSecurityTest extends TestCase
         $formFactory->method('create')->willReturn($form);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->method('has')->willReturnCallback(function ($id) {
+        $container->method('has')->willReturnCallback(static function ($id) {
             return in_array($id, [
                 'security.authorization_checker',
                 'security.token_storage',
@@ -75,7 +71,7 @@ final class AuthorizationSecurityTest extends TestCase
                 'form.factory',
             ], true);
         });
-        $container->method('get')->willReturnCallback(function ($id) use ($authChecker, $tokenStorage, $csrfTokenManager, $router, $formFactory) {
+        $container->method('get')->willReturnCallback(static function ($id) use ($authChecker, $tokenStorage, $csrfTokenManager, $router, $formFactory) {
             return match ($id) {
                 'security.authorization_checker' => $authChecker,
                 'security.token_storage' => $tokenStorage,

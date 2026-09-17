@@ -15,9 +15,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Twilio\Rest\Client;
-
 
 #[Route('/episodes')]
 class EpisodesController extends AbstractController
@@ -28,10 +26,11 @@ class EpisodesController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $form = $this->createForm(EpisodesType::class, new Episodes());
-        $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($episodesRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
         }
+
         return $this->render('back/episodesTables.html.twig', [
             'episodes' => $episodesRepository->findAll(),
             'form' => $form->createView(),
@@ -43,10 +42,11 @@ class EpisodesController extends AbstractController
     public function listeEpisodes(EpisodesRepository $episodesRepository): Response
     {
         $form = $this->createForm(EpisodesType::class, new Episodes());
-        $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($episodesRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
         }
+
         return $this->render('front/listEpisodes.html.twig', [
             'episodes' => $episodesRepository->findAll(),
             'form' => $form->createView(),
@@ -61,8 +61,8 @@ class EpisodesController extends AbstractController
 
         $episode = new Episodes();
         $form = $this->createForm(EpisodesType::class, $episode);
-        $updateForms = array();
-        for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($episodesRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(EpisodesType::class, $episodesRepository->findAll()[$i])->createView();
         }
         $form->handleRequest($request);
@@ -76,30 +76,30 @@ class EpisodesController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/series';
                 $file->move($destination, $filename);
-                $episode->setImage("/img/series/" . $filename);
+                $episode->setImage('/img/series/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
 
-            //Traitement du video 
+            // Traitement du video
             $videoFile = $form->get('video')->getData();
             // Vérifier si un fichier vidéo a été téléchargé
             if ($videoFile) {
                 // Générer un nom de fichier unique
-                $originalFilename = pathinfo($videoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $originalFilename = pathinfo($videoFile->getClientOriginalName(), \PATHINFO_FILENAME);
                 $safeFilename = preg_replace('/\s/', '_', $originalFilename);
                 $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-                $newFilename = 'img/series/' . $safeFilename . '-' . uniqid() . '.' . $videoFile->guessExtension();
+                $newFilename = 'img/series/'.$safeFilename.'-'.uniqid().'.'.$videoFile->guessExtension();
 
                 try {
                     // Déplacer le fichier vidéo vers le répertoire de destination
                     $videoFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/img/series/',
+                        $this->getParameter('kernel.project_dir').'/public/img/series/',
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -116,14 +116,12 @@ class EpisodesController extends AbstractController
             return $this->redirectToRoute('app_episodes_index', [], Response::HTTP_SEE_OTHER);
         }
 
-
         return $this->render('back/episodesTables.html.twig', [
             'episodes' => $episodesRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
         ]);
     }
-
 
     #[Route('/{idepisode}', name: 'app_episodes_show', methods: ['GET'])]
     public function show(Episodes $episode): Response
@@ -132,7 +130,6 @@ class EpisodesController extends AbstractController
             'episode' => $episode,
         ]);
     }
-
 
     #[Route('/{idepisode}/edit', name: 'app_episodes_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Episodes $episode, EntityManagerInterface $entityManager): Response
@@ -151,29 +148,29 @@ class EpisodesController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/series';
                 $file->move($destination, $filename);
-                $episode->setImage("/img/series/" . $filename);
+                $episode->setImage('/img/series/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
-            //Traitement du video 
+            // Traitement du video
             $videoFile = $form->get('video')->getData();
             // Vérifier si un fichier vidéo a été téléchargé
             if ($videoFile) {
                 // Générer un nom de fichier unique
-                $originalFilename = pathinfo($videoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $originalFilename = pathinfo($videoFile->getClientOriginalName(), \PATHINFO_FILENAME);
                 $safeFilename = preg_replace('/\s/', '_', $originalFilename);
                 $safeFilename = strtolower(preg_replace('/[^\w\d.-]/', '', $safeFilename));
-                $newFilename = 'img/series/' . $safeFilename . '-' . uniqid() . '.' . $videoFile->guessExtension();
+                $newFilename = 'img/series/'.$safeFilename.'-'.uniqid().'.'.$videoFile->guessExtension();
 
                 try {
                     // Déplacer le fichier vidéo vers le répertoire de destination
                     $videoFile->move(
-                        $this->getParameter('kernel.project_dir') . '/public/img/series/',
+                        $this->getParameter('kernel.project_dir').'/public/img/series/',
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -185,6 +182,7 @@ class EpisodesController extends AbstractController
             }
 
             $entityManager->flush();
+
             return $this->redirectToRoute('app_episodes_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -199,7 +197,7 @@ class EpisodesController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        if ($this->isCsrfTokenValid('delete' . $episode->getIdepisode(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$episode->getIdepisode(), $request->request->get('_token'))) {
             $entityManager->remove($episode);
             $entityManager->flush();
         }
@@ -231,7 +229,7 @@ class EpisodesController extends AbstractController
 
         // Récupérer un utilisateur spécifique de la base de données
         $user = $this->getUser();
-        if ($user !== null && !$user instanceof Users) {
+        if (null !== $user && !$user instanceof Users) {
             throw $this->createAccessDeniedException();
         }
         $photoDeProfil = $user ? $user->getPhotoDeProfil() : null;
@@ -261,73 +259,73 @@ class EpisodesController extends AbstractController
 
                 // Associer l'utilisateur au feedback
                 $feedback->setIdUser($this->currentUser()->getId());
-            // Définir la description saisie par l'utilisateur dans l'objet Feedback
-            $feedback->setDescription($description);
-            // Analyse de sentiment avec php-sentiment-analyzer
-            $commentText = $feedback->getDescription(); // Supposons que vous avez une méthode getComment() dans votre entité Commentairecinema
-            $sentiment = $this->analyseSentiment($commentText);
+                // Définir la description saisie par l'utilisateur dans l'objet Feedback
+                $feedback->setDescription($description);
+                // Analyse de sentiment avec php-sentiment-analyzer
+                $commentText = $feedback->getDescription(); // Supposons que vous avez une méthode getComment() dans votre entité Commentairecinema
+                $sentiment = $this->analyseSentiment($commentText);
 
-            // Le sentiment est retourné sous forme de chaîne ('positive', 'negative', 'neutral')
-            // Vous pouvez utiliser directement cette valeur comme sentiment du commentaire
-            $feedback->setSentiment($sentiment);
+                // Le sentiment est retourné sous forme de chaîne ('positive', 'negative', 'neutral')
+                // Vous pouvez utiliser directement cette valeur comme sentiment du commentaire
+                $feedback->setSentiment($sentiment);
 
-            // Enregistrer le feedback en base de données
-            $entityManager->persist($feedback);
+                // Enregistrer le feedback en base de données
+                $entityManager->persist($feedback);
 
-            /*     
-            // Envoi du SMS après l'ajout de la série
+                /*
+                // Envoi du SMS après l'ajout de la série
           $twilioSid = "ACd3d2094ef7f546619e892605940f1631";
           $twilioToken = "8d56f8a04d84ff2393de4ea888f677a1";
           $twilioPhoneNumber = "+17573640849";
           $phoneNumber = '+21653775010'; // Remplacez par le numéro de téléphone réel de votre base de données
 
         try {
-            $client = new Client($twilioSid, $twilioToken);
-            $client->messages->create(
-                $phoneNumber,
-                [
-                    'from' => $twilioPhoneNumber,
-                    'body' => 'Thank You for Your Feedback'
-                ]
-            );
+                $client = new Client($twilioSid, $twilioToken);
+                $client->messages->create(
+                    $phoneNumber,
+                    [
+                        'from' => $twilioPhoneNumber,
+                        'body' => 'Thank You for Your Feedback'
+                    ]
+                );
         } catch (\Exception $e) {
-            // Gérer l'exception ici
-            $errorMessage = $e->getMessage();
-            $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : ' . $errorMessage);
+                // Gérer l'exception ici
+                $errorMessage = $e->getMessage();
+                $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : ' . $errorMessage);
         }
-        
+
         */
-            $entityManager->flush();
+                $entityManager->flush();
 
-            // Vérifier si le sentiment est négatif
-            if ($sentiment == 'neu') {
-                // Le sentiment est négatif, envoyer un SMS à l'utilisateur pour demander pourquoi il n'a pas aimé l'épisode
-                $twilioSid = "ACb62dae18a1cdf503d09534ba7f13db8d";
-                $twilioToken = "3763cdf1b024cff8330fab6501d95d75";
-                $twilioPhoneNumber = "+13347218426";
-                $phoneNumber = '+216' . strval($this->currentUser()->getNumTelephone()); // Remplacez par le numéro de téléphone réel de votre base de données
-                try {
-                    $client = new Client($twilioSid, $twilioToken);
-                    $client->messages->create(
-                        $phoneNumber,
-                        [
-                            'from' => $twilioPhoneNumber,
-                            'body' => 'Hello, we noticed that you provided negative feedback for the episode. Could you please tell us why?'
-                        ]
-                    );
-                } catch (\Exception $e) {
-                    // Gérer l'exception ici
-                    $errorMessage = $e->getMessage();
-                    $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : ' . $errorMessage);
+                // Vérifier si le sentiment est négatif
+                if ('neu' == $sentiment) {
+                    // Le sentiment est négatif, envoyer un SMS à l'utilisateur pour demander pourquoi il n'a pas aimé l'épisode
+                    $twilioSid = 'ACb62dae18a1cdf503d09534ba7f13db8d';
+                    $twilioToken = '3763cdf1b024cff8330fab6501d95d75';
+                    $twilioPhoneNumber = '+13347218426';
+                    $phoneNumber = '+216'.(string) $this->currentUser()->getNumTelephone(); // Remplacez par le numéro de téléphone réel de votre base de données
+                    try {
+                        $client = new Client($twilioSid, $twilioToken);
+                        $client->messages->create(
+                            $phoneNumber,
+                            [
+                                'from' => $twilioPhoneNumber,
+                                'body' => 'Hello, we noticed that you provided negative feedback for the episode. Could you please tell us why?',
+                            ]
+                        );
+                    } catch (\Exception $e) {
+                        // Gérer l'exception ici
+                        $errorMessage = $e->getMessage();
+                        $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : '.$errorMessage);
+                    }
                 }
-            }
-            // Message flash pour informer l'utilisateur que le sentiment a été traité
-            $this->addFlash('success', 'Le sentiment du feedback a été traité avec succès.');
-            // Rediriger l'utilisateur vers la même page pour éviter la soumission multiple du formulaire
-            return $this->redirectToRoute('app_episode_watch', ['idEpisode' => $idEpisode]);
+                // Message flash pour informer l'utilisateur que le sentiment a été traité
+                $this->addFlash('success', 'Le sentiment du feedback a été traité avec succès.');
+
+                // Rediriger l'utilisateur vers la même page pour éviter la soumission multiple du formulaire
+                return $this->redirectToRoute('app_episode_watch', ['idEpisode' => $idEpisode]);
             }
         }
-
 
         // Passer les feedbacks et le formulaire de feedback au template Twig
         return $this->render('front/watchepisode.html.twig', [
@@ -338,7 +336,6 @@ class EpisodesController extends AbstractController
             'feedbackForm' => $feedbackForm->createView(),
         ]);
     }
-
 
     private function analyseSentiment(string $comment): string
     {
