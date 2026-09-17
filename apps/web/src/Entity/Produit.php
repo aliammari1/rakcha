@@ -58,6 +58,7 @@ class Produit
 
     private Collection $idClient;
     private Collection $paniers;
+    #[ORM\OneToMany(mappedBy: 'idproduit', targetEntity: CommentaireProduit::class)]
     private Collection $commentaires;
 
     /**
@@ -66,6 +67,7 @@ class Produit
     public function __construct()
     {
         $this->idClient = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getNom(): ?string
