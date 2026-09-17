@@ -2,7 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Seat;
+use App\Entity\Seance;
+use App\Repository\SeanceRepository;
 use App\Repository\SeatRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -20,50 +24,74 @@ class paymentStripeController extends AbstractController
     {
         return $this->render('front/paymentStripe.html.twig', [
             'controller_name' => 'StripeController',
-            'stripe_key' => $_ENV["STRIPE_KEY"],
+            'stripe_key' => $_ENV["STRIPE_KEY"] ?? '',
         ]);
     }
 
     #[Route('/stripe/create-charge', name: 'app_stripe_charge', methods: ['POST'])]
-    public function createCharge(Request $request, SeatRepository $seatRepository, EntityManagerInterface $entityManager): Response
-    {
+    public function createCharge(
+        Request $request,
+        SeatRepository $seatRepository,
+        SeanceRepository $seanceRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
         $data = json_decode($request->getContent(), true);
-        if (!is_array($data) || empty($data['seatIds']) || !is_array($data['seatIds']) || empty($data['stripeToken'])) {
-            return $this->json(['success' => false, 'message' => 'Invalid payment payload.'], Response::HTTP_BAD_REQUEST);
+        if (!is_array($data) || empty($data['seatIds']) || !is_array($data['seatIds']) || empty($data['stripeToken']) || empty($data['seanceId'])) {
+            return $this->json(['success' => false, 'message' => 'Invalid payment payload: seanceId, seatIds, and stripeToken are required.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $prix = filter_var($data['prix'] ?? null, FILTER_VALIDATE_FLOAT);
-        if ($prix === false || $prix <= 0) {
-            return $this->json(['success' => false, 'message' => 'Invalid price amount.'], Response::HTTP_BAD_REQUEST);
+        // Authoritative Seance lookup: determine seat price strictly from database
+        $seance = $seanceRepository->find($data['seanceId']);
+        if (!$seance) {
+            return $this->json(['success' => false, 'message' => 'Seance not found.'], Response::HTTP_NOT_FOUND);
         }
 
+        $seatPrice = $seance->getPrix();
+        if ($seatPrice === null || $seatPrice <= 0) {
+            return $this->json(['success' => false, 'message' => 'Invalid seance ticket price.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Concurrency-safe seat reservation using pessimistic write locking
         $entityManager->beginTransaction();
         try {
-            // Check seat availability before charging payment to prevent double booking
             $seatsToReserve = [];
+            $seanceSalle = $seance->getIdSalle();
+
             foreach ($data['seatIds'] as $seatId) {
-                $seat = $seatRepository->findOneBy(['id' => $seatId]);
+                // Acquire pessimistic write lock to prevent race conditions & double-booking
+                $seat = $entityManager->find(Seat::class, $seatId, LockMode::PESSIMISTIC_WRITE);
                 if (!$seat) {
                     $entityManager->rollback();
                     return $this->json(['success' => false, 'message' => "Seat {$seatId} does not exist."], Response::HTTP_NOT_FOUND);
                 }
+
+                // Ensure seat belongs to the seance's room
+                if ($seanceSalle !== null && $seat->getSalle() !== null && $seat->getSalle()->getIdSalle() !== $seanceSalle->getIdSalle()) {
+                    $entityManager->rollback();
+                    return $this->json(['success' => false, 'message' => "Seat {$seatId} does not belong to this session's hall."], Response::HTTP_BAD_REQUEST);
+                }
+
                 if ($seat->getStatut() === 'reserve') {
                     $entityManager->rollback();
                     return $this->json(['success' => false, 'message' => "Seat {$seatId} is already reserved."], Response::HTTP_CONFLICT);
                 }
+
                 $seatsToReserve[] = $seat;
             }
 
-            Stripe::setApiKey($_ENV["STRIPE_SECRET_KEY"]);
-            Charge::create([
-                "amount" => (int) round($prix * 100),
-                "currency" => "usd",
-                "source" => $data['stripeToken'],
-                "description" => "Rakcha Cinema Ticket Payment"
-            ]);
+            // Calculate authoritative total strictly from database data (client 'prix' is ignored)
+            $authoritativeTotal = count($seatsToReserve) * $seatPrice;
 
+            // Execute Stripe charge with server-derived amount
+            $this->executeStripeCharge(
+                (int) round($authoritativeTotal * 100),
+                $data['stripeToken'],
+                sprintf("Rakcha Cinema Ticket Payment - Seance %d (%d seat(s))", $seance->getIdSeance(), count($seatsToReserve))
+            );
+
+            // Mark seats as reserved only after payment succeeds
             foreach ($seatsToReserve as $seat) {
                 $seat->setStatut("reserve");
                 $entityManager->persist($seat);
@@ -75,11 +103,28 @@ class paymentStripeController extends AbstractController
             if ($entityManager->getConnection()->isTransactionActive()) {
                 $entityManager->rollback();
             }
-            return $this->json(['success' => false, 'message' => $e->getMessage(), 'data' => $data], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->json(['success' => false, 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $this->json(['success' => true, 'data' => $data]);
+        return $this->json([
+            'success' => true,
+            'amount' => $authoritativeTotal,
+            'seatsCount' => count($seatsToReserve)
+        ]);
     }
 
-
+    /**
+     * Dispatch payment charge to Stripe API
+     */
+    protected function executeStripeCharge(int $amountInCents, string $token, string $description): void
+    {
+        Stripe::setApiKey($_ENV["STRIPE_SECRET_KEY"] ?? '');
+        Charge::create([
+            "amount" => $amountInCents,
+            "currency" => "usd",
+            "source" => $token,
+            "description" => $description
+        ]);
+    }
 }
+
