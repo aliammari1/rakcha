@@ -1,12 +1,6 @@
-/// Hand-written client for the RAKCHA AI cinema concierge.
-///
-/// This is NOT FlutterFlow-generated code — it is hand-maintained and covered
-/// by unit tests (see test/concierge_client_test.dart). It calls the
-/// `cinemaConcierge` Firebase callable (LangGraph + @langchain/anthropic,
-/// model claude-haiku-4-5) over HTTPS and parses the recommendations.
-///
-/// The three RAKCHA apps are independent (no shared REST API); the mobile and
-/// web clients each reach the same callable directly via fetch/HTTP.
+// Hand-written client for the RAKCHA AI cinema concierge. This is not
+// FlutterFlow-generated code; its Firebase callable parsing is covered by
+// test/concierge_client_test.dart.
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;

@@ -28,7 +28,7 @@ class UserJourneyIntegrationTest extends TestFXBase {
 
     @Start
     public void start(Stage stage) throws Exception {
-        new MainApp().start(stage);
+        new MainApp(false).start(stage);
     }
 
 
@@ -357,4 +357,3 @@ class UserJourneyIntegrationTest extends TestFXBase {
     }
 
 }
-
