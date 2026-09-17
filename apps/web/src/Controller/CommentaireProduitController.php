@@ -70,7 +70,7 @@ class CommentaireProduitController extends AbstractController
 
     public function autoCorrect($text): string
     {
-        $rapidApiKey = $_ENV['RAPIDAPI_KEY'] ?? $_SERVER['RAPIDAPI_KEY'] ?? 'rapidapi-key-removed';
+        $rapidApiKey = $_ENV['RAPIDAPI_KEY'] ?? $_SERVER['RAPIDAPI_KEY'] ?? null;
         if (empty($rapidApiKey)) {
             return $text;
         }
