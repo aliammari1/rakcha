@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\FilmRepository;
-use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,7 +13,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'film')]
 class Film
 {
-
     #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
@@ -29,27 +27,21 @@ class Film
     #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
     private string $nom;
 
-
     #[ORM\Column(name: 'image', type: 'text', length: 0, nullable: true)]
     private ?string $image = null;
 
-    /**
-     * @var DateTime
-     */
-
-
     #[Assert\NotBlank(message: 'The film duration is required.')]
     // #[Assert\Expression(
-        //     "value instanceof DateTimeInterface && value->format('H:i:s') !== '00:00:00'",
-        //     message: 'The film duration must be a valid time.'
-        // )]
+    //     "value instanceof DateTimeInterface && value->format('H:i:s') !== '00:00:00'",
+    //     message: 'The film duration must be a valid time.'
+    // )]
     #[Assert\Range(
         min: 'first day of January -54 years + 30 minutes',
         max: 'first day of January -54 years +4 hours',
         notInRangeMessage: 'You must be between 30 minutes and 4 hours Time to add this film duration  ',
     )]
     #[ORM\Column(name: 'duree', type: 'time', nullable: false)]
-    private DateTimeInterface $duree;
+    private \DateTimeInterface $duree;
 
     #[Assert\NotBlank(message: 'The film description is required.')]
     #[Assert\Length(max: 1000, maxMessage: 'The film description cannot exceed {{ limit }} characters.')]
@@ -80,9 +72,9 @@ class Film
 
     #[ORM\ManyToMany(targetEntity: Cinema::class, inversedBy: 'films')]
     #[ORM\JoinTable(
-        name: "film_cinema",
-        joinColumns: [new ORM\JoinColumn(name: "film_id", referencedColumnName: "id", onDelete: "CASCADE")],
-        inverseJoinColumns: [new ORM\JoinColumn(name: "cinema_id", referencedColumnName: "id_cinema")]
+        name: 'film_cinema',
+        joinColumns: [new ORM\JoinColumn(name: 'film_id', referencedColumnName: 'id', onDelete: 'CASCADE')],
+        inverseJoinColumns: [new ORM\JoinColumn(name: 'cinema_id', referencedColumnName: 'id_cinema')]
     )]
     private Collection $cinemas;
 
@@ -90,10 +82,9 @@ class Film
     {
         $this->actors = new ArrayCollection();
         $this->categorys = new ArrayCollection();
-        $this->duree = new DateTime();
+        $this->duree = new \DateTime();
         $this->cinemas = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -104,7 +95,6 @@ class Film
     {
         return $this->isBookmarked;
     }
-
 
     public function setIsBookmarked(bool $isBookmarked): static
     {
@@ -137,12 +127,12 @@ class Film
         return $this;
     }
 
-    public function getDuree(): ?DateTimeInterface
+    public function getDuree(): ?\DateTimeInterface
     {
         return $this->duree;
     }
 
-    public function setDuree(DateTimeInterface $duree): static
+    public function setDuree(\DateTimeInterface $duree): static
     {
         $this->duree = $duree;
 
@@ -222,14 +212,14 @@ class Film
     }
 
     /**
-     * @return Collection<int, cinema>
+     * @return Collection<int, Cinema>
      */
     public function getCinemas(): Collection
     {
         return $this->cinemas;
     }
 
-    public function addCinema(cinema $cinema): static
+    public function addCinema(Cinema $cinema): static
     {
         if (!$this->cinemas->contains($cinema)) {
             $this->cinemas->add($cinema);
@@ -238,7 +228,7 @@ class Film
         return $this;
     }
 
-    public function removeCinema(cinema $cinema): static
+    public function removeCinema(Cinema $cinema): static
     {
         $this->cinemas->removeElement($cinema);
 
