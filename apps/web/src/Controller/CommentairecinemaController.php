@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
 #[Route('/commentairecinema')]
 class CommentairecinemaController extends AbstractController
 {
@@ -35,12 +34,12 @@ class CommentairecinemaController extends AbstractController
         $neutralCount = 0;
         foreach ($commentairecinemas as $commentairecinema) {
             $sentiment = $commentairecinema->getSentiment();
-            if ($sentiment === 'pos') {
-                $positiveCount++;
-            } elseif ($sentiment === 'neg') {
-                $negativeCount++;
+            if ('pos' === $sentiment) {
+                ++$positiveCount;
+            } elseif ('neg' === $sentiment) {
+                ++$negativeCount;
             } else {
-                $neutralCount++;
+                ++$neutralCount;
             }
         }
 
@@ -61,7 +60,6 @@ class CommentairecinemaController extends AbstractController
             ],
         ];
 
-
         return $this->render('front/commentCinema.html.twig', [
             'commentairecinemas' => $commentairecinemas,
             'chartData' => $chartData,
@@ -70,14 +68,13 @@ class CommentairecinemaController extends AbstractController
         ]);
     }
 
-
     #[Route('/new/{idCinema}', name: 'app_commentairecinema_new', methods: ['GET', 'POST'])]
     public function new(int $idCinema, Request $request, EntityManagerInterface $entityManager, CommentairecinemaRepository $commentairecinemaRepository): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
         $cinema = $entityManager->find(Cinema::class, $idCinema);
         if (!$cinema) {
-            throw $this->createNotFoundException('No cinema found for id ' . $idCinema);
+            throw $this->createNotFoundException('No cinema found for id '.$idCinema);
         }
 
         $commentairecinema = new Commentairecinema();
@@ -109,7 +106,6 @@ class CommentairecinemaController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 
     private function analyseSentiment(string $comment): string
     {

@@ -23,7 +23,6 @@ class ProduitType extends AbstractType
                 ],
             ])
             ->add('prix', null, [
-
                 'label' => 'Price',
 
                 'attr' => [
@@ -31,16 +30,12 @@ class ProduitType extends AbstractType
                 ],
             ])
             ->add('description', TextareaType::class, [
-
-
                 'label' => 'Description',
                 'attr' => [
                     'placeholder' => 'Enter your description she must be more than 20 characters',
                 ],
             ])
             ->add('quantitep', null, [
-
-
                 'label' => 'Qantity',
                 'attr' => [
                     'placeholder' => 'Enter your quantity she must be a number',
@@ -50,7 +45,6 @@ class ProduitType extends AbstractType
                 'class' => CategorieProduit::class,
                 'choice_label' => 'nomcategorie',
                 'placeholder' => 'Choisir une catégorie',
-
 
                 'label' => 'Category',
                 'attr' => [
@@ -65,8 +59,6 @@ class ProduitType extends AbstractType
                 'attr' => [
                     'placeholder' => 'shoose your picture',
                 ],
-
-
             ]);
     }
 

@@ -23,7 +23,6 @@ use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\PayPal\RestGateway;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -48,7 +47,7 @@ final class PaymentSecurityTest extends TestCase
         $router->method('generate')->willReturn('/payment/success');
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->method('has')->willReturnCallback(function ($id) {
+        $container->method('has')->willReturnCallback(static function ($id) {
             return in_array($id, [
                 'security.authorization_checker',
                 'security.token_storage',
@@ -57,19 +56,20 @@ final class PaymentSecurityTest extends TestCase
                 'parameter_bag',
             ], true);
         });
-        $container->method('get')->willReturnCallback(function ($id) use ($authChecker, $tokenStorage, $csrfTokenManager, $router) {
-            if ($id === 'security.authorization_checker') {
+        $container->method('get')->willReturnCallback(static function ($id) use ($authChecker, $tokenStorage, $csrfTokenManager, $router) {
+            if ('security.authorization_checker' === $id) {
                 return $authChecker;
             }
-            if ($id === 'security.token_storage') {
+            if ('security.token_storage' === $id) {
                 return $tokenStorage;
             }
-            if ($id === 'security.csrf.token_manager') {
+            if ('security.csrf.token_manager' === $id) {
                 return $csrfTokenManager;
             }
-            if ($id === 'router') {
+            if ('router' === $id) {
                 return $router;
             }
+
             return null;
         });
 
@@ -83,13 +83,13 @@ final class PaymentSecurityTest extends TestCase
         $user->setRoles(['ROLE_USER']);
 
         $salle = new Salle();
-        $refSalle = new ReflectionClass(Salle::class);
+        $refSalle = new \ReflectionClass(Salle::class);
         $propSalleId = $refSalle->getProperty('idSalle');
         $propSalleId->setAccessible(true);
         $propSalleId->setValue($salle, 10);
 
         $seance = new Seance();
-        $refSeance = new ReflectionClass(Seance::class);
+        $refSeance = new \ReflectionClass(Seance::class);
         $propSeanceId = $refSeance->getProperty('idSeance');
         $propSeanceId->setAccessible(true);
         $propSeanceId->setValue($seance, 42);
@@ -117,12 +117,13 @@ final class PaymentSecurityTest extends TestCase
         $em->expects($this->once())->method('beginTransaction');
         $em->method('find')->willReturnCallback(function ($class, $id, $lockMode) use ($seat1, $seat2) {
             $this->assertSame(LockMode::PESSIMISTIC_WRITE, $lockMode);
-            if ($id === 101) {
+            if (101 === $id) {
                 return $seat1;
             }
-            if ($id === 102) {
+            if (102 === $id) {
                 return $seat2;
             }
+
             return null;
         });
 
@@ -168,13 +169,13 @@ final class PaymentSecurityTest extends TestCase
         $user->setRoles(['ROLE_USER']);
 
         $salle = new Salle();
-        $refSalle = new ReflectionClass(Salle::class);
+        $refSalle = new \ReflectionClass(Salle::class);
         $propSalleId = $refSalle->getProperty('idSalle');
         $propSalleId->setAccessible(true);
         $propSalleId->setValue($salle, 10);
 
         $seance = new Seance();
-        $refSeance = new ReflectionClass(Seance::class);
+        $refSeance = new \ReflectionClass(Seance::class);
         $propSeanceId = $refSeance->getProperty('idSeance');
         $propSeanceId->setAccessible(true);
         $propSeanceId->setValue($seance, 42);
@@ -231,7 +232,7 @@ final class PaymentSecurityTest extends TestCase
         $user->setRoles(['ROLE_USER']);
 
         $salleA = new Salle();
-        $refSalle = new ReflectionClass(Salle::class);
+        $refSalle = new \ReflectionClass(Salle::class);
         $propSalleId = $refSalle->getProperty('idSalle');
         $propSalleId->setAccessible(true);
         $propSalleId->setValue($salleA, 1);
@@ -240,7 +241,7 @@ final class PaymentSecurityTest extends TestCase
         $propSalleId->setValue($salleB, 2);
 
         $seance = new Seance();
-        $refSeance = new ReflectionClass(Seance::class);
+        $refSeance = new \ReflectionClass(Seance::class);
         $propSeanceId = $refSeance->getProperty('idSeance');
         $propSeanceId->setAccessible(true);
         $propSeanceId->setValue($seance, 42);
@@ -290,13 +291,13 @@ final class PaymentSecurityTest extends TestCase
         $user2->setRoles(['ROLE_USER']);
 
         $salle = new Salle();
-        $refSalle = new ReflectionClass(Salle::class);
+        $refSalle = new \ReflectionClass(Salle::class);
         $propSalleId = $refSalle->getProperty('idSalle');
         $propSalleId->setAccessible(true);
         $propSalleId->setValue($salle, 10);
 
         $seance = new Seance();
-        $refSeance = new ReflectionClass(Seance::class);
+        $refSeance = new \ReflectionClass(Seance::class);
         $propSeanceId = $refSeance->getProperty('idSeance');
         $propSeanceId->setAccessible(true);
         $propSeanceId->setValue($seance, 42);
@@ -320,9 +321,10 @@ final class PaymentSecurityTest extends TestCase
 
         $controller = new class extends paymentStripeController {
             public int $chargeCount = 0;
+
             protected function executeStripeCharge(int $amountInCents, string $token, string $description): void
             {
-                $this->chargeCount++;
+                ++$this->chargeCount;
             }
         };
 
@@ -365,23 +367,24 @@ final class PaymentSecurityTest extends TestCase
         $user->setRoles(['ROLE_USER']);
 
         $salle = new Salle();
-        $refSalle = new ReflectionClass(Salle::class);
+        $refSalle = new \ReflectionClass(Salle::class);
         $propSalleId = $refSalle->getProperty('idSalle');
         $propSalleId->setAccessible(true);
         $propSalleId->setValue($salle, 1);
 
         $seance = new Seance();
-        $refSeance = new ReflectionClass(Seance::class);
+        $refSeance = new \ReflectionClass(Seance::class);
         $propSeanceId = $refSeance->getProperty('idSeance');
         $propSeanceId->setAccessible(true);
         $propSeanceId->setValue($seance, 10);
         $seance->setPrix(12.0);
         $seance->setIdSalle($salle);
 
-        $createSeat = function (int $id) use ($salle) {
+        $createSeat = static function (int $id) use ($salle) {
             $s = new Seat();
             $s->setStatut('vide');
             $s->setSalle($salle);
+
             return $s;
         };
 
@@ -394,8 +397,9 @@ final class PaymentSecurityTest extends TestCase
         $lockedOrder = [];
         $em = $this->createMock(EntityManagerInterface::class);
         $em->method('getConnection')->willReturn($this->createMock(Connection::class));
-        $em->method('find')->willReturnCallback(function ($class, $id, $lockMode) use (&$lockedOrder, $seats) {
+        $em->method('find')->willReturnCallback(static function ($class, $id, $lockMode) use (&$lockedOrder, $seats) {
             $lockedOrder[] = $id;
+
             return $seats[$id] ?? null;
         });
 
@@ -404,7 +408,9 @@ final class PaymentSecurityTest extends TestCase
         $seatRepo = $this->createMock(SeatRepository::class);
 
         $controller = new class extends paymentStripeController {
-            protected function executeStripeCharge(int $amountInCents, string $token, string $description): void {}
+            protected function executeStripeCharge(int $amountInCents, string $token, string $description): void
+            {
+            }
         };
         $controller->setContainer($this->createMockContainer($user));
 
@@ -462,8 +468,8 @@ final class PaymentSecurityTest extends TestCase
         $purchaseResponse->method('isRedirect')->willReturn(true);
         $purchaseResponse->method('getData')->willReturn([
             'links' => [
-                ['rel' => 'approval_url', 'href' => 'https://sandbox.paypal.com/checkout?token=mock_123']
-            ]
+                ['rel' => 'approval_url', 'href' => 'https://sandbox.paypal.com/checkout?token=mock_123'],
+            ],
         ]);
 
         $purchaseRequest = $this->createMock(RequestInterface::class);
@@ -473,8 +479,8 @@ final class PaymentSecurityTest extends TestCase
         // Assert that purchase amount is exactly '35.00' (authoritative server calculation)
         $gateway->expects($this->once())
             ->method('purchase')
-            ->with($this->callback(function (array $params) {
-                return isset($params['amount']) && $params['amount'] === '35.00';
+            ->with($this->callback(static function (array $params) {
+                return isset($params['amount']) && '35.00' === $params['amount'];
             }))
             ->willReturn($purchaseRequest);
 
@@ -482,7 +488,7 @@ final class PaymentSecurityTest extends TestCase
         $controller->setContainer($this->createMockContainer($user));
 
         // Inject mock gateway via reflection
-        $refController = new ReflectionClass(CommandeController::class);
+        $refController = new \ReflectionClass(CommandeController::class);
         $propGateway = $refController->getProperty('passerelle');
         $propGateway->setAccessible(true);
         $propGateway->setValue($controller, $gateway);
@@ -521,7 +527,7 @@ final class PaymentSecurityTest extends TestCase
         $controller = new CommandeController($em);
         $controller->setContainer($this->createMockContainer($user));
 
-        $refController = new ReflectionClass(CommandeController::class);
+        $refController = new \ReflectionClass(CommandeController::class);
         $propGateway = $refController->getProperty('passerelle');
         $propGateway->setAccessible(true);
         $propGateway->setValue($controller, $gateway);
@@ -529,7 +535,7 @@ final class PaymentSecurityTest extends TestCase
         $request = new Request([
             'commandeId' => '77',
             'paymentId' => 'PAY-123',
-            'PayerID' => 'PAYER-456'
+            'PayerID' => 'PAYER-456',
         ]);
 
         $response = $controller->success($request, $commandeRepo, $em);
@@ -573,8 +579,8 @@ final class PaymentSecurityTest extends TestCase
             'id' => 'PAY-123',
             'state' => 'approved',
             'transactions' => [
-                ['amount' => ['total' => '10.00']] // Mismatch!
-            ]
+                ['amount' => ['total' => '10.00']], // Mismatch!
+            ],
         ]);
 
         $captureRequest = $this->createMock(RequestInterface::class);
@@ -596,7 +602,7 @@ final class PaymentSecurityTest extends TestCase
         $tokenStorage->method('getToken')->willReturn($token);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->method('has')->willReturnCallback(function ($id) {
+        $container->method('has')->willReturnCallback(static function ($id) {
             return in_array($id, [
                 'security.authorization_checker',
                 'security.token_storage',
@@ -604,16 +610,23 @@ final class PaymentSecurityTest extends TestCase
                 'parameter_bag',
             ], true);
         });
-        $container->method('get')->willReturnCallback(function ($id) use ($authChecker, $tokenStorage, $twig) {
-            if ($id === 'security.authorization_checker') return $authChecker;
-            if ($id === 'security.token_storage') return $tokenStorage;
-            if ($id === 'twig') return $twig;
+        $container->method('get')->willReturnCallback(static function ($id) use ($authChecker, $tokenStorage, $twig) {
+            if ('security.authorization_checker' === $id) {
+                return $authChecker;
+            }
+            if ('security.token_storage' === $id) {
+                return $tokenStorage;
+            }
+            if ('twig' === $id) {
+                return $twig;
+            }
+
             return null;
         });
 
         $controller->setContainer($container);
 
-        $refController = new ReflectionClass(CommandeController::class);
+        $refController = new \ReflectionClass(CommandeController::class);
         $propGateway = $refController->getProperty('passerelle');
         $propGateway->setAccessible(true);
         $propGateway->setValue($controller, $gateway);
@@ -621,7 +634,7 @@ final class PaymentSecurityTest extends TestCase
         $request = new Request([
             'commandeId' => '77',
             'paymentId' => 'PAY-123',
-            'PayerID' => 'PAYER-456'
+            'PayerID' => 'PAYER-456',
         ]);
 
         $response = $controller->success($request, $commandeRepo, $em);
@@ -670,9 +683,9 @@ final class PaymentSecurityTest extends TestCase
                     'amount' => [
                         'total' => '50.00',
                         'currency' => 'EUR', // Mismatched currency!
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
         $captureRequest = $this->createMock(RequestInterface::class);
@@ -693,7 +706,7 @@ final class PaymentSecurityTest extends TestCase
         $tokenStorage->method('getToken')->willReturn($token);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->method('has')->willReturnCallback(function ($id) {
+        $container->method('has')->willReturnCallback(static function ($id) {
             return in_array($id, [
                 'security.authorization_checker',
                 'security.token_storage',
@@ -701,16 +714,23 @@ final class PaymentSecurityTest extends TestCase
                 'parameter_bag',
             ], true);
         });
-        $container->method('get')->willReturnCallback(function ($id) use ($authChecker, $tokenStorage, $twig) {
-            if ($id === 'security.authorization_checker') return $authChecker;
-            if ($id === 'security.token_storage') return $tokenStorage;
-            if ($id === 'twig') return $twig;
+        $container->method('get')->willReturnCallback(static function ($id) use ($authChecker, $tokenStorage, $twig) {
+            if ('security.authorization_checker' === $id) {
+                return $authChecker;
+            }
+            if ('security.token_storage' === $id) {
+                return $tokenStorage;
+            }
+            if ('twig' === $id) {
+                return $twig;
+            }
+
             return null;
         });
 
         $controller->setContainer($container);
 
-        $refController = new ReflectionClass(CommandeController::class);
+        $refController = new \ReflectionClass(CommandeController::class);
         $propGateway = $refController->getProperty('passerelle');
         $propGateway->setAccessible(true);
         $propGateway->setValue($controller, $gateway);
@@ -718,7 +738,7 @@ final class PaymentSecurityTest extends TestCase
         $request = new Request([
             'commandeId' => '77',
             'paymentId' => 'PAY-123',
-            'PayerID' => 'PAYER-456'
+            'PayerID' => 'PAYER-456',
         ]);
 
         $response = $controller->success($request, $commandeRepo, $em);

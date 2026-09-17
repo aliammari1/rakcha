@@ -8,12 +8,10 @@ use App\Entity\Users;
 use App\Form\FavorisType;
 use App\Repository\FavorisRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 #[Route('/favoris')]
 class FavorisController extends AbstractController
@@ -89,7 +87,7 @@ class FavorisController extends AbstractController
     #[Route('/{id}', name: 'app_favoris_delete', methods: ['POST'])]
     public function delete(Request $request, Favoris $favori, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $favori->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$favori->getId(), $request->request->get('_token'))) {
             $entityManager->remove($favori);
             $entityManager->flush();
         }
@@ -103,21 +101,21 @@ class FavorisController extends AbstractController
     {
         // Récupérer tous les favoris
         $favoris = $favorisRepository->findAll();
-        
+
         // Créer un tableau associatif pour stocker les séries par favoris
         $seriesByFavoris = [];
-        
+
         // Remplir le tableau associatif
         foreach ($favoris as $favori) {
             $serieId = $favori->getIdSerie();
             $serie = $seriesRepository->find($serieId); // Récupérer la série associée au favori
-            
+
             // Vérifier si la série existe et si elle n'a pas déjà été ajoutée
             if ($serie && !isset($seriesByFavoris[$favori->getId()])) {
                 $seriesByFavoris[$favori->getId()] = $serie; // Ajouter la série au tableau associatif sous la clé du favori
             }
         }
-        
+
         // Passez le tableau associatif à la vue pour affichage
         return $this->render('front/listSeriesParFavoris.html.twig', [
             'seriesByFavoris' => $seriesByFavoris,
@@ -146,6 +144,7 @@ class FavorisController extends AbstractController
             $entityManager->persist($favoris);
             $entityManager->flush();
         }
+
         return $this->redirectToRoute('app_favoris_index');
     }
 

@@ -13,7 +13,6 @@ class Friendships
     #[ORM\Column]
     private ?int $id = null;
 
-
     #[ORM\ManyToOne(inversedBy: 'incomingFriendRequests')]
     private ?Users $receiver = null;
 
@@ -32,7 +31,6 @@ class Friendships
     {
         return $this->id;
     }
-
 
     public function getReceiver(): ?Users
     {

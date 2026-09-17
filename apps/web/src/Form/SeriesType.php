@@ -11,7 +11,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-
 class SeriesType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -33,7 +32,7 @@ class SeriesType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                 ],
-            ]);;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -43,4 +42,3 @@ class SeriesType extends AbstractType
         ]);
     }
 }
-

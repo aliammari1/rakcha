@@ -30,7 +30,7 @@ class Panier
     private Collection $idClient;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {

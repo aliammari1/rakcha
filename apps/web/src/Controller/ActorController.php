@@ -18,10 +18,11 @@ class ActorController extends AbstractController
     public function index(ActorRepository $actorRepository): Response
     {
         $form = $this->createForm(ActorType::class, new Actor());
-        $updateForms = array();
-        for ($i = 0; $i < count($actorRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($actorRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(ActorType::class, $actorRepository->findAll()[$i])->createView();
         }
+
         return $this->render('back/actorTables.html.twig', [
             'actors' => $actorRepository->findAll(),
             'form' => $form->createView(),
@@ -32,8 +33,8 @@ class ActorController extends AbstractController
     #[Route('/new', name: 'app_actor_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ActorRepository $actorRepository): Response
     {
-        $updateForms = array();
-        for ($i = 0; $i < count($actorRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($actorRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(ActorType::class, $actorRepository->findAll()[$i])->createView();
         }
         $actor = new Actor();
@@ -48,14 +49,14 @@ class ActorController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/films';
                 $file->move($destination, $filename);
-                $actor->setimage("/img/actors/" . $filename);
+                $actor->setimage('/img/actors/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
             $entityManager->persist($actor);
             $entityManager->flush();
@@ -64,11 +65,12 @@ class ActorController extends AbstractController
             return $this->redirectToRoute('app_actor_index', [], Response::HTTP_SEE_OTHER);
         }
         $hasErrorsCreate = true;
+
         return $this->render('back/actorTables.html.twig', [
             'actors' => $actorRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
-            'hasErrorsCreate' => $hasErrorsCreate
+            'hasErrorsCreate' => $hasErrorsCreate,
         ]);
     }
 
@@ -86,9 +88,9 @@ class ActorController extends AbstractController
     #[Route('/{id}/edit/{formUpdateNumber}', name: 'app_actor_edit', methods: ['POST'])]
     public function edit(Request $request, Actor $actor, EntityManagerInterface $entityManager, $formUpdateNumber, ActorRepository $actorRepository): Response
     {
-        $updateForms = array();
+        $updateForms = [];
         $actors = $actorRepository->findAll();
-        for ($i = 0; $i < count($actors); $i++) {
+        for ($i = 0; $i < count($actors); ++$i) {
             $updateForms[$i] = $this->createForm(ActorType::class, $actors[$i])->createView();
         }
         $form = $this->createForm(ActorType::class, new Actor());
@@ -103,14 +105,14 @@ class ActorController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/films';
                 $file->move($destination, $filename);
-                $actor->setimage("/img/actors/" . $filename);
+                $actor->setimage('/img/actors/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
             $entityManager->flush();
             $this->addFlash('actors', 'actor edited successfully');
@@ -120,7 +122,7 @@ class ActorController extends AbstractController
         $entityManager->refresh($actor);
 
         return $this->render('back/actorTables.html.twig', [
-            "formUpdateNumber" => $formUpdateNumber,
+            'formUpdateNumber' => $formUpdateNumber,
             'actors' => $actorRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
@@ -131,7 +133,7 @@ class ActorController extends AbstractController
     #[Route('/{id}', name: 'app_actor_delete', methods: ['POST'])]
     public function delete(Request $request, Actor $actor, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $actor->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$actor->getId(), $request->request->get('_token'))) {
             $entityManager->remove($actor);
             $entityManager->flush();
             $this->addFlash('actors', 'actor deleted successfully');
