@@ -29,8 +29,22 @@ class Filmcategory
         return $this->filmId;
     }
 
+    public function setFilmId(int $filmId): static
+    {
+        $this->filmId = $filmId;
+
+        return $this;
+    }
+
     public function getCategoryId(): ?int
     {
         return $this->categoryId;
+    }
+
+    public function setCategoryId(int $categoryId): static
+    {
+        $this->categoryId = $categoryId;
+
+        return $this;
     }
 }

@@ -28,8 +28,22 @@ class Actorfilm
         return $this->idactor;
     }
 
+    public function setIdactor(int $idactor): static
+    {
+        $this->idactor = $idactor;
+
+        return $this;
+    }
+
     public function getIdfilm(): ?int
     {
         return $this->idfilm;
+    }
+
+    public function setIdfilm(int $idfilm): static
+    {
+        $this->idfilm = $idfilm;
+
+        return $this;
     }
 }
