@@ -119,6 +119,12 @@ class PanierController extends AbstractController
             throw $this->createNotFoundException('Panier non trouvé');
         }
 
+        // Ownership verification (BOLA prevention)
+        $currentUser = $this->getUser();
+        if ($panier->getClient() !== $currentUser && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Accès refusé');
+        }
+
         // Supprimer le panier
         $entityManager->remove($panier);
         $entityManager->flush();
@@ -131,10 +137,16 @@ class PanierController extends AbstractController
     #[Route('/panier/update-quantity', name: 'panier_update_quantity', methods: ['POST'])]
     public function updateQuantity(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         // Récupérer les données JSON envoyées par la requête
         $content = json_decode($request->getContent(), true);
-        $itemId = $content['itemId'];
-        $newQuantity = $content['newQuantity'];
+        $itemId = $content['itemId'] ?? null;
+        $newQuantity = $content['newQuantity'] ?? null;
+
+        if (!$itemId || !is_numeric($newQuantity) || $newQuantity <= 0) {
+            return new Response(json_encode(['success' => false, 'message' => 'Invalid parameters']), Response::HTTP_BAD_REQUEST);
+        }
 
         // Récupérer l'entité correspondant à l'item à mettre à jour
         $item = $entityManager->getRepository(Panier::class)->find($itemId);
@@ -142,6 +154,12 @@ class PanierController extends AbstractController
         // Vérifier si l'item existe
         if (!$item) {
             return new Response(json_encode(['success' => false, 'message' => 'Item not found']), Response::HTTP_NOT_FOUND);
+        }
+
+        // Ownership verification (BOLA prevention)
+        $currentUser = $this->getUser();
+        if ($item->getClient() !== $currentUser && !$this->isGranted('ROLE_ADMIN')) {
+            return new Response(json_encode(['success' => false, 'message' => 'Access denied']), Response::HTTP_FORBIDDEN);
         }
 
         // Récupérer le produit associé à l'item

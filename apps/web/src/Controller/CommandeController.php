@@ -51,8 +51,10 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/payment', name: 'app_payment', methods: ['POST'])]
-    public function payment(Request $request): Response
+    public function payment(Request $request, CommandeRepository $commandeRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $token = $request->request->get('token');
         $commandeId = $request->query->get('commandeId');
         if (!$this->isCsrfTokenValid('form', $token)) {
@@ -63,14 +65,27 @@ class CommandeController extends AbstractController
             );
         }
 
+        $commande = $commandeRepository->find($commandeId);
+        if (!$commande) {
+            throw $this->createNotFoundException('Commande non trouvée');
+        }
+
+        $currentUser = $this->getUser();
+        if ($commande->getIdclient() !== $currentUser && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Accès refusé');
+        }
+
+        $amount = filter_var($request->request->get('amount'), FILTER_VALIDATE_FLOAT);
+        if ($amount === false || $amount <= 0) {
+            return new Response('Montant invalide', Response::HTTP_BAD_REQUEST);
+        }
+
         $response = $this->passerelle->purchase([
-            'amount' => $request->request->get('amount'),
-            'currency' => $_ENV['PAYPAL_CURRENCY'],
+            'amount' => number_format($amount, 2, '.', ''),
+            'currency' => $_ENV['PAYPAL_CURRENCY'] ?? 'USD',
             'returnUrl' => 'https://127.0.0.1:8001/commande/success?commandeId=' . $commandeId,
             'cancelUrl' => 'https://127.0.0.1:8001/commande/error'
         ])->send();
-
-        var_dump($response->getData());
 
         if ($response->isRedirect()) {
 
@@ -102,7 +117,19 @@ class CommandeController extends AbstractController
     #[Route('/success', name: 'app_success')]
     public function success(Request $request, CommandeRepository $commandeRepository, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $commandeId = $request->query->get('commandeId');
+        $commande = $commandeRepository->find($commandeId);
+        if (!$commande) {
+            throw $this->createNotFoundException('Commande non trouvée');
+        }
+
+        $currentUser = $this->getUser();
+        if ($commande->getIdclient() !== $currentUser && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Accès refusé');
+        }
+
         if ($request->query->get('paymentId') && $request->query->get('PayerID')) {
             $operation = $this->passerelle->completePurchase([
                 'payer_id' => $request->query->get('PayerID'),
@@ -113,7 +140,6 @@ class CommandeController extends AbstractController
 
             if ($response->isSuccessful()) {
                 $data = $response->getData();
-                $commande = $commandeRepository->find($commandeId);
                 $commande->setStatu('payé');
                 $em->persist($commande);
                 $em->flush();
