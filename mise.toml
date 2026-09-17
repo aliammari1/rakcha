@@ -1,0 +1,554 @@
+#:schema https://mise.jdx.dev/schema/mise.json
+
+min_version = "2026.7.3"
+
+# =============================================================================
+# RAKCHA development environment
+#
+# Managed here:
+#   - Java 21
+#   - Maven
+#   - PHP 8.3 + Composer
+#   - Symfony CLI
+#   - Flutter / Dart
+#   - Node.js 20 / npm
+#   - Firebase CLI
+#   - Python 3.12
+#   - uv
+#   - go-task
+#
+# Still OS-level:
+#   - Docker + Docker Compose
+#   - Android SDK / emulator for Android
+#   - Xcode for iOS
+#   - platform GUI libraries needed by JavaFX on Linux
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# mise behaviour
+# -----------------------------------------------------------------------------
+
+[settings]
+
+# PHP is installed through mise's PHP backend and may require native build
+# dependencies. Ask instead of failing mysteriously halfway through.
+system_deps = "auto"
+
+
+# -----------------------------------------------------------------------------
+# Tools
+# -----------------------------------------------------------------------------
+
+[tools]
+
+# ─── Desktop ──────────────────────────────────────────────────────────────────
+#
+# apps/desktop/pom.xml targets Java 21.
+# Liberica matches the distribution used by desktop CI closely.
+java = "liberica-21"
+
+maven = "3.9"
+
+
+# ─── Web ──────────────────────────────────────────────────────────────────────
+#
+# Symfony requires PHP >=8.2.
+# CI's primary version is PHP 8.3, so use that locally as the canonical version.
+#
+# The mise PHP integration also installs Composer.
+php = "8.3"
+
+# Symfony's local development server.
+"github:symfony-cli/symfony-cli" = "5.17.1"
+
+
+# ─── Mobile ───────────────────────────────────────────────────────────────────
+#
+# Flutter includes Dart.
+# CI currently follows Flutter stable rather than pinning an exact release.
+flutter = "latest"
+
+
+# ─── Firebase Functions ───────────────────────────────────────────────────────
+#
+# package.json declares:
+#   "engines": { "node": "20" }
+node = "20"
+
+# Firebase emulator / deployment CLI.
+firebase = "latest"
+
+
+# ─── Documentation ────────────────────────────────────────────────────────────
+
+python = "3.12"
+
+# Faster Python dependency installer.
+uv = "latest"
+
+
+# ─── Repository task runner ───────────────────────────────────────────────────
+
+task = "latest"
+
+
+# -----------------------------------------------------------------------------
+# Python environment for documentation tooling
+# -----------------------------------------------------------------------------
+
+[env]
+
+# mkdocs + plugins from requirements-docs.txt live here instead of polluting
+# the mise-managed Python installation.
+_.python.venv = {
+  path = ".venv",
+  create = true,
+  uv_create_args = ["--seed"],
+}
+
+
+# =============================================================================
+# Setup
+# =============================================================================
+
+[tasks.setup]
+description = "Install dependencies for every RAKCHA component"
+run = [
+  { task = "web:install" },
+  { task = "mobile:install" },
+  { task = "functions:install" },
+  { task = "docs:install" },
+  { task = "desktop:compile" },
+]
+
+
+[tasks.doctor]
+description = "Verify the complete local development toolchain"
+run = """
+set -e
+
+echo
+echo "────────────────────────────────────────"
+echo " RAKCHA development environment"
+echo "────────────────────────────────────────"
+
+echo
+echo "Java:"
+java -version
+
+echo
+echo "Maven:"
+mvn --version
+
+echo
+echo "PHP:"
+php --version
+
+echo
+echo "Composer:"
+composer --version
+
+echo
+echo "Symfony CLI:"
+symfony version
+
+echo
+echo "Flutter:"
+flutter --version
+
+echo
+echo "Dart:"
+dart --version
+
+echo
+echo "Node:"
+node --version
+
+echo
+echo "npm:"
+npm --version
+
+echo
+echo "Firebase:"
+firebase --version
+
+echo
+echo "Python:"
+python --version
+
+echo
+echo "uv:"
+uv --version
+
+echo
+echo "Task:"
+task --version
+
+echo
+echo "Docker:"
+if command -v docker >/dev/null 2>&1; then
+  docker --version
+
+  echo
+  echo "Docker Compose:"
+  docker compose version
+else
+  echo "NOT INSTALLED"
+  echo "Docker is an OS-level dependency and is not installed by this mise.toml."
+fi
+
+echo
+echo "────────────────────────────────────────"
+echo " Environment check complete"
+echo "────────────────────────────────────────"
+"""
+
+
+# =============================================================================
+# Infrastructure
+# =============================================================================
+
+[tasks."infra:up"]
+description = "Start MySQL and Redis"
+run = "docker compose up -d mysql redis"
+
+
+[tasks."infra:down"]
+description = "Stop local infrastructure"
+run = "docker compose down"
+
+
+[tasks."infra:reset"]
+description = "Destroy local containers/volumes and recreate infrastructure"
+run = """
+docker compose down -v
+docker compose up -d mysql redis
+"""
+
+
+[tasks."infra:logs"]
+description = "Follow MySQL and Redis logs"
+run = "docker compose logs -f mysql redis"
+
+
+[tasks."stack:up"]
+description = "Build and start the Docker web stack"
+run = "docker compose up --build"
+
+
+[tasks."stack:down"]
+description = "Stop the Docker web stack"
+run = "docker compose down"
+
+
+# =============================================================================
+# Web — Symfony 6.4 / Twig
+# =============================================================================
+
+[tasks."web:install"]
+description = "Install Symfony dependencies"
+dir = "apps/web"
+run = "composer install"
+
+
+[tasks."web:run"]
+description = "Run the Symfony development server"
+dir = "apps/web"
+run = "symfony server:start"
+
+
+[tasks."web:run:detached"]
+description = "Run Symfony server in the background"
+dir = "apps/web"
+run = "symfony server:start -d"
+
+
+[tasks."web:stop"]
+description = "Stop the Symfony development server"
+dir = "apps/web"
+run = "symfony server:stop"
+
+
+[tasks."web:migrate"]
+description = "Run Doctrine migrations"
+dir = "apps/web"
+run = "php bin/console doctrine:migrations:migrate --no-interaction"
+
+
+[tasks."web:cache:clear"]
+description = "Clear Symfony cache"
+dir = "apps/web"
+run = "php bin/console cache:clear"
+
+
+[tasks."web:test"]
+description = "Run PHPUnit"
+dir = "apps/web"
+run = "composer test"
+
+
+[tasks."web:phpstan"]
+description = "Run PHPStan"
+dir = "apps/web"
+run = "composer phpstan"
+
+
+[tasks."web:format"]
+description = "Fix PHP formatting"
+dir = "apps/web"
+run = "composer cs-fix"
+
+
+[tasks."web:format:check"]
+description = "Check PHP formatting without modifying files"
+dir = "apps/web"
+run = "composer cs-check"
+
+
+[tasks."web:check"]
+description = "Run the main Symfony quality checks"
+run = [
+  { task = "web:phpstan" },
+  { task = "web:format:check" },
+  { task = "web:test" },
+]
+
+
+# =============================================================================
+# Desktop — JavaFX 21 / Maven
+# =============================================================================
+
+[tasks."desktop:compile"]
+description = "Compile the JavaFX desktop app"
+dir = "apps/desktop"
+run = "mvn -B --no-transfer-progress clean compile"
+
+
+[tasks."desktop:install"]
+description = "Build and install desktop dependencies"
+dir = "apps/desktop"
+run = "mvn -B --no-transfer-progress clean install -DskipTests"
+
+
+[tasks."desktop:run"]
+description = "Launch the JavaFX desktop application"
+dir = "apps/desktop"
+run = "mvn javafx:run"
+
+
+[tasks."desktop:test"]
+description = "Run Java unit tests"
+dir = "apps/desktop"
+run = "mvn -B --no-transfer-progress test"
+
+
+[tasks."desktop:verify"]
+description = "Run full Maven verification + coverage"
+dir = "apps/desktop"
+run = "mvn -B --no-transfer-progress verify"
+
+
+[tasks."desktop:clean"]
+description = "Clean Maven build artifacts"
+dir = "apps/desktop"
+run = "mvn clean"
+
+
+# =============================================================================
+# Mobile — Flutter
+# =============================================================================
+
+[tasks."mobile:install"]
+description = "Install Flutter packages"
+dir = "apps/mobile"
+run = "flutter pub get"
+
+
+[tasks."mobile:run"]
+description = "Run the Flutter application"
+dir = "apps/mobile"
+run = "flutter run"
+
+
+[tasks."mobile:devices"]
+description = "List available Flutter devices"
+dir = "apps/mobile"
+run = "flutter devices"
+
+
+[tasks."mobile:doctor"]
+description = "Run Flutter environment diagnostics"
+run = "flutter doctor -v"
+
+
+[tasks."mobile:analyze"]
+description = "Run Dart/Flutter static analysis"
+dir = "apps/mobile"
+run = "flutter analyze"
+
+
+[tasks."mobile:format"]
+description = "Format hand-written Dart code"
+dir = "apps/mobile"
+run = "dart format lib/concierge test"
+
+
+[tasks."mobile:format:check"]
+description = "Verify Dart formatting"
+dir = "apps/mobile"
+run = "dart format --output=none --set-exit-if-changed lib/concierge test"
+
+
+[tasks."mobile:test"]
+description = "Run Flutter tests"
+dir = "apps/mobile"
+run = "flutter test"
+
+
+[tasks."mobile:coverage"]
+description = "Run Flutter tests with coverage"
+dir = "apps/mobile"
+run = "flutter test --coverage"
+
+
+[tasks."mobile:build:apk"]
+description = "Build Android APK"
+dir = "apps/mobile"
+run = "flutter build apk"
+
+
+[tasks."mobile:build:appbundle"]
+description = "Build Android App Bundle"
+dir = "apps/mobile"
+run = "flutter build appbundle"
+
+
+[tasks."mobile:build:web"]
+description = "Build Flutter web output"
+dir = "apps/mobile"
+run = "flutter build web"
+
+
+[tasks."mobile:build:ios"]
+description = "Build iOS application — macOS/Xcode only"
+dir = "apps/mobile"
+run = "flutter build ios"
+
+
+[tasks."mobile:check"]
+description = "Run Flutter formatting, analysis, and tests"
+run = [
+  { task = "mobile:format:check" },
+  { task = "mobile:analyze" },
+  { task = "mobile:test" },
+]
+
+
+# =============================================================================
+# Firebase Functions / AI Concierge
+# =============================================================================
+
+[tasks."functions:install"]
+description = "Install Firebase Functions dependencies from package-lock.json"
+dir = "apps/mobile/firebase/functions"
+run = "npm ci"
+
+
+[tasks."functions:run"]
+description = "Start the Firebase Functions emulator"
+dir = "apps/mobile/firebase/functions"
+run = "npm run serve"
+
+
+[tasks."functions:shell"]
+description = "Start Firebase Functions interactive shell"
+dir = "apps/mobile/firebase/functions"
+run = "npm run shell"
+
+
+[tasks."functions:lint"]
+description = "Lint Firebase Functions"
+dir = "apps/mobile/firebase/functions"
+run = "npm run lint"
+
+
+[tasks."functions:lint:fix"]
+description = "Fix Firebase Functions lint findings"
+dir = "apps/mobile/firebase/functions"
+run = "npm run lint:fix"
+
+
+[tasks."functions:test"]
+description = "Run Firebase Functions Vitest suite"
+dir = "apps/mobile/firebase/functions"
+run = "npm test"
+
+
+[tasks."functions:logs"]
+description = "Show deployed Firebase Function logs"
+dir = "apps/mobile/firebase/functions"
+run = "npm run logs"
+
+
+[tasks."functions:check"]
+description = "Run Firebase Functions lint and tests"
+run = [
+  { task = "functions:lint" },
+  { task = "functions:test" },
+]
+
+
+# =============================================================================
+# Documentation — MkDocs Material
+# =============================================================================
+
+[tasks."docs:install"]
+description = "Install pinned documentation dependencies"
+run = "uv pip install -r requirements-docs.txt"
+
+
+[tasks."docs:serve"]
+description = "Run MkDocs development server"
+depends = ["docs:install"]
+run = "mkdocs serve"
+
+
+[tasks."docs:build"]
+description = "Build documentation with strict validation"
+depends = ["docs:install"]
+run = "mkdocs build --strict"
+
+
+# =============================================================================
+# Repository-wide checks
+# =============================================================================
+
+[tasks.test]
+description = "Run tests for all four runtime components"
+run = [
+  { task = "desktop:test" },
+  { task = "web:test" },
+  { task = "mobile:test" },
+  { task = "functions:test" },
+]
+
+
+[tasks.check]
+description = "Run the primary local CI checks"
+run = [
+  { task = "web:check" },
+  { task = "desktop:verify" },
+  { task = "mobile:check" },
+  { task = "functions:check" },
+  { task = "docs:build" },
+]
+
+
+[tasks.clean]
+description = "Clean generated build artifacts"
+run = [
+  "mvn -f apps/desktop/pom.xml clean",
+  "flutter clean --project-directory apps/mobile",
+  "rm -rf site",
+]
