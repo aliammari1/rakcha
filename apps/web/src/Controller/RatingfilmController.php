@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ratingfilm;
+use App\Entity\Users;
 use App\Form\RatingfilmType;
 use App\Repository\RatingfilmRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,15 +27,29 @@ class RatingfilmController extends AbstractController
     public function rateFilm(Request $request, EntityManagerInterface $entityManager, RatingfilmRepository $ratingfilmRepository): Response
     {
         $data = json_decode($request->getContent(), true);
-        $ratingfilm = $ratingfilmRepository->findOneBy(['idUser' => $this->getUser()->getId(), 'idFilm' => $data['filmId']]);
-        if ($ratingfilm == null)
+        $user = $this->getUser();
+        if (!$user instanceof Users || !is_array($data) || !isset($data['filmId'], $data['rate'])
+            || !is_numeric($data['filmId']) || !is_numeric($data['rate'])) {
+            return $this->json(['success' => false, 'message' => 'Invalid rating payload.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $userId = $user->getId();
+        if (null === $userId) {
+            return $this->json(['success' => false, 'message' => 'Authenticated user has no identifier.'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $filmId = (int) $data['filmId'];
+        $ratingfilm = $ratingfilmRepository->findOneBy(['idUser' => $userId, 'idFilm' => $filmId]);
+        if (null == $ratingfilm) {
             $ratingfilm = new Ratingfilm();
-        $ratingfilm->setRate($data['rate']);
-        $ratingfilm->setIdFilm($data['filmId']);
-        $ratingfilm->setIdUser($this->getUser()->getId());
+        }
+        $ratingfilm->setRate((int) $data['rate']);
+        $ratingfilm->setIdFilm($filmId);
+        $ratingfilm->setIdUser($userId);
         $entityManager->persist($ratingfilm);
         $entityManager->flush();
-        return $this->json(["success" => true, 'ratingfilm' => $ratingfilm]);
+
+        return $this->json(['success' => true, 'ratingfilm' => $ratingfilm]);
     }
 
     #[Route('/new', name: 'app_ratingfilm_new', methods: ['GET', 'POST'])]
@@ -86,7 +101,7 @@ class RatingfilmController extends AbstractController
     #[Route('/{idFilm}', name: 'app_ratingfilm_delete', methods: ['POST'])]
     public function delete(Request $request, Ratingfilm $ratingfilm, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $ratingfilm->getIdFilm(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$ratingfilm->getIdFilm(), $request->request->get('_token'))) {
             $entityManager->remove($ratingfilm);
             $entityManager->flush();
         }
