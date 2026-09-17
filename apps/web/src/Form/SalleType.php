@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Form;
 
 use App\Entity\Salle;
@@ -40,4 +39,3 @@ class SalleType extends AbstractType
         ]);
     }
 }
-

@@ -3,12 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CommandeRepository;
-use DateTime;
-use DateTimeInterface;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 #[ORM\Table(name: 'commande')]
@@ -20,11 +16,8 @@ class Commande
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idcommande;
 
-    /**
-     * @var DateTime
-     */
     #[ORM\Column(name: 'dateCommande', type: 'date', nullable: false)]
-    private DateTimeInterface $datecommande;
+    private \DateTimeInterface $datecommande;
 
     #[ORM\Column(name: 'statu', type: 'string', length: 50, nullable: false, options: ['default' => 'En cours'])]
     private string $statu = 'En cours';

@@ -43,7 +43,7 @@ class MainAppTest extends TestFXBase {
     @Start
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
-        app = new MainApp();
+        app = new MainApp(false);
         app.start(stage);
     }
 
@@ -104,7 +104,7 @@ class MainAppTest extends TestFXBase {
         @DisplayName("Should display email field")
         void testEmailFieldPresent() {
             waitForFxEvents();
-            TextField emailField = lookup("#tfEmail").query();
+            TextField emailField = lookup("#emailTextField").query();
             assertThat(emailField).isNotNull();
             assertThat(emailField.isVisible()).isTrue();
         }
@@ -115,7 +115,7 @@ class MainAppTest extends TestFXBase {
         @DisplayName("Should display password field")
         void testPasswordFieldPresent() {
             waitForFxEvents();
-            PasswordField passwordField = lookup("#tfPassword").query();
+            PasswordField passwordField = lookup("#passwordTextField").query();
             assertThat(passwordField).isNotNull();
             assertThat(passwordField.isVisible()).isTrue();
         }
@@ -126,7 +126,7 @@ class MainAppTest extends TestFXBase {
         @DisplayName("Should display login button")
         void testLoginButtonPresent() {
             waitForFxEvents();
-            Button loginButton = lookup("#btnSignIn").query();
+            Button loginButton = lookup("#signInButton").query();
             assertThat(loginButton).isNotNull();
             assertThat(loginButton.isVisible()).isTrue();
         }
@@ -137,8 +137,8 @@ class MainAppTest extends TestFXBase {
         @DisplayName("Should have empty fields initially")
         void testInitialFieldsEmpty() {
             waitForFxEvents();
-            TextField emailField = lookup("#tfEmail").query();
-            PasswordField passwordField = lookup("#tfPassword").query();
+            TextField emailField = lookup("#emailTextField").query();
+            PasswordField passwordField = lookup("#passwordTextField").query();
 
             assertThat(emailField.getText()).isEmpty();
             assertThat(passwordField.getText()).isEmpty();
@@ -150,7 +150,7 @@ class MainAppTest extends TestFXBase {
         @DisplayName("Should enable login button initially")
         void testLoginButtonEnabled() {
             waitForFxEvents();
-            Button loginButton = lookup("#btnSignIn").query();
+            Button loginButton = lookup("#signInButton").query();
             assertThat(loginButton.isDisabled()).isFalse();
         }
 
@@ -266,8 +266,8 @@ class MainAppTest extends TestFXBase {
         void testDefaultState() {
             waitForFxEvents();
 
-            TextField emailField = lookup("#tfEmail").query();
-            PasswordField passwordField = lookup("#tfPassword").query();
+            TextField emailField = lookup("#emailTextField").query();
+            PasswordField passwordField = lookup("#passwordTextField").query();
 
             assertThat(emailField.getText()).isEmpty();
             assertThat(passwordField.getText()).isEmpty();
@@ -288,8 +288,8 @@ class MainAppTest extends TestFXBase {
         void testCleanStartState() {
             waitForFxEvents();
 
-            TextField emailField = lookup("#tfEmail").query();
-            PasswordField passwordField = lookup("#tfPassword").query();
+            TextField emailField = lookup("#emailTextField").query();
+            PasswordField passwordField = lookup("#passwordTextField").query();
 
             assertThat(emailField.getText()).isEmpty();
             assertThat(passwordField.getText()).isEmpty();

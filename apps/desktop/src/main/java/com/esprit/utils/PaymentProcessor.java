@@ -18,23 +18,16 @@ public enum PaymentProcessor {
     private static final int CENTS_MULTIPLIER = 100;
 
     static {
-        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
-        String apiKey = dotenv.get("STRIPE_API_KEY");
-        if (apiKey == null) {
-            LOGGER.severe("Stripe API key not found in .env file");
-            throw new ExceptionInInitializerError("Stripe API key is required");
-        }
-
-        Stripe.apiKey = apiKey;
-        LOGGER.info("Stripe initialized in " + (apiKey.startsWith("sk_test_") ? "TEST" : "LIVE") + " mode");
+        // Direct Stripe secret key usage is removed from client runtime to enforce untrusted client security boundary.
+        LOGGER.info("Stripe direct client initialization disabled: secret key is not loaded in desktop runtime.");
     }
 
 
     /**
      * Process a payment with Stripe using secure best practices
      * <p>
-     * In development: Uses test tokens for security
-     * In production: Would use Stripe Elements or Payment Intents API
+     * Direct privileged payment execution from desktop is disabled for security.
+     * Payments must be processed via the authoritative server backend.
      *
      * @param name         Customer name
      * @param email        Customer email
@@ -50,17 +43,14 @@ public enum PaymentProcessor {
         try {
             validateInputs(name, email, amount, cardNumber, cardExpMonth, cardExpYear, cardCvc);
 
-            // Check if we're in test mode
+            // In test/simulation mode, allow offline simulated payment testing
             if (isTestMode()) {
                 return processTestPayment(name, email, amount, cardNumber);
-            } else {
-                // In production, use Payment Intents API (more secure)
-                return processProductionPayment(name, email, amount, cardNumber, cardExpMonth, cardExpYear, cardCvc);
             }
 
-        } catch (StripeException e) {
-            LOGGER.log(Level.SEVERE, "Stripe payment processing failed", e);
+            LOGGER.warning("Privileged payment execution disabled on client: direct production Stripe charges are rejected. Use backend checkout.");
             return false;
+
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.SEVERE, "Invalid payment parameters", e);
             return false;
@@ -68,10 +58,21 @@ public enum PaymentProcessor {
     }
 
     /**
-     * Check if we're running in test mode based on API key
+     * Returns whether privileged payment API execution is enabled directly on this client.
+     * Always returns false to protect credentials and enforce untrusted client boundary.
+     *
+     * @return false
      */
-    private static boolean isTestMode() {
-        return Stripe.apiKey != null && Stripe.apiKey.startsWith("sk_test_");
+    public static boolean isPrivilegedPaymentExecutionEnabled() {
+        return false;
+    }
+
+    /**
+     * Check if we're running in test simulation mode based on test flags or environment
+     */
+    public static boolean isTestMode() {
+        return "true".equalsIgnoreCase(System.getProperty("rakcha.payment.simulate_test"))
+            || "test".equalsIgnoreCase(System.getenv("APP_ENV"));
     }
 
     /**
@@ -128,27 +129,8 @@ public enum PaymentProcessor {
      * Process payment using Payment Intents API (production)
      */
     private static boolean processProductionPayment(String name, String email, float amount,
-                                                    String cardNumber, int cardExpMonth, int cardExpYear, String cardCvc) throws StripeException {
-
-        // Create customer
-        Customer customer = retrieveOrCreateCustomer(name, email);
-
-        // Create Payment Intent (more secure than direct charges)
-        Map<String, Object> intentParams = new HashMap<>();
-        intentParams.put("amount", (int) (amount * CENTS_MULTIPLIER));
-        intentParams.put("currency", CURRENCY);
-        intentParams.put("customer", customer.getId());
-        intentParams.put("description", "Cinema ticket purchase - " + name);
-        intentParams.put("confirmation_method", "manual");
-        intentParams.put("confirm", true);
-
-        // In production, you would use Stripe Elements on frontend
-        // and pass the payment method ID here instead of raw card data
-        LOGGER.warning("Production payment processing requires Stripe Elements integration");
-
-        PaymentIntent intent = PaymentIntent.create(intentParams);
-
-        return "succeeded".equals(intent.getStatus());
+                                                    String cardNumber, int cardExpMonth, int cardExpYear, String cardCvc) {
+        throw new UnsupportedOperationException("Direct client-side Stripe API execution is disabled. Process payments via the backend API.");
     }
 
     /**
@@ -219,15 +201,8 @@ public enum PaymentProcessor {
     /**
      * Create or retrieve a Stripe customer
      */
-    private static Customer retrieveOrCreateCustomer(final String name, final String email) throws StripeException {
-        final Map<String, Object> customerParams = new HashMap<>();
-        customerParams.put("name", name);
-        customerParams.put("email", email);
-        customerParams.put("description", "Cinema customer - " + name);
-
-        Customer customer = Customer.create(customerParams);
-        LOGGER.info("Created Stripe customer: " + customer.getId());
-        return customer;
+    private static Customer retrieveOrCreateCustomer(final String name, final String email) {
+        throw new UnsupportedOperationException("Direct client-side Stripe customer creation is disabled. Use backend API.");
     }
 
     /**

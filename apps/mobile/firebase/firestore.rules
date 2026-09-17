@@ -1,116 +1,139 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{document} {
-      allow create: if request.auth.uid == document;
-      allow read: if request.auth.uid == document;
-      allow write: if request.auth.uid == document;
-      allow delete: if request.auth.uid == document;
+    // Helper function to check if request is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
     }
 
+    // Helper function to verify whether a user is the document owner.
+    // Supports DocumentReference (/users/{uid}) or string/int UID representations.
+    function isDocOwner(docData) {
+      return isAuthenticated() && (
+        ('user_ref' in docData && docData.user_ref == /databases/$(database)/documents/users/$(request.auth.uid)) ||
+        ('user' in docData && docData.user == /databases/$(database)/documents/users/$(request.auth.uid)) ||
+        ('userId' in docData && (docData.userId == request.auth.uid || string(docData.userId) == request.auth.uid)) ||
+        ('user_id' in docData && (docData.user_id == request.auth.uid || string(docData.user_id) == request.auth.uid)) ||
+        ('author_id' in docData && (docData.author_id == request.auth.uid || string(docData.author_id) == request.auth.uid)) ||
+        ('authorId' in docData && (docData.authorId == request.auth.uid || string(docData.authorId) == request.auth.uid))
+      );
+    }
+
+    // Ensures owner field immutability upon document update
+    function ownerNotModified() {
+      return (!('user_ref' in request.resource.data) || request.resource.data.user_ref == resource.data.user_ref) &&
+             (!('user' in request.resource.data) || request.resource.data.user == resource.data.user) &&
+             (!('userId' in request.resource.data) || request.resource.data.userId == resource.data.userId) &&
+             (!('user_id' in request.resource.data) || request.resource.data.user_id == resource.data.user_id) &&
+             (!('author_id' in request.resource.data) || request.resource.data.author_id == resource.data.author_id) &&
+             (!('authorId' in request.resource.data) || request.resource.data.authorId == resource.data.authorId);
+    }
+
+    // User profiles: owner has full access, authenticated users can view profiles
+    match /users/{userId} {
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow read: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Public catalog collections: read-only for public, authenticated write
     match /categoryFilm/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if false;
-      allow delete: if false;
+      allow write: if isAuthenticated();
     }
 
     match /ActorFilm/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if false;
-      allow delete: if false;
+      allow write: if isAuthenticated();
     }
 
     match /Film/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if false;
-      allow delete: if false;
+      allow write: if isAuthenticated();
     }
 
     match /cinema/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow write: if isAuthenticated();
     }
 
     match /CategoryProduct/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow write: if isAuthenticated();
     }
 
     match /produit/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if true;
-      allow delete: if true;
-    }
-
-    match /cart/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
-    }
-
-    match /Seance/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow write: if isAuthenticated();
     }
 
     match /salle/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /Seance/{document} {
+      allow read: if true;
+      allow write: if isAuthenticated();
     }
 
     match /serie/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if true;
-      allow delete: if true;
-    }
-
-    match /review/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow write: if isAuthenticated();
     }
 
     match /Event/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow write: if isAuthenticated();
     }
 
     match /SuggestedEvent/{document} {
-      allow create: if true;
       allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        !('user_ref' in resource.data || 'author_id' in resource.data || 'user_id' in resource.data) ||
+        (isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified())
+      );
+      allow delete: if isAuthenticated() && (
+        !('user_ref' in resource.data || 'author_id' in resource.data || 'user_id' in resource.data) ||
+        isDocOwner(resource.data)
+      );
+    }
+
+    // User reviews: public read, authenticated author write
+    match /review/{document} {
+      allow read: if true;
+      allow create: if isAuthenticated() && (
+        !('user_ref' in request.resource.data || 'author_id' in request.resource.data || 'user_id' in request.resource.data) ||
+        isDocOwner(request.resource.data)
+      );
+      allow update: if isAuthenticated() && (
+        (!('user_ref' in resource.data || 'author_id' in resource.data || 'user_id' in resource.data) && isDocOwner(request.resource.data)) ||
+        (isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified())
+      );
+      allow delete: if isAuthenticated() && (
+        !('user_ref' in resource.data || 'author_id' in resource.data || 'user_id' in resource.data) ||
+        isDocOwner(resource.data)
+      );
+    }
+
+    // User-specific operational collections: strictly enforce owner isolation and immutability
+    match /cart/{document} {
+      allow read, delete: if isAuthenticated() && isDocOwner(resource.data);
+      allow create: if isAuthenticated() && isDocOwner(request.resource.data);
+      allow update: if isAuthenticated() && isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified();
     }
 
     match /Reservation/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow read, delete: if isAuthenticated() && isDocOwner(resource.data);
+      allow create: if isAuthenticated() && isDocOwner(request.resource.data);
+      allow update: if isAuthenticated() && isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified();
     }
 
     match /Favoris/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if true;
-      allow delete: if true;
+      allow read, delete: if isAuthenticated() && isDocOwner(resource.data);
+      allow create: if isAuthenticated() && isDocOwner(request.resource.data);
+      allow update: if isAuthenticated() && isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified();
     }
   }
 }

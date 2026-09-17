@@ -40,15 +40,15 @@ import static org.testfx.matcher.control.LabeledMatchers.hasText;
 public abstract class TestFXBase extends ApplicationTest {
 
     /**
-     * Initialize JavaFX toolkit for headless testing
+     * Configure the TestFX robot. CI provides an Xvfb virtual display, which is
+     * more compatible with the desktop JavaFX runtime than the embedded Monocle
+     * renderer.
      */
     @BeforeAll
     public static void setUpHeadlessMode() {
         System.setProperty("testfx.robot", "glass");
-        System.setProperty("testfx.headless", "true");
         System.setProperty("prism.order", "sw");
         System.setProperty("prism.text", "t2k");
-        System.setProperty("java.awt.headless", "true");
     }
 
 
@@ -390,4 +390,3 @@ public abstract class TestFXBase extends ApplicationTest {
     }
 
 }
-

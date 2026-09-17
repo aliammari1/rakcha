@@ -6,6 +6,7 @@ use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use Stevenmaguire\OAuth2\Client\Provider\MicrosoftResourceOwner;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-
-class MicrosoftAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
+class MicrosoftAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     private $clientRegistry;
     private $entityManager;
@@ -34,7 +34,7 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
     public function supports(Request $request): ?bool
     {
         // continue ONLY if the current ROUTE matches the check ROUTE
-        return $request->attributes->get('_route') === 'connect_microsoft_check';
+        return 'connect_microsoft_check' === $request->attributes->get('_route');
     }
 
     public function authenticate(Request $request): Passport
@@ -44,10 +44,13 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
 
         return new SelfValidatingPassport(
             new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
-                /** @var MicrosoftUser $microsoftUser */
+                /** @var MicrosoftResourceOwner $microsoftUser */
                 $microsoftUser = $client->fetchUserFromToken($accessToken);
-                //dd($microsoftUser);
+                // dd($microsoftUser);
                 $email = $microsoftUser->getEmail();
+                if (null === $email) {
+                    throw new AuthenticationException('Microsoft did not return an email address.');
+                }
 
                 // 1) have they logged in with Microsoft before? Easy!
                 $existingUser = $this->entityManager->getRepository(Users::class)->findOneBy(['id' => $microsoftUser->getId()]);
@@ -69,11 +72,12 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
                 $user->setRole('client');
                 $user->setIsVerified(true);
                 $user->setPassword('microsoft');
-                $user->setNom($microsoftUser->getFirstName());
-                $user->setPrenom($microsoftUser->getLastName());
-                $user->setPhotoDeProfil("/img/users/empty.jpg");
+                $user->setNom($microsoftUser->getFirstname() ?? 'Microsoft');
+                $user->setPrenom($microsoftUser->getLastname() ?? 'User');
+                $user->setPhotoDeProfil('/img/users/empty.jpg');
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
+
                 return $user;
             })
         );
@@ -87,7 +91,7 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
         return new RedirectResponse($targetUrl);
 
         // or, on success, let the request continue to be handled by the controller
-        //return null;
+        // return null;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
@@ -101,7 +105,7 @@ class MicrosoftAuthenticator extends OAuth2Authenticator implements Authenticati
      * Called when authentication is needed, but it's not sent.
      * This redirects to the 'login'.
      */
-    public function start(Request $request, AuthenticationException|null $authException = null): Response
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return new RedirectResponse(
             '/connect/', // might be the site, where users choose their oauth provider

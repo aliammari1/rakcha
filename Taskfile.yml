@@ -22,7 +22,7 @@ tasks:
     dir: apps/web
     cmds:
       - composer install
-      - npm install
+    desc: Install PHP deps (no Node build — the dead Encore/JS was removed)
 
   web:dev:
     dir: apps/web
@@ -30,15 +30,15 @@ tasks:
       - symfony server:start -d
     desc: Start Symfony dev server (detached) — requires Symfony CLI (https://symfony.com/download)
 
-  web:build:
-    dir: apps/web
-    cmds:
-      - npm run build
-
   web:test:
     dir: apps/web
     cmds:
-      - php bin/phpunit
+      - composer test
+
+  web:phpstan:
+    dir: apps/web
+    cmds:
+      - composer phpstan
 
   web:migrate:
     dir: apps/web
@@ -86,9 +86,13 @@ tasks:
       - task: mobile:get
       - task: desktop:build
 
-  api:generate:
-    desc: Generate API clients from OpenAPI spec
+  # NOTE: there is intentionally no `api:generate` task. The three apps are
+  # independent (JDBC desktop, Twig web, Firebase mobile) and there is no shared
+  # REST API — the old OpenAPI stub + generator config were removed as vaporware.
+  docs:serve:
     cmds:
-      - openapi-generator-cli generate -i shared/api-spec/openapi.yaml -g java -o apps/desktop/src/generated
-      - openapi-generator-cli generate -i shared/api-spec/openapi.yaml -g php -o apps/web/src/Generated
-      - openapi-generator-cli generate -i shared/api-spec/openapi.yaml -g dart -o apps/mobile/lib/generated
+      - mkdocs serve
+
+  docs:build:
+    cmds:
+      - mkdocs build --strict

@@ -1889,8 +1889,8 @@ class _Auth3WidgetState extends State<Auth3Widget>
                                                       return;
                                                     }
                                                     if (_model
-                                                            .uploadedFileUrl_uploadDataCreate
-                                                            .isEmpty) {
+                                                        .uploadedFileUrl_uploadDataCreate
+                                                        .isEmpty) {
                                                       return;
                                                     }
                                                     logFirebaseEvent(

@@ -7,29 +7,19 @@ use App\Entity\Commandeitem;
 use App\Entity\Panier;
 use App\Form\CommandeType;
 use App\Repository\CommandeRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Omnipay\Omnipay;
-use Payum\Core\Request\GetHumanStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-
-;
 
 #[Route('/commande')]
 class CommandeController extends AbstractController
 {
-
-
     private $passerelle;
 
-    //Page d'accueil
-    private $manager;
-
-    public function __construct(EntityManagerInterface $manager)
+    public function __construct()
     {
         $this->passerelle = Omnipay::create('PayPal_Rest');
         $this->passerelle->initialize([
@@ -37,10 +27,9 @@ class CommandeController extends AbstractController
             'secret' => $_ENV['PAYPAL_SECRET_KEY'],
             'testMode' => true,
         ]);
-        $this->manager = $manager;
     }
 
-    //Page d'error de la transaction
+    // Page d'error de la transaction
 
     #[Route('/', name: 'app_commande')]
     public function index(): Response
@@ -51,8 +40,10 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/payment', name: 'app_payment', methods: ['POST'])]
-    public function payment(Request $request): Response
+    public function payment(Request $request, CommandeRepository $commandeRepository, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $token = $request->request->get('token');
         $commandeId = $request->query->get('commandeId');
         if (!$this->isCsrfTokenValid('form', $token)) {
@@ -63,27 +54,43 @@ class CommandeController extends AbstractController
             );
         }
 
+        $commande = $commandeRepository->find($commandeId);
+        if (!$commande) {
+            throw $this->createNotFoundException('Commande non trouvée');
+        }
+
+        $currentUser = $this->getUser();
+        if ($commande->getIdclient() !== $currentUser && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Accès refusé');
+        }
+
+        // Compute authoritative total strictly from database items (ignoring client amount)
+        $items = $em->getRepository(Commandeitem::class)->findBy(['idcommande' => $commande]);
+        $authoritativeAmount = 0.0;
+        foreach ($items as $item) {
+            if ($item->getIdProduit() && null !== $item->getIdProduit()->getPrix()) {
+                $authoritativeAmount += (float) ($item->getIdProduit()->getPrix() * $item->getQuantity());
+            }
+        }
+
+        if ($authoritativeAmount <= 0) {
+            return new Response('Montant de la commande invalide ou commande vide', Response::HTTP_BAD_REQUEST);
+        }
+
         $response = $this->passerelle->purchase([
-            'amount' => $request->request->get('amount'),
-            'currency' => $_ENV['PAYPAL_CURRENCY'],
-            'returnUrl' => 'https://127.0.0.1:8001/commande/success?commandeId=' . $commandeId,
-            'cancelUrl' => 'https://127.0.0.1:8001/commande/error'
+            'amount' => number_format($authoritativeAmount, 2, '.', ''),
+            'currency' => $_ENV['PAYPAL_CURRENCY'] ?? 'USD',
+            'returnUrl' => 'https://127.0.0.1:8001/commande/success?commandeId='.$commandeId,
+            'cancelUrl' => 'https://127.0.0.1:8001/commande/error',
         ])->send();
 
-        var_dump($response->getData());
-
         if ($response->isRedirect()) {
-
             $responseData = $response->getData();
-
 
             if (isset($responseData['links'])) {
                 foreach ($responseData['links'] as $link) {
-
-                    if ($link['rel'] === 'approval_url') {
-
+                    if ('approval_url' === $link['rel']) {
                         $redirectUrl = $link['href'];
-
 
                         return $this->redirect($redirectUrl);
                     }
@@ -91,46 +98,109 @@ class CommandeController extends AbstractController
             }
 
             return new Response('L\'URL de redirection est introuvable dans les données de réponse.', Response::HTTP_INTERNAL_SERVER_ERROR);
-        } else {
-
-            return $this->render('front/error.html.twig', [
-                'message' => 'Une erreur est survenue lors du traitement du paiement.'
-            ]);
         }
+
+        return $this->render('front/error.html.twig', [
+            'message' => 'Une erreur est survenue lors du traitement du paiement.',
+        ]);
     }
 
     #[Route('/success', name: 'app_success')]
     public function success(Request $request, CommandeRepository $commandeRepository, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $commandeId = $request->query->get('commandeId');
-        if ($request->query->get('paymentId') && $request->query->get('PayerID')) {
+        $commande = $commandeRepository->find($commandeId);
+        if (!$commande) {
+            throw $this->createNotFoundException('Commande non trouvée');
+        }
+
+        $currentUser = $this->getUser();
+        if ($commande->getIdclient() !== $currentUser && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('Accès refusé');
+        }
+
+        // Idempotency: return immediately if order is already marked paid
+        if ('payé' === $commande->getStatu()) {
+            return $this->redirectToRoute('app_payment_success');
+        }
+
+        $paymentId = $request->query->get('paymentId');
+        $payerId = $request->query->get('PayerID');
+
+        if ($paymentId && $payerId) {
+            // Compute authoritative expected total from database items
+            $items = $em->getRepository(Commandeitem::class)->findBy(['idcommande' => $commande]);
+            $expectedAmount = 0.0;
+            foreach ($items as $item) {
+                if ($item->getIdProduit() && null !== $item->getIdProduit()->getPrix()) {
+                    $expectedAmount += (float) ($item->getIdProduit()->getPrix() * $item->getQuantity());
+                }
+            }
+
+            if ($expectedAmount <= 0) {
+                return $this->render('front/error.html.twig', [
+                    'message' => 'La commande est vide ou invalide.',
+                ]);
+            }
+
+            $currency = $_ENV['PAYPAL_CURRENCY'] ?? 'USD';
             $operation = $this->passerelle->completePurchase([
-                'payer_id' => $request->query->get('PayerID'),
-                'transactionReference' => $request->query->get('paymentId'),
+                'payer_id' => $payerId,
+                'transactionReference' => $paymentId,
+                'amount' => number_format($expectedAmount, 2, '.', ''),
+                'currency' => $currency,
             ]);
 
             $response = $operation->send();
 
             if ($response->isSuccessful()) {
                 $data = $response->getData();
-                $commande = $commandeRepository->find($commandeId);
+
+                // Verify transaction approval status from gateway
+                $state = $data['state'] ?? '';
+                if ('approved' !== $state && 'completed' !== $state) {
+                    return $this->render('front/error.html.twig', [
+                        'message' => 'Le paiement n\'a pas été approuvé par la passerelle.',
+                    ]);
+                }
+
+                // Verify captured amount matches authoritative expected amount
+                if (!empty($data['transactions'][0]['amount']['total'])) {
+                    $capturedAmount = (float) $data['transactions'][0]['amount']['total'];
+                    if (abs($capturedAmount - $expectedAmount) > 0.01) {
+                        return $this->render('front/error.html.twig', [
+                            'message' => 'Incohérence du montant capturé par rapport à la commande.',
+                        ]);
+                    }
+                }
+
+                // Verify captured currency matches configured PayPal currency
+                if (!empty($data['transactions'][0]['amount']['currency'])) {
+                    $capturedCurrency = (string) $data['transactions'][0]['amount']['currency'];
+                    if (0 !== strcasecmp($capturedCurrency, $currency)) {
+                        return $this->render('front/error.html.twig', [
+                            'message' => 'Devise de paiement non valide.',
+                        ]);
+                    }
+                }
+
                 $commande->setStatu('payé');
                 $em->persist($commande);
                 $em->flush();
-                // Rediriger l'utilisateur vers la page de succès après un paiement réussi
-                return $this->redirectToRoute('app_payment_success', ['transactionId' => $data['id']]);
-            } else {
-                // Gérer les erreurs de paiement ici
-                return $this->render('front/error.html.twig', [
-                    'message' => 'Une erreur est survenue lors du traitement du paiement.'
-                ]);
+
+                return $this->redirectToRoute('app_payment_success', ['transactionId' => $data['id'] ?? $paymentId]);
             }
-        } else {
-            // Gérer les paramètres manquants ici
+
             return $this->render('front/error.html.twig', [
-                'message' => 'Les paramètres de paiement sont manquants.'
+                'message' => 'Une erreur est survenue lors du traitement du paiement.',
             ]);
         }
+
+        return $this->render('front/error.html.twig', [
+            'message' => 'Les paramètres de paiement sont manquants.',
+        ]);
     }
 
     #[Route('/error', name: 'app_error')]
@@ -139,7 +209,7 @@ class CommandeController extends AbstractController
         return $this->render(
             'front/error.html.twig',
             [
-                'message' => 'le paiement a échoué'
+                'message' => 'le paiement a échoué',
             ]
         );
     }
@@ -154,7 +224,6 @@ class CommandeController extends AbstractController
     #[Route('/new', name: 'app_commande_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-
         $selectedItemIds = $request->query->get('selectedItemIds');
         $commande = new Commande();
         $form = $this->createForm(CommandeType::class, $commande);
@@ -163,26 +232,21 @@ class CommandeController extends AbstractController
         $commande = $form->getData();
         $commande->setIdclient($this->getUser());
         $commande->setStatu('en cours');
-        $commande->setDatecommande(new DateTime());
-
+        $commande->setDatecommande(new \DateTime());
 
         $entityManager->persist($commande);
         $entityManager->flush();
 
-
         $selectedItemIdsArray = $selectedItemIds ? explode(',', $selectedItemIds) : [];
-
 
         foreach ($selectedItemIdsArray as $itemId) {
             $panierItem = $entityManager->getRepository(Panier::class)->find($itemId);
 
             if ($panierItem) {
-
-                $commandeItem = new CommandeItem();
+                $commandeItem = new Commandeitem();
                 $commandeItem->setIdCommande($commande);
                 $commandeItem->setIdProduit($panierItem->getIdproduit());
                 $commandeItem->setQuantity($panierItem->getQuantite());
-
 
                 $entityManager->persist($commandeItem);
             }
@@ -192,7 +256,6 @@ class CommandeController extends AbstractController
             $panierItem->getIdproduit()->setQuantiteP($newquantite);
         }
         $entityManager->flush();
-
 
         return $this->redirectToRoute('app_commande_form', ['idcommande' => $commande->getIdcommande()]);
     }
@@ -205,9 +268,7 @@ class CommandeController extends AbstractController
         $produitSelectionnes = $request->query->get('produits_selectionnes');
         $commandeId = $request->query->get('idcommande');
 
-
         //  $selectedItemIdsArray = $produitSelectionnes ? explode(',', $produitSelectionnes) : [];
-
 
         $commande = new Commande();
         $form = $this->createForm(CommandeType::class, $commande);
@@ -215,7 +276,7 @@ class CommandeController extends AbstractController
         return $this->render('front/addCommandeProduit.html.twig', [
             'form' => $form->createView(),
             'produitSelectionnes' => $produitSelectionnes,
-            'commandeId' => $commandeId
+            'commandeId' => $commandeId,
         ]);
     }
 
@@ -248,7 +309,7 @@ class CommandeController extends AbstractController
     #[Route('/{idcommande}', name: 'app_commande_delete', methods: ['POST'])]
     public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $commande->getIdcommande(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$commande->getIdcommande(), $request->request->get('_token'))) {
             $entityManager->remove($commande);
             $entityManager->flush();
         }
