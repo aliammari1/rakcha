@@ -20,13 +20,12 @@ public enum PaymentProcessor {
     static {
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         String apiKey = dotenv.get("STRIPE_API_KEY");
-        if (apiKey == null) {
-            LOGGER.severe("Stripe API key not found in .env file");
-            throw new ExceptionInInitializerError("Stripe API key is required");
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            LOGGER.warning("Stripe API key not found in environment. Direct Stripe client payments disabled.");
+        } else {
+            Stripe.apiKey = apiKey;
+            LOGGER.info("Stripe initialized in " + (apiKey.startsWith("sk_test_") ? "TEST" : "LIVE") + " mode");
         }
-
-        Stripe.apiKey = apiKey;
-        LOGGER.info("Stripe initialized in " + (apiKey.startsWith("sk_test_") ? "TEST" : "LIVE") + " mode");
     }
 
 
@@ -48,6 +47,10 @@ public enum PaymentProcessor {
     public static boolean processPayment(final String name, final String email, final float amount,
                                          final String cardNumber, final int cardExpMonth, final int cardExpYear, final String cardCvc) {
         try {
+            if (Stripe.apiKey == null || Stripe.apiKey.trim().isEmpty()) {
+                LOGGER.warning("Payment processing unavailable: STRIPE_API_KEY is not configured.");
+                return false;
+            }
             validateInputs(name, email, amount, cardNumber, cardExpMonth, cardExpYear, cardCvc);
 
             // Check if we're in test mode
