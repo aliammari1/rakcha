@@ -15,21 +15,24 @@ class EmailVerifier
 {
     public function __construct(
         private VerifyEmailHelperInterface $verifyEmailHelper,
-        private MailerInterface            $mailer,
-        private EntityManagerInterface     $entityManager
-    )
-    {
+        private MailerInterface $mailer,
+        private EntityManagerInterface $entityManager,
+    ) {
     }
 
     public function sendEmailConfirmation(string $verifyEmailRouteName, UserInterface $user, TemplatedEmail $email): void
     {
         if ($user instanceof Users) {
+            $userId = $user->getId();
+            if (null === $userId) {
+                throw new \LogicException('Email verification requires a persisted user.');
+            }
 
             $signatureComponents = $this->verifyEmailHelper->generateSignature(
                 $verifyEmailRouteName,
-                $user->getId(),
+                (string) $userId,
                 $user->getEmail(),
-                ['id' => $user->getId()]
+                ['id' => $userId]
             );
 
             $context = $email->getContext();
@@ -49,7 +52,12 @@ class EmailVerifier
     public function handleEmailConfirmation(Request $request, UserInterface $user): void
     {
         if ($user instanceof Users) {
-            $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());
+            $userId = $user->getId();
+            if (null === $userId) {
+                throw new \LogicException('Email verification requires a persisted user.');
+            }
+
+            $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), (string) $userId, $user->getEmail());
 
             $user->setIsVerified(true);
 
