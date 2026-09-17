@@ -18,10 +18,11 @@ class FilmController extends AbstractController
     public function index(FilmRepository $filmRepository): Response
     {
         $form = $this->createForm(FilmType::class, new Film());
-        $updateForms = array();
-        for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($filmRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
         }
+
         return $this->render('back/filmTables.html.twig', [
             'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
@@ -32,9 +33,8 @@ class FilmController extends AbstractController
     #[Route('/new', name: 'app_film_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
-
-        $updateForms = array();
-        for ($i = 0; $i < count($filmRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($filmRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(FilmType::class, $filmRepository->findAll()[$i])->createView();
         }
         $film = new Film();
@@ -49,29 +49,29 @@ class FilmController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/films';
                 $file->move($destination, $filename);
-                $film->setimage("/img/films/" . $filename);
+                $film->setimage('/img/films/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
-            $entityManager->persist($film); //creation the query of create 
-            $entityManager->flush(); //execute the query
-
+            $entityManager->persist($film); // creation the query of create
+            $entityManager->flush(); // execute the query
 
             $this->addFlash('films', 'film added successfully');
 
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
         }
         $hasErrorsCreate = true;
+
         return $this->render('back/filmTables.html.twig', [
             'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
-            'hasErrorsCreate' => $hasErrorsCreate
+            'hasErrorsCreate' => $hasErrorsCreate,
         ]);
     }
 
@@ -86,9 +86,9 @@ class FilmController extends AbstractController
     #[Route('/{id}/edit/{formUpdateNumber}', name: 'app_film_edit', methods: ['POST'])]
     public function edit(Request $request, Film $film, $formUpdateNumber, EntityManagerInterface $entityManager, FilmRepository $filmRepository): Response
     {
-        $updateForms = array();
+        $updateForms = [];
         $films = $filmRepository->findAll();
-        for ($i = 0; $i < count($films); $i++) {
+        for ($i = 0; $i < count($films); ++$i) {
             $updateForms[$i] = $this->createForm(FilmType::class, $films[$i])->createView();
         }
         $form = $this->createForm(FilmType::class, new Film());
@@ -103,22 +103,24 @@ class FilmController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/films";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/films';
                 $file->move($destination, $filename);
-                $film->setimage("/img/films/" . $filename);
+                $film->setimage('/img/films/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\films';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
             $entityManager->flush();
             $this->addFlash('films', 'film edited successfully');
+
             return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
         }
         $entityManager->refresh($film);
+
         return $this->render('back/filmTables.html.twig', [
-            "formUpdateNumber" => $formUpdateNumber,
+            'formUpdateNumber' => $formUpdateNumber,
             'films' => $filmRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
@@ -129,11 +131,12 @@ class FilmController extends AbstractController
     #[Route('/{id}', name: 'app_film_delete', methods: ['POST'])]
     public function delete(Request $request, Film $film, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $film->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$film->getId(), $request->request->get('_token'))) {
             $entityManager->remove($film);
             $entityManager->flush();
             $this->addFlash('films', 'film deleted successfully');
         }
+
         return $this->redirectToRoute('app_film_index', [], Response::HTTP_SEE_OTHER);
     }
 }

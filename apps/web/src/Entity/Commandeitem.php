@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CommandeitemRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-
 #[ORM\Entity(repositoryClass: CommandeitemRepository::class)]
 #[ORM\Table(name: 'commandeitem')]
 #[ORM\Index(name: 'fk_produit', columns: ['id_produit'])]
@@ -20,7 +19,6 @@ class Commandeitem
     #[ORM\Column(name: 'quantity', type: 'integer', nullable: false)]
     private int $quantity;
 
-
     #[ORM\ManyToOne(targetEntity: Commande::class)]
     #[ORM\JoinColumn(name: 'idCommande', referencedColumnName: 'idCommande', onDelete: 'CASCADE')]
     private ?Commande $idcommande = null;
@@ -28,7 +26,6 @@ class Commandeitem
     #[ORM\ManyToOne(targetEntity: Produit::class)]
     #[ORM\JoinColumn(name: 'id_produit', referencedColumnName: 'id_produit')]
     private ?Produit $idProduit = null;
-
 
     public function getIdcommandeitem(): ?int
     {

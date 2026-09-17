@@ -2,8 +2,8 @@
 
 namespace App\Twig;
 
-use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Twig\Extension\AbstractExtension;
@@ -21,7 +21,7 @@ class QrCodeExtension extends AbstractExtension
     public function generateQrCode(string $data, int $size = 300): array
     {
         // Handle empty or null data
-        if (empty($data) || trim($data) === '') {
+        if (empty($data) || '' === trim($data)) {
             $data = 'No URL available';
         }
 
@@ -33,13 +33,13 @@ class QrCodeExtension extends AbstractExtension
         $svgContent = $writer->writeString($data);
 
         // Convert to base64 data URI for inline use
-        $dataUri = 'data:image/svg+xml;base64,' . base64_encode($svgContent);
+        $dataUri = 'data:image/svg+xml;base64,'.base64_encode($svgContent);
 
         return [
             'dataUri' => $dataUri,
             'matrix' => [
-                'outerSize' => $size
-            ]
+                'outerSize' => $size,
+            ],
         ];
     }
 }

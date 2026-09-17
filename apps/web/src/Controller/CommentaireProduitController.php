@@ -11,7 +11,6 @@ use App\Repository\ProduitRepository;
 use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,22 +49,17 @@ class CommentaireProduitController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $commentText = $commentaireProduit->getCommentaire();
 
-
             $correctedText = $this->autoCorrect($commentText);
-
 
             $commentaireProduit->setCommentaire($correctedText);
 
             $entityManager->persist($commentaireProduit);
             $entityManager->flush();
 
-
             return $this->redirectToRoute('app_commentaire_produit_show', ['id' => $id]);
         }
-
 
         return $this->render('front/descriptionproduit.html.twig', [
             'produit' => $produit,
@@ -85,69 +79,58 @@ class CommentaireProduitController extends AbstractController
 
         // Set cURL options
         curl_setopt_array($curl, [
-            CURLOPT_URL => "https://typewise-ai.p.rapidapi.com/correction/whole_sentence",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode([
+            \CURLOPT_URL => 'https://typewise-ai.p.rapidapi.com/correction/whole_sentence',
+            \CURLOPT_RETURNTRANSFER => true,
+            \CURLOPT_ENCODING => '',
+            \CURLOPT_MAXREDIRS => 10,
+            \CURLOPT_TIMEOUT => 30,
+            \CURLOPT_HTTP_VERSION => \CURL_HTTP_VERSION_1_1,
+            \CURLOPT_CUSTOMREQUEST => 'POST',
+            \CURLOPT_POSTFIELDS => json_encode([
                 'text' => $text,
                 'keyboard' => 'QWERTY',
                 'languages' => [
-                    'en'
-                ]
+                    'en',
+                ],
             ]),
-            CURLOPT_HTTPHEADER => [
-                "X-RapidAPI-Host: typewise-ai.p.rapidapi.com",
-                "X-RapidAPI-Key: " . $rapidApiKey,
-                "content-type: application/json"
+            \CURLOPT_HTTPHEADER => [
+                'X-RapidAPI-Host: typewise-ai.p.rapidapi.com',
+                'X-RapidAPI-Key: '.$rapidApiKey,
+                'content-type: application/json',
             ],
         ]);
-
 
         $response = curl_exec($curl);
         $err = curl_error($curl);
 
-
         curl_close($curl);
-
 
         if ($err) {
             return $text;
-        } else {
-            $responseData = json_decode($response, true);
-            if ($responseData === null || !isset($responseData['corrected_text'])) {
-                return $text;
-            }
-            return $responseData['corrected_text'];
         }
-    }
+        $responseData = json_decode($response, true);
+        if (null === $responseData || !isset($responseData['corrected_text'])) {
+            return $text;
+        }
 
+        return $responseData['corrected_text'];
+    }
 
     #[Route('/produit/{id}/commentaire', name: 'app_commentaire_produit_show', methods: ['GET'])]
     public function show(EntityManagerInterface $entityManager, Produit $produit, CommentaireProduitRepository $commentaireRepository, Request $request): Response
     {
-
-
         $commentaires = $commentaireRepository->findBy(['idproduit' => $produit]);
-
 
         $commentaireProduit = new CommentaireProduit();
         $form = $this->createForm(CommentaireProduitType::class, $commentaireProduit);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
-
             $entityManager->persist($commentaireProduit);
             $entityManager->flush();
 
-
             return $this->redirectToRoute('app_commentaire_produit_show', ['id' => $produit->getIdproduit()]);
         }
-
 
         return $this->render('front/descriptionproduit.html.twig', [
             'produit' => $produit,
@@ -155,7 +138,6 @@ class CommentaireProduitController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 
     #[Route('/commentaireproduit/{id}/edit', name: 'app_edit_commentaire', methods: ['POST'])]
     public function edit(Request $request, $id, EntityManagerInterface $entityManager, CommentaireProduitRepository $commentaireRepository): Response
@@ -177,15 +159,12 @@ class CommentaireProduitController extends AbstractController
 
         if (!isset($data['contenu'])) {
             return $this->json(['error' => 'Le champ "contenu" est manquant dans les données JSON.'], 400);
-        } else {
-
-            $correctedText = $this->autoCorrect($data['contenu']);
-            $commentaireProduit->setCommentaire($correctedText);
-
-
-            $entityManager->flush();
         }
 
+        $correctedText = $this->autoCorrect($data['contenu']);
+        $commentaireProduit->setCommentaire($correctedText);
+
+        $entityManager->flush();
 
         return $this->json(['message' => 'Commentaire mis à jour avec succès', 'commentaire' => $commentaireProduit]);
     }

@@ -6,7 +6,6 @@ use App\Entity\Actor;
 use App\Entity\Category;
 use App\Entity\Cinema;
 use App\Entity\Film;
-use App\Form\Type\CheckboxDropdownType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -25,11 +24,10 @@ class FilmType extends AbstractType
             ->add('image', FileType::class, [
                 'label' => 'Image',
                 'mapped' => false,
-
             ])
             ->add('duree', TimeType::class, [
                 'widget' => 'single_text',
-                "with_seconds" => true,
+                'with_seconds' => true,
             ])
             ->add('description', TextareaType::class)
             ->add('annederalisation', ChoiceType::class, [

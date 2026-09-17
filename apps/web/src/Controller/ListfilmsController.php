@@ -2,23 +2,19 @@
 
 namespace App\Controller;
 
-use App\Form\ReservationFormType;
 use App\Entity\Users;
 use App\Repository\ActorRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\FilmRepository;
 use App\Repository\RatingfilmRepository;
 use App\Repository\SeanceRepository;
-use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Madcoda\Youtube\Youtube;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,14 +25,14 @@ class ListfilmsController extends AbstractController
     #[Route('/listfilms', name: 'app_listfilms_index')]
     public function index(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
     {
-        $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
+        $youtube = new Youtube(['key' => $_ENV['YOUTUBE_API_KEY']]);
         $films = $filmRepository->findAll();
-        $videoUrls = array();
-        $averageRatings = array();
-        $ratings = array();
-        $seanceFilmMatrix = array();
+        $videoUrls = [];
+        $averageRatings = [];
+        $ratings = [];
+        $seanceFilmMatrix = [];
         $categorys = $categoryRepository->findAll();
-        $urls = array();
+        $urls = [];
         foreach ($films as $film) {
             // Use web scraping to get IMDb URL
             $url = $filmRepository->getImdbUrlByFilmName($film->getNom());
@@ -49,7 +45,7 @@ class ListfilmsController extends AbstractController
             } else {
                 $ratings[] = 0;
             }
-            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
+            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom().' trailer', 1)), true);
             if (!empty($videoList)) {
                 $firstVideo = $videoList[0]['id']['videoId'];
             } else {
@@ -57,6 +53,7 @@ class ListfilmsController extends AbstractController
             }
             $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
         }
+
         return $this->render('front/listfilms.html.twig', [
             'films' => $films,
             'videoUrl' => $videoUrls,
@@ -65,7 +62,7 @@ class ListfilmsController extends AbstractController
             'categorys' => $categorys,
             'seances' => $seanceFilmMatrix,
             'urls' => $urls,
-            'stripe_key' => $_ENV["STRIPE_KEY"],
+            'stripe_key' => $_ENV['STRIPE_KEY'],
         ]);
     }
 
@@ -77,12 +74,13 @@ class ListfilmsController extends AbstractController
         $films = $filmRepository->createQueryBuilder('f')
             ->select('f.id')
             ->andWhere('f.nom LIKE :nom')
-            ->setParameter('nom', '%' . ($data['search'] ?? '') . '%')
+            ->setParameter('nom', '%'.($data['search'] ?? '').'%')
             ->getQuery()
             ->getResult();
 
         $films = array_column($films, 'id');
-        return $this->json(["success" => true, 'films' => $films, 'data' => $data]);
+
+        return $this->json(['success' => true, 'films' => $films, 'data' => $data]);
     }
 
     #[Route('/listfilms/bookmarks', name: 'app_film_bookmarks_index')]
@@ -90,14 +88,14 @@ class ListfilmsController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
         $user = $this->currentUser();
-        $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
+        $youtube = new Youtube(['key' => $_ENV['YOUTUBE_API_KEY']]);
         $films = $filmRepository->findBy(['isBookmarked' => true]);
-        $videoUrls = array();
-        $averageRatings = array();
-        $ratings = array();
-        $seanceFilmMatrix = array();
+        $videoUrls = [];
+        $averageRatings = [];
+        $ratings = [];
+        $seanceFilmMatrix = [];
         $categorys = $categoryRepository->findAll();
-        $urls = array();
+        $urls = [];
         foreach ($films as $film) {
             // Use web scraping to get IMDb URL
             $url = $filmRepository->getImdbUrlByFilmName($film->getNom());
@@ -105,7 +103,7 @@ class ListfilmsController extends AbstractController
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
             $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $user->getId()]);
-            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
+            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom().' trailer', 1)), true);
             if (!empty($videoList)) {
                 $firstVideo = $videoList[0]['id']['videoId'];
             } else {
@@ -113,6 +111,7 @@ class ListfilmsController extends AbstractController
             }
             $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
         }
+
         return $this->render('front/listfilms.html.twig', [
             'films' => $films,
             'videoUrl' => $videoUrls,
@@ -121,7 +120,7 @@ class ListfilmsController extends AbstractController
             'categorys' => $categorys,
             'seances' => $seanceFilmMatrix,
             'urls' => $urls,
-            'stripe_key' => $_ENV["STRIPE_KEY"],
+            'stripe_key' => $_ENV['STRIPE_KEY'],
         ]);
     }
 
@@ -132,6 +131,7 @@ class ListfilmsController extends AbstractController
             new SvgImageBackEnd()
         );
         $writer = new Writer($renderer);
+
         // Generate QR code SVG
         return $writer->writeString($url);
     }
@@ -141,14 +141,15 @@ class ListfilmsController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            $film = $filmRepository->findOneBy(['id' => $data["id"]]);
-            $film->setIsBookmarked($data["isBookmarked"]);
+            $film = $filmRepository->findOneBy(['id' => $data['id']]);
+            $film->setIsBookmarked($data['isBookmarked']);
             $entityManager->persist($film);
             $entityManager->flush();
-        } catch (Exception $e) {
-            return new JsonResponse(["success" => false, "message" => $e->getMessage()]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['success' => false, 'message' => $e->getMessage()]);
         }
-        return new JsonResponse(["success" => true, 'bookmarked' => $film->getIsBookmarked()]);
+
+        return new JsonResponse(['success' => true, 'bookmarked' => $film->getIsBookmarked()]);
     }
 
     #[Route('/qrcode/{filmName}', name: 'app_qrcode_film')]
@@ -158,7 +159,7 @@ class ListfilmsController extends AbstractController
         $svgContent = $this->generateQRCode($url);
 
         return new Response($svgContent, 200, [
-            'Content-Type' => 'image/svg+xml'
+            'Content-Type' => 'image/svg+xml',
         ]);
     }
 
@@ -189,7 +190,7 @@ class ListfilmsController extends AbstractController
 
             $allCategoriesPresent = true;
 
-            foreach ($data["checkboxes"] as $categoryName) {
+            foreach ($data['checkboxes'] as $categoryName) {
                 $categoryFound = false;
                 foreach ($categories as $category) {
                     if ($category->getNom() === $categoryName) {
@@ -210,21 +211,20 @@ class ListfilmsController extends AbstractController
             }
         }
 
-        return $this->json(["success" => true, 'filmsCategorized' => $filmsCategorized, 'data' => $data["checkboxes"], 'ids' => array_column($filmRepository->findAll(), 'id')]);
+        return $this->json(['success' => true, 'filmsCategorized' => $filmsCategorized, 'data' => $data['checkboxes'], 'ids' => array_column($filmRepository->findAll(), 'id')]);
     }
 
     #[Route('/filmHome', name: 'app_listhome_index')]
     public function indexHome(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
-
-        $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
+        $youtube = new Youtube(['key' => $_ENV['YOUTUBE_API_KEY']]);
         $films = $filmRepository->findAll();
-        $videoUrls = array();
-        $averageRatings = array();
+        $videoUrls = [];
+        $averageRatings = [];
         foreach ($films as $film) {
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            $videoList = $youtube->searchVideos($film->getNom() . ' trailer');
-            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
+            $videoList = $youtube->searchVideos($film->getNom().' trailer');
+            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom().' trailer', 1)), true);
             if (!empty($videoList)) {
                 $firstVideo = $videoList[0]['id']['videoId'];
             } else {
@@ -236,7 +236,7 @@ class ListfilmsController extends AbstractController
         return $this->render('front/film.html.twig', [
             'films' => $filmRepository->findAll(),
             'videoUrl' => $videoUrls,
-            'averageRatings' => $averageRatings
+            'averageRatings' => $averageRatings,
         ]);
     }
 
@@ -251,22 +251,23 @@ class ListfilmsController extends AbstractController
     #[Route('/filShow/{id}', name: 'app_filShow_index')]
     public function filmShow($id, FilmRepository $filmRepository, SeanceRepository $seanceRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
-        $youtube = new Youtube(array('key' => $_ENV["YOUTUBE_API_KEY"]));
+        $youtube = new Youtube(['key' => $_ENV['YOUTUBE_API_KEY']]);
         $film = $filmRepository->find($id);
         $url = $filmRepository->getImdbUrlByFilmName($film->getNom());
         $averageRating = $ratingfilmRepository->getAverageRating($film->getId());
-        $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom() . ' trailer', 1)), true);
+        $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom().' trailer', 1)), true);
         if (!empty($videoList)) {
             $firstVideo = $videoList[0]['id']['videoId'];
         } else {
             $firstVideo = '';
         }
         $videoUrl = "https://www.youtube.com/embed/{$firstVideo}";
+
         return $this->render('front/filmDetails.html.twig', [
             'film' => $film,
             'averageRating' => $averageRating,
             'videoUrl' => $videoUrl,
-            'imdbUrl' => $url
+            'imdbUrl' => $url,
         ]);
     }
 
@@ -283,13 +284,14 @@ class ListfilmsController extends AbstractController
                 $seatsArray[] = [
                     'id' => $seat->getId(),
                     'status' => $seat->getStatut(),
-                    'prix' => $seance->getPrix()
+                    'prix' => $seance->getPrix(),
                 ];
             }
-        } catch (Exception $e) {
-            return $this->json(["success" => false, "message" => $e->getMessage()]);
+        } catch (\Exception $e) {
+            return $this->json(['success' => false, 'message' => $e->getMessage()]);
         }
-        return $this->json(["success" => true, 'seatsArray' => $seatsArray, 'data' => $data]);
+
+        return $this->json(['success' => true, 'seatsArray' => $seatsArray, 'data' => $data]);
     }
 
     private function currentUser(): Users

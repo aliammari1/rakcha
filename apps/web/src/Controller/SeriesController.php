@@ -7,14 +7,11 @@ use App\Entity\Series;
 use App\Form\SeriesType;
 use App\Repository\SeriesRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Twilio\Rest\Client;
-
 
 #[Route('/series')]
 class SeriesController extends AbstractController
@@ -25,10 +22,11 @@ class SeriesController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $statisticsData = $seriesRepository->getStatisticsByCategory();
         $form = $this->createForm(SeriesType::class, new Series());
-        $updateForms = array();
-        for ($i = 0; $i < count($seriesRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($seriesRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(SeriesType::class, $seriesRepository->findAll()[$i])->createView();
         }
+
         return $this->render('back/seriesTables.html.twig', [
             'statisticsData' => $statisticsData,
             'series' => $seriesRepository->findAll(),
@@ -43,9 +41,9 @@ class SeriesController extends AbstractController
         /*$searchTerm = $request->query->get('nom');
         $sortBy = $request->query->get('sort_by', 'nom'); // Tri par défaut par 'nom'
         $sortOrder = $request->query->get('sort_order', 'asc'); // Ordre de tri par défaut 'asc'
-        
+
         $queryBuilder = $entityManager->getRepository(Series::class)->createQueryBuilder('s');
-        
+
         // Requête de recherche
         if ($searchTerm) {
             $queryBuilder->where('s.nom LIKE :searchTerm')
@@ -53,10 +51,10 @@ class SeriesController extends AbstractController
                          ->orWhere('s.pays LIKE :searchTerm')
                          ->setParameter('searchTerm', '%' . $searchTerm . '%');
         }
-        
+
         // Requête de tri
         $queryBuilder->orderBy('s.' . $sortBy, $sortOrder);
-        
+
         $series = $queryBuilder->getQuery()->getResult();
     */
 
@@ -71,12 +69,12 @@ class SeriesController extends AbstractController
             ->getResult();
         /*
             // Récupérer l'identifiant de la catégorie de comédie
-            $comedyCategoryId = 4; 
+            $comedyCategoryId = 4;
             // Récupérer les recommandations de séries
             $recommendations = $seriesRepository->findRelaxingSeries($comedyCategoryId);
         */
         // Créer un formulaire pour chaque série
-        $updateForms = array();
+        $updateForms = [];
         foreach ($allSeries as $serie) {
             $updateForms[] = $this->createForm(SeriesType::class, $serie)->createView();
         }
@@ -109,14 +107,14 @@ class SeriesController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/series';
                 $file->move($destination, $filename);
-                $series->setImage("/img/series/" . $filename);
+                $series->setImage('/img/series/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
             $entityManager->persist($series);
             $entityManager->flush();
@@ -124,6 +122,7 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('app_series_index', [], Response::HTTP_SEE_OTHER);
         }
         dump($form->getErrors(true));
+
         return $this->renderForm('series/new.html.twig', [
             'series' => $series,
             'form' => $form,
@@ -155,14 +154,14 @@ class SeriesController extends AbstractController
                     // extension cannot be guessed
                     $extension = 'bin';
                 }
-                $filename = rand(1, 99999) . '.' . $extension;
-                $destination = $this->getParameter('kernel.project_dir') . "/public/img/series";
+                $filename = rand(1, 99999).'.'.$extension;
+                $destination = $this->getParameter('kernel.project_dir').'/public/img/series';
                 $file->move($destination, $filename);
-                $series->setImage("/img/series/" . $filename);
+                $series->setImage('/img/series/'.$filename);
 
                 // Copy the file to another location
-                $anotherDestination = "C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series";
-                copy($destination . "/" . $filename, $anotherDestination . "/" . $filename);
+                $anotherDestination = 'C:\\xampp\\htdocs\\Rakcha\\rakcha-desktop\\src\\main\\resources\\img\\series';
+                copy($destination.'/'.$filename, $anotherDestination.'/'.$filename);
             }
             $entityManager->flush();
 
@@ -180,7 +179,7 @@ class SeriesController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        if ($this->isCsrfTokenValid('delete' . $series->getIdserie(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$series->getIdserie(), $request->request->get('_token'))) {
             $entityManager->remove($series);
             $entityManager->flush();
         }
@@ -207,7 +206,6 @@ class SeriesController extends AbstractController
         return new RedirectResponse($this->generateUrl('app_series_liste'));
     }
 
-
     #[Route('/series/{idserie}/dislike', name: 'app_dislike_series', methods: ['GET'])]
     public function dislikeSeries(int $idserie, EntityManagerInterface $entityManager): RedirectResponse
     {
@@ -226,13 +224,6 @@ class SeriesController extends AbstractController
         // Rediriger l'utilisateur
         return $this->redirectToRoute('app_series_liste');
     }
-
-
-
-
-
-
-
 
     /*
     #[Route('/{idSerie}/toggle-favorite', name: 'app_toggle_favorite', methods: ['POST'])]
@@ -256,9 +247,9 @@ class SeriesController extends AbstractController
             $favoris->setIdSerie($idSerie);
             $entityManager->persist($favoris);
         }
-        
+
         $entityManager->flush();
-        
+
         // Rediriger vers la liste des favoris
         return $this->redirectToRoute('app_favorites_list');
     }
@@ -305,6 +296,6 @@ class SeriesController extends AbstractController
 
             return $response;
         }
-       
+
     */
 }
