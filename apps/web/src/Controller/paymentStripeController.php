@@ -53,13 +53,17 @@ class paymentStripeController extends AbstractController
             return $this->json(['success' => false, 'message' => 'Invalid seance ticket price.'], Response::HTTP_BAD_REQUEST);
         }
 
+        // Sort and deduplicate seat IDs to ensure deterministic lock acquisition order and prevent deadlocks
+        $seatIds = array_values(array_unique(array_map('intval', $data['seatIds'])));
+        sort($seatIds, SORT_NUMERIC);
+
         // Concurrency-safe seat reservation using pessimistic write locking
         $entityManager->beginTransaction();
         try {
             $seatsToReserve = [];
             $seanceSalle = $seance->getIdSalle();
 
-            foreach ($data['seatIds'] as $seatId) {
+            foreach ($seatIds as $seatId) {
                 // Acquire pessimistic write lock to prevent race conditions & double-booking
                 $seat = $entityManager->find(Seat::class, $seatId, LockMode::PESSIMISTIC_WRITE);
                 if (!$seat) {
