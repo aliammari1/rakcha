@@ -14,6 +14,6 @@ parameters:
     # The application kernel deliberately keeps its runtime cache outside the
     # repository, so PHPStan must read the warmed container from that location.
     symfony:
-        containerXmlPath: /tmp/cache/dev/App_KernelDevDebugContainer.xml
+        containerXmlPath: /tmp/cache/App_KernelDevDebugContainer.xml
     treatPhpDocTypesAsCertain: false
     reportUnmatchedIgnoredErrors: false
