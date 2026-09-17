@@ -26,6 +26,8 @@ class EpisodesController extends AbstractController
     #[Route('/', name: 'app_episodes_index', methods: ['GET'])]
     public function index(EpisodesRepository $episodesRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createForm(EpisodesType::class, new Episodes());
         $updateForms = array();
         for ($i = 0; $i < count($episodesRepository->findAll()); $i++) {
@@ -56,6 +58,8 @@ class EpisodesController extends AbstractController
     #[Route('/new', name: 'app_episodes_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, EpisodesRepository $episodesRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $episode = new Episodes();
         $form = $this->createForm(EpisodesType::class, $episode);
         $updateForms = array();
@@ -134,6 +138,8 @@ class EpisodesController extends AbstractController
     #[Route('/{idepisode}/edit', name: 'app_episodes_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Episodes $episode, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createForm(EpisodesType::class, $episode);
         $form->handleRequest($request);
 
@@ -192,6 +198,8 @@ class EpisodesController extends AbstractController
     #[Route('/{idepisode}', name: 'app_episodes_delete', methods: ['POST'])]
     public function delete(Request $request, Episodes $episode, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         if ($this->isCsrfTokenValid('delete' . $episode->getIdepisode(), $request->request->get('_token'))) {
             $entityManager->remove($episode);
             $entityManager->flush();
@@ -223,8 +231,8 @@ class EpisodesController extends AbstractController
         }
 
         // Récupérer un utilisateur spécifique de la base de données
-
-        $photoDeProfil = $this->getUser()->getPhotoDeProfil();
+        $user = $this->getUser();
+        $photoDeProfil = $user ? $user->getPhotoDeProfil() : null;
 
         // Récupérer les feedbacks associés à l'épisode depuis la base de données
         $feedbacks = $entityManager->getRepository(Feedback::class)->findBy(['idEpisode' => $idEpisode]);
@@ -235,23 +243,22 @@ class EpisodesController extends AbstractController
             $users[] = $user;
         }
 
-        // Récupérer l'utilisateur actuellement connecté
-        /*
-        $user = $security->getUser();
-    */
         // Créer un nouveau formulaire de feedback
         $feedback = new Feedback();
         $feedbackForm = $this->createForm(FeedbackType::class, $feedback);
         // Gérer la soumission du formulaire
         $feedbackForm->handleRequest($request);
-        if ($feedbackForm->isSubmitted() && $feedbackForm->isValid()) {
-            // Récupérer la description saisie par l'utilisateur à partir du formulaire
-            $description = $feedbackForm->getData()->getDescription();
-            // Associer l'épisode au feedback
-            $feedback->setIdEpisode($idEpisode);
+        if ($feedbackForm->isSubmitted()) {
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
-            // Associer l'utilisateur au feedback
-            $feedback->setIdUser($this->getUser()->getId());
+            if ($feedbackForm->isValid()) {
+                // Récupérer la description saisie par l'utilisateur à partir du formulaire
+                $description = $feedbackForm->getData()->getDescription();
+                // Associer l'épisode au feedback
+                $feedback->setIdEpisode($idEpisode);
+
+                // Associer l'utilisateur au feedback
+                $feedback->setIdUser($this->getUser()->getId());
             // Définir la description saisie par l'utilisateur dans l'objet Feedback
             $feedback->setDescription($description);
             // Analyse de sentiment avec php-sentiment-analyzer
@@ -316,6 +323,7 @@ class EpisodesController extends AbstractController
             $session->getFlashBag()->add('success', 'Le sentiment du feedback a été traité avec succès.');
             // Rediriger l'utilisateur vers la même page pour éviter la soumission multiple du formulaire
             return $this->redirectToRoute('app_episode_watch', ['idEpisode' => $idEpisode]);
+            }
         }
 
 
