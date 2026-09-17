@@ -18,6 +18,12 @@ on:
 permissions:
   contents: read
 
+# A newer commit on the same pull request or branch supersedes this run.
+# Cancelling it avoids spending hosted-runner minutes on obsolete results.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 defaults:
   run:
     working-directory: apps/web
@@ -55,7 +61,7 @@ jobs:
         uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: ctype, curl, iconv, intl, pdo_sqlite, sqlite3, gd, mbstring, zip
+          extensions: bcmath, ctype, curl, iconv, intl, mbstring, pdo_sqlite, sqlite3, gd, sodium, zip
           coverage: xdebug
           tools: composer:v2, cs2pr
 
@@ -71,15 +77,10 @@ jobs:
           restore-keys: ${{ runner.os }}-php${{ matrix.php }}-composer-
 
       - name: Install dependencies
-        # `composer install` requires the lock to match composer.json. The
-        # nelmio/security-bundle add (committed without a locally-regenerated
-        # lock — no PHP/Composer on the authoring machine) makes the lock stale,
-        # so refresh just that package's lock entry, then do a clean install.
-        # Once the maintainer commits a fully-regenerated composer.lock, this can
-        # go back to a plain `composer install`.
-        run: |
-          composer update nelmio/security-bundle --with-all-dependencies --no-progress --no-interaction
-          composer install --prefer-dist --no-progress --no-interaction
+        # Install exactly the reviewed, committed dependency graph. Updating
+        # packages in CI would make the result non-reproducible and conceal a
+        # stale lockfile instead of failing the check.
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Lint PHP files (php -l)
         run: |
@@ -88,15 +89,15 @@ jobs:
       - name: Warm up cache (for phpstan-symfony container analysis)
         env:
           APP_ENV: dev
-        run: php bin/console cache:warmup || true
+        run: php bin/console cache:warmup
 
       - name: PHPStan
-        # Allowed to fail on legacy code via the (initially empty) baseline.
-        run: composer phpstan || echo "::warning::PHPStan reported findings — add them to phpstan-baseline.neon"
+        run: composer phpstan
 
       - name: php-cs-fixer (annotated via cs2pr)
         run: |
-          PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --dry-run --format=checkstyle | cs2pr || echo "::warning::Code style issues found — run 'composer cs-fix'"
+          set -o pipefail
+          PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --dry-run --format=checkstyle | cs2pr
 
       - name: PHPUnit
         env:

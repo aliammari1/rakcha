@@ -167,14 +167,6 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- Monocle for headless JavaFX testing (PdfSam distribution compatible with JavaFX 21) -->
-    <dependency>
-      <groupId>org.pdfsam</groupId>
-      <artifactId>javafx-monocle</artifactId>
-      <version>21</version>
-      <scope>test</scope>
-    </dependency>
-
     <!-- AssertJ for fluent assertions -->
     <dependency>
       <groupId>org.assertj</groupId>
@@ -718,10 +710,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.2</version>
         <configuration>
-          <!-- @{argLine} preserves the JaCoCo agent injected by jacoco:prepare-agent -->
-          <argLine>@{argLine} -Dtestfx.robot=glass -Dtestfx.headless=true -Dglass.platform=Monocle
-            -Dmonocle.platform=Headless
-            -Dprism.order=sw -Dprism.text=t2k -Djava.awt.headless=true
+          <!-- @{argLine} preserves the JaCoCo agent injected by jacoco:prepare-agent.
+               UI tests run under Xvfb in CI; do not force Monocle, whose embedded
+               renderer is incompatible with the JavaFX 21 desktop runtime. -->
+          <argLine>@{argLine} -Dtestfx.robot=glass -Dprism.order=sw -Dprism.text=t2k
           </argLine>
           <forkCount>1</forkCount>
           <reuseForks>true</reuseForks>

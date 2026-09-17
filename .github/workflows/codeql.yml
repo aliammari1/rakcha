@@ -18,6 +18,11 @@ on:
 permissions:
   contents: read
 
+# The latest commit is the only revision whose CodeQL result is actionable.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
@@ -31,10 +36,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # The only Kotlin source is Flutter's generated Android launcher.
+          # Limit this no-build database to the maintained desktop Java source.
           - language: java-kotlin
             build-mode: none
+            source-path: apps/desktop/src
           - language: javascript-typescript
             build-mode: none
+            source-path: apps/mobile/firebase/functions
     steps:
       - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
         with:
@@ -47,6 +56,11 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: ${{ matrix.build-mode }}
+          # Restrict no-build analysis to maintained application source. This
+          # avoids scanning generated Flutter artifacts and checked-in Javadoc.
+          config: |
+            paths:
+              - ${{ matrix.source-path }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2

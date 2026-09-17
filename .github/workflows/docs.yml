@@ -23,6 +23,11 @@ on:
 permissions:
   contents: read
 
+# A newer commit to the same PR supersedes an in-flight documentation build.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: mkdocs build (strict)

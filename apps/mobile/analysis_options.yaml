@@ -11,6 +11,10 @@ analyzer:
     - lib/index.dart
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
   errors:
     # Generated code occasionally trips these; keep them non-fatal globally.
     todo: ignore

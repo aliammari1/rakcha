@@ -61,11 +61,11 @@ class PageRequestTest {
 
         @Test
         @Order(4)
-        @DisplayName("Should create page request with large page size")
+        @DisplayName("Should cap page size at the configured maximum")
         void testCreatePageRequestLargeSize() {
             PageRequest pageRequest = PageRequest.of(0, 1000);
 
-            assertThat(pageRequest.size()).isEqualTo(1000);
+            assertThat(pageRequest.size()).isEqualTo(PageRequest.MAX_SIZE);
         }
 
     }
