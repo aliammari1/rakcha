@@ -29,6 +29,8 @@ class CommentaireProduitController extends AbstractController
     #[Route('/produit/{id}/commentaire/new', name: 'app_commentaire_produit_new', methods: ['GET', 'POST'])]
     public function new(Request $request, UsersRepository $usersRepository, EntityManagerInterface $entityManager, ProduitRepository $produitRepository, $id): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $produit = $produitRepository->find($id);
         if (!$produit) {
             throw $this->createNotFoundException('Produit non trouvé');
@@ -68,6 +70,11 @@ class CommentaireProduitController extends AbstractController
 
     public function autoCorrect($text): string
     {
+        $rapidApiKey = $_ENV['RAPIDAPI_KEY'] ?? $_SERVER['RAPIDAPI_KEY'] ?? 'rapidapi-key-removed';
+        if (empty($rapidApiKey)) {
+            return $text;
+        }
+
         // Initialize cURL
         $curl = curl_init();
 
@@ -89,7 +96,7 @@ class CommentaireProduitController extends AbstractController
             ]),
             CURLOPT_HTTPHEADER => [
                 "X-RapidAPI-Host: typewise-ai.p.rapidapi.com",
-                "X-RapidAPI-Key: aef1032e49msh9d46f007189dde9p15f3f9jsn879fab779700",
+                "X-RapidAPI-Key: " . $rapidApiKey,
                 "content-type: application/json"
             ],
         ]);
@@ -103,26 +110,13 @@ class CommentaireProduitController extends AbstractController
 
 
         if ($err) {
-
-            return "cURL Error #:" . $err;
+            return $text;
         } else {
-
             $responseData = json_decode($response, true);
-
-
-            if ($responseData === null) {
-
-                return "Failed to decode JSON response";
-            } else {
-
-                if (isset($responseData['corrected_text'])) {
-
-                    return $responseData['corrected_text'];
-                } else {
-
-                    return "No corrected text found in the response";
-                }
+            if ($responseData === null || !isset($responseData['corrected_text'])) {
+                return $text;
             }
+            return $responseData['corrected_text'];
         }
     }
 
@@ -161,19 +155,23 @@ class CommentaireProduitController extends AbstractController
     #[Route('/commentaireproduit/{id}/edit', name: 'app_edit_commentaire', methods: ['POST'])]
     public function edit(Request $request, $id, EntityManagerInterface $entityManager, CommentaireProduitRepository $commentaireRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
         $commentaireProduit = $commentaireRepository->find($id);
-
 
         if (!$commentaireProduit) {
             throw $this->createNotFoundException('Commentaire non trouvé');
         }
 
+        $user = $this->getUser();
+        if ($commentaireProduit->getIdClient() !== $user && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You are not authorized to edit this comment.');
+        }
 
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['contenu'])) {
-            return $this->json(['error' => 'Le champ "contenu" est manquant dans les données JSON.'], 200);
+            return $this->json(['error' => 'Le champ "contenu" est manquant dans les données JSON.'], 400);
         } else {
 
             $correctedText = $this->autoCorrect($data['contenu']);
@@ -190,6 +188,13 @@ class CommentaireProduitController extends AbstractController
     #[Route('/commentaireproduit/{id}', name: 'app_delete_commentaire', methods: ['POST'])]
     public function deleteCommentaire(Request $request, CommentaireProduit $commentaire, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
+        $user = $this->getUser();
+        if ($commentaire->getIdClient() !== $user && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException('You are not authorized to delete this comment.');
+        }
+
         // Vérifier si la requête est une requête AJAX
         if ($request->isXmlHttpRequest()) {
             // Récupérer l'entité CommentaireProduit à partir de l'ID et le supprimer

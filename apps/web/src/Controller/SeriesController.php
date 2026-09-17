@@ -22,6 +22,7 @@ class SeriesController extends AbstractController
     #[Route('/', name: 'app_series_index', methods: ['GET'])]
     public function index(SeriesRepository $seriesRepository, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $statisticsData = $seriesRepository->getStatisticsByCategory();
         $form = $this->createForm(SeriesType::class, new Series());
         $updateForms = array();
@@ -93,6 +94,8 @@ class SeriesController extends AbstractController
     #[Route('/new', name: 'app_series_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $series = new Series();
         $form = $this->createForm(SeriesType::class, $series);
         $form->handleRequest($request);
@@ -117,28 +120,6 @@ class SeriesController extends AbstractController
             }
             $entityManager->persist($series);
             $entityManager->flush();
-            /*
-           // Envoi du SMS après l'ajout de la série
-        $twilioSid = "ACd3d2094ef7f546619e892605940f1631";
-        $twilioToken = "8d56f8a04d84ff2393de4ea888f677a1";
-        $twilioPhoneNumber = "+17573640849";
-        $phoneNumber = '+21653775010'; // Remplacez par le numéro de téléphone réel de votre base de données
-
-      try {
-          $client = new Client($twilioSid, $twilioToken);
-          $client->messages->create(
-              $phoneNumber,
-              [
-                  'from' => $twilioPhoneNumber,
-                  'body' => 'New Serie is Out There'
-              ]
-          );
-      } catch (\Exception $e) {
-          // Gérer l'exception ici
-          $errorMessage = $e->getMessage();
-          $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : ' . $errorMessage);
-      }
-        */
 
             return $this->redirectToRoute('app_series_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -160,6 +141,8 @@ class SeriesController extends AbstractController
     #[Route('/{idserie}/edit', name: 'app_series_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Series $series, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $form = $this->createForm(SeriesType::class, $series);
         $form->handleRequest($request);
 
@@ -195,6 +178,8 @@ class SeriesController extends AbstractController
     #[Route('/{idserie}', name: 'app_series_delete', methods: ['POST'])]
     public function delete(Request $request, Series $series, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         if ($this->isCsrfTokenValid('delete' . $series->getIdserie(), $request->request->get('_token'))) {
             $entityManager->remove($series);
             $entityManager->flush();
@@ -206,6 +191,8 @@ class SeriesController extends AbstractController
     #[Route('/series/{idserie}/like', name: 'app_like_series', methods: ['GET'])]
     public function likeSeries(int $idserie, EntityManagerInterface $entityManager): RedirectResponse
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         // Récupérer la série depuis la base de données en fonction de l'ID
         $series = $entityManager->getRepository(Series::class)->find($idserie);
 
@@ -224,6 +211,8 @@ class SeriesController extends AbstractController
     #[Route('/series/{idserie}/dislike', name: 'app_dislike_series', methods: ['GET'])]
     public function dislikeSeries(int $idserie, EntityManagerInterface $entityManager): RedirectResponse
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         // Récupérer la série depuis la base de données en fonction de l'ID
         $series = $entityManager->getRepository(Series::class)->find($idserie);
 
