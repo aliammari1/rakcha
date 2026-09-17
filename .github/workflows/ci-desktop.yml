@@ -16,6 +16,13 @@ on:
       - ".github/workflows/ci-desktop.yml"
   workflow_dispatch:
 
+# Desktop verification is expensive and a pull request can receive several
+# commits while a previous JavaFX test suite is still running. Keep only the
+# newest run for each branch/PR to avoid wasting runner minutes.
+concurrency:
+  group: desktop-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
