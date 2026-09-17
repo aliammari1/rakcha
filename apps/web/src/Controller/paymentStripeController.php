@@ -27,34 +27,56 @@ class paymentStripeController extends AbstractController
     #[Route('/stripe/create-charge', name: 'app_stripe_charge', methods: ['POST'])]
     public function createCharge(Request $request, SeatRepository $seatRepository, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $data = json_decode($request->getContent(), true);
+        if (!is_array($data) || empty($data['seatIds']) || !is_array($data['seatIds']) || empty($data['stripeToken'])) {
+            return $this->json(['success' => false, 'message' => 'Invalid payment payload.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $prix = filter_var($data['prix'] ?? null, FILTER_VALIDATE_FLOAT);
+        if ($prix === false || $prix <= 0) {
+            return $this->json(['success' => false, 'message' => 'Invalid price amount.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $entityManager->beginTransaction();
         try {
+            // Check seat availability before charging payment to prevent double booking
+            $seatsToReserve = [];
+            foreach ($data['seatIds'] as $seatId) {
+                $seat = $seatRepository->findOneBy(['id' => $seatId]);
+                if (!$seat) {
+                    $entityManager->rollback();
+                    return $this->json(['success' => false, 'message' => "Seat {$seatId} does not exist."], Response::HTTP_NOT_FOUND);
+                }
+                if ($seat->getStatut() === 'reserve') {
+                    $entityManager->rollback();
+                    return $this->json(['success' => false, 'message' => "Seat {$seatId} is already reserved."], Response::HTTP_CONFLICT);
+                }
+                $seatsToReserve[] = $seat;
+            }
+
             Stripe::setApiKey($_ENV["STRIPE_SECRET_KEY"]);
             Charge::create([
-                "amount" => $data["prix"] * 10,
+                "amount" => (int) round($prix * 100),
                 "currency" => "usd",
                 "source" => $data['stripeToken'],
-                "description" => "Binaryboxtuts Payment Test"
+                "description" => "Rakcha Cinema Ticket Payment"
             ]);
-            for ($i = 0; $i < count($data["seatIds"]); $i++) {
-                $seat = $seatRepository->findOneBy(['id' => $data["seatIds"][$i]]);
+
+            foreach ($seatsToReserve as $seat) {
                 $seat->setStatut("reserve");
                 $entityManager->persist($seat);
             }
             $entityManager->flush();
+            $entityManager->commit();
 
         } catch (Exception $e) {
-            return $this->json(['success' => false, 'message' => $e->getMessage(), 'data' => $data]);
+            if ($entityManager->getConnection()->isTransactionActive()) {
+                $entityManager->rollback();
+            }
+            return $this->json(['success' => false, 'message' => $e->getMessage(), 'data' => $data], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        // $user = $doct->getRepository(Users::class)->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
-
-        // $commande = $commandsRepository->findOneBy(["user" => $user->getId(), "status" => 0]);
-        // $commandeAchats = $achatsRepository->findOneBy(["commande" => $commande]);
-
-        // $commandeAchats->setValidate(1);
-        // $commande->setStatus(1);
-        // $em = $doct->getManager();
-        // $em->flush();
 
         return $this->json(['success' => true, 'data' => $data]);
     }
