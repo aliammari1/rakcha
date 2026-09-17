@@ -193,6 +193,16 @@ class CommandeController extends AbstractController
                     }
                 }
 
+                // Verify captured currency matches configured PayPal currency
+                if (!empty($data['transactions'][0]['amount']['currency'])) {
+                    $capturedCurrency = (string) $data['transactions'][0]['amount']['currency'];
+                    if (strcasecmp($capturedCurrency, $currency) !== 0) {
+                        return $this->render('front/error.html.twig', [
+                            'message' => 'Devise de paiement non valide.'
+                        ]);
+                    }
+                }
+
                 $commande->setStatu('payé');
                 $em->persist($commande);
                 $em->flush();
