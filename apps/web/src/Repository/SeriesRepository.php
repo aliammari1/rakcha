@@ -22,30 +22,30 @@ class SeriesRepository extends ServiceEntityRepository
         parent::__construct($registry, Series::class);
     }
 
-//    /**
-//     * @return Series[] Returns an array of Series objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Series[] Returns an array of Series objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('s.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
-//    public function findOneBySomeField($value): ?Series
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    public function findOneBySomeField($value): ?Series
+    //    {
+    //        return $this->createQueryBuilder('s')
+    //            ->andWhere('s.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
     public function findRelaxingSeries(int $comedyCategoryId): array
     {
         $qb = $this->createQueryBuilder('s')
@@ -56,7 +56,6 @@ class SeriesRepository extends ServiceEntityRepository
         // Exécutez la requête et retournez le résultat
         return $qb->getQuery()->getResult();
     }
-
 
     public function getStatisticsByCategory(): array
     {
@@ -80,7 +79,6 @@ class SeriesRepository extends ServiceEntityRepository
         return $statistics;
     }
 
-
     public function findMostLiked(int $limit = 3): array
     {
         return $this->createQueryBuilder('s')
@@ -90,28 +88,25 @@ class SeriesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
     public function search(?string $nom, ?string $directeur, ?string $pays): array
     {
         $qb = $this->createQueryBuilder('s');
 
         if ($nom) {
             $qb->andWhere('s.nom LIKE :nom')
-                ->setParameter('nom', '%' . $nom . '%');
+                ->setParameter('nom', '%'.$nom.'%');
         }
 
         if ($directeur) {
             $qb->andWhere('s.directeur LIKE :directeur')
-                ->setParameter('directeur', '%' . $directeur . '%');
+                ->setParameter('directeur', '%'.$directeur.'%');
         }
 
         if ($pays) {
             $qb->andWhere('s.pays LIKE :pays')
-                ->setParameter('pays', '%' . $pays . '%');
+                ->setParameter('pays', '%'.$pays.'%');
         }
 
         return $qb->getQuery()->getResult();
     }
-
-
 }

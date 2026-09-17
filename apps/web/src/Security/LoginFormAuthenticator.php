@@ -18,7 +18,6 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
@@ -31,7 +30,6 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $this->usersRepository = $usersRepository;
         $this->router = $router;
     }
-
 
     public function authenticate(Request $request): Passport
     {
@@ -46,8 +44,8 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
             return $user;
         }), new PasswordCredentials($password), [
-            new CsrfTokenBadge('authenticate', $request->request->get("_csrf_token")),
-            new RememberMeBadge()
+            new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
+            new RememberMeBadge(),
         ]);
     }
 
@@ -58,20 +56,20 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         }
         $user = $token->getUser();
         if ($user instanceof Users) {
-            if ($user->getRole() == 'client')
+            if ('client' == $user->getRole()) {
                 return new RedirectResponse($this->router->generate('app_home_index'));
-            else if ($user->getRole() == 'responsable de cinema')
+            } elseif ('responsable de cinema' == $user->getRole()) {
                 return new RedirectResponse($this->router->generate('app_cinema_index'));
-            else if ($user->getRole() == 'admin')
+            } elseif ('admin' == $user->getRole()) {
                 return new RedirectResponse($this->router->generate('app_users_index'));
+            }
         }
+
         return new RedirectResponse($this->router->generate('app_home_index'));
     }
-
 
     protected function getLoginUrl(Request $request): string
     {
         return $this->router->generate('app_login');
     }
-
 }

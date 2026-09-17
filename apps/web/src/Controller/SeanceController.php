@@ -21,10 +21,11 @@ class SeanceController extends AbstractController
     public function index(SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
         $form = $this->createForm(SeanceType::class, new Seance());
-        $updateForms = array();
-        for ($i = 0; $i < count($seanceRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($seanceRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(SeanceType::class, $seanceRepository->findAll()[$i])->createView();
         }
+
         return $this->render('back/SeancesTable.html.twig', [
             'seances' => $seanceRepository->findAll(),
             'cinemas' => $cinemaRepository->findAll(),
@@ -39,8 +40,8 @@ class SeanceController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
         $seance = new Seance();
-        $updateForms = array();
-        for ($i = 0; $i < count($seanceRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($seanceRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(SeanceType::class, $seanceRepository->findAll()[$i])->createView();
         }
         $form = $this->createForm(SeanceType::class, $seance);
@@ -54,6 +55,7 @@ class SeanceController extends AbstractController
         }
 
         $hasErrorsCreate = true;
+
         return $this->render('back/SeancesTable.html.twig', [
             'seances' => $seanceRepository->findAll(),
             'cinemas' => $cinemaRepository->findAll(),
@@ -76,9 +78,9 @@ class SeanceController extends AbstractController
     #[Route('/{idSeance}/edit/{formUpdateNumber}/', name: 'app_seance_edit', methods: ['GET', 'POST'])]
     public function edit($formUpdateNumber, Request $request, Seance $seance, EntityManagerInterface $entityManager, SeanceRepository $seanceRepository, CinemaRepository $cinemaRepository, FilmRepository $filmRepository, SalleRepository $salleRepository): Response
     {
-        $updateForms = array();
+        $updateForms = [];
         $seances = $seanceRepository->findAll();
-        for ($i = 0; $i < count($seances); $i++) {
+        for ($i = 0; $i < count($seances); ++$i) {
             $updateForms[$i] = $this->createForm(SeanceType::class, $seances[$i])->createView();
         }
         $form = $this->createForm(SeanceType::class, new Seance());
@@ -93,6 +95,7 @@ class SeanceController extends AbstractController
             return $this->redirectToRoute('app_seance_index', [], Response::HTTP_SEE_OTHER);
         }
         $entityManager->refresh($seance);
+
         return $this->render('back/SeancesTable.html.twig', [
             'seances' => $seanceRepository->findAll(),
             'cinemas' => $cinemaRepository->findAll(),
@@ -100,7 +103,7 @@ class SeanceController extends AbstractController
             'salles' => $salleRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
-            "formUpdateNumber" => $formUpdateNumber,
+            'formUpdateNumber' => $formUpdateNumber,
             'updateform' => $updateform->createView(),
         ]);
     }
@@ -108,7 +111,7 @@ class SeanceController extends AbstractController
     #[Route('/{idSeance}', name: 'app_seance_delete', methods: ['POST'])]
     public function delete(Request $request, Seance $seance, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $seance->getIdSeance(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$seance->getIdSeance(), $request->request->get('_token'))) {
             $entityManager->remove($seance);
             $entityManager->flush();
         }

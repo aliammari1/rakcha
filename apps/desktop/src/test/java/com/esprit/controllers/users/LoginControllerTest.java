@@ -49,7 +49,7 @@ class LoginControllerTest extends TestFXBase {
 
     @Start
     public void start(Stage stage) throws Exception {
-        new MainApp().start(stage);
+        new MainApp(false).start(stage);
         // Wait for UI to be fully loaded
         waitForFxEvents();
     }
@@ -545,4 +545,3 @@ class LoginControllerTest extends TestFXBase {
     }
 
 }
-

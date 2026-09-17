@@ -13,6 +13,7 @@ class HomeController extends AbstractController
     public function home(FilmRepository $filmRepository): Response
     {
         $films = $filmRepository->findAll();
+
         return $this->render('front/index.html.twig', [
             'films' => $films,
         ]);

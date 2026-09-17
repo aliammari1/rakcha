@@ -27,8 +27,8 @@ class SalleController extends AbstractController
         // Option 2 - Only show the form and updateForms when a single cinema is active
         // In this case, you need to pass the `$cinema` to the templates
         $form = $this->createForm(SalleType::class, new Salle());
-        $updateForms = array();
-        for ($i = 0; $i < count($salles); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($salles); ++$i) {
             $updateForms[$i] = $this->createForm(SalleType::class, $salles[$i])->createView();
         }
         if ($cinema) {
@@ -39,7 +39,6 @@ class SalleController extends AbstractController
                 'cinema' => $cinema,
             ]);
         }
-
 
         return $this->render('back/SallesTable.html.twig', [
             'salles' => [],
@@ -54,13 +53,13 @@ class SalleController extends AbstractController
     {
         $cinema = $entityManager->find(Cinema::class, $idCinema);
         if (!$cinema) {
-            throw $this->createNotFoundException('No cinema found for id ' . $idCinema);
+            throw $this->createNotFoundException('No cinema found for id '.$idCinema);
         }
         $salles = $salleRepository->findBy(['idCinema' => $idCinema]);
 
         $form = $this->createForm(SalleType::class, new Salle());
-        $updateForms = array();
-        for ($i = 0; $i < count($salles); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($salles); ++$i) {
             $updateForms[$i] = $this->createForm(SalleType::class, $salles[$i])->createView();
         }
 
@@ -73,17 +72,19 @@ class SalleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($salle);
             $entityManager->flush();
-            for ($i = 0; $i < $salle->getNbPlaces(); $i++) {
+            for ($i = 0; $i < $salle->getNbPlaces(); ++$i) {
                 $seat = new Seat();
                 $seat->setSalle($salle);
-                $seat->setStatut("vide");
+                $seat->setStatut('vide');
                 $entityManager->persist($seat);
             }
             $entityManager->flush();
+
             return $this->redirectToRoute('app_salle_index', ['idCinema' => $idCinema], Response::HTTP_SEE_OTHER);
         }
 
         $hasErrorsCreate = true;
+
         return $this->render('back/SallesTable.html.twig', [
             'salles' => $salles, // Passer les salles existantes à la vue
             'form' => $form->createView(),
@@ -106,13 +107,13 @@ class SalleController extends AbstractController
     {
         $cinema = $entityManager->find(Cinema::class, $idCinema);
         if (!$cinema) {
-            throw  $this->createNotFoundException('No cinema found for id' . $idCinema);
+            throw $this->createNotFoundException('No cinema found for id'.$idCinema);
         }
         $salles = $salleRepository->findBy(['idCinema' => $idCinema]);
 
         $form = $this->createForm(SalleType::class, new Salle());
-        $updateForms = array();
-        for ($i = 0; $i < count($salles); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($salles); ++$i) {
             $updateForms[$i] = $this->createForm(SalleType::class, $salles[$i])->createView();
         }
         $form = $this->createForm(SalleType::class, new Salle());
@@ -127,14 +128,14 @@ class SalleController extends AbstractController
             return $this->redirectToRoute('app_salle_index', ['idCinema' => $idCinema], Response::HTTP_SEE_OTHER);
         }
 
-
         $entityManager->refresh($salle);
+
         return $this->render('back/SallesTable.html.twig', [
             'salles' => $salles, // Passer les salles existantes à la vue
             'form' => $form->createView(),
             'updateForms' => $updateForms,
             'cinema' => $cinema,
-            "formUpdateNumber" => $formUpdateNumber,
+            'formUpdateNumber' => $formUpdateNumber,
             'updateform' => $updateform->createView(),
         ]);
     }
@@ -144,9 +145,9 @@ class SalleController extends AbstractController
     {
         $cinema = $entityManager->find(Cinema::class, $idCinema);
         if (!$cinema) {
-            throw  $this->createNotFoundException('No cinema found for id' . $idCinema);
+            throw $this->createNotFoundException('No cinema found for id'.$idCinema);
         }
-        if ($this->isCsrfTokenValid('delete' . $salle->getIdSalle(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$salle->getIdSalle(), $request->request->get('_token'))) {
             $entityManager->remove($salle);
             $entityManager->flush();
         }

@@ -1,0 +1,50 @@
+# Pre-commit hooks for the RAKCHA polyglot monorepo.
+# Mirrors the CI checks for each independent app so failures surface locally.
+#   pip install pre-commit && pre-commit install
+# Run on everything:  pre-commit run --all-files
+minimum_pre_commit_version: "3.5.0"
+default_stages: [pre-commit]
+
+repos:
+  # --- Generic hygiene (all files) ---
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '\.(svg|patch)$'
+      - id: end-of-file-fixer
+        exclude: '\.(svg|ico|icns|png|jpg|jpeg|gif|webp)$'
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        # Symfony/MkDocs use custom YAML tags; skip those files.
+        exclude: '^(apps/web/config/|mkdocs\.ya?ml$)'
+      - id: check-json
+        exclude: '\.vscode/|tsconfig.*\.json$'
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=2048]
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # --- Secret scanning ---
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # --- Workflow linting ---
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.4
+    hooks:
+      - id: actionlint
+
+  # --- Web (Symfony/PHP) — php-cs-fixer via a local hook (runs only if PHP is present) ---
+  - repo: local
+    hooks:
+      - id: php-cs-fixer
+        name: php-cs-fixer (apps/web)
+        language: script
+        entry: scripts/pre-commit-php-cs-fixer.sh
+        files: ^apps/web/.*\.php$
+        pass_filenames: false
+        require_serial: true

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Cinema;
 use App\Entity\Commentairecinema;
+use App\Entity\Users;
 use App\Form\CommentairecinemaType;
 use App\Repository\CommentairecinemaRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,15 +13,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
-
 
 #[Route('/commentairecinema')]
 class CommentairecinemaController extends AbstractController
 {
     #[Route('/{idCinema}', name: 'app_commentairecinema_index', methods: ['GET', 'POST'])]
-    public function index(int $idCinema, CommentairecinemaRepository $commentairecinemaRepository, EntityManagerInterface $entityManager, ChartBuilderInterface $chartBuilder): Response
+    public function index(int $idCinema, CommentairecinemaRepository $commentairecinemaRepository, EntityManagerInterface $entityManager): Response
     {
         // Récupérer le cinema
         $cinema = $entityManager->getRepository(Cinema::class)->findOneBy(['idCinema' => $idCinema]);
@@ -36,12 +34,12 @@ class CommentairecinemaController extends AbstractController
         $neutralCount = 0;
         foreach ($commentairecinemas as $commentairecinema) {
             $sentiment = $commentairecinema->getSentiment();
-            if ($sentiment === 'pos') {
-                $positiveCount++;
-            } elseif ($sentiment === 'neg') {
-                $negativeCount++;
+            if ('pos' === $sentiment) {
+                ++$positiveCount;
+            } elseif ('neg' === $sentiment) {
+                ++$negativeCount;
             } else {
-                $neutralCount++;
+                ++$neutralCount;
             }
         }
 
@@ -51,9 +49,7 @@ class CommentairecinemaController extends AbstractController
         $negativePercentage = ($total > 0) ? ($negativeCount / $total) * 100 : 0;
         $neutralPercentage = ($total > 0) ? ($neutralCount / $total) * 100 : 0;
 
-        // Créer le graphique
-        $chart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
-        $chart->setData([
+        $chartData = [
             'labels' => ['Positive', 'Negative', 'Neutral'],
             'datasets' => [
                 [
@@ -62,24 +58,23 @@ class CommentairecinemaController extends AbstractController
                     'data' => [$positivePercentage, $negativePercentage, $neutralPercentage],
                 ],
             ],
-        ]);
-
+        ];
 
         return $this->render('front/commentCinema.html.twig', [
             'commentairecinemas' => $commentairecinemas,
-            'chart' => $chart,
+            'chartData' => $chartData,
             'cinema' => $cinema,
             'form' => $form->createView(),
         ]);
     }
 
-
     #[Route('/new/{idCinema}', name: 'app_commentairecinema_new', methods: ['GET', 'POST'])]
     public function new(int $idCinema, Request $request, EntityManagerInterface $entityManager, CommentairecinemaRepository $commentairecinemaRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
         $cinema = $entityManager->find(Cinema::class, $idCinema);
         if (!$cinema) {
-            throw $this->createNotFoundException('No cinema found for id ' . $idCinema);
+            throw $this->createNotFoundException('No cinema found for id '.$idCinema);
         }
 
         $commentairecinema = new Commentairecinema();
@@ -98,7 +93,7 @@ class CommentairecinemaController extends AbstractController
             // Vous pouvez utiliser directement cette valeur comme sentiment du commentaire
             $commentairecinema->setSentiment($sentiment);
 
-            $commentairecinema->setIdclient($this->getUser()->getId());
+            $commentairecinema->setIdclient($this->currentUser()->getId());
 
             $entityManager->persist($commentairecinema);
             $entityManager->flush();
@@ -112,7 +107,6 @@ class CommentairecinemaController extends AbstractController
         ]);
     }
 
-
     private function analyseSentiment(string $comment): string
     {
         $analyzer = new Analyzer();
@@ -123,5 +117,15 @@ class CommentairecinemaController extends AbstractController
 
         // Retourner la catégorie de sentiment
         return $maxSentiment;
+    }
+
+    private function currentUser(): Users
+    {
+        $user = $this->getUser();
+        if (!$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
+
+        return $user;
     }
 }

@@ -24,11 +24,7 @@ class RakchaFirebaseUser extends BaseAuthUser {
 
   @override
   Future? updateEmail(String email) async {
-    try {
-      await user?.updateEmail(email);
-    } catch (_) {
-      await user?.verifyBeforeUpdateEmail(email);
-    }
+    await user?.verifyBeforeUpdateEmail(email);
   }
 
   @override

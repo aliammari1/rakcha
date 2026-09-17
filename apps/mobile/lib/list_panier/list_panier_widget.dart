@@ -755,12 +755,13 @@ class _ListPanierWidgetState extends State<ListPanierWidget> {
                                                                   'Button_update_page_state');
                                                               _model
                                                                   .price = functions
-                                                                          .sumlist(_model
-                                                                              .pageLoad!
-                                                                              .map((e) => e.finalPrice)
-                                                                              .toList())
-                                                                          .toString() !=
-                                                                      '';
+                                                                      .sumlist(_model
+                                                                          .pageLoad!
+                                                                          .map((e) =>
+                                                                              e.finalPrice)
+                                                                          .toList())
+                                                                      .toString() !=
+                                                                  '';
                                                               safeSetState(
                                                                   () {});
 

@@ -304,17 +304,22 @@ class _ListProductClientWidgetState extends State<ListProductClientWidget> {
                                                 ),
                                           ),
                                           showBadge: true,
-                                          shape: badges.BadgeShape.circle,
-                                          badgeColor: Color(0xFFEA251F),
-                                          elevation: 3.0,
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  8.0, 8.0, 8.0, 8.0),
+                                          badgeStyle: badges.BadgeStyle(
+                                            badgeColor: Color(0xFFEA251F),
+                                            shape: badges.BadgeShape.circle,
+                                            elevation: 3.0,
+                                            padding:
+                                                EdgeInsetsDirectional.fromSTEB(
+                                                    8.0, 8.0, 8.0, 8.0),
+                                          ),
                                           position:
                                               badges.BadgePosition.topEnd(),
-                                          animationType:
-                                              badges.BadgeAnimationType.scale,
-                                          toAnimate: true,
+                                          badgeAnimation:
+                                              const badges.BadgeAnimation.scale(
+                                            animationDuration:
+                                                Duration(milliseconds: 300),
+                                            loopAnimation: false,
+                                          ),
                                           child: FlutterFlowIconButton(
                                             borderColor: Color(0xFF8D201B),
                                             borderRadius: 20.0,
