@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\EpisodesRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EpisodesRepository::class)]
 #[ORM\Table(name: 'episodes')]
@@ -114,6 +114,4 @@ class Episodes
 
         return $this;
     }
-
-
 }
