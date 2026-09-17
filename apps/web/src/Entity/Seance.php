@@ -77,6 +77,11 @@ class Seance
     private Collection $idUser;
 
     /**
+     * @var Collection<int, Seat>
+     */
+    private Collection $seats;
+
+    /**
      * Constructor
      */
     public function __construct()

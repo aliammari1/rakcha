@@ -51,7 +51,7 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/payment', name: 'app_payment', methods: ['POST'])]
-    public function payment(Request $request, CommandeRepository $commandeRepository): Response
+    public function payment(Request $request, CommandeRepository $commandeRepository, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
@@ -75,13 +75,21 @@ class CommandeController extends AbstractController
             throw $this->createAccessDeniedException('Accès refusé');
         }
 
-        $amount = filter_var($request->request->get('amount'), FILTER_VALIDATE_FLOAT);
-        if ($amount === false || $amount <= 0) {
-            return new Response('Montant invalide', Response::HTTP_BAD_REQUEST);
+        // Compute authoritative total strictly from database items (ignoring client amount)
+        $items = $em->getRepository(Commandeitem::class)->findBy(['idcommande' => $commande]);
+        $authoritativeAmount = 0.0;
+        foreach ($items as $item) {
+            if ($item->getIdProduit() && $item->getIdProduit()->getPrix() !== null) {
+                $authoritativeAmount += (float) ($item->getIdProduit()->getPrix() * $item->getQuantity());
+            }
+        }
+
+        if ($authoritativeAmount <= 0) {
+            return new Response('Montant de la commande invalide ou commande vide', Response::HTTP_BAD_REQUEST);
         }
 
         $response = $this->passerelle->purchase([
-            'amount' => number_format($amount, 2, '.', ''),
+            'amount' => number_format($authoritativeAmount, 2, '.', ''),
             'currency' => $_ENV['PAYPAL_CURRENCY'] ?? 'USD',
             'returnUrl' => 'https://127.0.0.1:8001/commande/success?commandeId=' . $commandeId,
             'cancelUrl' => 'https://127.0.0.1:8001/commande/error'
@@ -130,29 +138,71 @@ class CommandeController extends AbstractController
             throw $this->createAccessDeniedException('Accès refusé');
         }
 
-        if ($request->query->get('paymentId') && $request->query->get('PayerID')) {
+        // Idempotency: return immediately if order is already marked paid
+        if ($commande->getStatu() === 'payé') {
+            return $this->redirectToRoute('app_payment_success');
+        }
+
+        $paymentId = $request->query->get('paymentId');
+        $payerId = $request->query->get('PayerID');
+
+        if ($paymentId && $payerId) {
+            // Compute authoritative expected total from database items
+            $items = $em->getRepository(Commandeitem::class)->findBy(['idcommande' => $commande]);
+            $expectedAmount = 0.0;
+            foreach ($items as $item) {
+                if ($item->getIdProduit() && $item->getIdProduit()->getPrix() !== null) {
+                    $expectedAmount += (float) ($item->getIdProduit()->getPrix() * $item->getQuantity());
+                }
+            }
+
+            if ($expectedAmount <= 0) {
+                return $this->render('front/error.html.twig', [
+                    'message' => 'La commande est vide ou invalide.'
+                ]);
+            }
+
+            $currency = $_ENV['PAYPAL_CURRENCY'] ?? 'USD';
             $operation = $this->passerelle->completePurchase([
-                'payer_id' => $request->query->get('PayerID'),
-                'transactionReference' => $request->query->get('paymentId'),
+                'payer_id' => $payerId,
+                'transactionReference' => $paymentId,
+                'amount' => number_format($expectedAmount, 2, '.', ''),
+                'currency' => $currency,
             ]);
 
             $response = $operation->send();
 
             if ($response->isSuccessful()) {
                 $data = $response->getData();
+
+                // Verify transaction approval status from gateway
+                $state = $data['state'] ?? '';
+                if ($state !== 'approved' && $state !== 'completed') {
+                    return $this->render('front/error.html.twig', [
+                        'message' => 'Le paiement n\'a pas été approuvé par la passerelle.'
+                    ]);
+                }
+
+                // Verify captured amount matches authoritative expected amount
+                if (!empty($data['transactions'][0]['amount']['total'])) {
+                    $capturedAmount = (float) $data['transactions'][0]['amount']['total'];
+                    if (abs($capturedAmount - $expectedAmount) > 0.01) {
+                        return $this->render('front/error.html.twig', [
+                            'message' => 'Incohérence du montant capturé par rapport à la commande.'
+                        ]);
+                    }
+                }
+
                 $commande->setStatu('payé');
                 $em->persist($commande);
                 $em->flush();
-                // Rediriger l'utilisateur vers la page de succès après un paiement réussi
-                return $this->redirectToRoute('app_payment_success', ['transactionId' => $data['id']]);
+                return $this->redirectToRoute('app_payment_success', ['transactionId' => $data['id'] ?? $paymentId]);
             } else {
-                // Gérer les erreurs de paiement ici
                 return $this->render('front/error.html.twig', [
                     'message' => 'Une erreur est survenue lors du traitement du paiement.'
                 ]);
             }
         } else {
-            // Gérer les paramètres manquants ici
             return $this->render('front/error.html.twig', [
                 'message' => 'Les paramètres de paiement sont manquants.'
             ]);
