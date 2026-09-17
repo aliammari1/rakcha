@@ -33,8 +33,9 @@ public class DataSource {
     private HikariDataSource hikariDataSource;
 
     private DataSource() {
-        // Set default URL based on a database type
-        this.url = System.getProperty("db.url", dotenv.get("DB_URL", ""));
+        // Set default URL based on a database type (fallback to embedded SQLite)
+        String rawUrl = System.getProperty("db.url", dotenv.get("DB_URL", ""));
+        this.url = (rawUrl != null && !rawUrl.trim().isEmpty()) ? rawUrl : "jdbc:sqlite:data/rakcha.db";
         this.user = System.getProperty("db.user", dotenv.get("DB_USER", "root"));
         this.password = System.getProperty("db.password", dotenv.get("DB_PASSWORD", ""));
 
