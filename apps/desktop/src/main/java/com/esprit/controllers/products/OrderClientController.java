@@ -65,7 +65,7 @@ import java.util.logging.Logger;
 public class OrderClientController implements Initializable {
 
     private static final String CLIENT_ID = System.getenv("PAYPAL_CLIENT_ID");
-    private static final String CLIENT_SECRET = System.getenv("PAYPAL_CLIENT_SECRET");
+    // Direct privileged PayPal client secret execution is removed from client runtime for security.
     private static final String SUCCESS_URL = OrderClientController.class.getResource("/success.html").toExternalForm();
     private static final String CANCEL_URL = OrderClientController.class.getResource("/cancel.html").toExternalForm();
     private static final Logger LOGGER = Logger.getLogger(OrderClientController.class.getName());
@@ -371,51 +371,48 @@ public class OrderClientController implements Initializable {
      */
     @FXML
     void payment(final ActionEvent event) {
-        final APIContext apiContext = new APIContext(OrderClientController.CLIENT_ID,
-            OrderClientController.CLIENT_SECRET, "sandbox");
-        final Amount amount = new Amount();
-        amount.setCurrency("USD");
-        amount.setTotal(String.valueOf(this.totalPrix)); // totalPrix should be set to the total price of the order
-        final Transaction transaction = new Transaction();
-        transaction.setDescription("Your Purchase Description");
-        transaction.setAmount(amount);
-        final List<Transaction> transactions = new ArrayList<>();
-        transactions.add(transaction);
-        final Payer payer = new Payer();
-        payer.setPaymentMethod("paypal");
-        final Payment payment = new Payment();
-        payment.setIntent("sale");
-        payment.setPayer(payer);
-        payment.setTransactions(transactions);
-        final RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost/cancel");
-        redirectUrls.setReturnUrl("http://localhost/success");
-        payment.setRedirectUrls(redirectUrls);
-        payment.setRedirectUrls(redirectUrls);
-        try {
-            final Payment createdPayment = payment.create(apiContext);
-            OrderClientController.LOGGER.info("Created payment with id = " + createdPayment.getId() + " and status = "
-                + createdPayment.getState());
-            // Extract approval URL
-            String approvalUrl = null;
-            final List<Links> links = createdPayment.getLinks();
-            for (final Links link : links) {
-                if ("approval_url".equalsIgnoreCase(link.getRel())) {
-                    approvalUrl = link.getHref();
-                    break;
-                }
+        OrderClientController.LOGGER.warning(
+            "Direct PayPal execution is disabled on client for security. Online checkout must be completed via backend checkout."
+        );
+        showPaymentNotice("Direct payment processing is disabled on the desktop client for security. "
+            + "Please complete your payment securely via the Rakcha Web portal.");
+    }
 
+    /**
+     * Checks if direct privileged payment execution is enabled on this client.
+     * Always returns false to protect credentials and enforce untrusted client boundaries.
+     *
+     * @return false
+     */
+    public static boolean isPrivilegedPaymentExecutionEnabled() {
+        return false;
+    }
+
+    /**
+     * Displays a user-facing notification informing the user that payments
+     * must be processed via the authoritative backend checkout portal.
+     *
+     * @param message notification message
+     */
+    private void showPaymentNotice(final String message) {
+        final Runnable notify = () -> {
+            final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Secure Payment Required");
+            alert.setHeaderText("Web Checkout Required");
+            alert.setContentText(message);
+            alert.showAndWait();
+        };
+
+        if (Platform.isFxApplicationThread()) {
+            notify.run();
+        } else {
+            try {
+                Platform.runLater(notify);
+            } catch (final IllegalStateException e) {
+                // JavaFX platform not initialized (e.g. non-GUI unit test environment)
+                OrderClientController.LOGGER.info("Payment Notice: " + message);
             }
-
-            if (null != approvalUrl) {
-                // Redirect to PayPal for payment approval
-                this.redirectToPayPal(approvalUrl);
-            }
-
-        } catch (final PayPalRESTException e) {
-            OrderClientController.LOGGER.log(Level.SEVERE, "Error creating PayPal payment", e);
         }
-
     }
 
     /**
@@ -517,26 +514,9 @@ public class OrderClientController implements Initializable {
      * @param payerId   the PayPal payer identifier
      */
     private void completePayment(final String paymentId, final String payerId) {
-        final APIContext apiContext = new APIContext(OrderClientController.CLIENT_ID,
-            OrderClientController.CLIENT_SECRET, "sandbox");
-        final Payment payment = new Payment();
-        payment.setId(paymentId);
-        final PaymentExecution paymentExecution = new PaymentExecution();
-        paymentExecution.setPayerId(payerId);
-        try {
-            final Payment executedPayment = payment.execute(apiContext, paymentExecution);
-            OrderClientController.LOGGER.info("Payment executed. Status: " + executedPayment.getState());
-            if ("approved".equalsIgnoreCase(executedPayment.getState())) {
-                // Update order status to paid
-                this.order.setStatus(com.esprit.enums.OrderStatus.PAID);
-                this.orderService.update(this.order);
-                OrderClientController.LOGGER.info("Order status updated to paid");
-            }
-
-        } catch (final PayPalRESTException e) {
-            OrderClientController.LOGGER.log(Level.SEVERE, "Error executing payment", e);
-        }
-
+        OrderClientController.LOGGER.warning(
+            "Direct payment execution from desktop is disabled for security. Payment verification must occur on the backend server."
+        );
     }
 
     /**
