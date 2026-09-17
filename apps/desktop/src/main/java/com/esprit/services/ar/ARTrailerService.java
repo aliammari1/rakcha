@@ -604,9 +604,27 @@ public class ARTrailerService implements IService<ARContent> {
      * Create the AR content table if it doesn't exist
      */
     private void createTableIfNotExists() {
-        String sql = """
+        try {
+            boolean sqlite = connection.getMetaData().getDatabaseProductName()
+                .toLowerCase(java.util.Locale.ROOT)
+                .contains("sqlite");
+            String idColumn = sqlite
+                ? "INTEGER PRIMARY KEY AUTOINCREMENT"
+                : "BIGINT AUTO_INCREMENT PRIMARY KEY";
+            String updatedAtColumn = sqlite
+                ? "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+                : "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
+            String indexes = sqlite ? "" : """
+                , INDEX idx_content_type (content_type)
+                , INDEX idx_film_id (film_id)
+                , INDEX idx_cinema_id (cinema_id)
+                , INDEX idx_actor_id (actor_id)
+                , INDEX idx_is_active (is_active)
+                , INDEX idx_created_at (created_at)
+                """;
+            String sql = """
             CREATE TABLE IF NOT EXISTS ar_content (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id %s,
                 content_type VARCHAR(50) NOT NULL,
                 title VARCHAR(255) NOT NULL,
                 description TEXT,
@@ -629,23 +647,18 @@ public class ARTrailerService implements IService<ARContent> {
                 tags TEXT,
                 metadata TEXT,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                updated_at %s,
                 is_active BOOLEAN DEFAULT TRUE,
                 view_count BIGINT DEFAULT 0,
                 average_rating DOUBLE DEFAULT 0.0,
-                file_size_bytes BIGINT,
-                INDEX idx_content_type (content_type),
-                INDEX idx_film_id (film_id),
-                INDEX idx_cinema_id (cinema_id),
-                INDEX idx_actor_id (actor_id),
-                INDEX idx_is_active (is_active),
-                INDEX idx_created_at (created_at)
+                file_size_bytes BIGINT%s
             )
-            """;
+            """.formatted(idColumn, updatedAtColumn, indexes);
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.executeUpdate();
-            log.info("AR content table initialized successfully");
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.executeUpdate();
+                log.info("AR content table initialized successfully");
+            }
         } catch (SQLException e) {
             log.error("Error creating AR content table", e);
             throw new RuntimeException("Failed to create AR content table", e);

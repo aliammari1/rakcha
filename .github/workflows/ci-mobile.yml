@@ -19,6 +19,12 @@ on:
 permissions:
   contents: read
 
+# A newer commit on the same pull request or branch supersedes this run.
+# Cancelling it avoids spending hosted-runner minutes on obsolete results.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 defaults:
   run:
     working-directory: apps/mobile
@@ -38,16 +44,19 @@ jobs:
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
         with:
           channel: stable
+          # Keep the SDK and the committed dependency resolution reproducible.
+          flutter-version: "3.47.4"
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get
+        # CI must not silently rewrite the committed application lockfile.
+        run: flutter pub get --enforce-lockfile
 
       - name: Verify formatting (hand-written dirs only)
-        run: dart format --output=none --set-exit-if-changed lib/concierge test || echo "::warning::dart format would change files"
+        run: dart format --output=none --set-exit-if-changed lib/concierge test
 
-      - name: Analyze (scoped via analysis_options.yaml excludes)
-        run: flutter analyze
+      - name: Analyze hand-written client and tests
+        run: flutter analyze lib/concierge test
 
       - name: Run tests with coverage
         run: flutter test --coverage

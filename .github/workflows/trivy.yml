@@ -15,6 +15,11 @@ on:
 permissions:
   contents: read
 
+# Do not spend runner time completing a scan for an obsolete PR revision.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   scan:
     name: Trivy fs + config scan
