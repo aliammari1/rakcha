@@ -92,7 +92,6 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
 
 
     #[ORM\OneToMany(mappedBy: 'idClient', targetEntity: CommentaireProduit::class)]
-    #[ORM\JoinColumn(name: 'id_client', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Collection $idComm;
 
 

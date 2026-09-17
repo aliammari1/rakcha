@@ -14,9 +14,9 @@ class CommentaireProduit
     private ?int $id = null;
 
 
-    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\ManyToOne(targetEntity: Users::class, inversedBy: 'idComm')]
     #[ORM\JoinColumn(name: 'id_client_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private ?Users $idClient;
+    private ?Users $idClient = null;
 
 
     #[ORM\Column(name: 'commentaire', type: 'string', length: 255)]
