@@ -3,11 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\FeedbackRepository;
-use DateTime;
-use DateTimeInterface;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
 
 #[ORM\Entity(repositoryClass: FeedbackRepository::class)]
 #[ORM\Table(name: 'feedback')]
@@ -26,14 +22,14 @@ class Feedback
     #[ORM\Column(name: 'description', type: 'string', length: 255, nullable: false)]
     private string $description;
 
-    /**
-     * @var DateTime
-     */
     #[ORM\Column(name: 'date', type: 'date', nullable: false)]
-    private DateTimeInterface $date;
+    private \DateTimeInterface $date;
 
     #[ORM\Column(name: 'id_episode', type: 'integer', nullable: false)]
     private int $idEpisode;
+
+    #[ORM\Column(name: 'sentiment', type: 'string', length: 50, nullable: true)]
+    private ?string $sentiment = null;
 
     public function getId(): ?int
     {
@@ -94,7 +90,6 @@ class Feedback
         $this->date = new \DateTime();
     }
 
-
     public function getSentiment(): ?string
     {
         return $this->sentiment;
@@ -106,6 +101,4 @@ class Feedback
 
         return $this;
     }
-
-
 }
