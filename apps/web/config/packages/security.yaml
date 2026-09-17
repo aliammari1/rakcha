@@ -59,7 +59,9 @@ security:
     - { path: ^/2fa, roles: IS_AUTHENTICATED_2FA_IN_PROGRESS }
     - { path: ^/users/profile, roles: ROLE_USER }
     - { path: ^/usersDash, roles: ROLE_ADMIN }
-    - { path: ^/users, roles: PUBLIC_ACCESS }
+    - { path: ^/users, roles: ROLE_ADMIN }
+    - { path: ^/stripe, roles: ROLE_USER }
+    - { path: ^/commande, roles: ROLE_USER }
     - { path: ^/cinema/listecinema, roles: ROLE_USER }
     - { path: ^/cinema/listeCinemaAdmin, roles: ROLE_ADMIN }
     - { path: ^/cinema/location, roles: ROLE_USER }
