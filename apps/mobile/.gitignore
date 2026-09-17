@@ -1,2 +1,7 @@
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
+
+# Local dart-define env files (real secrets); keep .env.example tracked.
+.env
+.env.*
+!.env.example

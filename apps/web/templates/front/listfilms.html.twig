@@ -596,7 +596,7 @@
 						                                        'X-Requested-With': 'XMLHttpRequest'
 						                                    },
 						                                    body: JSON.stringify({
-						                                        'prix': document.querySelectorAll('img[src="/img/seats/sofa.png"]').length * 10,
+						                                        'seanceId': seanceID{{ j }},
 						                                        'stripeToken': document.getElementById("stripe-token-id{{ j }}").value,
 						                                        'seatIds': seatIds{{ j }}
 						                                    })

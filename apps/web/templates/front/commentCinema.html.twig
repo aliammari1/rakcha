@@ -1,7 +1,7 @@
 {% extends 'baseFront.html.twig' %}
 
 {% block pageStyle %}
-    {{ encore_entry_link_tags('app') }}
+    {# Encore removed — assets are served from the jsDelivr CDN (see base.html.twig). #}
     <style>
         .chart {
             width: 500px;
@@ -213,7 +213,7 @@
                     <!-- Ajoutez cette section pour afficher le graphique -->
                     <div class="chart">
                         <h4>Satisfaction Percentage</h4>
-                        {{ render_chart(chart, {'id': 'my-chart'}) }}
+                        <canvas id="my-chart"></canvas>
                     </div>
 
                 </div>
@@ -247,11 +247,11 @@
 
     </script>
 
-    {{ encore_entry_link_tags('app') }}
+    {# Encore removed — Chart.js loaded directly from CDN below. #}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         window.onload = () => {
-            const chartData = {{ chart.getData() | json_encode | raw }};
+            const chartData = {{ chartData | json_encode | raw }};
             const chart = new Chart(
                 document.getElementById('my-chart'),
                 {

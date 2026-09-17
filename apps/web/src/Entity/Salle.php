@@ -3,28 +3,25 @@
 namespace App\Entity;
 
 use App\Repository\SalleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
 #[ORM\Table(name: 'salle')]
 #[ORM\Index(name: 'fk_cinema_salle', columns: ['id_cinema'])]
 class Salle
 {
-
     #[ORM\Column(name: 'id_salle', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $idSalle;
 
-
     #[ORM\Column(name: 'nb_places', type: 'integer', nullable: false)]
     #[Assert\NotBlank(message: 'The number of seats is required.')]
     #[Assert\Positive(message: 'The number of seats must be a positive integer.')]
     private int $nbPlaces;
-
 
     #[ORM\Column(name: 'nom_salle', type: 'string', length: 50, nullable: false)]
     #[Assert\NotBlank(message: 'The room name is required.')]
@@ -34,17 +31,20 @@ class Salle
         minMessage: 'The room name must be at least {{ limit }} characters long.',
         maxMessage: 'The room name cannot exceed {{ limit }} characters.'
     )] private string $nomSalle;
-
     #[ORM\Column(name: 'id_cinema', type: 'integer', nullable: false)]
     private int $idCinema;
 
-
-    #[ORM\ManyToOne(targetEntity: Cinema::class, inversedBy: "salles")]
-    #[ORM\JoinColumn(name: "id_cinema", referencedColumnName: "id_cinema", nullable: false, onDelete: "CASCADE")]
-    private $cinema;
+    #[ORM\ManyToOne(targetEntity: Cinema::class, inversedBy: 'salles')]
+    #[ORM\JoinColumn(name: 'id_cinema', referencedColumnName: 'id_cinema', nullable: false, onDelete: 'CASCADE')]
+    private ?Cinema $cinema = null;
 
     #[ORM\OneToMany(mappedBy: 'salle', targetEntity: Seat::class)]
     private Collection $seats;
+
+    public function __construct()
+    {
+        $this->seats = new ArrayCollection();
+    }
 
     /**
      * @return Collection<int, Seat>
@@ -58,7 +58,7 @@ class Salle
     {
         if (!$this->seats->contains($seat)) {
             $this->seats->add($seat);
-            $seat->setSeance($this);
+            $seat->setSalle($this);
         }
 
         return $this;
@@ -68,14 +68,13 @@ class Salle
     {
         if ($this->seats->removeElement($seat)) {
             // set the owning side to null (unless already changed)
-            if ($seat->getSeance() === $this) {
-                $seat->setSeance(null);
+            if ($seat->getSalle() === $this) {
+                $seat->setSalle(null);
             }
         }
 
         return $this;
     }
-
 
     public function getIdSalle(): ?int
     {
@@ -118,7 +117,6 @@ class Salle
         return $this;
     }
 
-
     public function getCinema(): ?Cinema
     {
         return $this->cinema;
@@ -131,4 +129,3 @@ class Salle
         return $this;
     }
 }
-

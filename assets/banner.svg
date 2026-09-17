@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RAKCHA placeholder hero — cinema letterbox 2.39:1, theatre-red/charcoal.
+     Replace with generated brandkit/imagegen art (see BANNER.md). -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1195" height="500" viewBox="0 0 1195 500" role="img" aria-label="RAKCHA — polyglot cinema platform">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B1E24"/>
+      <stop offset="1" stop-color="#16181D"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="60%">
+      <stop offset="0" stop-color="#B11226" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#B11226" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1195" height="500" fill="url(#bg)"/>
+  <!-- letterbox bars -->
+  <rect x="0" y="0" width="1195" height="60" fill="#0E0F12"/>
+  <rect x="0" y="440" width="1195" height="60" fill="#0E0F12"/>
+  <!-- projector glow -->
+  <rect x="0" y="60" width="1195" height="380" fill="url(#glow)"/>
+
+  <text x="597" y="232" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+        font-size="120" font-weight="700" letter-spacing="14" fill="#F4F1EA">RAKCHA</text>
+  <text x="597" y="290" text-anchor="middle" font-family="Georgia, serif"
+        font-size="26" letter-spacing="6" fill="#B11226">A POLYGLOT CINEMA PLATFORM</text>
+  <text x="597" y="338" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif"
+        font-size="18" letter-spacing="2" fill="#8A8F99">JavaFX desktop · Symfony/Twig web · FlutterFlow mobile · Firebase</text>
+</svg>

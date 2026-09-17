@@ -4,15 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Favoris;
 use App\Entity\Series;
+use App\Entity\Users;
 use App\Form\FavorisType;
 use App\Repository\FavorisRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 #[Route('/favoris')]
 class FavorisController extends AbstractController
@@ -20,8 +19,9 @@ class FavorisController extends AbstractController
     #[Route('/', name: 'app_favoris_index', methods: ['GET'])]
     public function index(FavorisRepository $favorisRepository, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
         // Récupérer les favoris de l'utilisateur actuel
-        $favoris = $favorisRepository->findBy(['idUser' => $this->getUser()->getId()]);
+        $favoris = $favorisRepository->findBy(['idUser' => $this->currentUser()->getId()]);
 
         // Créer un tableau pour stocker les objets Serie associés à chaque favori
         $series = [];
@@ -87,7 +87,7 @@ class FavorisController extends AbstractController
     #[Route('/{id}', name: 'app_favoris_delete', methods: ['POST'])]
     public function delete(Request $request, Favoris $favori, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $favori->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$favori->getId(), $request->request->get('_token'))) {
             $entityManager->remove($favori);
             $entityManager->flush();
         }
@@ -101,21 +101,21 @@ class FavorisController extends AbstractController
     {
         // Récupérer tous les favoris
         $favoris = $favorisRepository->findAll();
-        
+
         // Créer un tableau associatif pour stocker les séries par favoris
         $seriesByFavoris = [];
-        
+
         // Remplir le tableau associatif
         foreach ($favoris as $favori) {
             $serieId = $favori->getIdSerie();
             $serie = $seriesRepository->find($serieId); // Récupérer la série associée au favori
-            
+
             // Vérifier si la série existe et si elle n'a pas déjà été ajoutée
             if ($serie && !isset($seriesByFavoris[$favori->getId()])) {
                 $seriesByFavoris[$favori->getId()] = $serie; // Ajouter la série au tableau associatif sous la clé du favori
             }
         }
-        
+
         // Passez le tableau associatif à la vue pour affichage
         return $this->render('front/listSeriesParFavoris.html.twig', [
             'seriesByFavoris' => $seriesByFavoris,
@@ -125,31 +125,35 @@ class FavorisController extends AbstractController
     #[Route('/{idSerie}/add-to-favorites', name: 'app_add_to_favorites', methods: ['POST'])]
     public function addToFavorites(int $idSerie, FavorisRepository $favorisRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        $userId = $this->currentUser()->getId();
 
         // Vérifier si la série est déjà dans les favoris de l'utilisateur
         $favoris = $favorisRepository->findOneBy([
-            'idUser' => $this->getUser()->getId(),
+            'idUser' => $userId,
             'idSerie' => $idSerie,
         ]);
 
         // Si la série n'est pas déjà dans les favoris, l'ajouter
         if (!$favoris) {
             $favoris = new Favoris();
-            $favoris->setIdUser($this->getUser()->getId());
+            $favoris->setIdUser($userId);
             $favoris->setIdSerie($idSerie);
 
             // Enregistrer le favori
             $entityManager->persist($favoris);
             $entityManager->flush();
         }
+
         return $this->redirectToRoute('app_favoris_index');
     }
 
     #[Route('/favoris/remove/{idSerie}', name: 'app_remove_from_favorites', methods: ['POST'])]
     public function removeFromFavorites(int $idSerie, FavorisRepository $favorisRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
         // Récupérer le favori correspondant à la série et à l'utilisateur
-        $favori = $favorisRepository->findOneBy(['idUser' => $this->getUser()->getId(), 'idSerie' => $idSerie]);
+        $favori = $favorisRepository->findOneBy(['idUser' => $this->currentUser()->getId(), 'idSerie' => $idSerie]);
 
         // Vérifier si le favori existe
         if (!$favori) {
@@ -162,5 +166,15 @@ class FavorisController extends AbstractController
 
         // Rediriger l'utilisateur vers la page des favoris
         return $this->redirectToRoute('app_favoris_index');
+    }
+
+    private function currentUser(): Users
+    {
+        $user = $this->getUser();
+        if (!$user instanceof Users) {
+            throw $this->createAccessDeniedException();
+        }
+
+        return $user;
     }
 }

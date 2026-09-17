@@ -13,10 +13,34 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.log4j.Log4j2;
 
+import java.io.IOException;
+
 @Log4j2
 public class MainApp extends Application {
 
     private Stage mainStage;
+    private final boolean showSplashScreen;
+
+    /**
+     * Creates the production application, including the cinematic splash screen.
+     */
+    public MainApp() {
+        this(true);
+    }
+
+    /**
+     * Creates the application with an explicit startup flow.
+     *
+     * <p>The direct-login mode keeps UI tests deterministic: they exercise the
+     * login scene rather than depending on a timed, animated splash transition.
+     * Production code uses the no-argument constructor and therefore always
+     * displays the splash screen.</p>
+     *
+     * @param showSplashScreen whether to display the cinematic splash screen
+     */
+    public MainApp(final boolean showSplashScreen) {
+        this.showSplashScreen = showSplashScreen;
+    }
 
     /**
      * Launches the JavaFX application using the provided command-line arguments.
@@ -58,8 +82,11 @@ public class MainApp extends Application {
             System.out.println("Could not load application icon: " + e.getMessage());
         }
 
-        // Create and show splash screen
-        showSplashScreen();
+        if (showSplashScreen) {
+            showSplashScreen();
+        } else {
+            showLoginScreen();
+        }
     }
 
     /**
@@ -97,6 +124,15 @@ public class MainApp extends Application {
         splashStage.centerOnScreen();
         splashStage.setResizable(false);
         splashStage.show();
+    }
+
+    private void showLoginScreen() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/users/Login.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        ThemeManager.getInstance().applyToScene(scene);
+        mainStage.setScene(scene);
+        mainStage.show();
     }
 
 }

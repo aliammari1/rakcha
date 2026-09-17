@@ -13,7 +13,6 @@ use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 
 class CheckVerifiedUserSubscriber implements EventSubscriberInterface
 {
-
     private RouterInterface $router;
 
     public function __construct(RouterInterface $router)
@@ -21,7 +20,7 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
         $this->router = $router;
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             CheckPassportEvent::class => ['onCheckPassport', -10],
@@ -29,7 +28,7 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onCheckPassport(CheckPassportEvent $event)
+    public function onCheckPassport(CheckPassportEvent $event): void
     {
         $passport = $event->getPassport();
         if (!$passport instanceof Passport) {
@@ -46,7 +45,7 @@ class CheckVerifiedUserSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onLoginFailure(LoginFailureEvent $event)
+    public function onLoginFailure(LoginFailureEvent $event): void
     {
         if (!$event->getException() instanceof AccountNotVerifiedAuthenticationException) {
             return;

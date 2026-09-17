@@ -17,12 +17,12 @@ class CategorieProduitController extends AbstractController
     #[Route('/', name: 'app_categorie_produit_index', methods: ['GET'])]
     public function index(CategorieProduitRepository $categorieProduitRepository): Response
     {
-
         $form = $this->createForm(CategorieProduitType::class, new CategorieProduit());
-        $updateForms = array();
-        for ($i = 0; $i < count($categorieProduitRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($categorieProduitRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(CategorieProduitType::class, $categorieProduitRepository->findAll()[$i])->createView();
         }
+
         return $this->render('back/categoriProduitTable.html.twig', [
             'categorieproduit' => $categorieProduitRepository->findAll(),
             'form' => $form->createView(),
@@ -79,7 +79,7 @@ class CategorieProduitController extends AbstractController
     #[Route('/{idCategorie}', name: 'app_categorie_produit_delete', methods: ['POST'])]
     public function delete(Request $request, CategorieProduit $categorieProduit, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $categorieProduit->getIdCategorie(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$categorieProduit->getIdCategorie(), $request->request->get('_token'))) {
             $entityManager->remove($categorieProduit);
             $entityManager->flush();
         }

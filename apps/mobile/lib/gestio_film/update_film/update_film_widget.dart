@@ -675,7 +675,7 @@ class _UpdateFilmWidgetState extends State<UpdateFilmWidget> {
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
-                              prefixIcon: Icon(
+                              prefixIcon: FaIcon(
                                 FontAwesomeIcons.youtubeSquare,
                                 color: FlutterFlowTheme.of(context).primaryText,
                               ),
@@ -776,7 +776,7 @@ class _UpdateFilmWidgetState extends State<UpdateFilmWidget> {
                                                           String>(
                                                       _model.dropDownValue ??=
                                                           List<String>.from(
-                                                columnFilmRecord.category ?? [],
+                                                columnFilmRecord.category,
                                               )),
                                               options:
                                                   dropDownCategoryFilmRecordList
@@ -930,7 +930,7 @@ class _UpdateFilmWidgetState extends State<UpdateFilmWidget> {
                                                           String>(
                                                       _model.dropDown2Value ??=
                                                           List<String>.from(
-                                                columnFilmRecord.actors ?? [],
+                                                columnFilmRecord.actors,
                                               )),
                                               options:
                                                   dropDown2ActorFilmRecordList
@@ -1175,11 +1175,9 @@ class _UpdateFilmWidgetState extends State<UpdateFilmWidget> {
                                     context: context,
                                     initialDate: getCurrentTimestamp,
                                     firstDate:
-                                        (DateTime.fromMicrosecondsSinceEpoch(
-                                                642117600000000) ??
-                                            DateTime(1900)),
-                                    lastDate:
-                                        (getCurrentTimestamp ?? DateTime(2050)),
+                                        DateTime.fromMicrosecondsSinceEpoch(
+                                            642117600000000),
+                                    lastDate: getCurrentTimestamp,
                                     builder: (context, child) {
                                       return wrapInMaterialDatePickerTheme(
                                         context,

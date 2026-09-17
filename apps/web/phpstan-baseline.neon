@@ -1,0 +1,9 @@
+# PHPStan baseline — pre-existing legacy errors are ignored here so that new
+# code is held to `level: 5` without a big-bang refactor.
+#
+# This file ships empty; the first CI run (or a local
+#   composer install && vendor/bin/phpstan analyse --generate-baseline
+# ) populates it. Until regenerated, the CI PHPStan job is allowed to fail
+# soft on legacy findings (see .github/workflows/ci-web.yml).
+parameters:
+    ignoreErrors: []
