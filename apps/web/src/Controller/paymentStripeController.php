@@ -63,7 +63,7 @@ class paymentStripeController extends AbstractController
 
             foreach ($seatIds as $seatId) {
                 // Acquire pessimistic write lock to prevent race conditions & double-booking
-                $seat = $seatRepository->find($seatId, LockMode::PESSIMISTIC_WRITE);
+                $seat = $entityManager->find(Seat::class, $seatId, LockMode::PESSIMISTIC_WRITE);
                 if (!$seat) {
                     $entityManager->rollback();
 
