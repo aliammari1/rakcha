@@ -16,12 +16,12 @@ body:
       label: Component
       description: Which component has the issue?
       options:
-        - Desktop App
-        - Mobile App
-        - Web Platform
-        - API
-        - Database
-        - Authentication
+        - Desktop (JavaFX) — apps/desktop
+        - Web (Symfony/Twig) — apps/web
+        - Mobile (FlutterFlow) — apps/mobile
+        - Firebase functions / AI concierge
+        - Docs (mkdocs)
+        - CI / tooling
         - Other
     validations:
       required: true
@@ -29,11 +29,9 @@ body:
   - type: input
     id: version
     attributes:
-      label: Version
-      description: What version are you using? (e.g., v2.0.0)
-      placeholder: v2.0.0
-    validations:
-      required: true
+      label: Commit / branch
+      description: Which commit SHA or branch are you on? (e.g. `feat/upgrade`, `a325b75`)
+      placeholder: feat/upgrade
 
   - type: textarea
     id: description

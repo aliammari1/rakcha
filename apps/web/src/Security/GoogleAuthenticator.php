@@ -6,6 +6,7 @@ use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use League\OAuth2\Client\Provider\GoogleUser;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-
-class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntrypointInterface
+class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     private $clientRegistry;
     private $entityManager;
@@ -34,7 +34,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     public function supports(Request $request): ?bool
     {
         // continue ONLY if the current ROUTE matches the check ROUTE
-        return $request->attributes->get('_route') === 'connect_google_check';
+        return 'connect_google_check' === $request->attributes->get('_route');
     }
 
     public function authenticate(Request $request): Passport
@@ -48,6 +48,9 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $googleUser = $client->fetchUserFromToken($accessToken);
 
                 $email = $googleUser->getEmail();
+                if (null === $email) {
+                    throw new AuthenticationException('Google did not return an email address.');
+                }
 
                 // 1) have they logged in with Google before? Easy!
                 $existingUser = $this->entityManager->getRepository(Users::class)->findOneBy(['id' => $googleUser->getId()]);
@@ -69,11 +72,12 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $user->setRole('client');
                 $user->setIsVerified(true);
                 $user->setPassword('google');
-                $user->setNom($googleUser->getFirstName());
-                $user->setPrenom($googleUser->getLastName());
+                $user->setNom($googleUser->getFirstName() ?? 'Google');
+                $user->setPrenom($googleUser->getLastName() ?? 'User');
                 $user->setPhotoDeProfil($googleUser->getAvatar());
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
+
                 return $user;
             })
         );
@@ -87,7 +91,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         return new RedirectResponse($targetUrl);
 
         // or, on success, let the request continue to be handled by the controller
-        //return null;
+        // return null;
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
@@ -101,7 +105,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
      * Called when authentication is needed, but it's not sent.
      * This redirects to the 'login'.
      */
-    public function start(Request $request, AuthenticationException|null $authException = null): Response
+    public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return new RedirectResponse(
             '/connect/', // might be the site, where users choose their oauth provider

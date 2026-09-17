@@ -45,9 +45,6 @@ class Produit
     #[Assert\NotNull(message: 'Quantity cannot be null.')]
     private int $quantitep;
 
-    /**
-     * @var CategorieProduit
-     */
     #[ORM\ManyToOne(targetEntity: CategorieProduit::class)]
     #[ORM\JoinColumn(name: 'id_categorieProduit', referencedColumnName: 'id_categorie')]
     private CategorieProduit $idCategorieproduit;
@@ -55,17 +52,18 @@ class Produit
     /**
      * @var Collection<int, Users>
      */
-
     private Collection $idClient;
     private Collection $paniers;
+    #[ORM\OneToMany(mappedBy: 'idproduit', targetEntity: CommentaireProduit::class)]
     private Collection $commentaires;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
         $this->idClient = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
     }
 
     public function getNom(): ?string
@@ -157,7 +155,7 @@ class Produit
         return $this;
     }
 
-    /* #[ORM\OneToMany(targetEntity:Panier::class, mappedBy:"idproduit")]*/
+    /* #[ORM\OneToMany(targetEntity:Panier::class, mappedBy:"idproduit")] */
 
     public function removeIdClient(Users $idClient): static
     {
@@ -206,9 +204,6 @@ class Produit
      */
     public function getCommentaires(): Collection
     {
-
         return $this->commentaires;
     }
-
-
 }

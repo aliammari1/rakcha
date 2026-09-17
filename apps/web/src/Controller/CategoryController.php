@@ -18,10 +18,11 @@ class CategoryController extends AbstractController
     public function index(CategoryRepository $categoryRepository): Response
     {
         $form = $this->createForm(CategoryType::class, new Category());
-        $updateForms = array();
-        for ($i = 0; $i < count($categoryRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($categoryRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(CategoryType::class, $categoryRepository->findAll()[$i])->createView();
         }
+
         return $this->render('back/categoryTables.html.twig', [
             'categorys' => $categoryRepository->findAll(),
             'form' => $form->createView(),
@@ -32,8 +33,8 @@ class CategoryController extends AbstractController
     #[Route('/new', name: 'app_category_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository): Response
     {
-        $updateForms = array();
-        for ($i = 0; $i < count($categoryRepository->findAll()); $i++) {
+        $updateForms = [];
+        for ($i = 0; $i < count($categoryRepository->findAll()); ++$i) {
             $updateForms[$i] = $this->createForm(CategoryType::class, $categoryRepository->findAll()[$i])->createView();
         }
         $category = new Category();
@@ -48,11 +49,12 @@ class CategoryController extends AbstractController
             return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
         }
         $hasErrorsCreate = true;
+
         return $this->render('back/categoryTables.html.twig', [
             'categorys' => $categoryRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
-            'hasErrorsCreate' => $hasErrorsCreate
+            'hasErrorsCreate' => $hasErrorsCreate,
         ]);
     }
 
@@ -67,9 +69,9 @@ class CategoryController extends AbstractController
     #[Route('/{id}/edit/{formUpdateNumber}', name: 'app_category_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Category $category, EntityManagerInterface $entityManager, $formUpdateNumber, CategoryRepository $categoryRepository): Response
     {
-        $updateForms = array();
+        $updateForms = [];
         $catrogories = $categoryRepository->findAll();
-        for ($i = 0; $i < count($catrogories); $i++) {
+        for ($i = 0; $i < count($catrogories); ++$i) {
             $updateForms[$i] = $this->createForm(CategoryType::class, $catrogories[$i])->createView();
         }
         $form = $this->createForm(CategoryType::class, new Category());
@@ -79,11 +81,13 @@ class CategoryController extends AbstractController
         if ($updateform->isSubmitted() && $updateform->isValid()) {
             $entityManager->flush();
             $this->addFlash('categorys', 'category edited successfully');
+
             return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
         }
         $entityManager->refresh($category);
+
         return $this->render('back/categoryTables.html.twig', [
-            "formUpdateNumber" => $formUpdateNumber,
+            'formUpdateNumber' => $formUpdateNumber,
             'categorys' => $categoryRepository->findAll(),
             'form' => $form->createView(),
             'updateForms' => $updateForms,
@@ -94,7 +98,7 @@ class CategoryController extends AbstractController
     #[Route('/{id}', name: 'app_category_delete', methods: ['POST'])]
     public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
             $this->addFlash('categorys', 'category deleted successfully');

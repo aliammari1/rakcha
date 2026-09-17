@@ -8,18 +8,15 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[ORM\Table(name: 'category')]
 #[ORM\UniqueConstraint(name: 'nom', columns: ['nom'])]
 class Category
 {
-
     #[ORM\Column(name: 'id', type: 'integer', nullable: false)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     private int $id;
-
 
     #[ORM\Column(name: 'nom', type: 'string', length: 255, nullable: false)]
     #[Assert\NotBlank(message: 'The name cannot be blank')]
@@ -29,7 +26,6 @@ class Category
         message: 'The category name must start with an uppercase letter .'
     )]
     private string $nom;
-
 
     #[ORM\Column(name: 'description', type: 'text', length: 0, nullable: false)]
     #[Assert\NotBlank(message: 'The description cannot be blank')]
@@ -98,6 +94,4 @@ class Category
 
         return $this;
     }
-
-
 }

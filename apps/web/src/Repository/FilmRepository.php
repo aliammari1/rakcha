@@ -5,10 +5,8 @@ namespace App\Repository;
 use App\Entity\Film;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\DomCrawler\Crawler;
-
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @extends ServiceEntityRepository<Film>
@@ -20,15 +18,13 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class FilmRepository extends ServiceEntityRepository
 {
-    private $client;
-    private $serializer;
+    private HttpClientInterface $client;
 
-    public function __construct(ManagerRegistry $registry, HttpClientInterface $client, SerializerInterface $serializer)
+    public function __construct(ManagerRegistry $registry, HttpClientInterface $client)
     {
         parent::__construct($registry, Film::class);
 
         $this->client = $client;
-        $this->serializer = $serializer;
     }
 
     /**
@@ -43,7 +39,7 @@ class FilmRepository extends ServiceEntityRepository
                 'headers' => [
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                     'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                ]
+                ],
             ]);
             $html = $response->getContent();
             $crawler = new Crawler($html);
@@ -51,38 +47,40 @@ class FilmRepository extends ServiceEntityRepository
             $link = $crawler->filter('li.ipc-metadata-list-summary-item a.ipc-lockup-overlay')->first();
             if ($link->count() > 0) {
                 $href = $link->attr('href');
-                return 'https://www.imdb.com' . $href;
+
+                return 'https://www.imdb.com'.$href;
             }
             // Optionally log HTML for debugging
             // file_put_contents(__DIR__.'/imdb_debug.html', $html);
         } catch (\Exception $e) {
             // Optionally log: error_log($e->getMessage());
         }
-        return "";
+
+        return null;
     }
 
     //    /**
-//     * @return Film[] Returns an array of Film objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('f.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    //     * @return Film[] Returns an array of Film objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('f')
+    //            ->andWhere('f.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('f.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
 
     //    public function findOneBySomeField($value): ?Film
-//    {
-//        return $this->createQueryBuilder('f')
-//            ->andWhere('f.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    {
+    //        return $this->createQueryBuilder('f')
+    //            ->andWhere('f.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
