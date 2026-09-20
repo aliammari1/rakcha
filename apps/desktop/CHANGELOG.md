@@ -26,6 +26,14 @@ project
 adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1](https://github.com/aliammari1/rakcha/compare/desktop-v1.1.0...desktop-v1.1.1) (2026-09-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.asynchttpclient:async-http-client to v3.0.12 [security] ([6c49205](https://github.com/aliammari1/rakcha/commit/6c49205c00cde361e54bc4fcf92fea609ff7eb66))
+* **deps:** update dependency org.asynchttpclient:async-http-client to v3.0.12 [security] ([63f479a](https://github.com/aliammari1/rakcha/commit/63f479a0d5990b028ac470fcb5a9ba37cfc9f497))
+
 ## [1.1.0](https://github.com/aliammari1/rakcha/compare/desktop-v1.0.10...desktop-v1.1.0) (2026-09-17)
 
 
