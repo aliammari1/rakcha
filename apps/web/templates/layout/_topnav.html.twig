@@ -1,0 +1,62 @@
+{% set current = app.request.attributes.get('_route') %}
+{% set nav = [
+    {route: 'app_home_index', label: 'Home'},
+    {route: 'app_listfilms_index', label: 'Films'},
+    {route: 'app_cinema_liste', label: 'Cinemas'},
+    {route: 'app_series_liste', label: 'Series'},
+    {route: 'app_produit_liste', label: 'Shop'}
+] %}
+<header class="rk-site-header">
+    <div class="rk-container rk-site-header__inner">
+        <a class="rk-logo" href="{{ path('app_home_index') }}" aria-label="Rakcha home">
+            <img src="{{ asset('img/Logo.png') }}" alt="">
+            <span><b>RAKCHA</b><small>Cinema experience</small></span>
+        </a>
+
+        <nav class="rk-mainnav" aria-label="Main navigation">
+            {% for item in nav %}
+                <a href="{{ path(item.route) }}"{% if current == item.route %} aria-current="page"{% endif %}>{{ item.label }}</a>
+            {% endfor %}
+        </nav>
+
+        <div class="rk-header-actions">
+            <button class="rk-iconbtn" type="button" aria-label="Search"><i class="fa fa-search"></i></button>
+            {% if app.user %}
+                {% set photo = app.user.photoDeProfil|default('') %}
+                <details class="rk-user-menu">
+                    <summary>
+                        {% if photo %}<img src="{{ asset(photo) }}" alt="">{% endif %}
+                        <span>{{ app.user.prenom|default('Account') }}</span>
+                        <i class="fa fa-angle-down"></i>
+                    </summary>
+                    <div class="rk-user-menu__list">
+                        <a href="{{ path('app_profile_index', {id: app.user.id}) }}">My profile</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_users_index') }}">Admin workspace</a>
+                        {% elseif is_granted('ROLE_RESPONSABLE_DE_CINEMA') %}
+                            <a href="{{ path('app_cinema_index') }}">Cinema workspace</a>
+                        {% else %}
+                            <a href="{{ path('app_panier_liste') }}">My cart</a>
+                        {% endif %}
+                        <a href="{{ path('app_logout_index') }}">Sign out</a>
+                    </div>
+                </details>
+            {% else %}
+                <a class="rk-btn rk-btn--sm" href="{{ path('app_login') }}">Sign in</a>
+            {% endif %}
+            <button class="rk-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" data-rk-menu><i class="fa fa-bars"></i></button>
+        </div>
+    </div>
+
+    <nav class="rk-mobile-menu" aria-label="Mobile navigation">
+        {% for item in nav %}
+            <a href="{{ path(item.route) }}"{% if current == item.route %} aria-current="page"{% endif %}>{{ item.label }}</a>
+        {% endfor %}
+        {% if app.user %}
+            <a href="{{ path('app_logout_index') }}">Sign out</a>
+        {% else %}
+            <a href="{{ path('app_login') }}">Sign in</a>
+            <a href="{{ path('app_register') }}">Create account</a>
+        {% endif %}
+    </nav>
+</header>

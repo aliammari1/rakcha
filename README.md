@@ -71,8 +71,8 @@ composer test                              # PHPUnit
 composer phpstan                            # PHPStan (+ phpstan-symfony)
 ```
 
-> No Node build — the dead Symfony Encore/JS was removed; assets load from a
-> jsDelivr CDN.
+> No Node build — the dead Symfony Encore/JS was removed; assets are served from
+> `apps/web/public/`. Library scripts still load from the jsDelivr npm CDN.
 
 ### Mobile (FlutterFlow)
 

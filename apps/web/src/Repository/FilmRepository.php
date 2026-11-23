@@ -32,6 +32,21 @@ class FilmRepository extends ServiceEntityRepository
      */
     public function getImdbUrlByFilmName(string $filmName): ?string
     {
+        // Curated fallbacks for the catalogue: IMDb blocks automated lookups,
+        // so keep the IMDb/QR control useful even when scraping fails.
+        $curated = [
+            'spider' => 'tt0145487',
+            'spiderman no way home' => 'tt10872600',
+            'avengers infinity war' => 'tt4154756',
+            'oppenheimer' => 'tt15398776',
+            'venom let there be carnage' => 'tt7097896',
+            'titanic' => 'tt0120338',
+        ];
+        $key = strtolower(trim($filmName));
+        if (isset($curated[$key])) {
+            return 'https://www.imdb.com/title/' . $curated[$key] . '/';
+        }
+
         try {
             $query = urlencode($filmName);
             $url = "https://www.imdb.com/search/title/?title={$query}&title_type=feature,tv_movie";

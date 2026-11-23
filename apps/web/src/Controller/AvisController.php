@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/avis')]
 class AvisController extends AbstractController
@@ -36,7 +36,7 @@ class AvisController extends AbstractController
             return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('avis/new.html.twig', [
+        return $this->render('avis/new.html.twig', [
             'avi' => $avi,
             'form' => $form,
         ]);
@@ -62,7 +62,7 @@ class AvisController extends AbstractController
             return $this->redirectToRoute('app_avis_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('avis/edit.html.twig', [
+        return $this->render('avis/edit.html.twig', [
             'avi' => $avi,
             'form' => $form,
         ]);

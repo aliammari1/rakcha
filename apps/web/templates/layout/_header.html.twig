@@ -1,0 +1,36 @@
+{% set links = {
+    app_home_index: 'Home',
+    app_listfilms_index: 'Films',
+    app_cinema_liste: 'Cinemas',
+    app_series_liste: 'Series',
+    app_produit_liste: 'Shop'
+} %}
+{% set current = app.request.attributes.get('_route') %}
+<header class="rk-header">
+    <div class="rk-wrap rk-header__inner">
+        {% include 'layout/_brand.html.twig' only %}
+        <nav class="rk-nav" aria-label="Main navigation">
+            {% for route, label in links %}
+                <a href="{{ path(route) }}"{% if current == route %} aria-current="page"{% endif %}>{{ label }}</a>
+            {% endfor %}
+        </nav>
+        {% if app.user %}
+            <details class="rk-account">
+                <summary>{{ app.user.prenom|default('Account') }}</summary>
+                <div class="rk-account__menu">
+                    <a href="{{ path('app_profile_index', {id: app.user.id}) }}">Profile</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_users_index') }}">Admin workspace</a>
+                    {% elseif is_granted('ROLE_RESPONSABLE_DE_CINEMA') %}
+                        <a href="{{ path('app_cinema_index') }}">Cinema workspace</a>
+                    {% else %}
+                        <a href="{{ path('app_panier_liste') }}">Cart</a>
+                    {% endif %}
+                    <a href="{{ path('app_logout_index') }}">Sign out</a>
+                </div>
+            </details>
+        {% else %}
+            <a class="rk-button rk-button--quiet" href="{{ path('app_login') }}">Sign in</a>
+        {% endif %}
+    </div>
+</header>

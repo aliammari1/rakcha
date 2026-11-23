@@ -42,7 +42,6 @@ class AdminFormType extends AbstractType
             ->add('plainPassword', PasswordType::class, [
                 'trim' => true,
                 'label' => 'Password',
-                'toggle' => true,
                 'attr' => [
                     'placeholder' => 'Enter your password',
                 ],

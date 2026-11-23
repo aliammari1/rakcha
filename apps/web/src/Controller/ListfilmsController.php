@@ -18,14 +18,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class ListfilmsController extends AbstractController
 {
     #[Route('/listfilms', name: 'app_listfilms_index')]
     public function index(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository, CategoryRepository $categoryRepository, SeanceRepository $seanceRepository): Response
     {
-        $youtube = new Youtube(['key' => $_ENV['YOUTUBE_API_KEY']]);
         $films = $filmRepository->findAll();
         $videoUrls = [];
         $averageRatings = [];
@@ -45,13 +44,7 @@ class ListfilmsController extends AbstractController
             } else {
                 $ratings[] = 0;
             }
-            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom().' trailer', 1)), true);
-            if (!empty($videoList)) {
-                $firstVideo = $videoList[0]['id']['videoId'];
-            } else {
-                $firstVideo = '';
-            }
-            $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
+            $videoUrls[] = $this->trailerUrl($film->getNom());
         }
 
         return $this->render('front/listfilms.html.twig', [
@@ -88,7 +81,6 @@ class ListfilmsController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
         $user = $this->currentUser();
-        $youtube = new Youtube(['key' => $_ENV['YOUTUBE_API_KEY']]);
         $films = $filmRepository->findBy(['isBookmarked' => true]);
         $videoUrls = [];
         $averageRatings = [];
@@ -103,13 +95,7 @@ class ListfilmsController extends AbstractController
             $seanceFilmMatrix[] = $seanceRepository->findBy(['idFilm' => $film->getId()]);
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
             $ratings[] = $ratingfilmRepository->findOneBy(['idFilm' => $film->getId(), 'idUser' => $user->getId()]);
-            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom().' trailer', 1)), true);
-            if (!empty($videoList)) {
-                $firstVideo = $videoList[0]['id']['videoId'];
-            } else {
-                $firstVideo = '';
-            }
-            $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
+            $videoUrls[] = $this->trailerUrl($film->getNom());
         }
 
         return $this->render('front/listfilms.html.twig', [
@@ -217,20 +203,12 @@ class ListfilmsController extends AbstractController
     #[Route('/filmHome', name: 'app_listhome_index')]
     public function indexHome(FilmRepository $filmRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
-        $youtube = new Youtube(['key' => $_ENV['YOUTUBE_API_KEY']]);
         $films = $filmRepository->findAll();
         $videoUrls = [];
         $averageRatings = [];
         foreach ($films as $film) {
             $averageRatings[] = $ratingfilmRepository->getAverageRating($film->getId());
-            $videoList = $youtube->searchVideos($film->getNom().' trailer');
-            $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom().' trailer', 1)), true);
-            if (!empty($videoList)) {
-                $firstVideo = $videoList[0]['id']['videoId'];
-            } else {
-                $firstVideo = '';
-            }
-            $videoUrls[] = "https://www.youtube.com/embed/{$firstVideo}";
+            $videoUrls[] = $this->trailerUrl($film->getNom());
         }
 
         return $this->render('front/film.html.twig', [
@@ -251,23 +229,18 @@ class ListfilmsController extends AbstractController
     #[Route('/filShow/{id}', name: 'app_filShow_index')]
     public function filmShow($id, FilmRepository $filmRepository, SeanceRepository $seanceRepository, RatingfilmRepository $ratingfilmRepository): Response
     {
-        $youtube = new Youtube(['key' => $_ENV['YOUTUBE_API_KEY']]);
         $film = $filmRepository->find($id);
         $url = $filmRepository->getImdbUrlByFilmName($film->getNom());
         $averageRating = $ratingfilmRepository->getAverageRating($film->getId());
-        $videoList = json_decode(json_encode($youtube->searchVideos($film->getNom().' trailer', 1)), true);
-        if (!empty($videoList)) {
-            $firstVideo = $videoList[0]['id']['videoId'];
-        } else {
-            $firstVideo = '';
-        }
-        $videoUrl = "https://www.youtube.com/embed/{$firstVideo}";
+        $videoUrl = $this->trailerUrl($film->getNom());
 
         return $this->render('front/filmDetails.html.twig', [
             'film' => $film,
             'averageRating' => $averageRating,
             'videoUrl' => $videoUrl,
             'imdbUrl' => $url,
+            'showtimes' => $seanceRepository->findUpcoming(filmId: (int) $id, limit: 12),
+            'related' => $filmRepository->findBy([], ['id' => 'DESC'], 5),
         ]);
     }
 
@@ -292,6 +265,41 @@ class ListfilmsController extends AbstractController
         }
 
         return $this->json(['success' => true, 'seatsArray' => $seatsArray, 'data' => $data]);
+    }
+
+    private function trailerUrl(string $filmName): string
+    {
+        // Curated, verified trailers for the catalogue. Keeps the trailer
+        // control useful when no YouTube API key is configured (e.g. demos).
+        $curated = [
+            'spider' => 't06RUxPbp_c',
+            'spiderman no way home' => 'JfVOs4VSpmA',
+            'avengers infinity war' => '6ZfuNTqbHE8',
+            'oppenheimer' => 'uYPbbksJxIg',
+            'venom let there be carnage' => '-FmWuCgJmxo',
+            'dachra' => 'APXHWbbWVxU',
+            'titanic' => 'kVrqfYjkTdQ',
+            'en eaux tres troubles' => 'yNmxVeCL39o',
+        ];
+        $normalized = strtolower(trim($filmName));
+        if (isset($curated[$normalized])) {
+            return 'https://www.youtube.com/embed/' . $curated[$normalized];
+        }
+
+        $key = trim((string) ($_ENV['YOUTUBE_API_KEY'] ?? ''));
+        if ($key === '' || $key === 'dummy') {
+            return '';
+        }
+
+        try {
+            $youtube = new Youtube(['key' => $key]);
+            $result = json_decode(json_encode($youtube->searchVideos($filmName . ' trailer', 1)), true);
+            $videoId = $result[0]['id']['videoId'] ?? '';
+
+            return $videoId !== '' ? "https://www.youtube.com/embed/{$videoId}" : '';
+        } catch (\Throwable) {
+            return '';
+        }
     }
 
     private function currentUser(): Users

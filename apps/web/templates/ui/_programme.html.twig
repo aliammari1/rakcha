@@ -1,0 +1,38 @@
+{% if showtimes is empty %}
+    <p class="rk-empty">No upcoming screenings are listed yet. Check back when cinemas publish their next programme.</p>
+{% else %}
+    {% set days = [] %}
+    {% for screening in showtimes %}
+        {% set day = screening.date|date('Y-m-d') %}
+        {% set days = days|merge({(day): days[day]|default([])|merge([screening])}) %}
+    {% endfor %}
+
+    <div class="rk-quickdates" data-rk-quickdates aria-label="Quick date filters">
+        <button type="button" data-offset="0">Today</button>
+        <button type="button" data-offset="1">Tomorrow</button>
+        <button type="button" data-offset="7">Next 7 days</button>
+    </div>
+
+    <div class="rk-agenda" data-agenda>
+        <nav class="rk-datetabs" aria-label="Showtime dates">
+            {% for day, screenings in days %}
+                <a class="rk-datetab" data-agenda-day href="#date-{{ day }}">
+                    <span>{{ day|date('l') }}</span>
+                    <time datetime="{{ day }}">{{ day|date('j M') }}</time>
+                </a>
+            {% endfor %}
+        </nav>
+        <div>
+            {% for day, screenings in days %}
+                <section id="date-{{ day }}" class="rk-agenda__day" data-agenda-panel aria-label="{{ day|date('l, j F') }}">
+                    <h3 class="rk-section-title" style="margin-bottom:12px">{{ day|date('l, j F') }}</h3>
+                    <ul class="rk-showtimes">
+                        {% for showtime in screenings %}
+                            {% include 'ui/_showtime.html.twig' with {showtime: showtime} only %}
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

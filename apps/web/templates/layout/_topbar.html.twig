@@ -1,0 +1,22 @@
+<div class="rk-topbar">
+    <button class="rk-mobilebar" type="button" aria-label="Toggle navigation" data-rk-menu>
+        <i class="fa fa-bars"></i>
+    </button>
+    <span class="rk-topbar__brand"><b>RAKCHA</b></span>
+    <label class="rk-topbar__search">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <input type="search" placeholder="Search films, actors, genres..." aria-label="Search">
+    </label>
+    <div class="rk-topbar__actions">
+        <button class="rk-iconbtn" type="button" aria-label="Notifications"><i class="fa fa-bell-o"></i></button>
+        {% if app.user %}
+            {% set photo = app.user.photoDeProfil|default('') %}
+            <div class="rk-topbar__user">
+                {% if photo %}<img src="{{ asset(photo) }}" alt="">{% endif %}
+                <span>{{ app.user.prenom|default('Member') }}</span>
+            </div>
+        {% else %}
+            <a class="rk-textlink" href="{{ path('app_login') }}">Sign in</a>
+        {% endif %}
+    </div>
+</div>

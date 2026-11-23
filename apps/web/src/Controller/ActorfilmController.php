@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/actorfilm')]
 class ActorfilmController extends AbstractController
@@ -36,7 +36,7 @@ class ActorfilmController extends AbstractController
             return $this->redirectToRoute('app_actorfilm_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('actorfilm/new.html.twig', [
+        return $this->render('actorfilm/new.html.twig', [
             'actorfilm' => $actorfilm,
             'form' => $form,
         ]);
@@ -62,7 +62,7 @@ class ActorfilmController extends AbstractController
             return $this->redirectToRoute('app_actorfilm_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('actorfilm/edit.html.twig', [
+        return $this->render('actorfilm/edit.html.twig', [
             'actorfilm' => $actorfilm,
             'form' => $form,
         ]);

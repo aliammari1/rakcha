@@ -1,0 +1,18 @@
+{%- props
+    ## string The image source URL.
+    src,
+    ## string A text alternative describing the image.
+    alt = '',
+    ## 'top'|'bottom'|'background' The image position within the card.
+    position = 'top'
+-%}
+{%- set classes = {
+    top: 'card-img-top',
+    bottom: 'card-img-bottom',
+    background: 'card-img',
+} -%}
+<img {{ attributes.defaults({
+    src: src,
+    alt: alt,
+    class: classes[position] ?? classes.top,
+}) }}>

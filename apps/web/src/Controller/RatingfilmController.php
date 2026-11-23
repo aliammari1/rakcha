@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/ratingfilm')]
 class RatingfilmController extends AbstractController
@@ -66,7 +66,7 @@ class RatingfilmController extends AbstractController
             return $this->redirectToRoute('app_ratingfilm_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('ratingfilm/new.html.twig', [
+        return $this->render('ratingfilm/new.html.twig', [
             'ratingfilm' => $ratingfilm,
             'form' => $form,
         ]);
@@ -92,7 +92,7 @@ class RatingfilmController extends AbstractController
             return $this->redirectToRoute('app_ratingfilm_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('ratingfilm/edit.html.twig', [
+        return $this->render('ratingfilm/edit.html.twig', [
             'ratingfilm' => $ratingfilm,
             'form' => $form,
         ]);

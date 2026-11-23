@@ -12,7 +12,7 @@ use Omnipay\Omnipay;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/commande')]
 class CommandeController extends AbstractController
@@ -300,7 +300,7 @@ class CommandeController extends AbstractController
             return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('front/edit.html.twig', [
+        return $this->render('front/edit.html.twig', [
             'commande' => $commande,
             'form' => $form,
         ]);

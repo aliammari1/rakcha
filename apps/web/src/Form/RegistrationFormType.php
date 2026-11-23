@@ -43,7 +43,6 @@ class RegistrationFormType extends AbstractType
                 'trim' => true,
                 'label' => 'Password',
                 'attr' => ['autocomplete' => 'new-password', 'placeholder' => 'Enter your password'],
-                'toggle' => true,
             ])
             ->add('role', ChoiceType::class, [
                 'label' => 'Role',

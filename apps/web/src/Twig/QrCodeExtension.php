@@ -18,7 +18,7 @@ class QrCodeExtension extends AbstractExtension
         ];
     }
 
-    public function generateQrCode(string $data, int $size = 300): array
+    public function generateQrCode(?string $data, int $size = 300): array
     {
         // Handle empty or null data
         if (empty($data) || '' === trim($data)) {

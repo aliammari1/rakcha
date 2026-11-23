@@ -1,0 +1,23 @@
+{% set poster = film.image|rakcha_media %}
+<article class="rk-film" data-has-showtime="{% if showtime is defined and showtime %}true{% else %}false{% endif %}">
+    <a class="rk-film__art" href="{{ path('app_filShow_index', {id: film.id}) }}" aria-label="Details for {{ film.nom }}">
+        {% if poster %}<img src="{{ asset(poster) }}" alt="{{ film.nom }} poster" width="360" height="540" loading="lazy">{% endif %}
+    </a>
+    <div class="rk-film__body">
+        <a href="{{ path('app_filShow_index', {id: film.id}) }}"><h3>{{ film.nom }}</h3></a>
+        <div class="rk-film__meta">
+            {% if film.annederalisation %}<span>{{ film.annederalisation }}</span>{% endif %}
+            {% if film.duree %}<span>{{ film.duree|date('G') * 60 + film.duree|date('i') }} min</span>{% endif %}
+        </div>
+        <div class="rk-film__next">
+            {% if showtime is defined and showtime %}
+                <span>Next screening</span>
+                <strong>{{ showtime.date|date('D, j M') }} · {{ showtime.hd|date('H:i') }} · {{ showtime.idCinema.nom }}</strong>
+                <a class="rk-btn rk-btn--ghost rk-btn--sm" href="{{ path('app_listfilms_index') }}">Choose seats</a>
+            {% else %}
+                <span>Coming soon · no showtimes yet</span>
+                <a class="rk-btn rk-btn--quiet rk-btn--sm" href="{{ path('app_filShow_index', {id: film.id}) }}">See details</a>
+            {% endif %}
+        </div>
+    </div>
+</article>

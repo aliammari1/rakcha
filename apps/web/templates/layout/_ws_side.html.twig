@@ -1,0 +1,33 @@
+{% set current = app.request.attributes.get('_route') %}
+<aside class="rk-ws-side" id="rakcha-workspace-nav">
+    <a class="rk-logo" href="{{ path('app_home_index') }}">
+        <img src="{{ asset('img/Logo.png') }}" alt="">
+        <span><b>RAKCHA</b><small>Workspace</small></span>
+    </a>
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <span class="rk-ws-label">Administration</span>
+        <nav class="rk-ws-nav" aria-label="Admin navigation">
+            <a href="{{ path('app_users_index') }}"{% if current == 'app_users_index' %} aria-current="page"{% endif %}><i class="fa fa-users"></i> Users</a>
+            <a href="{{ path('app_cinemaAdmin_index') }}"{% if current == 'app_cinemaAdmin_index' %} aria-current="page"{% endif %}><i class="fa fa-video-camera"></i> Cinemas</a>
+            <a href="{{ path('app_produit_index') }}"{% if current == 'app_produit_index' %} aria-current="page"{% endif %}><i class="fa fa-shopping-bag"></i> Products</a>
+            <a href="{{ path('app_series_index') }}"{% if current == 'app_series_index' %} aria-current="page"{% endif %}><i class="fa fa-television"></i> Series</a>
+            <a href="{{ path('app_categories_index') }}"{% if current == 'app_categories_index' %} aria-current="page"{% endif %}><i class="fa fa-tags"></i> Categories</a>
+        </nav>
+    {% else %}
+        <span class="rk-ws-label">Cinema management</span>
+        <nav class="rk-ws-nav" aria-label="Manager navigation">
+            <a href="{{ path('app_cinema_index') }}"{% if current == 'app_cinema_index' %} aria-current="page"{% endif %}><i class="fa fa-th-large"></i> Overview</a>
+            <a href="{{ path('app_seance_index') }}"{% if current == 'app_seance_index' or current == 'app_seance_new' %} aria-current="page"{% endif %}><i class="fa fa-clock-o"></i> Showtimes</a>
+            <a href="{{ path('app_film_index') }}"{% if current == 'app_film_index' %} aria-current="page"{% endif %}><i class="fa fa-film"></i> Films</a>
+            <a href="{{ path('app_category_index') }}"{% if current == 'app_category_index' %} aria-current="page"{% endif %}><i class="fa fa-list"></i> Categories</a>
+            <a href="{{ path('app_actor_index') }}"{% if current == 'app_actor_index' %} aria-current="page"{% endif %}><i class="fa fa-users"></i> Actors</a>
+        </nav>
+    {% endif %}
+
+    <span class="rk-ws-label">Account</span>
+    <nav class="rk-ws-nav" aria-label="Account navigation">
+        <a href="{{ path('app_home_index') }}"><i class="fa fa-external-link"></i> View site</a>
+        <a href="{{ path('app_logout_index') }}"><i class="fa fa-sign-out"></i> Sign out</a>
+    </nav>
+</aside>

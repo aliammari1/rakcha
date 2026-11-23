@@ -29,13 +29,13 @@ class CinemaType extends AbstractType
 
         // Ajouter un view transformer pour convertir la chaîne de chemin d'accès en objet SymfonyFile
         $builder->get('logo')->addModelTransformer(new class implements DataTransformerInterface {
-            public function transform($value)
+            public function transform(mixed $value): mixed
             {
                 // transforme l'objet SymfonyFile en chaîne de chemin d'accès
                 return null;
             }
 
-            public function reverseTransform($value)
+            public function reverseTransform(mixed $value): mixed
             {
                 // transforme la chaîne de chemin d'accès en objet SymfonyFile
                 if (!$value instanceof SymfonyFile) {

@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/sponsor')]
 class SponsorController extends AbstractController
@@ -51,7 +51,7 @@ class SponsorController extends AbstractController
             return $this->redirectToRoute('app_sponsor_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sponsor/new.html.twig', [
+        return $this->render('sponsor/new.html.twig', [
             'sponsor' => $sponsor,
             'form' => $form,
         ]);
@@ -77,7 +77,7 @@ class SponsorController extends AbstractController
             return $this->redirectToRoute('app_sponsor_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('sponsor/edit.html.twig', [
+        return $this->render('sponsor/edit.html.twig', [
             'sponsor' => $sponsor,
             'form' => $form,
         ]);
