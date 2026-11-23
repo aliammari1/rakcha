@@ -11,7 +11,7 @@ This is a classic MVC site, **not** an API.
 - **Composer 2**.
 
 There is no Node/Encore build — the dead Symfony Encore/JS toolchain was removed.
-Front-end assets are loaded from a jsDelivr CDN (see `templates/base.html.twig`).
+Front-end assets (CSS, JS, fonts, images) are served locally from `apps/web/public/`.
 
 ## Run
 
