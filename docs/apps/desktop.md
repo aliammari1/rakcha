@@ -6,9 +6,9 @@ PostgreSQL drivers are all on the classpath).
 
 ## Prerequisites
 
-- **JDK 21** with JavaFX. The CI uses **BellSoft Liberica Full** / Liberica
-  `jdk+fx`, which bundles JavaFX modules.
-- **Maven 3.9+**.
+- **JDK 21** with JavaFX. `mise.toml` pins the verified BellSoft Liberica Full
+  build (`liberica-javafx-21.0.13.0.3+5`).
+- **Maven 3.9.9**, pinned in `mise.toml`.
 
 ## Build & run
 
