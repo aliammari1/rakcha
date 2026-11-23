@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="150" layoutY="120" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="260" layoutX="1100" layoutY="520" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="200" layoutX="150" layoutY="120" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="260" layoutX="1100" layoutY="520" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -56,9 +56,9 @@
             <Insets top="10" bottom="20" left="35" right="35"/>
           </padding>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container blue">
+              <StackPane styleClass="stat-icon-container, blue">
                 <FontIcon iconLiteral="mdi2c-calendar-today:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -68,9 +68,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container green">
+              <StackPane styleClass="stat-icon-container, green">
                 <FontIcon iconLiteral="mdi2t-ticket:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -80,9 +80,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container purple">
+              <StackPane styleClass="stat-icon-container, purple">
                 <FontIcon iconLiteral="mdi2p-percent:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -92,9 +92,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container orange">
+              <StackPane styleClass="stat-icon-container, orange">
                 <FontIcon iconLiteral="mdi2c-currency-usd:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -136,8 +136,8 @@
 
           <!-- View Toggle -->
           <HBox spacing="0" styleClass="view-toggle-group">
-            <ToggleButton fx:id="timelineViewToggle" styleClass="view-toggle-btn left active" text="Timeline"/>
-            <ToggleButton fx:id="listViewToggle" styleClass="view-toggle-btn right" text="List"/>
+            <ToggleButton fx:id="timelineViewToggle" styleClass="view-toggle-btn, left, active" text="Timeline"/>
+            <ToggleButton fx:id="listViewToggle" styleClass="view-toggle-btn, right" text="List"/>
           </HBox>
         </HBox>
 
@@ -193,7 +193,7 @@
 
   <!-- Create/Edit Session Dialog -->
   <VBox fx:id="sessionDialog" styleClass="dialog-overlay" visible="false" managed="false" alignment="CENTER">
-    <HBox styleClass="dialog-card wide" spacing="25" maxWidth="900" alignment="TOP_LEFT">
+    <HBox styleClass="dialog-card, wide" spacing="25" maxWidth="900" alignment="TOP_LEFT">
       <padding>
         <Insets topRightBottomLeft="30"/>
       </padding>
@@ -257,7 +257,7 @@
 
   <!-- Bulk Schedule Dialog -->
   <VBox fx:id="bulkScheduleDialog" styleClass="dialog-overlay" visible="false" managed="false" alignment="CENTER">
-    <VBox styleClass="dialog-card large" spacing="20" maxWidth="600">
+    <VBox styleClass="dialog-card, large" spacing="20" maxWidth="600">
       <padding>
         <Insets topRightBottomLeft="30"/>
       </padding>

@@ -388,6 +388,18 @@ public class DashboardResponsableController implements Initializable {
      * called automatically by JavaFX after loading the FXML file.
      */
     public void initialize(final URL location, final ResourceBundle resources) {
+        this.dpDate.setConverter(new javafx.util.converter.LocalDateStringConverter(
+            java.time.format.DateTimeFormatter.ISO_LOCAL_DATE, java.time.format.DateTimeFormatter.ISO_LOCAL_DATE) {
+            @Override
+            public java.time.LocalDate fromString(final String value) {
+                try {
+                    return super.fromString(value);
+                } catch (final java.time.format.DateTimeParseException incomplete) {
+                    return null; // still typing
+                }
+            }
+        });
+        this.dpDate.setPromptText("YYYY-MM-DD");
         setupFormsFX();
         setupEasyBindings();
 
@@ -466,7 +478,7 @@ public class DashboardResponsableController implements Initializable {
         final CinemaService cinemaService = new CinemaService();
         final List<Cinema> cinemas = cinemaService.read(PageRequest.defaultPage()).getContent();
         final List<Cinema> acceptedCinemasList = cinemas.stream()
-            .filter(cinema -> CinemaStatus.ACCEPTED.getStatus().equals(cinema.getStatus()))
+            .filter(cinema -> CinemaStatus.ACCEPTED == cinema.getStatus())
             .collect(Collectors.toList());
         if (acceptedCinemasList.isEmpty()) {
             this.showAlert("No accepted cinemas are available.");
@@ -1459,6 +1471,10 @@ public class DashboardResponsableController implements Initializable {
         final String selectedCinemaName = this.comboCinema.getValue();
         final String selectedFilmName = this.comboMovie.getValue();
         final String selectedRoomName = this.comboRoom.getValue();
+        final LocalDate typedDate = this.dpDate.getConverter().fromString(this.dpDate.getEditor().getText());
+        if (typedDate != null) {
+            this.dpDate.setValue(typedDate); // commit what the user typed, not only a calendar pick
+        }
         final LocalDate selectedDate = this.dpDate.getValue();
         final String departureTimeText = this.tfDepartureTime.getText();
         final String endTimeText = this.tfEndTime.getText();

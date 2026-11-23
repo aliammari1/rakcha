@@ -24,6 +24,15 @@ import java.util.logging.Logger;
 public class SearchService {
 
     private static final Logger LOGGER = Logger.getLogger(SearchService.class.getName());
+    private static final SearchTarget MOVIES =
+        new SearchTarget("movies", "title", "description", "image_url", "release_year", EntityType.FILM);
+    private static final List<SearchTarget> CATALOG = List.of(
+        MOVIES,
+        new SearchTarget("series", "title", "summary", "image_url", "director", EntityType.SERIES),
+        new SearchTarget("products", "name", "description", "image_url", "price", EntityType.PRODUCT),
+        new SearchTarget("actors", "name", "biography", "image_url", null, EntityType.ACTOR),
+        new SearchTarget("cinemas", "name", "address", "logo_url", "status", EntityType.CINEMA)
+    );
     private static volatile SearchService instance;
 
     private final Connection connection;
@@ -32,7 +41,11 @@ public class SearchService {
     private final ExecutorService executor;
 
     private SearchService() {
-        this.connection = DataSource.getInstance().getConnection();
+        this(DataSource.getInstance().getConnection());
+    }
+
+    SearchService(Connection connection) {
+        this.connection = connection;
         this.searchCache = Caffeine.newBuilder()
             .maximumSize(500)
             .expireAfterWrite(5, TimeUnit.MINUTES)
@@ -69,25 +82,9 @@ public class SearchService {
         List<SearchResult> results = new ArrayList<>();
         String likeQuery = "%" + normalizedQuery + "%";
 
-        // Search films
-        results.addAll(searchTable("films", "id", "name", "description", "image",
-            "release_year", EntityType.FILM, likeQuery, maxResults));
-
-        // Search series
-        results.addAll(searchTable("series", "id", "name", "summary", "image",
-            "director", EntityType.SERIES, likeQuery, maxResults));
-
-        // Search products
-        results.addAll(searchTable("products", "id", "name", "description", "image",
-            "price", EntityType.PRODUCT, likeQuery, maxResults));
-
-        // Search actors
-        results.addAll(searchTable("actors", "id", "name", "biography", "image",
-            null, EntityType.ACTOR, likeQuery, maxResults));
-
-        // Search cinemas
-        results.addAll(searchTable("cinemas", "id", "name", "address", "logo",
-            "status", EntityType.CINEMA, likeQuery, maxResults));
+        for (SearchTarget target : CATALOG) {
+            results.addAll(searchTable(target, likeQuery, maxResults));
+        }
 
         // Sort by score and limit
         results.sort(SearchResult::compareTo);
@@ -99,18 +96,12 @@ public class SearchService {
         return results;
     }
 
-    private List<SearchResult> searchTable(String table, String idCol, String nameCol,
-                                           String descCol, String imageCol, String extraCol, EntityType type,
-                                           String likeQuery, int limit) {
-
+    private List<SearchResult> searchTable(SearchTarget target, String likeQuery, int limit) {
         List<SearchResult> results = new ArrayList<>();
-        String sql = String.format(
-            "SELECT %s, %s, %s, %s %s FROM %s WHERE LOWER(%s) LIKE ? OR LOWER(%s) LIKE ? LIMIT ?",
-            idCol, nameCol, descCol != null ? descCol : "''",
-            imageCol != null ? imageCol : "''",
-            extraCol != null ? ", " + extraCol : "",
-            table, nameCol, descCol != null ? descCol : nameCol
-        );
+        String extra = target.extraColumn() == null ? "" : ", " + target.extraColumn();
+        String sql = ("SELECT id, %s, %s, %s%s FROM %s WHERE LOWER(%s) LIKE ? OR LOWER(%s) LIKE ? LIMIT ?")
+            .formatted(target.titleColumn(), target.descriptionColumn(), target.imageColumn(), extra,
+                target.table(), target.titleColumn(), target.descriptionColumn());
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, likeQuery);
@@ -123,13 +114,13 @@ public class SearchService {
                 float score = calculateScore(likeQuery.replace("%", ""), name);
 
                 String subtitle = "";
-                if (extraCol != null) {
-                    Object extra = rs.getObject(5);
-                    subtitle = extra != null ? extra.toString() : "";
+                if (target.extraColumn() != null) {
+                    Object value = rs.getObject(5);
+                    subtitle = value != null ? value.toString() : "";
                 }
 
                 results.add(new SearchResult(
-                    type,
+                    target.type(),
                     rs.getLong(1),
                     name,
                     subtitle,
@@ -139,7 +130,7 @@ public class SearchService {
                 ));
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.WARNING, "Search error in " + table, e);
+            LOGGER.log(Level.WARNING, "Search error in " + target.table(), e);
         }
 
         return results;
@@ -166,9 +157,12 @@ public class SearchService {
         Set<String> suggestions = new LinkedHashSet<>();
         String likeQuery = prefix.toLowerCase() + "%";
 
-        String[] tables = {"films", "series", "products", "actors"};
-        for (String table : tables) {
-            String sql = "SELECT name FROM " + table + " WHERE LOWER(name) LIKE ? LIMIT ?";
+        for (SearchTarget target : CATALOG) {
+            if (target.type() == EntityType.CINEMA) {
+                continue;
+            }
+            String sql = "SELECT %s FROM %s WHERE LOWER(%s) LIKE ? LIMIT ?"
+                .formatted(target.titleColumn(), target.table(), target.titleColumn());
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
                 ps.setString(1, likeQuery);
                 ps.setInt(2, max);
@@ -188,7 +182,7 @@ public class SearchService {
 
     private List<String> getTrending(int max) {
         List<String> trending = new ArrayList<>();
-        String sql = "SELECT name FROM films ORDER BY release_year DESC LIMIT ?";
+        String sql = "SELECT title FROM movies ORDER BY release_year DESC LIMIT ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, max);
             ResultSet rs = ps.executeQuery();
@@ -204,6 +198,10 @@ public class SearchService {
     public void clearCache() {
         searchCache.invalidateAll();
         suggestionCache.invalidateAll();
+    }
+
+    private record SearchTarget(String table, String titleColumn, String descriptionColumn,
+                                String imageColumn, String extraColumn, EntityType type) {
     }
 
     public enum EntityType {

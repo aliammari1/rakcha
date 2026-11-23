@@ -13,9 +13,9 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="250" layoutX="100" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="300" layoutX="1150" layoutY="550" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
-    <Circle radius="180" layoutX="600" layoutY="300" styleClass="ambient-orb orb-tertiary" opacity="0.08"/>
+    <Circle radius="250" layoutX="100" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="300" layoutX="1150" layoutY="550" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
+    <Circle radius="180" layoutX="600" layoutY="300" styleClass="ambient-orb, orb-tertiary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -57,7 +57,7 @@
 
           <!-- Quick Stats Row -->
           <HBox spacing="20" styleClass="quick-stats">
-            <VBox styleClass="stat-card glass-card accent-1" HBox.hgrow="ALWAYS">
+            <VBox styleClass="stat-card, glass-card, accent-1" HBox.hgrow="ALWAYS">
               <padding>
                 <Insets topRightBottomLeft="20"/>
               </padding>
@@ -72,7 +72,7 @@
               </HBox>
             </VBox>
 
-            <VBox styleClass="stat-card glass-card accent-2" HBox.hgrow="ALWAYS">
+            <VBox styleClass="stat-card, glass-card, accent-2" HBox.hgrow="ALWAYS">
               <padding>
                 <Insets topRightBottomLeft="20"/>
               </padding>
@@ -87,7 +87,7 @@
               </HBox>
             </VBox>
 
-            <VBox styleClass="stat-card glass-card accent-3" HBox.hgrow="ALWAYS">
+            <VBox styleClass="stat-card, glass-card, accent-3" HBox.hgrow="ALWAYS">
               <padding>
                 <Insets topRightBottomLeft="20"/>
               </padding>
@@ -102,7 +102,7 @@
               </HBox>
             </VBox>
 
-            <VBox styleClass="stat-card glass-card accent-4" HBox.hgrow="ALWAYS">
+            <VBox styleClass="stat-card, glass-card, accent-4" HBox.hgrow="ALWAYS">
               <padding>
                 <Insets topRightBottomLeft="20"/>
               </padding>
@@ -125,7 +125,7 @@
             <VBox spacing="25" HBox.hgrow="ALWAYS">
 
               <!-- Watching Activity Chart -->
-              <VBox styleClass="dashboard-card glass-card" spacing="20">
+              <VBox styleClass="dashboard-card, glass-card" spacing="20">
                 <padding>
                   <Insets topRightBottomLeft="25"/>
                 </padding>
@@ -134,8 +134,8 @@
                   <Label text="Watching Activity" styleClass="card-title"/>
                   <Region HBox.hgrow="ALWAYS"/>
                   <HBox styleClass="chart-toggle" spacing="0">
-                    <ToggleButton fx:id="moviesChartToggle" styleClass="chart-toggle-btn left active" text="Movies"/>
-                    <ToggleButton fx:id="seriesChartToggle" styleClass="chart-toggle-btn right" text="Series"/>
+                    <ToggleButton fx:id="moviesChartToggle" styleClass="chart-toggle-btn, left, active" text="Movies"/>
+                    <ToggleButton fx:id="seriesChartToggle" styleClass="chart-toggle-btn, right" text="Series"/>
                   </HBox>
                 </HBox>
 
@@ -151,7 +151,7 @@
 
               <!-- Genre Distribution -->
               <HBox spacing="25">
-                <VBox styleClass="dashboard-card glass-card" spacing="20" HBox.hgrow="ALWAYS">
+                <VBox styleClass="dashboard-card, glass-card" spacing="20" HBox.hgrow="ALWAYS">
                   <padding>
                     <Insets topRightBottomLeft="25"/>
                   </padding>
@@ -163,7 +163,7 @@
                 </VBox>
 
                 <!-- Time of Day Preference -->
-                <VBox styleClass="dashboard-card glass-card" spacing="20" HBox.hgrow="ALWAYS">
+                <VBox styleClass="dashboard-card, glass-card" spacing="20" HBox.hgrow="ALWAYS">
                   <padding>
                     <Insets topRightBottomLeft="25"/>
                   </padding>
@@ -183,7 +183,7 @@
               </HBox>
 
               <!-- Spending Breakdown -->
-              <VBox styleClass="dashboard-card glass-card" spacing="20">
+              <VBox styleClass="dashboard-card, glass-card" spacing="20">
                 <padding>
                   <Insets topRightBottomLeft="25"/>
                 </padding>
@@ -203,7 +203,7 @@
                         <Region HBox.hgrow="ALWAYS"/>
                         <Label fx:id="ticketSpendLabel" text="$0.00" styleClass="spending-value"/>
                       </HBox>
-                      <ProgressBar fx:id="ticketSpendBar" progress="0.6" styleClass="spending-bar tickets"/>
+                      <ProgressBar fx:id="ticketSpendBar" progress="0.6" styleClass="spending-bar, tickets"/>
                     </VBox>
 
                     <!-- Concessions -->
@@ -213,7 +213,7 @@
                         <Region HBox.hgrow="ALWAYS"/>
                         <Label fx:id="concessionSpendLabel" text="$0.00" styleClass="spending-value"/>
                       </HBox>
-                      <ProgressBar fx:id="concessionSpendBar" progress="0.25" styleClass="spending-bar concessions"/>
+                      <ProgressBar fx:id="concessionSpendBar" progress="0.25" styleClass="spending-bar, concessions"/>
                     </VBox>
 
                     <!-- Merchandise -->
@@ -223,7 +223,7 @@
                         <Region HBox.hgrow="ALWAYS"/>
                         <Label fx:id="merchandiseSpendLabel" text="$0.00" styleClass="spending-value"/>
                       </HBox>
-                      <ProgressBar fx:id="merchandiseSpendBar" progress="0.15" styleClass="spending-bar merchandise"/>
+                      <ProgressBar fx:id="merchandiseSpendBar" progress="0.15" styleClass="spending-bar, merchandise"/>
                     </VBox>
                   </VBox>
                 </HBox>
@@ -234,7 +234,7 @@
             <VBox spacing="25" prefWidth="380">
 
               <!-- Upcoming Events -->
-              <VBox styleClass="dashboard-card glass-card" spacing="15">
+              <VBox styleClass="dashboard-card, glass-card" spacing="15">
                 <padding>
                   <Insets topRightBottomLeft="20"/>
                 </padding>
@@ -255,7 +255,7 @@
               </VBox>
 
               <!-- Recent Activity -->
-              <VBox styleClass="dashboard-card glass-card" spacing="15">
+              <VBox styleClass="dashboard-card, glass-card" spacing="15">
                 <padding>
                   <Insets topRightBottomLeft="20"/>
                 </padding>
@@ -270,7 +270,7 @@
               </VBox>
 
               <!-- Top Cinemas Visited -->
-              <VBox styleClass="dashboard-card glass-card" spacing="15">
+              <VBox styleClass="dashboard-card, glass-card" spacing="15">
                 <padding>
                   <Insets topRightBottomLeft="20"/>
                 </padding>
@@ -281,7 +281,7 @@
               </VBox>
 
               <!-- Achievements / Badges -->
-              <VBox styleClass="dashboard-card glass-card" spacing="15">
+              <VBox styleClass="dashboard-card, glass-card" spacing="15">
                 <padding>
                   <Insets topRightBottomLeft="20"/>
                 </padding>
@@ -296,7 +296,7 @@
               </VBox>
 
               <!-- Recommendations -->
-              <VBox styleClass="dashboard-card glass-card" spacing="15">
+              <VBox styleClass="dashboard-card, glass-card" spacing="15">
                 <padding>
                   <Insets topRightBottomLeft="20"/>
                 </padding>
@@ -315,7 +315,7 @@
           </HBox>
 
           <!-- Loyalty Section -->
-          <VBox styleClass="loyalty-card glass-card" spacing="20">
+          <VBox styleClass="loyalty-card, glass-card" spacing="20">
             <padding>
               <Insets topRightBottomLeft="25"/>
             </padding>
@@ -350,12 +350,12 @@
                   <FontIcon iconLiteral="mdi2g-gift:16"/>
                 </graphic>
               </Button>
-              <Button onAction="#viewBenefits" styleClass="loyalty-btn secondary" text="Tier Benefits">
+              <Button onAction="#viewBenefits" styleClass="loyalty-btn, secondary" text="Tier Benefits">
                 <graphic>
                   <FontIcon iconLiteral="mdi2s-star:16"/>
                 </graphic>
               </Button>
-              <Button onAction="#redeemPoints" styleClass="loyalty-btn primary" text="Redeem Points">
+              <Button onAction="#redeemPoints" styleClass="loyalty-btn, primary" text="Redeem Points">
                 <graphic>
                   <FontIcon iconLiteral="mdi2w-wallet-giftcard:16"/>
                 </graphic>

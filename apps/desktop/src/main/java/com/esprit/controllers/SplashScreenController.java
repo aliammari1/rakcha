@@ -563,6 +563,7 @@ public class SplashScreenController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/users/Login.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
+            scene.setFill(javafx.scene.paint.Color.BLACK); // no white flash while the first frame paints
 
             // Apply AtlantaFX theme to the main application scene
             ThemeManager.getInstance().applyToScene(scene);

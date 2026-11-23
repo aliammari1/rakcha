@@ -407,24 +407,23 @@ public class HomeAdminController implements Initializable {
             // Load user statistics
             Page<User> users = userService.read(pageRequest);
             totalUsers = users.getTotalElements();
-            updateStatCard(totalUsersLabel, totalUsers, userGrowthLabel, calculateGrowthPercentage("users"));
+            updateStatCard(totalUsersLabel, totalUsers, userGrowthLabel);
 
             // Load movie statistics
             Page<Film> films = filmService.read(pageRequest);
             totalMovies = films.getTotalElements();
-            updateStatCard(totalMoviesLabel, totalMovies, movieGrowthLabel, calculateGrowthPercentage("movies"));
+            updateStatCard(totalMoviesLabel, totalMovies, movieGrowthLabel);
 
             // Load product statistics
             Page<Product> products = productService.read(pageRequest);
             totalProducts = products.getTotalElements();
-            updateStatCard(totalProductsLabel, totalProducts, productGrowthLabel,
-                calculateGrowthPercentage("products"));
+            updateStatCard(totalProductsLabel, totalProducts, productGrowthLabel);
 
             // Load series statistics
             try {
                 Page<Series> series = seriesService.read(pageRequest);
                 totalSeries = series.getTotalElements();
-                updateStatCard(totalSeriesLabel, totalSeries, seriesGrowthLabel, 0);
+                updateStatCard(totalSeriesLabel, totalSeries, seriesGrowthLabel);
             } catch (Exception e) {
                 totalSeries = 0;
                 if (totalSeriesLabel != null)
@@ -435,16 +434,15 @@ public class HomeAdminController implements Initializable {
             try {
                 Page<Cinema> cinemas = cinemaService.read(pageRequest);
                 totalCinemas = cinemas.getTotalElements();
-                updateStatCard(totalCinemasLabel, totalCinemas, cinemaGrowthLabel, 0);
+                updateStatCard(totalCinemasLabel, totalCinemas, cinemaGrowthLabel);
             } catch (Exception e) {
                 totalCinemas = 0;
                 if (totalCinemasLabel != null)
                     totalCinemasLabel.setText("0");
             }
 
-            // Calculate orders (simulated for now)
             totalOrders = calculateTotalOrders();
-            updateStatCard(totalOrdersLabel, totalOrders, orderGrowthLabel, calculateGrowthPercentage("orders"));
+            updateStatCard(totalOrdersLabel, totalOrders, orderGrowthLabel);
 
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error loading comprehensive statistics: " + e.getMessage(), e);
@@ -460,29 +458,17 @@ public class HomeAdminController implements Initializable {
      * @param countLabel       the Label that will display the animated numeric
      *                         value; ignored if null
      * @param value            the target numeric value to animate to
-     * @param growthLabel      the Label that will display the growth percentage
-     *                         text and color; ignored if null
-     * @param growthPercentage the growth percentage to format and display (e.g.,
-     *                         5.2 or -3.4)
+     * @param growthLabel      the growth indicator to hide
      */
-    private void updateStatCard(Label countLabel, long value, Label growthLabel, double growthPercentage) {
+    private void updateStatCard(Label countLabel, long value, Label growthLabel) {
         if (countLabel != null) {
             // Animate number counting
             animateNumberCount(countLabel, 0, value, Duration.seconds(2));
 
-            // Update growth indicator
+            // No history is stored, so no growth percentage is shown rather than an invented one.
             if (growthLabel != null) {
-                String growthText = String.format("%+.1f%%", growthPercentage);
-                growthLabel.setText(growthText);
-
-                if (growthPercentage > 0) {
-                    growthLabel.setStyle("-fx-text-fill: #00ff7f; -fx-font-weight: bold;");
-                } else if (growthPercentage < 0) {
-                    growthLabel.setStyle("-fx-text-fill: #ff4444; -fx-font-weight: bold;");
-                } else {
-                    growthLabel.setStyle("-fx-text-fill: #cccccc; -fx-font-weight: bold;");
-                }
-
+                growthLabel.setVisible(false);
+                growthLabel.setManaged(false);
             }
 
         }
@@ -527,31 +513,15 @@ public class HomeAdminController implements Initializable {
         timeline.play();
     }
 
-    /**
-     * Compute a simulated growth percentage for the given metric.
-     * <p>
-     * This method generates randomized demo data and does not use historical
-     * values.
-     *
-     * @param metric the name of the metric (informational; currently unused)
-     * @return a growth percentage as a double between -10.0 and +10.0 (negative for
-     * decline, positive for growth)
-     */
-    private double calculateGrowthPercentage(String metric) {
-        // In a real implementation, this would compare with previous period data
-        return (random.nextDouble() - 0.5) * 20; // Random growth between -10% and +10%
-    }
-
-    /**
-     * Computes a simulated total number of orders based on the current product
-     * count and a small random offset.
-     *
-     * @return the simulated total orders equal to `totalProducts * 3` plus a random
-     * integer between 0 (inclusive) and 50 (exclusive)
-     */
     private long calculateTotalOrders() {
-        // In real implementation, this would query order service
-        return totalProducts * 3 + random.nextLong(50);
+        try (java.sql.PreparedStatement st = com.esprit.utils.DataSource.getInstance().getConnection()
+            .prepareStatement("SELECT COUNT(*) FROM orders");
+             java.sql.ResultSet rs = st.executeQuery()) {
+            return rs.next() ? rs.getLong(1) : 0;
+        } catch (Exception e) {
+            LOGGER.warning("Could not count orders: " + e.getMessage());
+            return 0;
+        }
     }
 
     /**
@@ -582,18 +552,26 @@ public class HomeAdminController implements Initializable {
             if (activityContainer != null) {
                 activityContainer.getChildren().clear();
 
-                // Add real-time activity items with timestamps
-                String currentTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
-
-                addEnhancedActivityItem("🔐 Admin dashboard accessed", currentTime, "success");
-                addEnhancedActivityItem("📊 Statistics refreshed", getTimeAgo(2), "info");
-                addEnhancedActivityItem("👤 New user registration: " + generateRandomUserName(), getTimeAgo(5),
-                    "success");
-                addEnhancedActivityItem("🎬 Movie catalog updated", getTimeAgo(15), "info");
-                addEnhancedActivityItem("🛒 Order #" + (1000 + random.nextInt(9000)) + " processed", getTimeAgo(30),
-                    "success");
-                addEnhancedActivityItem("⚠️ System backup completed", getTimeAgo(60), "warning");
-                addEnhancedActivityItem("🔧 Database optimization finished", getTimeAgo(120), "info");
+                final java.sql.Connection con = com.esprit.utils.DataSource.getInstance().getConnection(); // shared: never close
+                try (java.sql.PreparedStatement st = con.prepareStatement(
+                    "SELECT name, address FROM cinemas WHERE status = 'Pending' ORDER BY id DESC LIMIT 3");
+                     java.sql.ResultSet rs = st.executeQuery()) {
+                    while (rs.next()) {
+                        addEnhancedActivityItem("Cinema awaiting approval: " + rs.getString(1) + ", " + rs.getString(2),
+                            "pending", "warning");
+                    }
+                }
+                try (java.sql.PreparedStatement st = con.prepareStatement(
+                    "SELECT first_name, last_name, role FROM users ORDER BY id DESC LIMIT 4");
+                     java.sql.ResultSet rs = st.executeQuery()) {
+                    while (rs.next()) {
+                        addEnhancedActivityItem("Account: " + rs.getString(1) + " " + rs.getString(2) + " ("
+                            + rs.getString(3).toLowerCase().replace('_', ' ') + ")", "", "info");
+                    }
+                }
+                if (activityContainer.getChildren().isEmpty()) {
+                    addEnhancedActivityItem("Nothing needs your attention.", "", "success");
+                }
 
                 // Apply animation to activity container
                 if (activityContainer.getStyleClass() != null) {
@@ -804,11 +782,10 @@ public class HomeAdminController implements Initializable {
 
     /**
      * Starts recurring timelines to keep the dashboard's clock, statistics, and
-     * activity feed up to date.
+     * overview up to date.
      * <p>
      * The clock is refreshed every second, statistics are refreshed every 30
-     * seconds, and the activity poll runs every 10 seconds
-     * with each poll having a 30% chance to append a new random activity.
+     * seconds.
      */
     private void setupRealTimeUpdates() {
         // Update current time every second
@@ -821,15 +798,6 @@ public class HomeAdminController implements Initializable {
         statsUpdateTimeline.setCycleCount(Timeline.INDEFINITE);
         statsUpdateTimeline.play();
 
-        // Update activity feed every 10 seconds
-        activityUpdateTimeline = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-            if (random.nextDouble() < 0.3) { // 30% chance to add new activity
-                addRandomActivity();
-            }
-
-        }));
-        activityUpdateTimeline.setCycleCount(Timeline.INDEFINITE);
-        activityUpdateTimeline.play();
     }
 
     /**
@@ -1889,7 +1857,7 @@ public class HomeAdminController implements Initializable {
     @FXML
     void manageMovies(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/films/Film.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/films/InterfaceFilm.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) rootContainer.getScene().getWindow();
             stage.setScene(new Scene(root));

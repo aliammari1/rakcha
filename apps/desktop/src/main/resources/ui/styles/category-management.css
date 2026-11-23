@@ -1,0 +1,13 @@
+.category-management .formsfx-form .label {
+    -fx-text-fill: #f4dcdf;
+}
+
+.category-management .formsfx-form .text-field,
+.category-management .formsfx-form .text-area,
+.category-management .formsfx-form .text-area .content {
+    -fx-background-color: #2a151a;
+    -fx-control-inner-background: #2a151a;
+    -fx-background: #2a151a;
+    -fx-text-fill: #fff4f5;
+    -fx-prompt-text-fill: #bba1a7;
+}

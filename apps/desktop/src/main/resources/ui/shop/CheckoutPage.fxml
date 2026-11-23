@@ -12,8 +12,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="220" layoutX="100" layoutY="120" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="280" layoutX="1150" layoutY="520" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="220" layoutX="100" layoutY="120" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="280" layoutX="1150" layoutY="520" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -45,14 +45,14 @@
 
           <!-- Progress Steps -->
           <HBox styleClass="checkout-steps" spacing="0" alignment="CENTER">
-            <VBox alignment="CENTER" spacing="5" styleClass="step active">
+            <VBox alignment="CENTER" spacing="5" styleClass="step, active">
               <StackPane styleClass="step-circle">
                 <Label text="1"/>
               </StackPane>
               <Label text="Cart" styleClass="step-label"/>
             </VBox>
-            <Region styleClass="step-line active" HBox.hgrow="ALWAYS"/>
-            <VBox alignment="CENTER" spacing="5" styleClass="step active">
+            <Region styleClass="step-line, active" HBox.hgrow="ALWAYS"/>
+            <VBox alignment="CENTER" spacing="5" styleClass="step, active">
               <StackPane styleClass="step-circle">
                 <Label text="2"/>
               </StackPane>
@@ -78,7 +78,7 @@
             <VBox spacing="25">
 
               <!-- Delivery Options (for products) -->
-              <VBox fx:id="deliverySection" styleClass="checkout-section glass-card" spacing="20">
+              <VBox fx:id="deliverySection" styleClass="checkout-section, glass-card" spacing="20">
                 <padding>
                   <Insets topRightBottomLeft="25"/>
                 </padding>
@@ -89,7 +89,7 @@
                 </HBox>
 
                 <VBox spacing="12">
-                  <HBox styleClass="delivery-option selected" spacing="15" alignment="CENTER_LEFT"
+                  <HBox styleClass="delivery-option, selected" spacing="15" alignment="CENTER_LEFT"
                         onMouseClicked="#selectPickup">
                     <RadioButton fx:id="pickupOption" styleClass="option-radio" selected="true">
                       <toggleGroup>
@@ -100,7 +100,7 @@
                       <Label text="Pick up at cinema" styleClass="option-title"/>
                       <Label text="Ready before your movie starts" styleClass="option-desc"/>
                     </VBox>
-                    <Label text="FREE" styleClass="option-price free"/>
+                    <Label text="FREE" styleClass="option-price, free"/>
                   </HBox>
 
                   <HBox styleClass="delivery-option" spacing="15" alignment="CENTER_LEFT"
@@ -120,7 +120,7 @@
               </VBox>
 
               <!-- Contact Information -->
-              <VBox styleClass="checkout-section glass-card" spacing="20">
+              <VBox styleClass="checkout-section, glass-card" spacing="20">
                 <padding>
                   <Insets topRightBottomLeft="25"/>
                 </padding>
@@ -148,7 +148,7 @@
               </VBox>
 
               <!-- Payment Method -->
-              <VBox styleClass="checkout-section glass-card" spacing="20">
+              <VBox styleClass="checkout-section, glass-card" spacing="20">
                 <padding>
                   <Insets topRightBottomLeft="25"/>
                 </padding>
@@ -160,7 +160,7 @@
 
                 <!-- Payment Method Tabs -->
                 <HBox styleClass="payment-tabs" spacing="0">
-                  <ToggleButton fx:id="cardTab" styleClass="payment-tab active" text="Card" onAction="#showCardPayment">
+                  <ToggleButton fx:id="cardTab" styleClass="payment-tab, active" text="Card" onAction="#showCardPayment">
                     <graphic>
                       <FontIcon iconLiteral="mdi2c-credit-card:16"/>
                     </graphic>
@@ -232,7 +232,7 @@
               </VBox>
 
               <!-- Promo Code -->
-              <VBox styleClass="checkout-section glass-card" spacing="15">
+              <VBox styleClass="checkout-section, glass-card" spacing="15">
                 <padding>
                   <Insets topRightBottomLeft="25"/>
                 </padding>
@@ -254,7 +254,7 @@
         </VBox>
 
         <!-- Order Summary Sidebar -->
-        <VBox styleClass="order-summary glass-card" spacing="20" prefWidth="380">
+        <VBox styleClass="order-summary, glass-card" spacing="20" prefWidth="380">
           <padding>
             <Insets topRightBottomLeft="25"/>
           </padding>
@@ -281,9 +281,9 @@
               <Label fx:id="deliveryLabel" text="FREE" styleClass="price-value"/>
             </HBox>
             <HBox fx:id="discountRow" alignment="CENTER_LEFT" visible="false" managed="false">
-              <Label text="Discount" styleClass="price-label discount"/>
+              <Label text="Discount" styleClass="price-label, discount"/>
               <Region HBox.hgrow="ALWAYS"/>
-              <Label fx:id="discountLabel" text="-$0.00" styleClass="price-value discount"/>
+              <Label fx:id="discountLabel" text="-$0.00" styleClass="price-value, discount"/>
             </HBox>
             <HBox alignment="CENTER_LEFT">
               <Label text="Tax" styleClass="price-label"/>

@@ -18,9 +18,9 @@
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
 
     <!-- Ambient Light Orbs -->
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
-    <Circle radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb orb-accent" opacity="0.12"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
+    <Circle radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb, orb-accent" opacity="0.12"/>
 
     <!-- Floating Cinema Elements -->
     <FontIcon iconLiteral="mdi2f-filmstrip:40" layoutX="100" layoutY="500"
@@ -173,7 +173,7 @@
 
             <!-- Action Buttons -->
             <HBox spacing="10" alignment="CENTER">
-              <Button onAction="#insertFilm" styleClass="hero-btn primary" text="+ Create Movie">
+              <Button onAction="#insertFilm" styleClass="hero-btn, primary" text="+ Create Movie">
                 <graphic>
                   <FontIcon iconLiteral="mdi2p-plus-circle:20"/>
                 </graphic>

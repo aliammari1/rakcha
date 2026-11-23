@@ -1,104 +1,117 @@
 package com.esprit.controllers.cinemas;
 
-import com.esprit.models.common.Review;
-import com.esprit.services.cinemas.CinemaService;
-import com.esprit.services.common.ReviewService;
-import com.esprit.utils.PageRequest;
-import javafx.event.ActionEvent;
+import com.esprit.enums.UserRole;
+import com.esprit.models.users.User;
+import com.esprit.utils.DataSource;
+import com.esprit.utils.SessionManager;
 import javafx.fxml.FXML;
-import javafx.scene.chart.PieChart;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.fxml.Initializable;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
+/**
+ * Statistics for the signed-in cinema manager's cinemas (every cinema for an admin), computed from sessions and
+ * tickets in the database.
+ */
 @Log4j2
-public class CinemaStatisticsController {
-
-    private final ReviewService cinemaCommentService = new ReviewService();
-    private final CinemaService cinemaService = new CinemaService();
+public class CinemaStatisticsController implements Initializable {
     @FXML
-    private AnchorPane statisticsAnchor;
-
-    /**
-     * Generate and display per-cinema sentiment pie charts in the statistics anchor pane.
-     * <p>
-     * Clears existing content in the statistics anchor, aggregates sentiment counts from
-     * stored cinema comments, creates a PieChart for each cinema showing its sentiment
-     * distribution, and adds the charts in a vertical layout to the anchor pane.
-     *
-     * @param event the ActionEvent that triggered the statistics display
-     */
+    private Label scopeLabel;
     @FXML
-    void showStatistics(final ActionEvent event) {
-        this.statisticsAnchor.getChildren().clear();
-        // Récupérer les commentaires de la base de données
-        final List<Review> comments = this.cinemaCommentService.read(PageRequest.defaultPage()).getContent();
-        // Générer les statistiques sur l'analyse de sentiment
-        final Map<String, Map<String, Integer>> cinemaSentimentStatistics = this.generateSentimentStatistics(comments);
-        // Créer un VBox pour contenir les PieCharts
-        final VBox chartContainer = new VBox();
-        chartContainer.setSpacing(20);
-        // Afficher les statistiques dans des PieCharts
-        for (final Map.Entry<String, Map<String, Integer>> entry : cinemaSentimentStatistics.entrySet()) {
-            final PieChart pieChart = this.createPieChart(entry.getKey(), entry.getValue());
-            chartContainer.getChildren().add(pieChart);
-        }
+    private Label cinemasValue;
+    @FXML
+    private Label sessionsValue;
+    @FXML
+    private Label ticketsValue;
+    @FXML
+    private Label revenueValue;
+    @FXML
+    private BarChart<String, Number> filmChart;
+    @FXML
+    private BarChart<String, Number> hallChart;
 
-        // Ajouter le VBox à l'AnchorPane
-        this.statisticsAnchor.getChildren().add(chartContainer);
-    }
+    @Override
+    public void initialize(final URL location, final ResourceBundle resources) {
+        final User user = SessionManager.getCurrentUser();
+        final boolean admin = user != null && user.getRole() == UserRole.ADMIN;
+        // -1 matches no manager id; 0 means "every cinema" in the queries below.
+        final long managerId = admin ? 0 : (user != null && user.getId() != null ? user.getId() : -1);
+        scopeLabel.setText(admin ? "All cinemas on the platform" : "Your cinemas");
+        try {
+            final Connection con = DataSource.getInstance().getConnection(); // shared: never close
+            final Timestamp now = Timestamp.valueOf(LocalDateTime.now());
+            final String scope = "(? = 0 OR c.manager_id = ?)";
 
+            cinemasValue.setText(String.valueOf((long) number(con,
+                "SELECT COUNT(*) FROM cinemas c WHERE " + scope, managerId, managerId)));
+            sessionsValue.setText(String.valueOf((long) number(con,
+                "SELECT COUNT(*) FROM screenings s JOIN cinema_halls h ON h.id = s.hall_id "
+                    + "JOIN cinemas c ON c.id = h.cinema_id WHERE " + scope + " AND s.start_time >= ?",
+                managerId, managerId, now)));
+            final String tickets = "FROM tickets t JOIN screenings s ON s.id = t.screening_id "
+                + "JOIN cinema_halls h ON h.id = s.hall_id JOIN cinemas c ON c.id = h.cinema_id "
+                + "WHERE " + scope + " AND t.status <> 'CANCELLED'";
+            ticketsValue.setText(String.valueOf((long) number(con, "SELECT COUNT(*) " + tickets, managerId, managerId)));
+            revenueValue.setText(String.format(Locale.ENGLISH, "%.2f TND",
+                number(con, "SELECT COALESCE(SUM(t.price_paid), 0) " + tickets, managerId, managerId)));
 
-    /**
-     * Builds a map of sentiment counts per cinema.
-     *
-     * @param comments list of CinemaComment; each comment increments the count for its cinema's sentiment
-     * @return a map that maps each cinema name to a map from sentiment label to the number of comments with that sentiment
-     */
-    private Map<String, Map<String, Integer>> generateSentimentStatistics(final List<Review> comments) {
-        final Map<String, Map<String, Integer>> cinemaSentimentStatistics = new HashMap<>();
-        // Parcourir les commentaires et compter le nombre de sentiments pour chaque
-        // cinéma
-        for (final Review comment : comments) {
-            final String cinemaName = this.cinemaService.getCinemaById(comment.getCinema().getId()).getName();
-            final String sentiment = comment.getSentiment();
-            // Vérifier si le cinéma est déjà dans la map
-            if (cinemaSentimentStatistics.containsKey(cinemaName)) {
-                final Map<String, Integer> sentimentStatistics = cinemaSentimentStatistics.get(cinemaName);
-                sentimentStatistics.put(sentiment, sentimentStatistics.getOrDefault(sentiment, 0) + 1);
-            } else {
-                final Map<String, Integer> sentimentStatistics = new HashMap<>();
-                sentimentStatistics.put(sentiment, 1);
-                cinemaSentimentStatistics.put(cinemaName, sentimentStatistics);
+            final XYChart.Series<String, Number> films = new XYChart.Series<>();
+            try (PreparedStatement st = con.prepareStatement(
+                "SELECT m.title, COUNT(*) FROM screenings s JOIN movies m ON m.id = s.movie_id "
+                    + "JOIN cinema_halls h ON h.id = s.hall_id JOIN cinemas c ON c.id = h.cinema_id "
+                    + "WHERE " + scope + " AND s.start_time >= ? GROUP BY m.id, m.title ORDER BY COUNT(*) DESC, m.title")) {
+                st.setLong(1, managerId);
+                st.setLong(2, managerId);
+                st.setTimestamp(3, now);
+                try (ResultSet rs = st.executeQuery()) {
+                    while (rs.next()) {
+                        films.getData().add(new XYChart.Data<>(rs.getString(1), rs.getLong(2)));
+                    }
+                }
             }
+            filmChart.getData().setAll(films);
 
+            final XYChart.Series<String, Number> halls = new XYChart.Series<>();
+            try (PreparedStatement st = con.prepareStatement(
+                "SELECT c.name || ' · ' || h.name, "
+                    + "(SELECT COUNT(*) FROM tickets t JOIN screenings s2 ON s2.id = t.screening_id "
+                    + "  WHERE s2.hall_id = h.id AND t.status <> 'CANCELLED') * 100.0 "
+                    + "/ MAX(1, h.capacity * MAX(1, (SELECT COUNT(*) FROM screenings s3 WHERE s3.hall_id = h.id))) "
+                    + "FROM cinema_halls h JOIN cinemas c ON c.id = h.cinema_id WHERE " + scope + " ORDER BY c.name, h.name")) {
+                st.setLong(1, managerId);
+                st.setLong(2, managerId);
+                try (ResultSet rs = st.executeQuery()) {
+                    while (rs.next()) {
+                        halls.getData().add(new XYChart.Data<>(rs.getString(1), Math.round(rs.getDouble(2) * 10) / 10.0));
+                    }
+                }
+            }
+            hallChart.getData().setAll(halls);
+        } catch (final SQLException e) {
+            log.error("Could not load cinema statistics", e);
         }
-
-        return cinemaSentimentStatistics;
     }
 
-
-    /**
-     * Create a PieChart showing the sentiment distribution for a cinema.
-     *
-     * @param cinemaName          the cinema's display name used in the chart title
-     * @param sentimentStatistics map of sentiment label to count used to build slices
-     * @return a PieChart titled "<cinemaName> Sentiment Statistics" containing one slice per sentiment with the provided counts
-     * @since 1.0
-     */
-    private PieChart createPieChart(final String cinemaName, final Map<String, Integer> sentimentStatistics) {
-        final PieChart pieChart = new PieChart();
-        pieChart.setTitle(cinemaName + " Sentiment Statistics");
-        // Ajouter les données au PieChart
-        for (final Map.Entry<String, Integer> entry : sentimentStatistics.entrySet()) {
-            pieChart.getData().add(new PieChart.Data(entry.getKey(), entry.getValue()));
+    private static double number(final Connection con, final String sql, final Object... params) throws SQLException {
+        try (PreparedStatement st = con.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; i++) {
+                st.setObject(i + 1, params[i]);
+            }
+            try (ResultSet rs = st.executeQuery()) {
+                return rs.next() ? rs.getDouble(1) : 0;
+            }
         }
-
-        return pieChart;
     }
-
 }

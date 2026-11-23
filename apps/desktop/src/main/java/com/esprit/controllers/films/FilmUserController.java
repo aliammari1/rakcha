@@ -9,6 +9,7 @@ import com.esprit.models.films.Actor;
 import com.esprit.models.films.Film;
 import com.esprit.models.users.Client;
 import com.esprit.services.cinemas.MovieSessionService;
+import com.esprit.services.cinemas.ShowtimeSummary;
 import com.esprit.services.common.ReviewService;
 import com.esprit.services.films.ActorService;
 import com.esprit.services.films.FilmCategoryService;
@@ -135,6 +136,10 @@ public class FilmUserController {
     private ImageView imagefilmDetail;
     @FXML
     private Label filmNomDetail;
+    @FXML
+    private Label yearLabel;
+    @FXML
+    private Label durationLabel;
     @FXML
     private HBox topthreeVbox;
     @FXML
@@ -420,16 +425,8 @@ public class FilmUserController {
             }
 
         });
-        this.tricomboBox.getItems().addAll("nom", "annederalisation");
-        this.tricomboBox.setValue("");
-        this.tricomboBox.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
-            this.flowpaneFilm.getChildren().clear();
-            final List<Film> filmList = new FilmService().sort(pageRequest, t1).getContent();
-            for (final Film film : filmList) {
-                this.flowpaneFilm.getChildren().add(this.createFilmCard(film));
-            }
-            updateMovieCount();
-        });
+        this.tricomboBox.getItems().addAll(SORT_COLUMNS.keySet());
+        this.tricomboBox.setValue(null);
         final FilmService filmService1 = new FilmService();
         PageRequest filmPageRequest = PageRequest.defaultPage();
         this.l1 = filmService1.read(filmPageRequest).getContent();
@@ -1034,10 +1031,11 @@ public class FilmUserController {
      */
     @FXML
     void sortFilms(final ActionEvent event) {
-        String sortOption = this.tricomboBox.getValue();
-        FilmUserController.LOGGER.info("Sort films by: " + sortOption);
+        String sortLabel = this.tricomboBox.getValue();
+        FilmUserController.LOGGER.info("Sort films by: " + sortLabel);
 
-        if (sortOption == null || sortOption.isEmpty())
+        String sortOption = SORT_COLUMNS.get(sortLabel);
+        if (sortOption == null)
             return;
 
         this.flowpaneFilm.getChildren().clear();
@@ -1159,7 +1157,7 @@ public class FilmUserController {
 
         // Reset sort combo box
         if (this.tricomboBox != null) {
-            this.tricomboBox.setValue("");
+            this.tricomboBox.setValue(null);
         }
 
         // Reload all films
@@ -2018,6 +2016,17 @@ public class FilmUserController {
         return copyOfAnchorPane;
     }
 
+    @FXML
+    private Label nextShowtimeLabel;
+
+    /** Sort choices shown to the user, mapped to the movie table column they sort by. */
+    private static final java.util.Map<String, String> SORT_COLUMNS = new java.util.LinkedHashMap<>(java.util.Map.of());
+    static {
+        SORT_COLUMNS.put("Title", "title");
+        SORT_COLUMNS.put("Release year", "release_year");
+        SORT_COLUMNS.put("Duration", "duration_min");
+    }
+
     private void showFilmDetails(Film film) {
         final Film film1 = new Film(film);
         this.filmId = film.getId();
@@ -2028,14 +2037,27 @@ public class FilmUserController {
         if (this.descriptionDETAILfilm != null) {
             this.descriptionDETAILfilm.setText(film1.getDescription());
         }
+        if (this.yearLabel != null) {
+            this.yearLabel.setText(film1.getReleaseYear() > 0 ? Integer.toString(film1.getReleaseYear()) : "");
+        }
+        if (this.durationLabel != null) {
+            int minutes = film1.getDurationMin();
+            this.durationLabel.setText(minutes > 0 ? minutes + " min" : "");
+        }
+
+        if (this.nextShowtimeLabel != null) {
+            this.nextShowtimeLabel.setText(describeNextShowtime(film1.getId()));
+        }
 
         if (genreTags != null) {
             genreTags.getChildren().clear();
             String categories = new FilmCategoryService().getCategoryNames(film1.getId());
             for (String cat : categories.split(",")) {
-                Label genreLabel = new Label(cat.trim());
-                genreLabel.getStyleClass().add("genre-tag");
-                genreTags.getChildren().add(genreLabel);
+                if (!cat.isBlank()) {
+                    Label genreLabel = new Label(cat.trim());
+                    genreLabel.getStyleClass().add("genre-tag");
+                    genreTags.getChildren().add(genreLabel);
+                }
             }
         }
 
@@ -2382,5 +2404,16 @@ public class FilmUserController {
         }
 
         return anchorPane;
+    }
+
+    private String describeNextShowtime(final Long filmId) {
+        final var next = new MovieSessionService().getFirstSessionForFilm(filmId);
+        if (next == null) {
+            return ShowtimeSummary.describe(null, null, null, 0, java.time.LocalDateTime.now());
+        }
+        final var hall = next.getCinemaHall();
+        final String cinema = hall != null && hall.getCinema() != null ? hall.getCinema().getName() : null;
+        return ShowtimeSummary.describe(next.getStartTime(), cinema, hall != null ? hall.getName() : null,
+            next.getPrice(), java.time.LocalDateTime.now());
     }
 }

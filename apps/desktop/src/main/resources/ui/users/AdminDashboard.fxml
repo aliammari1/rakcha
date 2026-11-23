@@ -16,9 +16,9 @@
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
 
     <!-- Ambient Light Orbs -->
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
-    <Circle radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb orb-accent" opacity="0.12"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
+    <Circle radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb, orb-accent" opacity="0.12"/>
 
     <!-- Floating User Management Icons -->
     <FontIcon iconLiteral="mdi2a-account-multiple:40" layoutX="100" layoutY="500"
@@ -134,7 +134,7 @@
                     <Font size="16.0"/>
                   </font>
                 </Label>
-                <TextField fx:id="passwordTextField" styleClass="text-field-red" promptText="Enter password"/>
+                <PasswordField fx:id="passwordTextField" styleClass="text-field-red" promptText="Enter password"/>
               </VBox>
 
               <!-- Address -->
@@ -188,8 +188,8 @@
               <!-- Action Buttons -->
               <HBox spacing="10" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2"
                     alignment="CENTER_RIGHT">
-                <Button mnemonicParsing="false" onAction="#addAdmin" styleClass="primary-btn" text="Add User"/>
-                <Button mnemonicParsing="false" onAction="#clearTextFields" styleClass="secondary-btn" text="Clear"/>
+                <Button mnemonicParsing="false" onAction="#addAdmin" styleClass="action-btn, primary" text="Add User"/>
+                <Button mnemonicParsing="false" onAction="#clearTextFields" styleClass="action-btn" text="Clear"/>
               </HBox>
             </GridPane>
           </VBox>
@@ -198,4 +198,3 @@
     </center>
   </BorderPane>
 </StackPane>
-

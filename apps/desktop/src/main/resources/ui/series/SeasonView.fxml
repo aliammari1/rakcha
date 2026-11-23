@@ -14,8 +14,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="250" layoutX="100" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="300" layoutX="1150" layoutY="550" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="250" layoutX="100" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="300" layoutX="1150" layoutY="550" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -113,12 +113,12 @@
             <Region HBox.hgrow="ALWAYS"/>
 
             <HBox styleClass="view-toggle" spacing="0">
-              <ToggleButton fx:id="listViewToggle" styleClass="view-toggle-btn left active" onAction="#showListView">
+              <ToggleButton fx:id="listViewToggle" styleClass="view-toggle-btn, left, active" onAction="#showListView">
                 <graphic>
                   <FontIcon iconLiteral="mdi2v-view-list:16"/>
                 </graphic>
               </ToggleButton>
-              <ToggleButton fx:id="gridViewToggle" styleClass="view-toggle-btn right" onAction="#showGridView">
+              <ToggleButton fx:id="gridViewToggle" styleClass="view-toggle-btn, right" onAction="#showGridView">
                 <graphic>
                   <FontIcon iconLiteral="mdi2v-view-grid:16"/>
                 </graphic>
@@ -264,7 +264,7 @@
   </VBox>
 
   <!-- Up Next Toast -->
-  <HBox fx:id="upNextToast" styleClass="up-next-toast glass-card" spacing="15" alignment="CENTER_LEFT"
+  <HBox fx:id="upNextToast" styleClass="up-next-toast, glass-card" spacing="15" alignment="CENTER_LEFT"
         visible="false" managed="false" StackPane.alignment="BOTTOM_RIGHT" translateX="-30" translateY="-30">
     <padding>
       <Insets topRightBottomLeft="15"/>

@@ -998,7 +998,7 @@ public class AfficherProductClientControllers implements Initializable {
     void SerieClient(final ActionEvent event) {
         try {
             // Charger la nouvelle interface ShoppingCartProduct.fxml
-            final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/ui/Series-view.fxml"));
+            final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/ui/series/Serie-view.fxml"));
             final Parent root = loader.load();
             // Créer une nouvelle scène avec la nouvelle interface
             final Scene scene = new Scene(root);

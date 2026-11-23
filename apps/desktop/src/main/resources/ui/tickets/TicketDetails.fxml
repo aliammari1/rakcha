@@ -13,7 +13,7 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="180" layoutX="100" layoutY="200" styleClass="ambient-orb orb-primary" opacity="0.12"/>
+    <Circle radius="180" layoutX="100" layoutY="200" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -97,7 +97,7 @@
                     <Label text="SEAT" styleClass="ticket-field-label"/>
                     <HBox spacing="8" alignment="CENTER_LEFT">
                       <FontIcon iconLiteral="mdi2s-seat:18" styleClass="field-icon"/>
-                      <Label fx:id="seatInfo" styleClass="ticket-field-value highlight"/>
+                      <Label fx:id="seatInfo" styleClass="ticket-field-value, highlight"/>
                     </HBox>
                   </VBox>
                   <VBox spacing="5">
@@ -114,9 +114,9 @@
 
               <!-- Dotted Divider -->
               <HBox styleClass="ticket-divider" alignment="CENTER">
-                <Circle radius="15" styleClass="divider-circle left"/>
+                <Circle radius="15" styleClass="divider-circle, left"/>
                 <Region styleClass="divider-line" HBox.hgrow="ALWAYS"/>
-                <Circle radius="15" styleClass="divider-circle right"/>
+                <Circle radius="15" styleClass="divider-circle, right"/>
               </HBox>
 
               <!-- QR Code Section -->
@@ -141,17 +141,17 @@
 
           <!-- Action Buttons -->
           <HBox spacing="15" alignment="CENTER" styleClass="ticket-actions">
-            <Button onAction="#downloadAsPDF" styleClass="action-btn primary" text="Download PDF">
+            <Button onAction="#downloadAsPDF" styleClass="action-btn, primary" text="Download PDF">
               <graphic>
                 <FontIcon iconLiteral="mdi2f-file-pdf-box:20"/>
               </graphic>
             </Button>
-            <Button onAction="#addToWallet" styleClass="action-btn secondary" text="Add to Wallet">
+            <Button onAction="#addToWallet" styleClass="action-btn, secondary" text="Add to Wallet">
               <graphic>
                 <FontIcon iconLiteral="mdi2w-wallet:20"/>
               </graphic>
             </Button>
-            <Button onAction="#shareTicket" styleClass="action-btn secondary" text="Share">
+            <Button onAction="#shareTicket" styleClass="action-btn, secondary" text="Share">
               <graphic>
                 <FontIcon iconLiteral="mdi2s-share-variant:20"/>
               </graphic>
@@ -166,7 +166,7 @@
                 <FontIcon iconLiteral="mdi2a-account-arrow-right:20"/>
               </graphic>
             </Button>
-            <Button onAction="#requestRefund" styleClass="option-btn danger" text="Request Refund" maxWidth="Infinity">
+            <Button onAction="#requestRefund" styleClass="option-btn, danger" text="Request Refund" maxWidth="Infinity">
               <graphic>
                 <FontIcon iconLiteral="mdi2c-cash-refund:20"/>
               </graphic>

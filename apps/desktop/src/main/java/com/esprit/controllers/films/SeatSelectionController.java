@@ -143,7 +143,7 @@ public class SeatSelectionController implements Initializable {
                 String movieInfo = String.format("%s • %s • %s",
                     moviesession.getFilm() != null ? moviesession.getFilm().getTitle() : "Movie",
                     moviesession.getCinemaHall() != null ? moviesession.getCinemaHall().getName() : "Cinema Hall",
-                    moviesession.getStartTime() != null ? moviesession.getStartTime().toString() : "Showtime"
+                    moviesession.getStartTime() != null ? moviesession.getStartTime().format(java.time.format.DateTimeFormatter.ofPattern("EEE d MMM · HH:mm", java.util.Locale.ENGLISH)) : "Showtime"
                 );
                 movieInfoLabel.setText(movieInfo);
             }
@@ -188,7 +188,7 @@ public class SeatSelectionController implements Initializable {
         int maxCol = 0;
         for (Seat seat : seats) {
             try {
-                maxRow = Math.max(maxRow, Integer.parseInt(seat.getRowLabel() != null ? seat.getRowLabel() : "0"));
+                maxRow = Math.max(maxRow, rowIndex(seat));
                 maxCol = Math.max(maxCol, Integer.parseInt(seat.getSeatNumber() != null ? seat.getSeatNumber() : "0"));
             } catch (NumberFormatException e) {
                 // Handle invalid seat labels gracefully
@@ -321,7 +321,6 @@ public class SeatSelectionController implements Initializable {
 
             // Add tooltip for occupied seats
             Tooltip occupiedTooltip = new Tooltip("This seat is already taken");
-            occupiedTooltip.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 12px;");
             Tooltip.install(seatButton, occupiedTooltip);
 
         } else {
@@ -365,8 +364,6 @@ public class SeatSelectionController implements Initializable {
 
             // Enhanced tooltip
             Tooltip seatTooltip = new Tooltip(tooltipText);
-            seatTooltip.setStyle("-fx-background-color: rgba(0, 0, 0, 0.9); -fx-text-fill: white; " +
-                "-fx-font-size: 12px; -fx-background-radius: 8; -fx-padding: 8;");
             Tooltip.install(seatButton, seatTooltip);
 
             seatButton.setOnAction(e -> handleSeatSelection(seatButton, seat));
@@ -400,10 +397,22 @@ public class SeatSelectionController implements Initializable {
      * @param col   the column number to find
      * @return the matching Seat object, or null if no match is found
      */
+    /** 1-based row number of a seat, whether its row label is "3" or "C"; 0 when it is neither. */
+    private static int rowIndex(final Seat seat) {
+        final String label = seat.getRowLabel() == null ? "" : seat.getRowLabel().trim();
+        if (label.matches("\\d+")) {
+            return Integer.parseInt(label);
+        }
+        if (label.length() == 1 && Character.isLetter(label.charAt(0))) {
+            return Character.toUpperCase(label.charAt(0)) - 'A' + 1;
+        }
+        return 0;
+    }
+
     private Seat findSeat(List<Seat> seats, int row, int col) {
         return seats.stream().filter(s -> {
             try {
-                int seatRow = Integer.parseInt(s.getRowLabel() != null ? s.getRowLabel() : "0");
+                int seatRow = rowIndex(s);
                 int seatCol = Integer.parseInt(s.getSeatNumber() != null ? s.getSeatNumber() : "0");
                 return seatRow == row && seatCol == col;
             } catch (NumberFormatException e) {
@@ -493,7 +502,7 @@ public class SeatSelectionController implements Initializable {
      */
     private String getRowLetter(Seat seat) {
         try {
-            int rowNum = Integer.parseInt(seat.getRowLabel() != null ? seat.getRowLabel() : "1");
+            int rowNum = rowIndex(seat);
             return String.valueOf((char) ('A' + rowNum - 1));
         } catch (NumberFormatException e) {
             return seat.getRowLabel() != null ? seat.getRowLabel() : "?";
@@ -505,7 +514,7 @@ public class SeatSelectionController implements Initializable {
      */
     private boolean isRecommendedSeat(Seat seat) {
         try {
-            int row = Integer.parseInt(seat.getRowLabel() != null ? seat.getRowLabel() : "0");
+            int row = rowIndex(seat);
             int seatNum = Integer.parseInt(seat.getSeatNumber() != null ? seat.getSeatNumber() : "0");
 
             // Recommended: rows 3-6, center seats (4-9 for 12-seat rows)
@@ -580,7 +589,7 @@ public class SeatSelectionController implements Initializable {
             .filter(button -> {
                 Seat seat = (Seat) button.getUserData();
                 try {
-                    int row = Integer.parseInt(seat.getRowLabel() != null ? seat.getRowLabel() : "0");
+                    int row = rowIndex(seat);
                     int seatNum = Integer.parseInt(seat.getSeatNumber() != null ? seat.getSeatNumber() : "0");
                     return row >= 4 && row <= 5 && seatNum >= 5 && seatNum <= 8 && !isSeatOccupiedForSession(seat);
                 } catch (NumberFormatException e) {
@@ -953,7 +962,7 @@ public class SeatSelectionController implements Initializable {
      */
     private void create3DSeat(Seat seat) {
         try {
-            int row = Integer.parseInt(seat.getRowLabel() != null ? seat.getRowLabel() : "1");
+            int row = rowIndex(seat);
             int seatNum = Integer.parseInt(seat.getSeatNumber() != null ? seat.getSeatNumber() : "1");
 
             // Create 3D seat geometry

@@ -784,7 +784,7 @@ public class EpisodeController {
     @FXML
     void Ocategories(final ActionEvent event) throws IOException {
         final Parent root = FXMLLoader
-            .load(Objects.requireNonNull(this.getClass().getResource("/ui/series/Categorie-view.fxml")));
+            .load(Objects.requireNonNull(this.getClass().getResource("/ui/common/CategoryManagement.fxml")));
         final Scene scene = new Scene(root);
         final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);

@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="250" layoutX="100" layoutY="100" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="200" layoutX="1100" layoutY="500" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="250" layoutX="100" layoutY="100" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="200" layoutX="1100" layoutY="500" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -100,7 +100,7 @@
                   <VBox styleClass="info-card" spacing="8">
                     <FontIcon iconLiteral="mdi2c-cash:32" styleClass="info-icon"/>
                     <Label text="Price" styleClass="info-label"/>
-                    <Label fx:id="ticketPrice" styleClass="info-value price"/>
+                    <Label fx:id="ticketPrice" styleClass="info-value, price"/>
                     <Label text="per seat" styleClass="info-sub"/>
                   </VBox>
                 </HBox>
@@ -114,15 +114,15 @@
                 <Region HBox.hgrow="ALWAYS"/>
                 <HBox spacing="20" styleClass="seat-legend">
                   <HBox spacing="5" alignment="CENTER">
-                    <Region styleClass="seat-indicator available"/>
+                    <Region styleClass="seat-indicator, available"/>
                     <Label text="Available" styleClass="legend-text"/>
                   </HBox>
                   <HBox spacing="5" alignment="CENTER">
-                    <Region styleClass="seat-indicator occupied"/>
+                    <Region styleClass="seat-indicator, occupied"/>
                     <Label text="Occupied" styleClass="legend-text"/>
                   </HBox>
                   <HBox spacing="5" alignment="CENTER">
-                    <Region styleClass="seat-indicator vip"/>
+                    <Region styleClass="seat-indicator, vip"/>
                     <Label text="VIP" styleClass="legend-text"/>
                   </HBox>
                 </HBox>
@@ -177,13 +177,13 @@
               </HBox>
 
               <HBox spacing="15" styleClass="booking-actions">
-                <Button fx:id="selectSeatsBtn" onAction="#openSeatSelection" styleClass="action-btn secondary"
+                <Button fx:id="selectSeatsBtn" onAction="#openSeatSelection" styleClass="action-btn, secondary"
                         text="Choose Specific Seats">
                   <graphic>
                     <FontIcon iconLiteral="mdi2s-seat:20"/>
                   </graphic>
                 </Button>
-                <Button fx:id="bookNowBtn" onAction="#proceedToPayment" styleClass="action-btn primary"
+                <Button fx:id="bookNowBtn" onAction="#proceedToPayment" styleClass="action-btn, primary"
                         text="Proceed to Payment">
                   <graphic>
                     <FontIcon iconLiteral="mdi2c-credit-card:20"/>

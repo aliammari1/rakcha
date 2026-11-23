@@ -131,7 +131,7 @@ public class NavigationManager {
         } else if (user instanceof CinemaManager) {
             return navigate(stage, "/ui/cinemas/DashboardResponsableCinema.fxml");
         } else {
-            return navigate(stage, "/ui/users/ClientDashboard.fxml");
+            return navigate(stage, "/ui/users/Profile.fxml");
         }
     }
 

@@ -93,9 +93,12 @@ public class UserService implements IService<User> {
      *               the entity to create
      */
     public void create(final User user) {
-        try {
-            final PreparedStatement statement = con.prepareStatement(
-                "INSERT INTO users (first_name, last_name, email, phone_number, password_hash, role, address, birth_date, profile_picture_url, is_verified, totp_secret, failed_login_attempts, is_locked, locked_until, is_active, deactivated_at, deactivation_reason) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        createAccount(user);
+    }
+
+    public boolean createAccount(final User user) {
+        try (PreparedStatement statement = con.prepareStatement(
+            "INSERT INTO users (first_name, last_name, email, phone_number, password_hash, role, address, birth_date, profile_picture_url, is_verified, totp_secret, failed_login_attempts, is_locked, locked_until, is_active, deactivated_at, deactivation_reason) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
             statement.setString(1, user.getFirstName());
             statement.setString(2, user.getLastName());
             statement.setString(3, user.getEmail());
@@ -114,10 +117,10 @@ public class UserService implements IService<User> {
             statement.setBoolean(15, true);
             statement.setNull(16, java.sql.Types.TIMESTAMP);
             statement.setNull(17, java.sql.Types.VARCHAR);
-            statement.executeUpdate();
-            log.info("user was added");
+            return statement.executeUpdate() == 1;
         } catch (final SQLException e) {
-            log.error(e.getMessage(), e);
+            log.error("Could not create desktop account", e);
+            return false;
         }
     }
 

@@ -17,9 +17,9 @@
   <!-- Cinematic Background with Gradient Mesh -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
     <!-- Ambient Light Orbs -->
-    <Circle radius="250" layoutX="200" layoutY="200" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="350" layoutX="1400" layoutY="700" styleClass="ambient-orb orb-secondary" opacity="0.12"/>
-    <Circle radius="180" layoutX="900" layoutY="100" styleClass="ambient-orb orb-accent" opacity="0.1"/>
+    <Circle radius="250" layoutX="200" layoutY="200" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="350" layoutX="1400" layoutY="700" styleClass="ambient-orb, orb-secondary" opacity="0.12"/>
+    <Circle radius="180" layoutX="900" layoutY="100" styleClass="ambient-orb, orb-accent" opacity="0.1"/>
 
     <!-- Floating Icons -->
     <FontIcon iconLiteral="mdi2s-shopping:40" layoutX="100" layoutY="600" styleClass="floating-icon" opacity="0.08"/>
@@ -77,7 +77,7 @@
               </tooltip>
             </Button>
 
-            <Button styleClass="hero-btn primary" onMouseClicked="#shoppingcart">
+            <Button styleClass="hero-btn, primary" onMouseClicked="#shoppingcart">
               <graphic>
                 <FontIcon iconLiteral="mdi2c-cart:20:white"/>
               </graphic>
@@ -137,7 +137,7 @@
       <Separator opacity="0.3"/>
 
       <!-- Filter controls would go here (simplified for now) -->
-      <Button onAction="#filtercinema" styleClass="hero-btn primary" text="Apply Filters" maxWidth="200"/>
+      <Button onAction="#filtercinema" styleClass="hero-btn, primary" text="Apply Filters" maxWidth="200"/>
 
       <Button onMouseClicked="#CloseFilter" styleClass="glass-btn" text="Close">
         <graphic>
@@ -172,7 +172,7 @@
       <HBox spacing="10" alignment="CENTER" styleClass="glass-panel" style="-fx-padding: 10;">
         <TextArea fx:id="txtAreaComments" HBox.hgrow="ALWAYS" promptText="Write a review..."
                   prefRowCount="2" styleClass="text-area-red"/>
-        <Button styleClass="hero-btn primary" onMouseClicked="#AddComment">
+        <Button styleClass="hero-btn, primary" onMouseClicked="#AddComment">
           <graphic>
             <FontIcon iconLiteral="mdi2s-send:20:white"/>
           </graphic>

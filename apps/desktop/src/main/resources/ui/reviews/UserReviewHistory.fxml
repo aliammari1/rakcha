@@ -14,8 +14,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="260" layoutX="1100" layoutY="500" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="260" layoutX="1100" layoutY="500" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -52,9 +52,9 @@
             <Insets top="10" bottom="25" left="35" right="35"/>
           </padding>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container blue">
+              <StackPane styleClass="stat-icon-container, blue">
                 <FontIcon iconLiteral="mdi2c-comment-text:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -64,9 +64,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container gold">
+              <StackPane styleClass="stat-icon-container, gold">
                 <FontIcon iconLiteral="mdi2s-star:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -76,9 +76,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container green">
+              <StackPane styleClass="stat-icon-container, green">
                 <FontIcon iconLiteral="mdi2t-thumb-up:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -88,9 +88,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container purple">
+              <StackPane styleClass="stat-icon-container, purple">
                 <FontIcon iconLiteral="mdi2m-movie:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -109,7 +109,7 @@
 
           <!-- Content Tabs -->
           <HBox styleClass="content-tabs" spacing="0">
-            <ToggleButton fx:id="allTab" styleClass="content-tab active" text="All" onAction="#showAll"/>
+            <ToggleButton fx:id="allTab" styleClass="content-tab, active" text="All" onAction="#showAll"/>
             <ToggleButton fx:id="moviesTab" styleClass="content-tab" text="Movies" onAction="#showMovies"/>
             <ToggleButton fx:id="seriesTab" styleClass="content-tab" text="Series" onAction="#showSeries"/>
           </HBox>
@@ -148,12 +148,12 @@
 
           <!-- View Toggle -->
           <HBox styleClass="view-toggle" spacing="0">
-            <ToggleButton fx:id="cardViewToggle" styleClass="view-toggle-btn left active" onAction="#showCardView">
+            <ToggleButton fx:id="cardViewToggle" styleClass="view-toggle-btn, left, active" onAction="#showCardView">
               <graphic>
                 <FontIcon iconLiteral="mdi2v-view-grid:16"/>
               </graphic>
             </ToggleButton>
-            <ToggleButton fx:id="listViewToggle" styleClass="view-toggle-btn right" onAction="#showListView">
+            <ToggleButton fx:id="listViewToggle" styleClass="view-toggle-btn, right" onAction="#showListView">
               <graphic>
                 <FontIcon iconLiteral="mdi2v-view-list:16"/>
               </graphic>
@@ -199,7 +199,7 @@
   <HBox fx:id="detailPanelOverlay" styleClass="detail-panel-overlay" visible="false" managed="false">
     <Region styleClass="overlay-backdrop" HBox.hgrow="ALWAYS" onMouseClicked="#closeDetailPanel"/>
 
-    <VBox fx:id="detailPanel" styleClass="detail-panel glass-card" spacing="0" prefWidth="450">
+    <VBox fx:id="detailPanel" styleClass="detail-panel, glass-card" spacing="0" prefWidth="450">
 
       <!-- Panel Header -->
       <StackPane styleClass="detail-header" prefHeight="180">
@@ -325,7 +325,7 @@
 
   <!-- Edit Review Dialog -->
   <VBox fx:id="editDialog" styleClass="dialog-overlay" visible="false" managed="false" alignment="CENTER">
-    <VBox styleClass="dialog-card large" spacing="20" maxWidth="600">
+    <VBox styleClass="dialog-card, large" spacing="20" maxWidth="600">
       <padding>
         <Insets topRightBottomLeft="30"/>
       </padding>

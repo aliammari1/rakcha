@@ -114,7 +114,8 @@ public class OrderService implements IService<Order> {
             final ResultSet rs = pst.executeQuery();
             final UserService us = new UserService();
             while (rs.next()) {
-                final Order order = Order.builder().id(rs.getLong("id")).orderDate(rs.getTimestamp("order_date").toLocalDateTime())
+                final var orderDate = rs.getTimestamp("order_date");
+                final Order order = Order.builder().id(rs.getLong("id")).orderDate(orderDate == null ? null : orderDate.toLocalDateTime())
                     .status(OrderStatus.fromValue(rs.getString("status"))).client((Client) us.getUserById(rs.getLong("user_id")))
                     .phoneNumber(rs.getString("phone_number")).shippingAddress(rs.getString("shipping_address"))
                     .totalAmount(rs.getDouble("total_amount"))
@@ -211,7 +212,8 @@ public class OrderService implements IService<Order> {
             ps.setLong(1, orderId);
             final ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                order = Order.builder().id(rs.getLong("id")).orderDate(rs.getTimestamp("order_date").toLocalDateTime())
+                final var orderDate = rs.getTimestamp("order_date");
+                order = Order.builder().id(rs.getLong("id")).orderDate(orderDate == null ? null : orderDate.toLocalDateTime())
                     .status(OrderStatus.fromValue(rs.getString("status")))
                     .client((Client) usersService.getUserById(rs.getLong("user_id")))
                     .phoneNumber(rs.getString("phone_number")).shippingAddress(rs.getString("shipping_address"))
@@ -656,4 +658,3 @@ public class OrderService implements IService<Order> {
         return totalSpending;
     }
 }
-

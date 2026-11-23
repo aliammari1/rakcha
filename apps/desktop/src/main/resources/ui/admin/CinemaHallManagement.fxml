@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="220" layoutX="100" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="280" layoutX="1150" layoutY="550" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="220" layoutX="100" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="280" layoutX="1150" layoutY="550" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -51,9 +51,9 @@
             <Insets top="10" bottom="20" left="35" right="35"/>
           </padding>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container blue">
+              <StackPane styleClass="stat-icon-container, blue">
                 <FontIcon iconLiteral="mdi2t-theater:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -63,9 +63,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container green">
+              <StackPane styleClass="stat-icon-container, green">
                 <FontIcon iconLiteral="mdi2c-check-circle:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -75,9 +75,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container purple">
+              <StackPane styleClass="stat-icon-container, purple">
                 <FontIcon iconLiteral="mdi2s-seat:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -87,9 +87,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container orange">
+              <StackPane styleClass="stat-icon-container, orange">
                 <FontIcon iconLiteral="mdi2t-tools:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -118,7 +118,7 @@
 
           <Region HBox.hgrow="ALWAYS"/>
 
-          <ToggleButton fx:id="gridViewToggle" styleClass="view-toggle active" onAction="#showGridView">
+          <ToggleButton fx:id="gridViewToggle" styleClass="view-toggle, active" onAction="#showGridView">
             <graphic>
               <FontIcon iconLiteral="mdi2v-view-grid:18"/>
             </graphic>
@@ -178,7 +178,7 @@
 
   <!-- Create/Edit Hall Dialog -->
   <VBox fx:id="hallDialog" styleClass="dialog-overlay" visible="false" managed="false" alignment="CENTER">
-    <VBox styleClass="dialog-card large" spacing="20" maxWidth="600">
+    <VBox styleClass="dialog-card, large" spacing="20" maxWidth="600">
       <padding>
         <Insets topRightBottomLeft="30"/>
       </padding>

@@ -4,9 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import org.kordamp.ikonli.javafx.*?>
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootContainer" maxWidth="1100.0" maxHeight="650.0"
-           minWidth="1100.0"
-           minHeight="650.0" xmlns="http://javafx.com/javafx/21"
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootContainer" prefWidth="1200.0" prefHeight="800.0"
+           xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.users.HomeAdminController"
            style="-fx-background-color: linear-gradient(to bottom right, #0a0a0a, #1a0a0a, #2a0f0f, #1a0606, #0a0a0a);
            -fx-effect: dropshadow(gaussian, #8b0000, 50, 0, 0, 0);
@@ -71,13 +70,13 @@
   </AnchorPane>
 
   <!-- Main Content Container -->
-  <HBox spacing="0" maxWidth="1100.0" maxHeight="650.0" style="-fx-background-color: transparent;">
+  <HBox spacing="0" style="-fx-background-color: transparent;">
 
     <!-- Left Sidebar -->
     <fx:include source="../sidebar.fxml"/>
 
     <!-- Main Content Area -->
-    <VBox spacing="0" prefWidth="900.0" maxWidth="900.0" HBox.hgrow="ALWAYS"
+    <VBox spacing="0" minWidth="0" HBox.hgrow="ALWAYS"
           style="-fx-background-color: radial-gradient(center 50% 50%, radius 80%, rgba(15, 15, 15, 0.95), rgba(5, 5, 5, 0.98));
                    -fx-background-radius: 25 0 0 25;
                    -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 30, 0, 0, 0);">
@@ -96,7 +95,7 @@
                                -fx-font-size: 24px;
                                -fx-font-weight: bold;
                                -fx-effect: dropshadow(gaussian, #8b0000, 6, 0, 1, 1);"/>
-          <Label text="Complete system administration and management dashboard"
+          <Label text="Manage the Rakcha platform" wrapText="true"
                  style="-fx-text-fill: #cccccc;
                                -fx-font-family: 'Arial';
                                -fx-font-size: 14px;
@@ -153,7 +152,7 @@
             <!-- Featured Admin Spotlight Section -->
             <VBox spacing="20">
               <HBox alignment="CENTER_LEFT" spacing="15">
-                <Label text="🎯 ADMIN SPOTLIGHT"
+          <Label text="ADMIN OVERVIEW"
                        styleClass="section-title, glow-text, pulse"
                        style="-fx-text-fill: #ffffff; -fx-font-family: 'Arial Black'; -fx-font-size: 22px;"/>
                 <Circle fill="#ff6666" radius="6.0" styleClass="pulse-dot"/>
@@ -541,5 +540,4 @@
   </AnchorPane>
 
 </StackPane>
-
 

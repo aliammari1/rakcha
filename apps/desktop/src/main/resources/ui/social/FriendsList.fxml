@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="250" layoutX="1100" layoutY="500" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="250" layoutX="1100" layoutY="500" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -53,7 +53,7 @@
 
           <!-- Filter Tabs -->
           <HBox styleClass="filter-tabs" spacing="0">
-            <ToggleButton fx:id="allTab" styleClass="filter-tab active" text="All" onAction="#showAll"/>
+            <ToggleButton fx:id="allTab" styleClass="filter-tab, active" text="All" onAction="#showAll"/>
             <ToggleButton fx:id="onlineTab" styleClass="filter-tab" text="Online" onAction="#showOnline"/>
             <ToggleButton fx:id="pendingTab" styleClass="filter-tab" text="Pending" onAction="#showPending"/>
           </HBox>
@@ -75,7 +75,7 @@
 
             <HBox alignment="CENTER_LEFT" spacing="10">
               <Label text="Friend Requests" styleClass="section-label"/>
-              <Label fx:id="requestsCountBadge" styleClass="count-badge red" text="0"/>
+              <Label fx:id="requestsCountBadge" styleClass="count-badge, red" text="0"/>
             </HBox>
             <VBox fx:id="requestsContainer" spacing="8"/>
           </VBox>
@@ -113,12 +113,12 @@
                 <Label fx:id="friendStatus" styleClass="friend-status"/>
 
                 <HBox spacing="15" alignment="CENTER">
-                  <Button onAction="#sendMessage" styleClass="action-btn primary" text="Message">
+                  <Button onAction="#sendMessage" styleClass="action-btn, primary" text="Message">
                     <graphic>
                       <FontIcon iconLiteral="mdi2m-message:18"/>
                     </graphic>
                   </Button>
-                  <Button onAction="#inviteToMovie" styleClass="action-btn secondary" text="Invite to Movie">
+                  <Button onAction="#inviteToMovie" styleClass="action-btn, secondary" text="Invite to Movie">
                     <graphic>
                       <FontIcon iconLiteral="mdi2m-movie:18"/>
                     </graphic>

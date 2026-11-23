@@ -1,16 +1,11 @@
 package com.esprit.controllers.users;
 
-import com.dlsc.formsfx.model.structure.Field;
-import com.dlsc.formsfx.model.structure.Form;
-import com.dlsc.formsfx.model.structure.Group;
-import com.dlsc.formsfx.model.validators.RegexValidator;
-import com.dlsc.formsfx.model.validators.StringLengthValidator;
-import com.dlsc.formsfx.view.renderer.FormRenderer;
 import com.esprit.enums.UserRole;
 import com.esprit.models.users.User;
 import com.esprit.services.users.UserSecurityService;
 import com.esprit.services.users.UserService;
 import com.esprit.utils.SessionManager;
+import com.esprit.utils.validators.EmailValidator;
 import com.github.plushaze.traynotification.notification.Notifications;
 import com.github.plushaze.traynotification.notification.TrayNotification;
 import javafx.animation.Animation;
@@ -23,8 +18,6 @@ import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -37,11 +30,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -51,6 +45,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
@@ -62,47 +57,24 @@ public class LoginController implements Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
     private static final Random RANDOM = new Random();
-    // Verified movie poster URLs with correct TMDB images
-    private final String[] moviePosters = {
-        "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg", // Dune (2021)
-        "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg", // Joker (2019)
-        "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg", // Oppenheimer (2023)
-        "https://image.tmdb.org/t/p/w500/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg", // Blade Runner 2049
-        "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg", // Inception
-        "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg", // Spider-Man: Across the Spider-Verse
-        "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg", // The Batman (2022)
-        "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", // Interstellar
-        "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg", // Avengers: Endgame
-        "https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg", // John Wick: Chapter 4
-        "https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg", // Top Gun: Maverick
-        "https://image.tmdb.org/t/p/w500/w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg" // Everything Everywhere All at Once
-    };
-    // Movie titles corresponding to the posters
-    private final String[] movieTitles = {
-        "Dune",
-        "Joker",
-        "Oppenheimer",
-        "Blade Runner 2049",
-        "Inception",
-        "Spider-Man: Across the Spider-Verse",
-        "The Batman",
-        "Interstellar",
-        "Avengers: Endgame",
-        "John Wick: Chapter 4",
-        "Top Gun: Maverick",
-        "Everything Everywhere All at Once"
-    };
+    private record FeaturedFilm(String title, String poster) {}
+
+    private static final List<FeaturedFilm> FEATURED_FILMS = List.of(
+        new FeaturedFilm("Oppenheimer", "46637.jpg"),
+        new FeaturedFilm("Spider-Man: No Way Home", "61459.jpg"),
+        new FeaturedFilm("Avengers: Infinity War", "6794.jpg"),
+        new FeaturedFilm("Dachra", "39862.jpg")
+    );
     private final UserSecurityService securityService = new UserSecurityService();
-    // FormsFX properties for declarative form handling
-    private final StringProperty emailProperty = new SimpleStringProperty("");
-    private final StringProperty passwordProperty = new SimpleStringProperty("");
     private final int maxDynamicElements = 15; // Number of dynamic elements to create
     @FXML
     private StackPane rootContainer;
     @FXML
     private AnchorPane anchorPane;
     @FXML
-    private VBox loginFormContainer;
+    private TextField emailTextField;
+    @FXML
+    private PasswordField passwordTextField;
     @FXML
     private Hyperlink forgetPasswordEmailHyperlink;
     @FXML
@@ -142,7 +114,6 @@ public class LoginController implements Initializable {
     private Circle[] dynamicParticles;
     private Polygon[] dynamicShapes;
     private Rectangle[] dynamicRectangles;
-    private Form loginForm;
 
     /**
      * @param event
@@ -188,19 +159,17 @@ public class LoginController implements Initializable {
      */
     @FXML
     void login(final ActionEvent event) throws IOException {
-        // Validate form first
-        if (!loginForm.isValid()) {
+        final String email = emailTextField.getText().strip();
+        final String password = passwordTextField.getText();
+        if (!EmailValidator.isValid(email) || password.length() < 4) {
             if (errorLabel != null) {
-                errorLabel.setText("Please correct the form errors before submitting.");
+                errorLabel.setText("Enter a valid email and a password of at least 4 characters.");
                 errorLabel.setVisible(true);
             }
             return;
         }
 
         final UserService userService = new UserService();
-
-        String email = this.emailProperty.get();
-        String password = this.passwordProperty.get();
 
         // Reset error styling
         if (errorLabel != null) {
@@ -335,9 +304,6 @@ public class LoginController implements Initializable {
      * called automatically by JavaFX after loading the FXML file.
      */
     public void initialize(final URL location, final ResourceBundle resources) {
-        // Setup FormsFX for declarative form handling with FormRenderer
-        this.setupFormsFX();
-
         this.forgetPasswordHyperlink.setOnAction(new EventHandler<>() {
             @Override
             public void handle(final ActionEvent event) {
@@ -678,44 +644,12 @@ public class LoginController implements Initializable {
     }
 
     /**
-     * Sets up the FormsFX form with declarative validation rules and renders it.
-     */
-    private void setupFormsFX() {
-        this.loginForm = Form.of(
-            Group.of(
-                Field.ofStringType(this.emailProperty)
-                    .label("Email")
-                    .placeholder("Enter your email")
-                    .validate(RegexValidator.forPattern(
-                        "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
-                        "Please enter a valid email address")),
-                Field.ofStringType(this.passwordProperty)
-                    .label("Password")
-                    .placeholder("Enter your password")
-                    .required("Password is required")
-                    .validate(StringLengthValidator.atLeast(4, "Password must be at least 4 characters"))
-            )
-        ).title("Sign In");
-
-        // Render the form into the container
-        if (this.loginFormContainer != null) {
-            FormRenderer formRenderer = new FormRenderer(this.loginForm);
-            this.loginFormContainer.getChildren().clear();
-            this.loginFormContainer.getChildren().add(formRenderer);
-        }
-    }
-
-    /**
      * Initializes the featured movie display with image switching
      */
     private void initializeFeaturedMovie() {
         if (featuredMovieImage != null && featuredMovieTitle != null) {
-            // Start with The Batman (index 6 in our new array)
-            int featuredIndex = 6; // The Batman
             try {
-                Image featuredImage = new Image(moviePosters[featuredIndex], true);
-                featuredMovieImage.setImage(featuredImage);
-                featuredMovieTitle.setText(movieTitles[featuredIndex]);
+                showFeaturedFilm(FEATURED_FILMS.get(currentImageIndex));
 
                 // Add some subtle animation to the featured poster
                 ScaleTransition posterScale = new ScaleTransition(Duration.seconds(5), featuredMovieImage);
@@ -735,7 +669,6 @@ public class LoginController implements Initializable {
                 featuredMovieSwitchTimeline.setCycleCount(Animation.INDEFINITE);
                 featuredMovieSwitchTimeline.play();
 
-                LOGGER.info("Initialized featured movie: " + movieTitles[featuredIndex]);
             } catch (Exception e) {
                 LOGGER.warning("Failed to load initial featured movie: " + e.getMessage());
             }
@@ -744,19 +677,24 @@ public class LoginController implements Initializable {
         }
     }
 
+    private void showFeaturedFilm(FeaturedFilm film) {
+        final var poster = getClass().getResource("/img/films/" + film.poster());
+        if (poster != null) {
+            featuredMovieImage.setImage(new Image(poster.toExternalForm(), 420, 630, true, true));
+        }
+        featuredMovieTitle.setText(film.title());
+    }
+
     /**
      * Switches the featured movie display with fade transitions
      */
     private void switchFeaturedMovie() {
         // Increment the current image index
-        currentImageIndex = (currentImageIndex + 1) % moviePosters.length;
+        currentImageIndex = (currentImageIndex + 1) % FEATURED_FILMS.size();
 
         // Update the featured movie display
         if (featuredMovieImage != null && featuredMovieTitle != null) {
-            // Use a featured index that cycles through our movies
-            int featuredIndex = (currentImageIndex + 3) % moviePosters.length;
-            String featuredPosterUrl = moviePosters[featuredIndex];
-            String featuredTitle = movieTitles[featuredIndex];
+            FeaturedFilm film = FEATURED_FILMS.get(currentImageIndex);
 
             // Create fade transition for smooth change
             FadeTransition posterFade = new FadeTransition(Duration.millis(400), featuredMovieImage);
@@ -771,9 +709,7 @@ public class LoginController implements Initializable {
 
             fadeOut.setOnFinished(e -> {
                 try {
-                    // Update image and title
-                    featuredMovieImage.setImage(new Image(featuredPosterUrl, true));
-                    featuredMovieTitle.setText(featuredTitle);
+                    showFeaturedFilm(film);
 
                     // Fade back in
                     FadeTransition posterFadeIn = new FadeTransition(Duration.millis(400), featuredMovieImage);
@@ -793,7 +729,7 @@ public class LoginController implements Initializable {
 
             fadeOut.play();
 
-            LOGGER.info("Updated featured movie to: " + featuredTitle);
+            LOGGER.info("Updated featured movie to: " + film.title());
         }
     }
 

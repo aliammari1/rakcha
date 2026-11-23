@@ -15,8 +15,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="220" layoutX="100" layoutY="120" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="260" layoutX="1100" layoutY="520" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="220" layoutX="100" layoutY="120" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="260" layoutX="1100" layoutY="520" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -57,7 +57,7 @@
             <Insets top="10" bottom="20" left="35" right="35"/>
           </padding>
 
-          <ToggleButton fx:id="allCategoryBtn" styleClass="category-chip active" text="All" onAction="#filterAll"/>
+          <ToggleButton fx:id="allCategoryBtn" styleClass="category-chip, active" text="All" onAction="#filterAll"/>
           <ToggleButton fx:id="snacksCategoryBtn" styleClass="category-chip" text="Snacks" onAction="#filterSnacks"/>
           <ToggleButton fx:id="drinksCategoryBtn" styleClass="category-chip" text="Drinks" onAction="#filterDrinks"/>
           <ToggleButton fx:id="combosCategoryBtn" styleClass="category-chip" text="Combos" onAction="#filterCombos"/>
@@ -106,7 +106,7 @@
         </StackPane>
 
         <!-- Bottom Summary Bar -->
-        <HBox fx:id="summaryBar" styleClass="summary-bar glass-card" spacing="30" alignment="CENTER_LEFT">
+        <HBox fx:id="summaryBar" styleClass="summary-bar, glass-card" spacing="30" alignment="CENTER_LEFT">
           <padding>
             <Insets top="15" bottom="15" left="35" right="35"/>
           </padding>
@@ -120,7 +120,7 @@
 
           <VBox spacing="3">
             <Label text="Total Value" styleClass="summary-label"/>
-            <Label fx:id="totalValueLabel" text="\$0.00" styleClass="summary-value accent"/>
+            <Label fx:id="totalValueLabel" text="\$0.00" styleClass="summary-value, accent"/>
           </VBox>
 
           <Region HBox.hgrow="ALWAYS"/>
@@ -142,7 +142,7 @@
 
   <!-- Product Quick View Dialog -->
   <VBox fx:id="quickViewDialog" styleClass="dialog-overlay" visible="false" managed="false" alignment="CENTER">
-    <HBox styleClass="dialog-card wide" spacing="25" maxWidth="700" alignment="TOP_LEFT">
+    <HBox styleClass="dialog-card, wide" spacing="25" maxWidth="700" alignment="TOP_LEFT">
       <padding>
         <Insets top="30" right="30" bottom="30" left="30"/>
       </padding>
@@ -201,8 +201,8 @@
 
         <!-- Stock Status -->
         <HBox fx:id="stockStatus" spacing="8" alignment="CENTER_LEFT">
-          <FontIcon iconLiteral="mdi2c-check-circle:16" styleClass="stock-icon in-stock"/>
-          <Label fx:id="stockLabel" text="In Stock" styleClass="stock-text in-stock"/>
+          <FontIcon iconLiteral="mdi2c-check-circle:16" styleClass="stock-icon, in-stock"/>
+          <Label fx:id="stockLabel" text="In Stock" styleClass="stock-text, in-stock"/>
         </HBox>
 
         <Region VBox.vgrow="ALWAYS"/>

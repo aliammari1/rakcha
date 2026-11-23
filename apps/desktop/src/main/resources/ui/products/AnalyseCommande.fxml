@@ -1,12 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
            fx:controller="com.esprit.controllers.products.AnalyseOrder"
            styleClass="immersive-root"
-           stylesheets="@../styles/rakcha-unified.css">
+           stylesheets="@../styles/rakcha-unified.css, @../styles/statistics.css">
 
   <!-- Cinematic Background -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
-    <Circle radius="300" layoutX="200" layoutY="200" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="400" layoutX="1400" layoutY="700" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="300" layoutX="200" layoutY="200" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="400" layoutX="1400" layoutY="700" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
 
     <!-- Floating Elements -->
     <FontIcon iconLiteral="mdi2c-chart-bar:100" layoutX="100" layoutY="500" styleClass="floating-icon" opacity="0.05"/>
@@ -47,33 +56,37 @@
           </rowConstraints>
 
           <!-- Order Rate Chart -->
-          <VBox spacing="10" styleClass="glass-panel" GridPane.columnIndex="0">
+          <VBox spacing="10" styleClass="glass-panel, chart-card" GridPane.columnIndex="0">
             <padding>
               <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
-            <Label text="Order Growth Over Time" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
-            <LineChart fx:id="TauxOrder" VBox.vgrow="ALWAYS" legendVisible="false">
+            <Label text="Orders by date" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
+            <LineChart fx:id="TauxOrder" VBox.vgrow="ALWAYS" animated="false">
               <xAxis>
-                <CategoryAxis fx:id="xAxis" label="Date" side="BOTTOM"/>
+                <CategoryAxis fx:id="xAxis" label="Date" side="BOTTOM" tickLabelsVisible="true"
+                              style="-fx-tick-label-fill: #e4d4d7; -fx-tick-label-font-size: 12px;"/>
               </xAxis>
               <yAxis>
-                <NumberAxis label="Orders" side="LEFT"/>
+                <NumberAxis label="Orders" side="LEFT" tickLabelsVisible="true" minorTickVisible="false"
+                            style="-fx-tick-label-fill: #e4d4d7; -fx-tick-label-font-size: 12px;"/>
               </yAxis>
             </LineChart>
           </VBox>
 
           <!-- Category Rate Chart -->
-          <VBox spacing="10" styleClass="glass-panel" GridPane.columnIndex="1">
+          <VBox spacing="10" styleClass="glass-panel, chart-card" GridPane.columnIndex="1">
             <padding>
               <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
-            <Label text="Orders by Category" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
-            <StackedBarChart fx:id="TauxCategorie" VBox.vgrow="ALWAYS" legendVisible="true">
+            <Label text="Paid items by category" styleClass="section-subtitle" style="-fx-text-fill: white;"/>
+            <StackedBarChart fx:id="TauxCategorie" VBox.vgrow="ALWAYS" animated="false">
               <xAxis>
-                <CategoryAxis side="BOTTOM" fx:id="xOrderAxis" label="Category"/>
+                <CategoryAxis side="BOTTOM" fx:id="xOrderAxis" label="Date" tickLabelsVisible="true"
+                              style="-fx-tick-label-fill: #e4d4d7; -fx-tick-label-font-size: 12px;"/>
               </xAxis>
               <yAxis>
-                <NumberAxis side="LEFT" label="Count"/>
+                <NumberAxis side="LEFT" label="Items" tickLabelsVisible="true" minorTickVisible="false"
+                            style="-fx-tick-label-fill: #e4d4d7; -fx-tick-label-font-size: 12px;"/>
               </yAxis>
             </StackedBarChart>
           </VBox>
@@ -83,4 +96,3 @@
     </center>
   </BorderPane>
 </StackPane>
-

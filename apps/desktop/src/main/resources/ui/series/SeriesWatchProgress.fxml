@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="220" layoutX="100" layoutY="120" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="280" layoutX="1150" layoutY="520" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="220" layoutX="100" layoutY="120" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="280" layoutX="1150" layoutY="520" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -50,9 +50,9 @@
             <Insets top="10" bottom="25" left="35" right="35"/>
           </padding>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container blue">
+              <StackPane styleClass="stat-icon-container, blue">
                 <FontIcon iconLiteral="mdi2t-television-play:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -62,9 +62,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container green">
+              <StackPane styleClass="stat-icon-container, green">
                 <FontIcon iconLiteral="mdi2c-check-circle:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -74,9 +74,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container purple">
+              <StackPane styleClass="stat-icon-container, purple">
                 <FontIcon iconLiteral="mdi2p-play-circle:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -86,9 +86,9 @@
             </HBox>
           </VBox>
 
-          <VBox styleClass="stat-card glass-card" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, glass-card" HBox.hgrow="ALWAYS">
             <HBox alignment="CENTER_LEFT" spacing="15">
-              <StackPane styleClass="stat-icon-container orange">
+              <StackPane styleClass="stat-icon-container, orange">
                 <FontIcon iconLiteral="mdi2c-clock-outline:24"/>
               </StackPane>
               <VBox spacing="3">
@@ -104,7 +104,7 @@
           <padding>
             <Insets left="35" right="35"/>
           </padding>
-          <ToggleButton fx:id="continueWatchingTab" styleClass="content-tab active" text="Continue Watching"
+          <ToggleButton fx:id="continueWatchingTab" styleClass="content-tab, active" text="Continue Watching"
                         onAction="#showContinueWatching"/>
           <ToggleButton fx:id="allSeriesTab" styleClass="content-tab" text="All Series" onAction="#showAllSeries"/>
           <ToggleButton fx:id="completedTab" styleClass="content-tab" text="Completed" onAction="#showCompleted"/>
@@ -185,7 +185,7 @@
   <HBox fx:id="detailPanelOverlay" styleClass="detail-panel-overlay" visible="false" managed="false">
     <Region styleClass="overlay-backdrop" HBox.hgrow="ALWAYS" onMouseClicked="#closeDetailPanel"/>
 
-    <VBox fx:id="detailPanel" styleClass="detail-panel glass-card" spacing="0" prefWidth="420">
+    <VBox fx:id="detailPanel" styleClass="detail-panel, glass-card" spacing="0" prefWidth="420">
 
       <!-- Panel Header -->
       <StackPane styleClass="detail-header">
@@ -241,7 +241,7 @@
         <!-- Current Episode -->
         <VBox spacing="12" styleClass="current-episode-section">
           <Label text="Continue From" styleClass="section-label"/>
-          <HBox styleClass="current-episode-card glass-inner" spacing="12" alignment="CENTER_LEFT">
+          <HBox styleClass="current-episode-card, glass-inner" spacing="12" alignment="CENTER_LEFT">
             <padding>
               <Insets topRightBottomLeft="12"/>
             </padding>

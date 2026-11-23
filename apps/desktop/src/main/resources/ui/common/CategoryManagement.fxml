@@ -6,7 +6,8 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1"
             xmlns="http://javafx.com/javafx/21"
             fx:controller="com.esprit.controllers.common.CategoryManagementController"
-            stylesheets="@../styles/rakcha-unified.css"
+            styleClass="category-management"
+            stylesheets="@../styles/rakcha-unified.css, @../styles/category-management.css"
             style="-fx-background-color: linear-gradient(to bottom right, #1a0a0a, #2d1515, #1a0a0a);">
 
   <!-- Top Header -->
@@ -17,7 +18,7 @@
         <Button onAction="#goBack" styleClass="back-btn"
                 style="-fx-background-color: transparent; -fx-cursor: hand;">
           <graphic>
-            <FontIcon iconLiteral="mdi2a-arrow-left:24:#ff6666"/>
+            <FontIcon iconLiteral="mdi2a-arrow-left" style="-fx-icon-size: 24; -fx-icon-color: #ff8b93;"/>
           </graphic>
         </Button>
         <Label fx:id="titleLabel" text="Category Management"
@@ -62,12 +63,7 @@
       <!-- Category Table -->
       <VBox spacing="10" HBox.hgrow="ALWAYS">
         <Label text="Categories" style="-fx-text-fill: #ff6666; -fx-font-size: 16px; -fx-font-weight: bold;"/>
-        <TableView fx:id="categoryTable" VBox.vgrow="ALWAYS"
-                   style="-fx-background-color: rgba(0,0,0,0.3);
-                                  -fx-background-radius: 15;
-                                  -fx-border-color: #8b0000;
-                                  -fx-border-radius: 15;
-                                  -fx-border-width: 1;">
+        <TableView fx:id="categoryTable" VBox.vgrow="ALWAYS" styleClass="table-view-dark">
           <columns>
             <TableColumn fx:id="idColumn" text="ID" prefWidth="60" sortable="true"/>
             <TableColumn fx:id="nameColumn" text="Name" prefWidth="150" sortable="true"/>
@@ -82,7 +78,7 @@
       </VBox>
 
       <!-- Form Panel -->
-      <VBox spacing="15" prefWidth="320"
+      <VBox spacing="15" prefWidth="370"
             style="-fx-background-color: rgba(139, 0, 0, 0.15);
                          -fx-background-radius: 20;
                          -fx-border-color: #8b0000;
@@ -94,12 +90,8 @@
                               -fx-font-size: 18px;
                               -fx-font-weight: bold;"/>
 
-        <Separator style="-fx-background-color: #8b0000;"/>
-
         <!-- FormsFX Form Container -->
         <VBox fx:id="formContainer" spacing="10" VBox.vgrow="ALWAYS"/>
-
-        <Separator style="-fx-background-color: #8b0000;"/>
 
         <!-- Action Buttons -->
         <HBox spacing="10" alignment="CENTER">
@@ -133,4 +125,3 @@
     </HBox>
   </bottom>
 </BorderPane>
-

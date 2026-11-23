@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="250" layoutX="1100" layoutY="500" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="250" layoutX="1100" layoutY="500" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -67,7 +67,7 @@
             <Label text="Total Tickets" styleClass="stat-label"/>
           </VBox>
 
-          <VBox styleClass="stat-card upcoming" HBox.hgrow="ALWAYS">
+          <VBox styleClass="stat-card, upcoming" HBox.hgrow="ALWAYS">
             <FontIcon iconLiteral="mdi2c-calendar-clock:36" styleClass="stat-icon"/>
             <Label fx:id="upcomingTicketsLabel" text="0" styleClass="stat-value"/>
             <Label text="Upcoming Shows" styleClass="stat-label"/>
@@ -80,7 +80,7 @@
           </VBox>
 
           <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-            <FontIcon iconLiteral="mdi2s-star:36" styleClass="stat-icon gold"/>
+            <FontIcon iconLiteral="mdi2s-star:36" styleClass="stat-icon, gold"/>
             <Label fx:id="loyaltyPointsLabel" text="0" styleClass="stat-value"/>
             <Label text="Loyalty Points" styleClass="stat-label"/>
           </VBox>
@@ -92,7 +92,7 @@
             <Insets left="30" right="30"/>
           </padding>
 
-          <ToggleButton fx:id="upcomingTab" styleClass="tab-btn active" text="Upcoming" onAction="#showUpcoming"/>
+          <ToggleButton fx:id="upcomingTab" styleClass="tab-btn, active" text="Upcoming" onAction="#showUpcoming"/>
           <ToggleButton fx:id="pastTab" styleClass="tab-btn" text="Past" onAction="#showPast"/>
           <ToggleButton fx:id="cancelledTab" styleClass="tab-btn" text="Cancelled" onAction="#showCancelled"/>
 
@@ -162,7 +162,7 @@
             </VBox>
             <VBox spacing="5">
               <Label text="PRICE" styleClass="ticket-label"/>
-              <Label fx:id="detailPrice" styleClass="ticket-value price"/>
+              <Label fx:id="detailPrice" styleClass="ticket-value, price"/>
             </VBox>
           </HBox>
 
@@ -174,17 +174,17 @@
           </HBox>
 
           <HBox spacing="15" alignment="CENTER" styleClass="ticket-actions">
-            <Button onAction="#downloadTicket" styleClass="action-btn secondary" text="Download PDF">
+            <Button onAction="#downloadTicket" styleClass="action-btn, secondary" text="Download PDF">
               <graphic>
                 <FontIcon iconLiteral="mdi2d-download:18"/>
               </graphic>
             </Button>
-            <Button onAction="#shareTicket" styleClass="action-btn secondary" text="Share">
+            <Button onAction="#shareTicket" styleClass="action-btn, secondary" text="Share">
               <graphic>
                 <FontIcon iconLiteral="mdi2s-share-variant:18"/>
               </graphic>
             </Button>
-            <Button fx:id="cancelTicketBtn" onAction="#cancelTicket" styleClass="action-btn danger" text="Cancel">
+            <Button fx:id="cancelTicketBtn" onAction="#cancelTicket" styleClass="action-btn, danger" text="Cancel">
               <graphic>
                 <FontIcon iconLiteral="mdi2c-close-circle:18"/>
               </graphic>

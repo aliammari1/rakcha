@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="100" layoutY="100" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="200" layoutX="100" layoutY="100" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -143,9 +143,9 @@
               </padding>
               <Label fx:id="typingText" text="John is typing..." styleClass="typing-text"/>
               <HBox styleClass="typing-dots" spacing="3">
-                <Circle radius="4" styleClass="dot dot-1"/>
-                <Circle radius="4" styleClass="dot dot-2"/>
-                <Circle radius="4" styleClass="dot dot-3"/>
+                <Circle radius="4" styleClass="dot, dot-1"/>
+                <Circle radius="4" styleClass="dot, dot-2"/>
+                <Circle radius="4" styleClass="dot, dot-3"/>
               </HBox>
             </HBox>
 
@@ -278,7 +278,7 @@
   <VBox fx:id="emojiPicker" styleClass="emoji-picker" visible="false" managed="false" alignment="TOP_CENTER"
         maxWidth="350" maxHeight="400">
     <HBox styleClass="emoji-categories" spacing="0">
-      <Button styleClass="emoji-category active" text="😊"/>
+      <Button styleClass="emoji-category, active" text="😊"/>
       <Button styleClass="emoji-category" text="🎬"/>
       <Button styleClass="emoji-category" text="🍿"/>
       <Button styleClass="emoji-category" text="❤️"/>

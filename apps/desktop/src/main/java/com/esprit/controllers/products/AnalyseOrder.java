@@ -1,6 +1,7 @@
 package com.esprit.controllers.products;
 
 import com.esprit.models.common.Category;
+import com.esprit.enums.CategoryType;
 import com.esprit.models.products.Order;
 import com.esprit.models.products.OrderItem;
 import com.esprit.services.common.CategoryService;
@@ -67,7 +68,9 @@ public class AnalyseOrder implements Initializable {
         final OrderItemService orderItemService = new OrderItemService();
         final List<OrderItem> orderItems = orderItemService.read();
         final CategoryService categoryService = new CategoryService();
-        final List<Category> categories = categoryService.read(PageRequest.defaultPage()).getContent();
+        final List<Category> categories = categoryService.read(PageRequest.defaultPage()).getContent().stream()
+            .filter(category -> category.getType() == CategoryType.PRODUCT)
+            .toList();
         final Map<String, Integer> enCoursByDate = new HashMap<>();
         final Map<String, Integer> payeeByDate = new HashMap<>();
         final Map<String, Map<String, Integer>> categoriesAchatsByDate = new HashMap<>();
@@ -75,6 +78,9 @@ public class AnalyseOrder implements Initializable {
         // Remplir les maps avec toutes les dates possibles
         for (final Order order : orders) {
             final java.time.LocalDateTime dateOrder = order.getOrderDate();
+            if (dateOrder == null) {
+                continue;
+            }
             final String formattedDate = dateOrder.toLocalDate().toString();
             enCoursByDate.put(formattedDate, 0);
             payeeByDate.put(formattedDate, 0);
@@ -88,6 +94,9 @@ public class AnalyseOrder implements Initializable {
         // Compter le nombre de orders par date et par statut
         for (final Order order : orders) {
             final java.time.LocalDateTime dateOrder = order.getOrderDate();
+            if (dateOrder == null) {
+                continue;
+            }
             final String formattedDate = dateOrder.toLocalDate().toString();
             String statusValue = order.getStatus() != null ? order.getStatus().getValue() : "";
             if ("processing".equalsIgnoreCase(statusValue) || "pending".equalsIgnoreCase(statusValue)) {
@@ -97,9 +106,11 @@ public class AnalyseOrder implements Initializable {
                 // Analyse des catégories achetées
                 final Map<String, Integer> categoriesAchats = categoriesAchatsByDate.get(formattedDate);
                 for (final OrderItem orderItem : orderItems) {
-                    if (orderItem.getOrder().getId() == order.getId()) {
-                        final String categorie = orderItem.getProduct().getCategories().get(0).getName();
-                        categoriesAchats.put(categorie, categoriesAchats.get(categorie) + 1);
+                    if (orderItem.getOrder() != null && order.getId().equals(orderItem.getOrder().getId())
+                        && orderItem.getProduct() != null) {
+                        orderItem.getProduct().getCategories().stream().findFirst().ifPresent(category ->
+                            categoriesAchats.computeIfPresent(category.getName(),
+                                (name, count) -> count + orderItem.getQuantity()));
                     }
 
                 }
@@ -108,19 +119,19 @@ public class AnalyseOrder implements Initializable {
 
         }
 
-        final ObservableList<String> dates = FXCollections.observableArrayList(enCoursByDate.keySet());
+        final ObservableList<String> dates =
+            FXCollections.observableArrayList(enCoursByDate.keySet().stream().sorted().toList());
         // Configurer l'axe X avec les dates
         this.xAxis.setCategories(dates);
         final XYChart.Series<String, Number> enCoursSeries = new XYChart.Series<>();
-        enCoursSeries.setName("Orders en cours");
+        enCoursSeries.setName("Open");
         final XYChart.Series<String, Number> payeeSeries = new XYChart.Series<>();
-        payeeSeries.setName("Orders payees");
+        payeeSeries.setName("Paid");
         for (final String date : dates) {
             enCoursSeries.getData().add(new XYChart.Data<>(date, enCoursByDate.get(date)));
             payeeSeries.getData().add(new XYChart.Data<>(date, payeeByDate.get(date)));
         }
 
-        this.TauxOrder.setTitle("Nombre de orders par date");
         // Ajouter les séries au graphique
         this.TauxOrder.getData().addAll(enCoursSeries, payeeSeries);
         // Configurer la StackedBarChart pour les catégories
@@ -147,10 +158,7 @@ public class AnalyseOrder implements Initializable {
             .observableArrayList(seriesMap.values());
         this.TauxCategorie.getData().addAll(seriesList);
         // Configuration des axes
-        this.xAxis.setCategories(FXCollections.observableArrayList(categoriesAchatsByDate.keySet()));
-        this.TauxCategorie.getXAxis().setLabel("Date de order");
-        this.TauxCategorie.getYAxis().setLabel("Nombre d'achats");
-        this.TauxCategorie.setTitle("Nombre de catégories achetées par date");
+        this.xOrderAxis.setCategories(FXCollections.observableArrayList(dates));
     }
 
 }

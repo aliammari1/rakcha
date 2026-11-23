@@ -18,11 +18,11 @@
               AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
 
     <!-- Ambient Light Orbs -->
-    <Circle fx:id="ambientOrb1" radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary"
+    <Circle fx:id="ambientOrb1" radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary"
             opacity="0.15"/>
-    <Circle fx:id="ambientOrb2" radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-secondary"
+    <Circle fx:id="ambientOrb2" radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb, orb-secondary"
             opacity="0.1"/>
-    <Circle fx:id="ambientOrb3" radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb orb-accent"
+    <Circle fx:id="ambientOrb3" radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb, orb-accent"
             opacity="0.12"/>
 
     <!-- Floating Cinema Elements -->
@@ -86,7 +86,7 @@
 
             <!-- Quick Actions -->
             <HBox spacing="12" alignment="CENTER_RIGHT">
-              <ComboBox fx:id="tricomboBox" styleClass="glass-combo" promptText="Sort" prefWidth="120"
+              <ComboBox fx:id="tricomboBox" styleClass="glass-combo" promptText="Sort by" prefWidth="150"
                         onAction="#sortFilms"/>
               <Button onAction="#filtrer" styleClass="glass-btn" mnemonicParsing="false">
                 <graphic>
@@ -138,7 +138,7 @@
                       <HBox spacing="15" styleClass="hero-meta">
                         <Label fx:id="heroYear" text="2024" styleClass="meta-pill"/>
                         <Label fx:id="heroDuration" text="2h 15m" styleClass="meta-pill"/>
-                        <Label fx:id="heroGenre" text="Action" styleClass="meta-pill genre"/>
+                        <Label fx:id="heroGenre" text="Action" styleClass="meta-pill, genre"/>
                         <HBox spacing="5" alignment="CENTER">
                           <FontIcon iconLiteral="mdi2s-star:16" styleClass="star-gold"/>
                           <Label fx:id="heroRating" text="4.8" styleClass="rating-text"/>
@@ -146,19 +146,19 @@
                       </HBox>
                       <Label fx:id="heroDescription" styleClass="hero-description" wrapText="true" maxWidth="500"/>
                       <HBox spacing="15" styleClass="hero-actions">
-                        <Button fx:id="heroPlayBtn" styleClass="hero-btn primary" text="Book Tickets"
+                        <Button fx:id="heroPlayBtn" styleClass="hero-btn, primary" text="Book Tickets"
                                 mnemonicParsing="false">
                           <graphic>
                             <FontIcon iconLiteral="mdi2t-ticket:20"/>
                           </graphic>
                         </Button>
-                        <Button fx:id="heroTrailerBtn" styleClass="hero-btn secondary" text="Watch Trailer"
+                        <Button fx:id="heroTrailerBtn" styleClass="hero-btn, secondary" text="Watch Trailer"
                                 mnemonicParsing="false">
                           <graphic>
                             <FontIcon iconLiteral="mdi2p-play-circle-outline:20"/>
                           </graphic>
                         </Button>
-                        <Button fx:id="heroAddListBtn" onAction="#addToWatchlist" styleClass="hero-btn icon-only"
+                        <Button fx:id="heroAddListBtn" onAction="#addToWatchlist" styleClass="hero-btn, icon-only"
                                 mnemonicParsing="false">
                           <graphic>
                             <FontIcon iconLiteral="mdi2p-plus:22"/>
@@ -167,7 +167,7 @@
                             <Tooltip text="Add to watchlist"/>
                           </tooltip>
                         </Button>
-                        <Button fx:id="heroShareBtn" onAction="#shareHeroFilm" styleClass="hero-btn icon-only"
+                        <Button fx:id="heroShareBtn" onAction="#shareHeroFilm" styleClass="hero-btn, icon-only"
                                 mnemonicParsing="false">
                           <graphic>
                             <FontIcon iconLiteral="mdi2s-share-variant:20"/>
@@ -184,7 +184,7 @@
 
               <!-- Quick Categories Pills -->
               <HBox fx:id="categoryPills" styleClass="category-pills" spacing="12" alignment="CENTER_LEFT">
-                <Button styleClass="pill-btn active" text="All" onAction="#filterByCategory" mnemonicParsing="false"/>
+                <Button styleClass="pill-btn, active" text="All" onAction="#filterByCategory" mnemonicParsing="false"/>
                 <Button styleClass="pill-btn" text="Now Showing" onAction="#filterByCategory" mnemonicParsing="false"/>
                 <Button styleClass="pill-btn" text="Coming Soon" onAction="#filterByCategory" mnemonicParsing="false"/>
                 <Button styleClass="pill-btn" text="Top Rated" onAction="#filterByCategory" mnemonicParsing="false"/>
@@ -193,7 +193,7 @@
                 <Button styleClass="pill-btn" text="Comedy" onAction="#filterByCategory" mnemonicParsing="false"/>
                 <Button styleClass="pill-btn" text="Sci-Fi" onAction="#filterByCategory" mnemonicParsing="false"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <ComboBox fx:id="top3combobox" styleClass="view-combo" promptText="View" prefWidth="100"
+                <ComboBox fx:id="top3combobox" styleClass="view-combo" promptText="View" prefWidth="150"
                           onAction="#sortBySelection"/>
               </HBox>
 
@@ -242,18 +242,13 @@
                           <Label text="/5" styleClass="rating-suffix"/>
                         </HBox>
                         <Separator orientation="VERTICAL"/>
-                        <Label fx:id="yearLabel" text="2024" styleClass="detail-meta"/>
-                        <Label fx:id="durationLabel" text="2h 30m" styleClass="detail-meta"/>
-                        <Label fx:id="directorLabel" text="Director" styleClass="detail-meta"/>
+                        <Label fx:id="yearLabel" styleClass="detail-meta"/>
+                        <Label fx:id="durationLabel" styleClass="detail-meta"/>
                       </HBox>
                     </VBox>
 
                     <!-- Genre Tags -->
-                    <HBox fx:id="genreTags" spacing="10" styleClass="genre-tags">
-                      <Label text="Action" styleClass="genre-tag"/>
-                      <Label text="Adventure" styleClass="genre-tag"/>
-                      <Label text="Sci-Fi" styleClass="genre-tag"/>
-                    </HBox>
+                    <HBox fx:id="genreTags" spacing="10" styleClass="genre-tags"/>
 
                     <!-- Description -->
                     <VBox spacing="10">
@@ -273,19 +268,19 @@
 
                     <!-- Action Buttons -->
                     <HBox spacing="15" styleClass="detail-actions">
-                      <Button fx:id="reserver_Film" styleClass="action-btn primary" text="Book Tickets"
+                      <Button fx:id="reserver_Film" styleClass="action-btn, primary" text="Book Tickets"
                               mnemonicParsing="false">
                         <graphic>
                           <FontIcon iconLiteral="mdi2t-ticket:20"/>
                         </graphic>
                       </Button>
-                      <Button onMouseClicked="#afficherAnchorComment" styleClass="action-btn secondary" text="Reviews"
+                      <Button onMouseClicked="#afficherAnchorComment" styleClass="action-btn, secondary" text="Reviews"
                               mnemonicParsing="false">
                         <graphic>
                           <FontIcon iconLiteral="mdi2c-comment-text-multiple:20"/>
                         </graphic>
                       </Button>
-                      <Button fx:id="shareDetailBtn" onAction="#shareDetailFilm" styleClass="action-btn icon"
+                      <Button fx:id="shareDetailBtn" onAction="#shareDetailFilm" styleClass="action-btn, icon"
                               mnemonicParsing="false">
                         <graphic>
                           <FontIcon iconLiteral="mdi2s-share-variant:20"/>
@@ -294,7 +289,7 @@
                           <Tooltip text="Share this film"/>
                         </tooltip>
                       </Button>
-                      <Button fx:id="favoriteDetailBtn" onAction="#toggleFavorite" styleClass="action-btn icon"
+                      <Button fx:id="favoriteDetailBtn" onAction="#toggleFavorite" styleClass="action-btn, icon"
                               mnemonicParsing="false">
                         <graphic>
                           <FontIcon iconLiteral="mdi2h-heart-outline:20"/>
@@ -312,13 +307,13 @@
                       <Insets top="40" bottom="40" left="25" right="25"/>
                     </padding>
 
-                    <!-- Quick Book QR -->
+                    <!-- Film information QR -->
                     <VBox spacing="10" alignment="CENTER" styleClass="qr-section">
-                      <Label text="Quick Book" styleClass="qr-label"/>
+                      <Label text="IMDb" styleClass="qr-label"/>
                       <StackPane styleClass="qr-frame">
                         <ImageView fx:id="qrcode" fitHeight="130" fitWidth="130" preserveRatio="true"/>
                       </StackPane>
-                      <Label text="Scan to book on mobile" styleClass="qr-hint"/>
+                      <Label text="Scan for film information" styleClass="qr-hint"/>
                     </VBox>
 
                     <!-- Showtime Preview -->
@@ -326,7 +321,7 @@
                       <Label text="Next Showtime" styleClass="section-label-small"/>
                       <HBox spacing="8" alignment="CENTER" styleClass="showtime-badge">
                         <FontIcon iconLiteral="mdi2c-clock-outline:16"/>
-                        <Label text="Today 7:30 PM" styleClass="showtime-text"/>
+                        <Label fx:id="nextShowtimeLabel" styleClass="showtime-text" wrapText="true"/>
                       </HBox>
                     </VBox>
                   </VBox>
@@ -396,7 +391,7 @@
               <VBox styleClass="top-picks-section" spacing="18">
                 <HBox alignment="CENTER_LEFT" spacing="12">
                   <FontIcon iconLiteral="mdi2c-crown:26" styleClass="crown-icon"/>
-                  <Label text="Top Picks For You" styleClass="section-title gold"/>
+                  <Label text="Top Picks For You" styleClass="section-title, gold"/>
                   <Region HBox.hgrow="ALWAYS"/>
                   <Button styleClass="see-all-btn" text="See All" mnemonicParsing="false">
                     <graphic>
@@ -488,4 +483,3 @@
     <FontIcon fx:id="sendIcon" iconLiteral="mdi2s-send:20"/>
   </AnchorPane>
 </StackPane>
-

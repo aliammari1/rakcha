@@ -134,42 +134,51 @@ public class HomeCinemaManagerController implements Initializable {
      * cinema and session services.
      */
     private void loadDashboardStatistics() {
+        final User manager = SessionManager.getCurrentUser();
+        final long managerId = manager != null && manager.getId() != null ? manager.getId() : -1;
+        final java.sql.Timestamp now = java.sql.Timestamp.valueOf(java.time.LocalDateTime.now());
+        final java.sql.Timestamp monthStart = java.sql.Timestamp.valueOf(
+            java.time.LocalDate.now().withDayOfMonth(1).atStartOfDay());
+        final String own = " FROM screenings s JOIN cinema_halls h ON h.id = s.hall_id "
+            + "JOIN cinemas c ON c.id = h.cinema_id WHERE c.manager_id = ?";
         try {
-            // Load cinema count (placeholder)
-            if (cinemaCountLabel != null) {
-                cinemaCountLabel.setText("5");
-            }
-
-            // Load session count
-            if (sessionCountLabel != null) {
-                PageRequest sessionPageRequest = PageRequest.defaultPage();
-                Page<MovieSession> sessions = sessionService.read(sessionPageRequest);
-                sessionCountLabel.setText(String.valueOf(sessions.getContent().size()));
-            }
-
-            // Load revenue (placeholder)
-            if (revenueLabel != null) {
-                revenueLabel.setText("$15,250");
-            }
-
-            // Load booking count (placeholder)
-            if (bookingCountLabel != null) {
-                bookingCountLabel.setText("128");
-            }
-
+            final java.sql.Connection con = com.esprit.utils.DataSource.getInstance().getConnection(); // shared: never close
+            cinemaCountLabel.setText(String.valueOf(scalar(con,
+                "SELECT COUNT(*) FROM cinemas WHERE manager_id = ?", managerId)));
+            sessionCountLabel.setText(String.valueOf(scalar(con,
+                "SELECT COUNT(*)" + own + " AND s.start_time >= ?", managerId, now)));
+            bookingCountLabel.setText(String.valueOf(scalar(con,
+                "SELECT COUNT(*) FROM tickets t JOIN screenings s ON s.id = t.screening_id "
+                    + "JOIN cinema_halls h ON h.id = s.hall_id JOIN cinemas c ON c.id = h.cinema_id "
+                    + "WHERE c.manager_id = ? AND t.status <> 'CANCELLED'", managerId)));
+            final double revenue = scalarDouble(con,
+                "SELECT COALESCE(SUM(t.price_paid), 0) FROM tickets t JOIN screenings s ON s.id = t.screening_id "
+                    + "JOIN cinema_halls h ON h.id = s.hall_id JOIN cinemas c ON c.id = h.cinema_id "
+                    + "WHERE c.manager_id = ? AND t.status <> 'CANCELLED' AND t.purchase_time >= ?",
+                managerId, monthStart);
+            revenueLabel.setText(String.format(java.util.Locale.ENGLISH, "%.2f TND", revenue));
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error loading dashboard statistics: " + e.getMessage(), e);
-            // Set default values in case of error
-            if (cinemaCountLabel != null)
-                cinemaCountLabel.setText("0");
-            if (sessionCountLabel != null)
-                sessionCountLabel.setText("0");
-            if (revenueLabel != null)
-                revenueLabel.setText("$0");
-            if (bookingCountLabel != null)
-                bookingCountLabel.setText("0");
+            cinemaCountLabel.setText("0");
+            sessionCountLabel.setText("0");
+            revenueLabel.setText("0.00 TND");
+            bookingCountLabel.setText("0");
         }
+    }
 
+    private static double scalarDouble(java.sql.Connection con, String sql, Object... params) throws java.sql.SQLException {
+        try (java.sql.PreparedStatement st = con.prepareStatement(sql)) {
+            for (int i = 0; i < params.length; i++) {
+                st.setObject(i + 1, params[i]);
+            }
+            try (java.sql.ResultSet rs = st.executeQuery()) {
+                return rs.next() ? rs.getDouble(1) : 0;
+            }
+        }
+    }
+
+    private static long scalar(java.sql.Connection con, String sql, Object... params) throws java.sql.SQLException {
+        return (long) scalarDouble(con, sql, params);
     }
 
     /**
@@ -226,21 +235,33 @@ public class HomeCinemaManagerController implements Initializable {
      * container remains cleared.
      */
     private void loadRecentActivity() {
-        try {
-            if (activityContainer != null) {
-                activityContainer.getChildren().clear();
-
-                // Add sample activity items
-                addActivityItem("New movie session added: Avatar", "10 minutes ago");
-                addActivityItem("Actor profile updated: Tom Hanks", "30 minutes ago");
-                addActivityItem("Category created: Sci-Fi", "1 hour ago");
-                addActivityItem("Movie statistics updated", "2 hours ago");
-            }
-
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error loading recent activity: " + e.getMessage(), e);
+        if (activityContainer == null) {
+            return;
         }
-
+        activityContainer.getChildren().clear();
+        final User manager = SessionManager.getCurrentUser();
+        final long managerId = manager != null && manager.getId() != null ? manager.getId() : -1;
+        final java.time.format.DateTimeFormatter when = java.time.format.DateTimeFormatter.ofPattern(
+            "EEE d MMM · HH:mm", java.util.Locale.ENGLISH);
+        final java.sql.Connection con = com.esprit.utils.DataSource.getInstance().getConnection(); // shared: never close
+        try (java.sql.PreparedStatement st = con.prepareStatement(
+                 "SELECT m.title, c.name, h.name, s.start_time FROM screenings s JOIN movies m ON m.id = s.movie_id "
+                     + "JOIN cinema_halls h ON h.id = s.hall_id JOIN cinemas c ON c.id = h.cinema_id "
+                     + "WHERE c.manager_id = ? AND s.start_time >= ? ORDER BY s.start_time LIMIT 5")) {
+            st.setLong(1, managerId);
+            st.setTimestamp(2, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
+            try (java.sql.ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    addActivityItem(rs.getString(1) + " — " + rs.getString(2) + ", " + rs.getString(3),
+                        rs.getTimestamp(4).toLocalDateTime().format(when));
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error loading upcoming showtimes: " + e.getMessage(), e);
+        }
+        if (activityContainer.getChildren().isEmpty()) {
+            addActivityItem("No upcoming showtimes yet. Schedule one to see it here.", "");
+        }
     }
 
     /**
@@ -316,9 +337,9 @@ public class HomeCinemaManagerController implements Initializable {
     @FXML
     void manageMovies(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/films/Film.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/films/InterfaceFilm.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) rootContainer.getScene().getWindow();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading movie management interface: " + e.getMessage(), e);
@@ -329,15 +350,15 @@ public class HomeCinemaManagerController implements Initializable {
     /**
      * Navigates the application to the session management dashboard.
      * <p>
-     * Loads the FXML at "/ui/cinemas/DashboardResponsable.fxml" and replaces the
+     * Loads the FXML at "/ui/cinemas/DashboardResponsableCinema.fxml" and replaces the
      * current stage's scene with the loaded root.
      */
     @FXML
     void manageSessions(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/cinemas/DashboardResponsable.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/cinemas/DashboardResponsableCinema.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) rootContainer.getScene().getWindow();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading session management interface: " + e.getMessage(), e);
@@ -353,9 +374,9 @@ public class HomeCinemaManagerController implements Initializable {
     @FXML
     void manageActors(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/films/Actor.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/films/InterfaceActor.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) rootContainer.getScene().getWindow();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading actor management interface: " + e.getMessage(), e);
@@ -372,7 +393,7 @@ public class HomeCinemaManagerController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/cinemas/statistiques.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) rootContainer.getScene().getWindow();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error loading statistics interface: " + e.getMessage(), e);
@@ -389,7 +410,7 @@ public class HomeCinemaManagerController implements Initializable {
      */
     @FXML
     void manageCinemas(ActionEvent event) {
-        manageSessions(event); // Redirect to session management which includes cinema management
+        manageSessions(event);
     }
 
     /**

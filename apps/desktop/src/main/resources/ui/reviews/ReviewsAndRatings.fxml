@@ -14,8 +14,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="220" layoutX="100" layoutY="120" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="280" layoutX="1150" layoutY="520" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="220" layoutX="100" layoutY="120" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="280" layoutX="1150" layoutY="520" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -126,7 +126,7 @@
             <Region HBox.hgrow="ALWAYS"/>
 
             <HBox styleClass="filter-group" spacing="10">
-              <ToggleButton fx:id="allReviewsFilter" styleClass="filter-chip active" text="All"/>
+              <ToggleButton fx:id="allReviewsFilter" styleClass="filter-chip, active" text="All"/>
               <ToggleButton fx:id="fiveStarFilter" styleClass="filter-chip" text="5★"/>
               <ToggleButton fx:id="fourStarFilter" styleClass="filter-chip" text="4★"/>
               <ToggleButton fx:id="threeStarFilter" styleClass="filter-chip" text="3★"/>
@@ -188,7 +188,7 @@
 
   <!-- Write/Edit Review Dialog -->
   <VBox fx:id="reviewDialog" styleClass="dialog-overlay" visible="false" managed="false" alignment="CENTER">
-    <VBox styleClass="dialog-card large" spacing="20" maxWidth="600">
+    <VBox styleClass="dialog-card, large" spacing="20" maxWidth="600">
       <padding>
         <Insets topRightBottomLeft="30"/>
       </padding>
