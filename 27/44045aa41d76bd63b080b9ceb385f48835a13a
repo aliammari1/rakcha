@@ -1,0 +1,19 @@
+docs/apps/web.md
+  s_72bb39432e420b::t_62ce926aa66843 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2744045aa41d76bd63b080b9ceb385f48835a13a",
+  "prompts": {},
+  "sessions": {
+    "s_72bb39432e420b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7eb67f8e-6515-4bbe-b363-6aaf3c72fcad",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Ali Ammari <ammari.ali.0001@gmail.com>"
+    }
+  }
+}
