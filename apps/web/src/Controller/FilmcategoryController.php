@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/filmcategory')]
 class FilmcategoryController extends AbstractController
@@ -36,7 +36,7 @@ class FilmcategoryController extends AbstractController
             return $this->redirectToRoute('app_filmcategory_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('filmcategory/new.html.twig', [
+        return $this->render('filmcategory/new.html.twig', [
             'filmcategory' => $filmcategory,
             'form' => $form,
         ]);
@@ -62,7 +62,7 @@ class FilmcategoryController extends AbstractController
             return $this->redirectToRoute('app_filmcategory_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('filmcategory/edit.html.twig', [
+        return $this->render('filmcategory/edit.html.twig', [
             'filmcategory' => $filmcategory,
             'form' => $form,
         ]);

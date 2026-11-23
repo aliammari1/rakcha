@@ -1,0 +1,55 @@
+{% set mode = mode|default('front') %}
+{% set current = app.request.attributes.get('_route') %}
+<aside class="rk-side" id="rakcha-sidebar">
+    <a class="rk-side__brand" href="{{ path('app_home_index') }}">
+        <img src="{{ asset('img/Logo.png') }}" alt="">
+        <span><b>RAKCHA</b><small>Your Cinema Universe</small></span>
+    </a>
+
+    {% if mode == 'back' and is_granted('ROLE_ADMIN') %}
+        <span class="rk-side__label">Administration</span>
+        <nav class="rk-side__nav" aria-label="Admin navigation">
+            <a class="rk-side__link {% if current == 'app_users_index' %}is-active{% endif %}" href="{{ path('app_users_index') }}"><i class="fa fa-users"></i> Users</a>
+            <a class="rk-side__link {% if current == 'app_cinemaAdmin_index' %}is-active{% endif %}" href="{{ path('app_cinemaAdmin_index') }}"><i class="fa fa-video-camera"></i> Cinemas</a>
+            <a class="rk-side__link {% if current == 'app_produit_index' %}is-active{% endif %}" href="{{ path('app_produit_index') }}"><i class="fa fa-shopping-bag"></i> Products</a>
+            <a class="rk-side__link {% if current == 'app_series_index' %}is-active{% endif %}" href="{{ path('app_series_index') }}"><i class="fa fa-television"></i> Series</a>
+            <a class="rk-side__link {% if current == 'app_categories_index' %}is-active{% endif %}" href="{{ path('app_categories_index') }}"><i class="fa fa-tags"></i> Categories</a>
+        </nav>
+    {% elseif mode == 'back' %}
+        <span class="rk-side__label">Management</span>
+        <nav class="rk-side__nav" aria-label="Manager navigation">
+            <a class="rk-side__link {% if current == 'app_cinema_index' %}is-active{% endif %}" href="{{ path('app_cinema_index') }}"><i class="fa fa-home"></i> Dashboard</a>
+            <a class="rk-side__link {% if current == 'app_seance_index' %}is-active{% endif %}" href="{{ path('app_seance_index') }}"><i class="fa fa-clock-o"></i> Showtimes</a>
+            <a class="rk-side__link {% if current == 'app_film_index' %}is-active{% endif %}" href="{{ path('app_film_index') }}"><i class="fa fa-film"></i> Films</a>
+            <a class="rk-side__link {% if current == 'app_category_index' %}is-active{% endif %}" href="{{ path('app_category_index') }}"><i class="fa fa-list"></i> Categories</a>
+            <a class="rk-side__link {% if current == 'app_actor_index' %}is-active{% endif %}" href="{{ path('app_actor_index') }}"><i class="fa fa-users"></i> Actors</a>
+        </nav>
+    {% else %}
+        <span class="rk-side__label">Explore</span>
+        <nav class="rk-side__nav" aria-label="Main navigation">
+            <a class="rk-side__link {% if current == 'app_home_index' %}is-active{% endif %}" href="{{ path('app_home_index') }}"><i class="fa fa-home"></i> Home</a>
+            <a class="rk-side__link {% if current == 'app_listfilms_index' or current == 'app_filShow_index' %}is-active{% endif %}" href="{{ path('app_listfilms_index') }}"><i class="fa fa-film"></i> Movies</a>
+            <a class="rk-side__link {% if current == 'app_series_liste' %}is-active{% endif %}" href="{{ path('app_series_liste') }}"><i class="fa fa-television"></i> Series</a>
+            <a class="rk-side__link {% if current == 'app_produit_liste' %}is-active{% endif %}" href="{{ path('app_produit_liste') }}"><i class="fa fa-shopping-bag"></i> Products</a>
+            <a class="rk-side__link {% if current == 'app_cinema_liste' %}is-active{% endif %}" href="{{ path('app_cinema_liste') }}"><i class="fa fa-video-camera"></i> Cinema</a>
+            <a class="rk-side__link {% if current == 'app_panier_liste' %}is-active{% endif %}" href="{{ path('app_panier_liste') }}"><i class="fa fa-shopping-cart"></i> Cart</a>
+        </nav>
+    {% endif %}
+
+    <div class="rk-side__spacer"></div>
+    <div class="rk-side__foot">
+        {% if app.user %}
+            {% if is_granted('ROLE_ADMIN') %}
+                <a class="rk-side__link rk-side__link--muted" href="{{ path('app_users_index') }}"><i class="fa fa-user"></i> Account</a>
+            {% elseif is_granted('ROLE_RESPONSABLE_DE_CINEMA') %}
+                <a class="rk-side__link rk-side__link--muted" href="{{ path('app_cinema_index') }}"><i class="fa fa-user"></i> Account</a>
+            {% else %}
+                <a class="rk-side__link rk-side__link--muted" href="{{ path('app_profile_index', {id: app.user.id}) }}"><i class="fa fa-user"></i> Account</a>
+            {% endif %}
+            <a class="rk-side__link rk-side__link--muted" href="{{ path('app_logout_index') }}"><i class="fa fa-sign-out"></i> Exit</a>
+        {% else %}
+            <a class="rk-side__link" href="{{ path('app_login') }}"><i class="fa fa-sign-in"></i> Sign in</a>
+            <a class="rk-side__link rk-side__link--muted" href="{{ path('app_register') }}"><i class="fa fa-user-plus"></i> Create account</a>
+        {% endif %}
+    </div>
+</aside>

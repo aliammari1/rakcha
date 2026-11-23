@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/favoris')]
 class FavorisController extends AbstractController
@@ -52,7 +52,7 @@ class FavorisController extends AbstractController
             return $this->redirectToRoute('app_favoris_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('favoris/new.html.twig', [
+        return $this->render('favoris/new.html.twig', [
             'favori' => $favori,
             'form' => $form,
         ]);
@@ -78,7 +78,7 @@ class FavorisController extends AbstractController
             return $this->redirectToRoute('app_favoris_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('favoris/edit.html.twig', [
+        return $this->render('favoris/edit.html.twig', [
             'favori' => $favori,
             'form' => $form,
         ]);

@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/feedback')]
 class FeedbackController extends AbstractController
@@ -36,7 +36,7 @@ class FeedbackController extends AbstractController
             return $this->redirectToRoute('app_feedback_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('feedback/new.html.twig', [
+        return $this->render('feedback/new.html.twig', [
             'feedback' => $feedback,
             'form' => $form,
         ]);
@@ -62,7 +62,7 @@ class FeedbackController extends AbstractController
             return $this->redirectToRoute('app_feedback_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('feedback/edit.html.twig', [
+        return $this->render('feedback/edit.html.twig', [
             'feedback' => $feedback,
             'form' => $form,
         ]);

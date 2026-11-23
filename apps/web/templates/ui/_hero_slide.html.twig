@@ -1,0 +1,20 @@
+{% set poster = film.image|rakcha_media %}
+{% set next = showtimes|filter(s => s.idFilm.id == film.id)|first %}
+<section class="rk-hero" aria-labelledby="featured-{{ film.id }}">
+    <div class="rk-hero__body">
+        <span class="rk-eyebrow">Featured this week</span>
+        <h2 class="rk-hero__title" id="featured-{{ film.id }}">{{ film.nom }}</h2>
+        <div class="rk-hero__meta">
+            {% if film.annederalisation %}<span class="rk-chip">{{ film.annederalisation }}</span>{% endif %}
+            {% if film.duree %}<span class="rk-chip">{{ film.duree|date('G') * 60 + film.duree|date('i') }} min</span>{% endif %}
+            <span class="rk-chip rk-chip--red">Now showing</span>
+            {% if next %}<span class="rk-chip"><i class="fa fa-clock-o"></i> {{ next.date|date('D, j M') }} · {{ next.hd|date('H:i') }}</span>{% endif %}
+        </div>
+        <p class="rk-hero__desc">{{ film.description|default('Discover the latest films, choose your showtime and reserve your seats in a few clicks.')|striptags|slice(0, 190) }}</p>
+        <div class="rk-actions" style="margin:18px 0 0">
+            <a class="rk-btn" href="{{ path('app_listfilms_index') }}"><i class="fa fa-ticket"></i> Book tickets</a>
+            <a class="rk-btn rk-btn--ghost" href="{{ path('app_filShow_index', {id: film.id}) }}"><i class="fa fa-play-circle"></i> Details</a>
+        </div>
+    </div>
+    {% if poster %}<img class="rk-hero__poster" src="{{ asset(poster) }}" alt="{{ film.nom }} poster" width="260" height="390">{% endif %}
+</section>

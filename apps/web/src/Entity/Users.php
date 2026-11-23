@@ -349,7 +349,28 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        // The singular `role` column is authoritative. The legacy `roles`
+        // JSON column was seeded with ROLE_CLIENT for every account, so it
+        // cannot be trusted to decide admin/manager access.
+        $map = [
+            'admin' => 'ROLE_ADMIN',
+            'client' => 'ROLE_CLIENT',
+            'responsable de cinema' => 'ROLE_RESPONSABLE_DE_CINEMA',
+        ];
+
+        $role = $this->getRole();
+        $roles = [];
+        if ($role !== null && isset($map[$role])) {
+            $roles[] = $map[$role];
+        }
+
+        foreach ($this->roles as $stored) {
+            if (isset($map[$stored])) {
+                $roles[] = $map[$stored];
+            } elseif (str_starts_with($stored, 'ROLE_') && !($stored === 'ROLE_CLIENT' && $role !== 'client')) {
+                $roles[] = $stored;
+            }
+        }
 
         $roles[] = 'ROLE_USER';
 

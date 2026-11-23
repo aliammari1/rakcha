@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/series')]
 class SeriesController extends AbstractController
@@ -123,7 +123,7 @@ class SeriesController extends AbstractController
         }
         dump($form->getErrors(true));
 
-        return $this->renderForm('series/new.html.twig', [
+        return $this->render('series/new.html.twig', [
             'series' => $series,
             'form' => $form,
         ]);
@@ -168,7 +168,7 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('app_series_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('series/edit.html.twig', [
+        return $this->render('series/edit.html.twig', [
             'series' => $series,
             'form' => $form,
         ]);

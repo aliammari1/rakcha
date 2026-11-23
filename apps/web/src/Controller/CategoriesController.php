@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/categories')]
 class CategoriesController extends AbstractController
@@ -44,7 +44,7 @@ class CategoriesController extends AbstractController
             return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('categories/new.html.twig', [
+        return $this->render('categories/new.html.twig', [
             'category' => $category,
             'form' => $form,
         ]);
@@ -70,7 +70,7 @@ class CategoriesController extends AbstractController
             return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('categories/edit.html.twig', [
+        return $this->render('categories/edit.html.twig', [
             'category' => $category,
             'form' => $form,
         ]);

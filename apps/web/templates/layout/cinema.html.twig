@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Rakcha{% endblock %}</title>
+    <link rel="icon" href="{{ asset('img/Logo.png') }}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/rakcha.css') }}">
+    {% block head %}{% endblock %}
+    <script defer src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    <script defer src="{{ asset('js/rakcha.js') }}"></script>
+</head>
+<body>
+    <a class="rk-skip" href="#main">Skip to content</a>
+    {% include 'layout/_topnav.html.twig' only %}
+    <main class="rk-main" id="main" tabindex="-1">{% block content %}{% endblock %}</main>
+    {% include 'layout/_footer.html.twig' only %}
+    {% block scripts %}{% endblock %}
+</body>
+</html>

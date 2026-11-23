@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Twilio\Rest\Client;
 
 #[Route('/episodes')]
@@ -186,7 +186,7 @@ class EpisodesController extends AbstractController
             return $this->redirectToRoute('app_episodes_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('episodes/edit.html.twig', [
+        return $this->render('episodes/edit.html.twig', [
             'episode' => $episode,
             'form' => $form,
         ]);

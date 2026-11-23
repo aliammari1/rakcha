@@ -1,0 +1,9 @@
+<li class="rk-showtime" id="showtime-{{ showtime.idSeance }}">
+    <time datetime="{{ showtime.date|date('Y-m-d') }}T{{ showtime.hd|date('H:i') }}">{{ showtime.hd|date('H:i') }}</time>
+    <div>
+        <strong>{{ showtime.idFilm.nom }}</strong>
+        <small>{{ showtime.idCinema.nom }} · Hall {{ showtime.idSalle.nomSalle }}</small>
+    </div>
+    <span class="rk-price">{{ showtime.prix|number_format(2) }} TND</span>
+    <a class="rk-btn rk-btn--sm" href="{{ path('app_listfilms_index') }}" aria-label="Choose seats for {{ showtime.idFilm.nom }} at {{ showtime.hd|date('H:i') }}">Choose seats</a>
+</li>

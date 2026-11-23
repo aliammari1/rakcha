@@ -1,309 +1,106 @@
 {% extends 'baseFront.html.twig' %}
 
+{% block title %}{{ film.nom }} — Rakcha{% endblock %}
 
 {% block body %}
-    {{ block('header') }}
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .main_card {
-            color: #fff;
-            width: 760px;
-            height: 390px;
-            margin: 50px auto;
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            max-width: 770px;
-            background: #00C9FF;
-            background: #FF5733; /* Fallback for older browsers */
-            background: -webkit-linear-gradient(to right, #FF5733, #FF0000); /* Chrome 10-25, Safari 5.1-6 */
-            background: -webkit-gradient(linear, left top, right top, from(#FF5733), to(#FF0000)); /* Chrome 4-9, Safari 4-5 */
-            background: -webkit-linear-gradient(left, #FF5733, #FF0000); /* Chrome 10-25, Safari 5.1-6 */
-            background: -o-linear-gradient(left, #FF5733, #FF0000); /* Opera 11.1-12 */
-            background: linear-gradient(to right, #FF5733, #FF0000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-            -webkit-box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
-            box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .card_left {
-            width: 90%;
-        }
-
-        .card_datails {
-            width: 90%;
-            padding: 30px;
-            margin-top: -25px;
-        }
-
-        .card_datails h1 {
-            font-size: 30px;
-        }
-
-        .card_right img {
-            height: 390px;
-            border-radius: 2px;
-        }
-
-        .card_right {
-            border-radius: 2px;
-        }
-
-        .card_cat {
-            width: 100%;
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-pack: justify;
-            -ms-flex-pack: justify;
-            justify-content: space-between;
-        }
-
-        .PG,
-        .year,
-        .genre,
-        .time {
-            color: fff;
-            padding: 10px;
-            font-weight: bold;
-            border-radius: 15px;
-        }
-
-        .PG {
-            background: #B22222;
-            -webkit-box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
-            -webkit-transition: 300ms ease-in-out;
-        }
-
-        .disc {
-            font-weight: 100;
-            line-height: 27px;
-        }
-
-        a {
-            color: darkcyan;
-            display: block;
-            text-decoration: none;
-        }
-
-        .social-btn {
-            margin-left: -10px;
-        }
-
-        button {
-            color: #fff;
-            border: none;
-            padding: 20px;
-            outline: none;
-            font-size: 12px;
-            margin-top: 30px;
-            margin-left: 10px;
-            background: #B22222;
-            border-radius: 12px;
-            -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            -webkit-transition: 300ms ease-in-out;
-            -o-transition: 200ms ease-in-out;
-            transition: 200ms ease-in-out;
-        }
-
-        button:hover {
-            -webkit-transform: scale(1.1);
-            -ms-transform: scale(1.1);
-            transform: scale(1.1);
-        }
-
-        .play_btn {
-            height: 100%;
-            margin: -394px auto;
-            position: relative;
-            text-align: center;
-            background: rgba(239, 52, 80, 0.4);
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .fa-play-circle {
-            color: #ff5454;
-            font-size: 160px;
-            margin-top: 110px;
-            -webkit-animation: bounce 1.0s -0.4s infinite;
-            animation: bounce 1.0s -0.4s infinite;
-        }
-
-        .fa-play-circle:hover {
-            color: red;
-            animation: bounce 0.4s infinite;
-        }
-
-        @-webkit-keyframes bounce {
-            8% {
-                transform: scale(0.3);
-                -webkit-transform: scale(0.8);
-                opacity: 1;
-            }
-            10% {
-                transform: scale(1.8);
-                -webkit-transform: scale2);
-                opacity: 0;
-            }
-        }
-
-        @keyframes bounce {
-            8% {
-                transform: scale(0.3);
-                -webkit-transform: scale(0.8);
-                opacity: 1;
-            }
-            20% {
-                transform: scale(1.8);
-                -webkit-transform: scale2);
-                opacity: 0;
-            }
-        }
-
-
-        /*  FOLLOW*/
-        .Follow {
-            background: url("https://pbs.twimg.com/profile_images/959092900708544512/v4Db9QRv_bigger.jpg") no-repeat center / contain;
-            width: 50px;
-            height: 50px;
-            bottom: 9px;
-            right: 20px;
-            display: block;
-            position: fixed;
-            border-radius: 50%;
-            z-index: 999;
-            animation: rotation 10s infinite linear;
-        }
-
-        @-webkit-keyframes rotation {
-            from {
-                -webkit-transform: rotate(0deg);
-            }
-            to {
-                -webkit-transform: rotate(359deg);
-            }
-        }
-    </style>
-
-
-    <div class="wrapper">
-        <div class="trend_1r text-end">
-            <h6 class="mb-0">
-                <a class="button" href="{{ path('app_listfilms_index') }}">
-                    View All</a>
-            </h6>
+    {% set poster = film.image|rakcha_media %}
+    <section class="rk-page-hero rk-film-hero">
+        <div class="rk-container rk-film-hero__inner">
+            <div class="rk-film-hero__art">
+                {% if poster %}<img src="{{ asset(poster) }}" alt="{{ film.nom }} poster" width="360" height="540">{% endif %}
+            </div>
+            <div class="rk-film-hero__copy">
+                <a class="rk-textlink" href="{{ path('app_listfilms_index') }}"><i class="fa fa-arrow-left"></i> All films</a>
+                <span class="rk-eyebrow" style="margin-top:18px">Now in the programme</span>
+                <h1 class="rk-title">{{ film.nom }}</h1>
+                <div class="rk-hero__meta">
+                    {% if film.annederalisation %}<span class="rk-chip">{{ film.annederalisation }}</span>{% endif %}
+                    {% if film.duree %}<span class="rk-chip">{{ film.duree|date('G') * 60 + film.duree|date('i') }} min</span>{% endif %}
+                    <span class="rk-chip"><i class="fa fa-star"></i> {{ averageRating|default(0) }}/5</span>
+                    {% for category in film.categorys|slice(0,3) %}<span class="rk-chip">{{ category.nom }}</span>{% endfor %}
+                </div>
+                <p class="rk-lede">{{ film.description|default('No synopsis has been added for this film yet.')|striptags }}</p>
+                <div class="rk-actions" style="margin-top:22px">
+                    <a class="rk-btn" href="#screenings"><i class="fa fa-ticket"></i> See showtimes</a>
+                    {% if videoUrl %}<button class="rk-btn rk-btn--ghost" type="button" data-bs-toggle="modal" data-bs-target="#trailerModal"><i class="fa fa-play-circle"></i> Watch trailer</button>{% endif %}
+                    {% if imdbUrl %}<a class="rk-btn rk-btn--quiet" href="{{ imdbUrl }}" target="_blank" rel="noopener noreferrer">IMDb <i class="fa fa-external-link"></i></a>{% endif %}
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="main_card">
-            <div class="card_left">
-                <div class="card_datails">
-                    <h1>{{ film.nom }}</h1>
-                    <div class="card_cat">
-                        <p class="year">{{ film.annederalisation }}</p>
-                        <p class="genre">
-                            {% for category in film.categorys %}
-                                {{ category.nom }}
-                                {% if not loop.last %}|
-                                {% endif %}
-                            {% endfor %}
-                        </p>
-                        <p class="time">{{ film.duree|date('H:i') }}</p>
-                    </div>
-                    <p class="disc">{{ film.description }}</p>
-                    <p class="disc">
-                        Actors:
-                        {% for actor in film.actors %}
-                            {{ actor.nom }}
-                            {% if not loop.last %},
-                            {% endif %}
-                        {% endfor %}
-                    </p>
-                    <div
-                            class="social-btn">
-                        <!-- WATCH TRAILER-->
-                        <button data-bs-toggle="modal" data-bs-target="#Youtubewatch" data-thevideo="{{ videoUrl }}">
-                            <i class="fa fa-play"></i>
-                            SEE TRAILER
-                        </button>
-                        <!-- GET-->
-                        <button>
-                            <a href="{{ imdbUrl }}" target="_blank">
-                                <i class="fa fa-download"></i>
-                                IMDB
-                            </a>
-                        </button>
-                        <!--BOOKMARK-->
-                        <button>
-                            {{ averageRating[0]['rate_avg']|default('0')|number_format(1) }}
-                            -
-                            <i class="fa fa-star"></i>
-                        </button>
-                    </div>
-                    <div class="modal fade" id="Youtubewatch" data-bs-backdrop="static" data-bs-keyboard="false"
-                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog" style="max-width: 594px;">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-                                    <button type="button" class="btn-close close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <iframe width="560" height="315" src="{{ videoUrl }}"
-                                            allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                                    <div class="modal-footer"></div>
-                                </div>
+    <section class="rk-container rk-section rk-section--tight" id="screenings">
+        <div class="rk-section-head">
+            <div>
+                <span class="rk-eyebrow">Plan your visit</span>
+                <h2 class="rk-title">Upcoming screenings</h2>
+            </div>
+        </div>
+        {% if showtimes is not empty %}
+            <ul class="rk-showtimes">
+                {% for showtime in showtimes %}
+                    <li class="rk-showtime">
+                        <time datetime="{{ showtime.date|date('Y-m-d') }}T{{ showtime.hd|date('H:i') }}">{{ showtime.hd|date('H:i') }}</time>
+                        <div><strong>{{ showtime.idCinema.nom }}</strong><small>{{ showtime.date|date('D, j M') }} · {{ showtime.idSalle.nomSalle }}</small></div>
+                        <span class="rk-price">{{ showtime.prix|number_format(2) }} TND</span>
+                        <a class="rk-btn rk-btn--sm" href="{{ path('app_listfilms_index') }}">Choose seats</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="rk-empty">No screenings are scheduled for this film yet. Check back soon or browse the full programme.</p>
+        {% endif %}
+    </section>
+
+    <section class="rk-section rk-cinemas">
+        <div class="rk-container">
+            <div class="rk-section-head">
+                <div><span class="rk-eyebrow">Behind the film</span><h2 class="rk-title">Cast &amp; details</h2></div>
+            </div>
+            <div class="rk-detail-grid">
+                <twig:Card class="rk-panel">
+                    <twig:Card:Header tag="h2">Cast</twig:Card:Header>
+                    <twig:Card:Body>
+                        {% if film.actors|length %}
+                            <div class="rk_cast">
+                                {% for actor in film.actors %}
+                                    <span class="rk-chip">{{ actor.nom }}</span>
+                                {% endfor %}
                             </div>
+                        {% else %}
+                            <p class="rk-muted">Cast information is not available for this film.</p>
+                        {% endif %}
+                    </twig:Card:Body>
+                </twig:Card>
+                <twig:Card class="rk-panel">
+                    <twig:Card:Header tag="h2">Categories</twig:Card:Header>
+                    <twig:Card:Body>
+                        <div class="rk_cast">
+                            {% for category in film.categorys %}<span class="rk-chip">{{ category.nom }}</span>{% else %}<span class="rk-muted">No categories listed.</span>{% endfor %}
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card_right">
-                <div class="img_container">
-                    <img src="{{ film.image }}" alt="">
-                </div>
-                <div class="play_btn">
-                    <button class="btn" data-bs-toggle="modal" data-bs-target="#Youtubewatch"
-                            data-thevideo="{{ videoUrl }}">
-                        <i class="fa fa-play-circle"></i>
-                    </button>
-                </div>
+                    </twig:Card:Body>
+                </twig:Card>
             </div>
         </div>
+    </section>
+
+    <section class="rk-container rk-section">
+        <div class="rk-section-head">
+            <div><span class="rk-eyebrow">Keep exploring</span><h2 class="rk-title">More films</h2></div>
+            <a class="rk-textlink" href="{{ path('app_listfilms_index') }}">All films <i class="fa fa-arrow-right"></i></a>
+        </div>
+        <div class="rk-film-grid">
+            {% for other in related|filter(f => f.id != film.id)|slice(0,4) %}
+                {% include 'ui/_film_card.html.twig' with {film: other} only %}
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if videoUrl %}
+    <div class="modal fade" id="trailerModal" tabindex="-1" aria-label="Trailer" aria-hidden="true">
+        <div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-body">
+            <div class="rk-trailer"><iframe src="{{ videoUrl }}" title="{{ film.nom }} trailer" allowfullscreen loading="lazy"></iframe></div>
+        </div></div></div>
     </div>
-
-
-    <script>
-        <script>
-            function autoPlayYouTubeModal() {
-            var triggers = document.querySelectorAll('[data-bs-target^="#YoutubeWatch"]');
-            triggers.forEach(function (trigger) {
-            trigger.addEventListener('click', function () {
-            var theModal = this.getAttribute('data-bs-target');
-            var videoSRC = this.getAttribute('data-theVideo');
-            var videoSRCauto = videoSRC + "?autoplay=1";
-            document.querySelector(theModal + ' iframe').setAttribute('src', videoSRCauto);
-
-            var closeButton = document.querySelector(theModal + ' button.close');
-            closeButton.addEventListener('click', function () {
-            document.querySelector(theModal + ' iframe').setAttribute('src', videoSRC);
-        });
-        });
-        });
-        }
-
-            document.addEventListener('DOMContentLoaded', function () {
-            autoPlayYouTubeModal();
-        });
-    </script>
-    </script>
-    {{ block('footer') }}
+    {% endif %}
 {% endblock %}
