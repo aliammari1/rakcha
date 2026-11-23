@@ -1,0 +1,9 @@
+# This app uses session-backed CSRF tokens. Stateless tokens would require the
+# csrf-protection Stimulus controller on every form, which the legacy Twig
+# templates do not load.
+framework:
+    csrf_protection:
+        stateless_token_ids: []
+    form:
+        csrf_protection:
+            token_id: submit
