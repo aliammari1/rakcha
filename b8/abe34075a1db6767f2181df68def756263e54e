@@ -1,0 +1,29 @@
+apps/desktop/src/main/java/com/esprit/controllers/films/FilmController.java
+  s_72bb39432e420b::t_70f7d6988feae8 3,590,626,656,684
+apps/desktop/src/main/java/com/esprit/services/cinemas/MovieSessionService.java
+  s_72bb39432e420b::t_3e406f99123e19 40-41,289-290,298,300
+apps/desktop/src/main/java/com/esprit/services/cinemas/ShowtimeSummary.java
+  s_72bb39432e420b::t_b32e44b16a2218 1-31
+apps/desktop/src/main/java/com/esprit/utils/GenericTableView.java
+  s_72bb39432e420b::t_b58ad00031fc93 95,98-99
+apps/desktop/src/main/java/com/esprit/utils/ValidationTooltips.java
+  s_72bb39432e420b::t_63089ae6935e2e 1-81
+apps/desktop/src/main/resources/ui/users/SignUp.fxml
+  s_72bb39432e420b::t_e55839cc078225 16-17,109,117,122,126,151,154,176-177,182-183,185,190-191,193,198-199,209,213,221,240,262-263,270-272,278-279,286-288,294-295,302-304,310-311,318-320,323-325,338-339,346-348,354-355,362-364,370-371,378-379,386-387,394-395,403-408,422,425-427,434,448-452,483
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b8abe34075a1db6767f2181df68def756263e54e",
+  "prompts": {},
+  "sessions": {
+    "s_72bb39432e420b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7eb67f8e-6515-4bbe-b363-6aaf3c72fcad",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Ali Ammari <ammari.ali.0001@gmail.com>"
+    }
+  }
+}
