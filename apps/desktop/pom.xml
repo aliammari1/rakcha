@@ -106,40 +106,10 @@
     </dependency>
     <!-- XML Processing Dependencies -->
     <!-- JAXB and Activation APIs - Jakarta version -->
-    <dependency>
-      <groupId>jakarta.xml.bind</groupId>
-      <artifactId>jakarta.xml.bind-api</artifactId>
-      <version>4.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>4.0.6</version>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.activation</groupId>
-      <artifactId>jakarta.activation-api</artifactId>
-      <version>2.2.0-M1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.angus</groupId>
-      <artifactId>angus-activation</artifactId>
-      <version>2.1.0-M1</version>
-    </dependency>
 
     <!-- Additional XML support -->
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>4.0.6</version>
-    </dependency>
 
     <!-- Jackson XML support for compatibility -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <version>2.21.5</version>
-    </dependency>
 
     <!-- Logging Dependencies - Log4j2 -->
     <dependency>
@@ -167,26 +137,6 @@
     </dependency>
 
     <!-- Apache Lucene for high-performance full-text search -->
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>10.3.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-queryparser</artifactId>
-      <version>10.3.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-analysis-common</artifactId>
-      <version>10.3.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-suggest</artifactId>
-      <version>10.3.2</version>
-    </dependency>
 
     <!-- Caffeine for high-performance caching -->
     <dependency>
@@ -250,11 +200,6 @@
       <version>2.3.2</version>
     </dependency>
     <dependency>
-      <groupId>com.cloudinary</groupId>
-      <artifactId>cloudinary-taglib</artifactId>
-      <version>2.3.2</version>
-    </dependency>
-    <dependency>
       <groupId>io.github.cdimascio</groupId>
       <artifactId>dotenv-java</artifactId>
       <version>3.2.0</version>
@@ -280,19 +225,9 @@
       <version>21.0.7</version>
     </dependency>
     <dependency>
-      <groupId>com.google.http-client</groupId>
-      <artifactId>google-http-client-jackson2</artifactId>
-      <version>2.1.0-rc1</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-youtube</artifactId>
       <version>v3-rev20251125-2.0.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api-client</groupId>
-      <artifactId>google-api-client</artifactId>
-      <version>2.8.1</version>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
@@ -310,24 +245,9 @@
       <version>31.1.0-beta.1</version>
     </dependency>
     <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
-      <version>1.6.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email</artifactId>
       <version>1.6.0</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.21.0</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.20.0</version>
     </dependency>
     <dependency>
       <groupId>com.vonage</groupId>
@@ -342,11 +262,6 @@
     <dependency>
       <groupId>com.github.scribejava</groupId>
       <artifactId>scribejava-apis</artifactId>
-      <version>8.3.3</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.scribejava</groupId>
-      <artifactId>scribejava-httpclient-okhttp</artifactId>
       <version>8.3.3</version>
     </dependency>
     <dependency>
@@ -420,11 +335,6 @@
       <version>1.14.0</version>
     </dependency>
     <dependency>
-      <groupId>eu.iamgio</groupId>
-      <artifactId>animated</artifactId>
-      <version>1.3.0</version>
-    </dependency>
-    <dependency>
       <groupId>com.github.apanimesh061</groupId>
       <artifactId>VaderSentimentJava</artifactId>
       <version>1.1.1</version>
@@ -458,11 +368,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.yaml</groupId>
-      <artifactId>snakeyaml</artifactId>
-      <version>2.0</version>
-    </dependency>
 
     <!-- HikariCP for Connection Pooling -->
     <dependency>
@@ -473,18 +378,8 @@
 
     <!-- FAANG-Level Machine Learning Dependencies -->
     <!-- TensorFlow Java for machine learning -->
-    <dependency>
-      <groupId>org.tensorflow</groupId>
-      <artifactId>tensorflow-core-platform</artifactId>
-      <version>0.5.0</version>
-    </dependency>
 
     <!-- Weka for data mining and classification -->
-    <dependency>
-      <groupId>nz.ac.waikato.cms.weka</groupId>
-      <artifactId>weka-stable</artifactId>
-      <version>3.8.6</version>
-    </dependency>
 
     <!-- OpenCV Java for computer vision -->
     <dependency>
@@ -495,39 +390,9 @@
 
     <!-- Real-time Communication Dependencies -->
     <!-- Embedded Jetty for WebSocket server -->
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>12.1.13</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty.ee10</groupId>
-      <artifactId>jetty-ee10-servlet</artifactId>
-      <version>12.1.13</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty.ee10.websocket</groupId>
-      <artifactId>jetty-ee10-websocket-jetty-server</artifactId>
-      <version>12.1.13</version>
-    </dependency>
     <!-- Vert.x for reactive programming -->
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-core</artifactId>
-      <version>5.0.12</version>
-    </dependency>
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-web</artifactId>
-      <version>5.0.5</version>
-    </dependency>
 
     <!-- RxJava for reactive streams -->
-    <dependency>
-      <groupId>io.reactivex.rxjava3</groupId>
-      <artifactId>rxjava</artifactId>
-      <version>3.1.10</version>
-    </dependency>
 
     <!-- Voice Recognition Dependencies -->
     <!-- Note: CMU Sphinx dependencies are not readily available in standard repositories -->
@@ -536,43 +401,18 @@
 
     <!-- Advanced UI Dependencies -->
     <!-- JavaFX 3D for immersive experiences -->
-    <dependency>
-      <groupId>org.fxyz3d</groupId>
-      <artifactId>fxyz3d</artifactId>
-      <version>0.6.0</version>
-    </dependency>
 
     <!-- Performance and Monitoring -->
     <!-- Micrometer for metrics -->
-    <dependency>
-      <groupId>io.micrometer</groupId>
-      <artifactId>micrometer-core</artifactId>
-      <version>1.15.12</version>
-    </dependency>
 
     <!-- H2 Database for embedded SQL -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>2.3.232</version>
-    </dependency>
 
     <!-- OkHttp for HTTP client operations -->
-    <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>4.12.0</version>
-    </dependency>
 
     <!-- Jackson for JSON processing (enhanced) -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.21.5</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
       <version>2.21.5</version>
     </dependency>
     <dependency>
@@ -603,19 +443,9 @@
 
     <!-- PreferencesFX - Settings UI generation -->
     <!-- Auto-creates preference dialogs from simple definitions -->
-    <dependency>
-      <groupId>com.dlsc.preferencesfx</groupId>
-      <artifactId>preferencesfx-core</artifactId>
-      <version>11.17.0</version>
-    </dependency>
 
     <!-- GemsFX - Pre-built advanced controls -->
     <!-- On-screen keyboard, PDF viewer, search fields, etc. -->
-    <dependency>
-      <groupId>com.dlsc.gemsfx</groupId>
-      <artifactId>gemsfx</artifactId>
-      <version>2.67.0</version>
-    </dependency>
 
     <!-- CssFX - Live CSS reload during development -->
     <!-- Zero restart CSS editing - massive productivity boost -->
@@ -627,59 +457,24 @@
 
     <!-- RichTextFX - Rich text editing -->
     <!-- Syntax highlighting, code editors, styled text areas -->
-    <dependency>
-      <groupId>org.fxmisc.richtext</groupId>
-      <artifactId>richtextfx</artifactId>
-      <version>0.11.3</version>
-    </dependency>
 
     <!-- ReactFX - Reactive event streams -->
     <!-- Simplifies event handling and async operations -->
-    <dependency>
-      <groupId>org.reactfx</groupId>
-      <artifactId>reactfx</artifactId>
-      <version>2.0-M5</version>
-    </dependency>
 
     <!-- Flowless - Efficient virtualized lists/tables -->
     <!-- Better performance for large data sets than standard ListView -->
-    <dependency>
-      <groupId>org.fxmisc.flowless</groupId>
-      <artifactId>flowless</artifactId>
-      <version>0.7.3</version>
-    </dependency>
 
     <!-- UndoFX - Undo/Redo manager -->
     <!-- Easy undo support for any operation -->
-    <dependency>
-      <groupId>org.fxmisc.undo</groupId>
-      <artifactId>undofx</artifactId>
-      <version>2.1.1</version>
-    </dependency>
 
     <!-- WellBehavedFX - Better event handling -->
     <!-- Composable input maps, cleaner keyboard/mouse handling -->
-    <dependency>
-      <groupId>org.fxmisc.wellbehaved</groupId>
-      <artifactId>wellbehavedfx</artifactId>
-      <version>0.3.3</version>
-    </dependency>
 
     <!-- TilesFX - Dashboard tiles -->
     <!-- Pre-built dashboard components for analytics views -->
-    <dependency>
-      <groupId>eu.hansolo</groupId>
-      <artifactId>tilesfx</artifactId>
-      <version>21.0.7</version>
-    </dependency>
 
     <!-- Medusa - Gauges and meters -->
     <!-- Professional gauge controls for dashboards -->
-    <dependency>
-      <groupId>eu.hansolo</groupId>
-      <artifactId>medusa</artifactId>
-      <version>17.1.7</version>
-    </dependency>
   </dependencies>
   <build>
     <extensions>
@@ -967,6 +762,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.7.0</version>
         <executions>
           <execution>
             <id>copy-dependencies</id>
