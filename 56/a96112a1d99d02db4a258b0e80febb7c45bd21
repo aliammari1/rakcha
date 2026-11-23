@@ -1,0 +1,19 @@
+apps/desktop/pom.xml
+  s_72bb39432e420b::t_d17061a00dda1c 765
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "56a96112a1d99d02db4a258b0e80febb7c45bd21",
+  "prompts": {},
+  "sessions": {
+    "s_72bb39432e420b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7eb67f8e-6515-4bbe-b363-6aaf3c72fcad",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Ali Ammari <ammari.ali.0001@gmail.com>"
+    }
+  }
+}
