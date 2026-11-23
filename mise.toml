@@ -45,10 +45,10 @@ system_deps = "auto"
 # ─── Desktop ──────────────────────────────────────────────────────────────────
 #
 # apps/desktop/pom.xml targets Java 21.
-# Liberica matches the distribution used by desktop CI closely.
-java = "liberica-21"
+# Liberica Full includes JavaFX. Keep the demo build on the verified JDK patch.
+java = "liberica-javafx-21.0.13.0.3+5"
 
-maven = "3.9"
+maven = "3.9.9"
 
 
 # ─── Web ──────────────────────────────────────────────────────────────────────

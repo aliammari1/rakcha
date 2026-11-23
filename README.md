@@ -203,6 +203,11 @@ RAKCHA is licensed under the **RAKCHA Commercial Use License**
 (`SPDX-License-Identifier: LicenseRef-RAKCHA-Commercial`). Free for educational
 and personal use; commercial use requires a license — see [LICENSE](LICENSE).
 
+Rakcha is an educational project, not a commercial cinema service. The
+maintainers do not own third-party film posters, stills, trailers, logos, or
+other media shown in the project or its demos. Those assets remain the property
+of their respective rights holders and are not covered by the code license.
+
 ---
 
 ## Branding
