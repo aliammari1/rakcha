@@ -15,8 +15,8 @@
 
   <!-- Cinematic Background -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
-    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="200" layoutX="300" layoutY="200" styleClass="ambient-orb orb-secondary" opacity="0.12"/>
+    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="200" layoutX="300" layoutY="200" styleClass="ambient-orb, orb-secondary" opacity="0.12"/>
 
     <FontIcon iconLiteral="mdi2c-cart-outline:40" layoutX="100" layoutY="150" styleClass="floating-icon"
               opacity="0.08"/>
@@ -57,12 +57,12 @@
 
             <!-- Cart Actions -->
             <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="glass-panel" style="-fx-padding: 15;">
-              <Button styleClass="hero-btn secondary" text="Clear Cart">
+              <Button styleClass="hero-btn, secondary" text="Clear Cart">
                 <graphic>
                   <FontIcon iconLiteral="mdi2d-delete-outline:20:white"/>
                 </graphic>
               </Button>
-              <Button onAction="#Paiment" styleClass="hero-btn primary" text="Proceed to Checkout">
+              <Button onAction="#Paiment" styleClass="hero-btn, primary" text="Proceed to Checkout">
                 <graphic>
                   <FontIcon iconLiteral="mdi2c-credit-card-check-outline:20:white"/>
                 </graphic>

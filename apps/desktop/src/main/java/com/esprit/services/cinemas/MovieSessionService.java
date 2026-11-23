@@ -37,6 +37,8 @@ public class MovieSessionService implements IService<MovieSession> {
     private static final String[] ALLOWED_SORT_COLUMNS = {
         "id", "movie_id", "hall_id", "start_time", "end_time", "price"
     };
+    static final String NEXT_SCREENING_SQL =
+        "SELECT * FROM screenings WHERE movie_id = ? AND start_time >= ? ORDER BY start_time LIMIT 1";
     private final Connection connection;
     private final CinemaHallService cinemaHallService;
     private final FilmService filmService;
@@ -284,8 +286,8 @@ public class MovieSessionService implements IService<MovieSession> {
     }
 
     /**
-     * Finds the earliest upcoming session for the specified film (sessions with
-     * session_date >= current date),
+     * Finds the earliest upcoming session for the specified film (sessions that
+     * have not started yet),
      * ordered by session_date then start_time.
      *
      * @param filmId the film's id to search sessions for
@@ -293,9 +295,9 @@ public class MovieSessionService implements IService<MovieSession> {
      * no matching session exists
      */
     public MovieSession getFirstSessionForFilm(Long filmId) {
-        String query = "SELECT * FROM screenings WHERE movie_id = ? AND start_time >= CURRENT_DATE ORDER BY start_time LIMIT 1";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (PreparedStatement stmt = connection.prepareStatement(NEXT_SCREENING_SQL)) {
             stmt.setLong(1, filmId);
+            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(java.time.LocalDateTime.now()));
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return buildMovieSession(rs);

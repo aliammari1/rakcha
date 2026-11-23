@@ -41,7 +41,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -152,23 +151,30 @@ public class SerieController {
         }
         ///// affichage du tableau
         final SeriesService serviceSerie = new SeriesService();
-        // TableColumn<Series, Integer> idCol = new TableColumn<>("ID");
-        // idCol.setCellValueFactory(new PropertyValueFactory<>("idserie"));
         final TableColumn<Series, String> nomCol = new TableColumn<>("Name");
-        nomCol.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        nomCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getName()));
+        nomCol.setPrefWidth(125);
         final TableColumn<Series, String> resumeCol = new TableColumn<>("Summary");
-        resumeCol.setCellValueFactory(new PropertyValueFactory<>("resume"));
+        resumeCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getSummary()));
+        resumeCol.setPrefWidth(280);
         final TableColumn<Series, String> directeurCol = new TableColumn<>("Director");
-        directeurCol.setCellValueFactory(new PropertyValueFactory<>("directeur"));
+        directeurCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getDirector()));
+        directeurCol.setPrefWidth(125);
         final TableColumn<Series, String> paysCol = new TableColumn<>("Country");
-        paysCol.setCellValueFactory(new PropertyValueFactory<>("pays"));
+        paysCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getCountry()));
+        paysCol.setPrefWidth(110);
         final TableColumn<Series, String> categorieCol = new TableColumn<>("Category");
-        categorieCol.setCellValueFactory(new PropertyValueFactory<>("nomCategories"));
+        categorieCol.setCellValueFactory(cell -> {
+            final List<Category> categories = cell.getValue().getCategories();
+            return new SimpleStringProperty(categories == null ? "" :
+                String.join(", ", categories.stream().map(Category::getName).toList()));
+        });
         final TableColumn<Series, Void> supprimerCol = new TableColumn<>("Delete");
         supprimerCol.setCellFactory(param -> new TableCell<>() {
-            private final Button button = new Button("delete");
+            private final Button button = new Button("Delete");
 
             {
+                this.button.getStyleClass().add("table-danger-btn");
                 this.button.setOnAction(event -> {
                     final Series serieDto = this.getTableView().getItems().get(this.getIndex());
                     try {
@@ -216,6 +222,7 @@ public class SerieController {
             private int clickCount;
 
             {
+                this.button.getStyleClass().add("action-btn");
                 this.button.setOnAction(event -> {
                     this.clickCount++;
                     if (2 == clickCount) {

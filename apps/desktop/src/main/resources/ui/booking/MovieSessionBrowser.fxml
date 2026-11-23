@@ -13,9 +13,9 @@
 
   <!-- Cinematic Background -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
-    <Circle fx:id="ambientOrb1" radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary"
+    <Circle fx:id="ambientOrb1" radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary"
             opacity="0.15"/>
-    <Circle fx:id="ambientOrb2" radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-secondary"
+    <Circle fx:id="ambientOrb2" radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb, orb-secondary"
             opacity="0.1"/>
   </AnchorPane>
 
@@ -78,7 +78,7 @@
               <FontIcon iconLiteral="mdi2f-format-list-bulleted:18"/>
             </graphic>
           </ToggleButton>
-          <ToggleButton fx:id="gridViewBtn" styleClass="view-toggle-btn active" text="Grid">
+          <ToggleButton fx:id="gridViewBtn" styleClass="view-toggle-btn, active" text="Grid">
             <graphic>
               <FontIcon iconLiteral="mdi2v-view-grid:18"/>
             </graphic>
@@ -184,18 +184,18 @@
             <Region VBox.vgrow="ALWAYS"/>
 
             <HBox spacing="15" styleClass="detail-actions">
-              <Button fx:id="bookNowBtn" onAction="#bookSession" styleClass="action-btn primary" text="Book Now">
+              <Button fx:id="bookNowBtn" onAction="#bookSession" styleClass="action-btn, primary" text="Book Now">
                 <graphic>
                   <FontIcon iconLiteral="mdi2t-ticket:20"/>
                 </graphic>
               </Button>
-              <Button fx:id="selectSeatsBtn" onAction="#selectSeats" styleClass="action-btn secondary"
+              <Button fx:id="selectSeatsBtn" onAction="#selectSeats" styleClass="action-btn, secondary"
                       text="Select Seats">
                 <graphic>
                   <FontIcon iconLiteral="mdi2s-seat:20"/>
                 </graphic>
               </Button>
-              <Button fx:id="addToWatchlistBtn" onAction="#addToWatchlist" styleClass="action-btn icon">
+              <Button fx:id="addToWatchlistBtn" onAction="#addToWatchlist" styleClass="action-btn, icon">
                 <graphic>
                   <FontIcon iconLiteral="mdi2b-bookmark-plus:20"/>
                 </graphic>

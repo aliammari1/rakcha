@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="250" layoutX="1100" layoutY="500" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="250" layoutX="1100" layoutY="500" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -41,7 +41,7 @@
           <HBox spacing="30">
             <!-- Left Column - Navigation -->
             <VBox spacing="10" styleClass="settings-nav" prefWidth="250">
-              <Button fx:id="profileNavBtn" styleClass="nav-item active" text="Profile" onAction="#showProfile"
+              <Button fx:id="profileNavBtn" styleClass="nav-item, active" text="Profile" onAction="#showProfile"
                       maxWidth="Infinity">
                 <graphic>
                   <FontIcon iconLiteral="mdi2a-account:20"/>
@@ -86,7 +86,7 @@
 
               <Region VBox.vgrow="ALWAYS"/>
 
-              <Button styleClass="nav-item danger" text="Delete Account" onAction="#deleteAccount" maxWidth="Infinity">
+              <Button styleClass="nav-item, danger" text="Delete Account" onAction="#deleteAccount" maxWidth="Infinity">
                 <graphic>
                   <FontIcon iconLiteral="mdi2d-delete:20"/>
                 </graphic>
@@ -148,8 +148,8 @@
                 </HBox>
 
                 <HBox spacing="15" alignment="CENTER_RIGHT">
-                  <Button onAction="#cancelChanges" styleClass="action-btn secondary" text="Cancel"/>
-                  <Button onAction="#saveProfile" styleClass="action-btn primary" text="Save Changes"/>
+                  <Button onAction="#cancelChanges" styleClass="action-btn, secondary" text="Cancel"/>
+                  <Button onAction="#saveProfile" styleClass="action-btn, primary" text="Save Changes"/>
                 </HBox>
               </VBox>
 
@@ -177,7 +177,7 @@
                     <PasswordField fx:id="confirmPasswordField" styleClass="settings-input"/>
                   </VBox>
 
-                  <Button onAction="#updatePassword" styleClass="action-btn primary" text="Update Password"/>
+                  <Button onAction="#updatePassword" styleClass="action-btn, primary" text="Update Password"/>
                 </VBox>
 
                 <Separator styleClass="section-separator"/>
@@ -196,7 +196,7 @@
                 <VBox spacing="15">
                   <Label text="Login Sessions" styleClass="subsection-title"/>
                   <VBox fx:id="sessionsContainer" spacing="10"/>
-                  <Button onAction="#logoutAllSessions" styleClass="action-btn danger"
+                  <Button onAction="#logoutAllSessions" styleClass="action-btn, danger"
                           text="Logout All Other Sessions"/>
                 </VBox>
               </VBox>

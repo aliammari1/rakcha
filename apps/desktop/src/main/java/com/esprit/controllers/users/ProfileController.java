@@ -70,7 +70,8 @@ public class ProfileController {
 
     private static final Logger LOGGER = Logger.getLogger(ProfileController.class.getName());
     // Using a more expressive avatar placeholder GIF
-    private static final String DEFAULT_PROFILE_GIF = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeGJhOTk0dWkzdnVtbGoxcmNnMG5ndXVsd3BpcWIwcGV6ZDV3MDBsYiZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/q217GUnfKAmJlFcjBX/giphy.gif";
+    /** Bundled default avatar: the profile must not depend on a third-party host being reachable. */
+    private static final String DEFAULT_PROFILE_GIF = ProfileController.class.getResource("/Logo.png").toExternalForm();
     private final Random random = new Random();
 
     // FormsFX Properties for reactive form binding
@@ -123,6 +124,14 @@ public class ProfileController {
     @FXML
     private Label memberSinceLabel;
     @FXML
+    private Label moviesWatchedLabel;
+    @FXML
+    private Label cinemaVisitsLabel;
+    @FXML
+    private Label avgRatingLabel;
+    @FXML
+    private javafx.scene.layout.HBox vipBadge;
+    @FXML
     private Label aiInsightLabel;
     @FXML
     private TextField adresseTextField;
@@ -157,12 +166,13 @@ public class ProfileController {
      * called automatically by JavaFX after loading the FXML file.
      */
     public void initialize() {
-        setData(SessionManager.getCurrentUser());
         LOGGER.info("Initializing ProfileController with cinematic styling");
 
-        // Initialize FormsFX and EasyBind
+        // Bind first: binding a field to its (empty) property overwrites the field's text,
+        // so the user's data must be loaded after the bindings exist.
         setupFormsFX();
         setupEasyBindings();
+        setData(SessionManager.getCurrentUser());
 
         // Ensure the UI components exist
         if (imageCircle == null) {
@@ -390,6 +400,11 @@ public class ProfileController {
                 return;
             }
 
+            if (DEFAULT_PROFILE_GIF.equals(imageUrl)) {
+                // No profile photo: keep the avatar disc exactly as the FXML lays it out.
+                return;
+            }
+
             LOGGER.info("Loading image from URL: " + imageUrl);
 
             // Normalize the URL if needed (handle special cases)
@@ -405,7 +420,13 @@ public class ProfileController {
                 140, // height
                 true, // preserve ratio
                 true, // smooth
-                false); // no background loading for immediate error detection
+                true); // load in the background so a slow or blocked host never freezes the UI
+            image.errorProperty().addListener((obs, wasError, isError) -> {
+                if (isError) {
+                    LOGGER.warning("Profile image failed to load: " + image.getException());
+                    javafx.application.Platform.runLater(this::useGradientFallback);
+                }
+            });
 
             // Wait for the image to load and check for errors
             image.progressProperty().addListener((obs, oldVal, newVal) -> {
@@ -432,20 +453,10 @@ public class ProfileController {
                 imageCircle.setFill(pattern);
                 LOGGER.info("Image pattern set to circle successfully");
 
-                // Also set the image to the ImageView if available
+                // The circle above already shows the picture; keep the duplicate ImageView out of the layout.
                 if (photoDeProfilImageView != null) {
-                    LOGGER.info("Setting image to ImageView");
-                    photoDeProfilImageView.setImage(image);
-                    // Make the ImageView circular by setting a clip
-                    Circle clip = new Circle(photoDeProfilImageView.getFitWidth() / 2,
-                        photoDeProfilImageView.getFitHeight() / 2,
-                        Math.min(photoDeProfilImageView.getFitWidth(),
-                            photoDeProfilImageView.getFitHeight()) / 2);
-                    photoDeProfilImageView.setClip(clip);
-                    photoDeProfilImageView.setPreserveRatio(true);
-                    LOGGER.info("Image set to ImageView successfully");
-                } else {
-                    LOGGER.warning("photoDeProfilImageView is null");
+                    photoDeProfilImageView.setVisible(false);
+                    photoDeProfilImageView.setManaged(false);
                 }
 
                 // Add subtle glow effect
@@ -511,9 +522,7 @@ public class ProfileController {
         setFieldIfNotNull(adresseTextField, user.getAddress());
         setFieldIfNotNull(emailTextField, user.getEmail());
 
-        if (!user.getPhoneNumber().isEmpty()) {
-            this.phoneNumberTextField.setText(user.getPhoneNumber());
-        }
+        setFieldIfNotNull(phoneNumberTextField, user.getPhoneNumber());
 
         if (user.getBirthDate() != null) {
             this.dateDeNaissanceDatePicker.setValue(user.getBirthDate().toLocalDate());
@@ -521,6 +530,7 @@ public class ProfileController {
 
         // Update header labels with user info
         updateUserInfoLabels(user);
+        loadActivityStats(user);
 
         // Generate AI insight based on user
         updateAIInsight(user);
@@ -533,6 +543,47 @@ public class ProfileController {
 
         // Play entrance animation for content
         playContentEntranceAnimations();
+    }
+
+    /** Real activity numbers for the header cards: tickets booked, cinemas visited, average rating given. */
+    private void loadActivityStats(final User user) {
+        if (moviesWatchedLabel == null || user.getId() == null) {
+            return;
+        }
+        long tickets = 0;
+        long cinemas = 0;
+        double rating = 0;
+        try {
+            final java.sql.Connection con = com.esprit.utils.DataSource.getInstance().getConnection(); // shared: never close
+            try (java.sql.PreparedStatement st = con.prepareStatement(
+                "SELECT COUNT(*), COUNT(DISTINCT h.cinema_id) FROM tickets t JOIN screenings s ON s.id = t.screening_id "
+                    + "JOIN cinema_halls h ON h.id = s.hall_id WHERE t.user_id = ? AND t.status <> 'CANCELLED'")) {
+                st.setLong(1, user.getId());
+                try (java.sql.ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        tickets = rs.getLong(1);
+                        cinemas = rs.getLong(2);
+                    }
+                }
+            }
+            try (java.sql.PreparedStatement st = con.prepareStatement(
+                "SELECT COALESCE(AVG(rating), 0) FROM reviews WHERE user_id = ?")) {
+                st.setLong(1, user.getId());
+                try (java.sql.ResultSet rs = st.executeQuery()) {
+                    rating = rs.next() ? rs.getDouble(1) : 0;
+                }
+            }
+        } catch (final Exception e) {
+            LOGGER.warning("Could not load profile stats: " + e.getMessage());
+        }
+        moviesWatchedLabel.setText(String.valueOf(tickets));
+        cinemaVisitsLabel.setText(String.valueOf(cinemas));
+        avgRatingLabel.setText(rating > 0 ? String.format(java.util.Locale.ENGLISH, "★ %.1f", rating) : "—");
+        if (vipBadge != null) {
+            final boolean vip = tickets >= 10;
+            vipBadge.setVisible(vip);
+            vipBadge.setManaged(vip);
+        }
     }
 
     /**

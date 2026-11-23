@@ -14,7 +14,8 @@
            style="-fx-background-color: linear-gradient(to bottom right, #0a0a0a, #1a0a0a, #2a0f0f, #1a0606, #0a0a0a);
            -fx-effect: dropshadow(gaussian, #8b0000, 50, 0, 0, 0);
            -fx-background-animation: true;"
-           stylesheets="@../styles/rakcha-unified.css">
+            styleClass="account-screen"
+            stylesheets="@../styles/rakcha-unified.css, @../styles/account.css">
 
   <!-- Background Animations Container - Now comes FIRST in the StackPane for proper layering -->
   <AnchorPane style="-fx-background-color: transparent;" maxWidth="1200.0" maxHeight="630.0"
@@ -103,7 +104,7 @@
                        -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.6), 15, 0, 0, 0);
                        -fx-padding: 20;">
         <HBox alignment="CENTER" spacing="15">
-          <FontIcon iconLiteral="mdi2p-play:40:#ff4444"
+          <FontIcon iconLiteral="mdi2f-filmstrip" styleClass="account-brand-icon"
                     style="-fx-effect: dropshadow(gaussian, #ff0000, 10, 0, 0, 0);"/>
           <Label text="RAKCHA"
                  styleClass="animated-text"
@@ -127,7 +128,7 @@
           <ImageView fx:id="featuredMovieImage" fitWidth="200" fitHeight="300" preserveRatio="true"
                      style="-fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.8), 20, 0, 0, 5);">
             <image>
-              <Image url="https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg"/>
+               <Image url="https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg" backgroundLoading="true"/>
             </image>
           </ImageView>
 
@@ -140,7 +141,7 @@
                                    -fx-font-family: 'Arial';
                                    -fx-font-size: 12px;
                                    -fx-font-weight: bold;"/>
-            <Label fx:id="featuredMovieTitle" text="The Batman"
+             <Label fx:id="featuredMovieTitle" text="The Batman" wrapText="true" textAlignment="CENTER"
                    style="-fx-text-fill: white;
                                    -fx-font-family: 'Arial';
                                    -fx-font-size: 16px;
@@ -150,32 +151,29 @@
 
 
         <HBox spacing="10" alignment="CENTER">
-          <VBox alignment="CENTER" spacing="5"
+           <VBox alignment="CENTER" spacing="5" minWidth="96" prefWidth="96"
                 style="-fx-background-color: rgba(139, 0, 0, 0.2);
                                -fx-background-radius: 10;
                                -fx-padding: 10;
                                -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 5, 0, 0, 2);">
-            <FontIcon iconLiteral="mdi2t-ticket-confirmation:20:#ff4444"/>
-            <Label text="Premium\nSeats" textAlignment="CENTER"
-                   style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+             <FontIcon iconLiteral="mdi2t-ticket-confirmation-outline" styleClass="account-feature-icon"/>
+             <Label text="Tickets" styleClass="account-feature-caption"/>
           </VBox>
-          <VBox alignment="CENTER" spacing="5"
+           <VBox alignment="CENTER" spacing="5" minWidth="96" prefWidth="96"
                 style="-fx-background-color: rgba(139, 0, 0, 0.2);
                                -fx-background-radius: 10;
                                -fx-padding: 10;
                                -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 5, 0, 0, 2);">
-            <FontIcon iconLiteral="mdi2p-play:20:#ff4444"/>
-            <Label text="4K\nStreaming" textAlignment="CENTER"
-                   style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+             <FontIcon iconLiteral="mdi2m-movie-open-outline" styleClass="account-feature-icon"/>
+             <Label text="Streaming" styleClass="account-feature-caption"/>
           </VBox>
-          <VBox alignment="CENTER" spacing="5"
+           <VBox alignment="CENTER" spacing="5" minWidth="96" prefWidth="96"
                 style="-fx-background-color: rgba(139, 0, 0, 0.2);
                                -fx-background-radius: 10;
                                -fx-padding: 10;
                                -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 5, 0, 0, 2);">
-            <FontIcon iconLiteral="mdi2s-star:20:#ff4444"/>
-            <Label text="VIP\nAccess" textAlignment="CENTER"
-                   style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+             <FontIcon iconLiteral="mdi2c-crown-outline" styleClass="account-feature-icon, account-vip-icon"/>
+             <Label text="VIP access" styleClass="account-feature-caption"/>
           </VBox>
         </HBox>
       </VBox>
@@ -188,11 +186,11 @@
         <Circle radius="2" style="-fx-fill: #8b0000;"/>
         <Rectangle width="20" height="2" style="-fx-fill: #8b0000;"/>
         <Circle radius="2" style="-fx-fill: #8b0000;"/>
-        <Label text="🎬" style="-fx-text-fill: #ff4444; -fx-font-size: 16px;"/>
+         <FontIcon iconLiteral="mdi2m-movie-open-outline" styleClass="account-action-icon"/>
         <Circle radius="2" style="-fx-fill: #8b0000;"/>
         <Rectangle width="20" height="2" style="-fx-fill: #8b0000;"/>
         <Circle radius="2" style="-fx-fill: #8b0000;"/>
-        <Label text="🍿" style="-fx-text-fill: #ff4444; -fx-font-size: 16px;"/>
+         <FontIcon iconLiteral="mdi2p-popcorn" styleClass="account-action-icon"/>
         <Circle radius="2" style="-fx-fill: #8b0000;"/>
         <Rectangle width="20" height="2" style="-fx-fill: #8b0000;"/>
         <Circle radius="2" style="-fx-fill: #8b0000;"/>
@@ -200,12 +198,12 @@
     </VBox>
 
 
-    <VBox alignment="CENTER" spacing="20" prefWidth="800.0" maxWidth="800.0"
+     <VBox alignment="CENTER" spacing="16" prefWidth="800.0" maxWidth="800.0"
           style="-fx-background-color: radial-gradient(center 50% 50%, radius 80%, rgba(15, 15, 15, 0.95), rgba(5, 5, 5, 0.98));
                    -fx-background-radius: 25 0 0 25;
                    -fx-effect: dropshadow(gaussian, rgba(139, 0, 0, 0.3), 30, 0, 0, 0);">
       <padding>
-        <Insets top="50" right="60" bottom="50" left="60"/>
+         <Insets top="32" right="60" bottom="32" left="60"/>
       </padding>
 
 
@@ -241,7 +239,8 @@
                            -fx-font-size: 12px;
                            -fx-font-weight: bold;"/>
         <HBox spacing="20" alignment="CENTER">
-          <Button fx:id="googleSIgnInButton" onAction="#signInWithGoogle"
+           <Button fx:id="googleSIgnInButton" text="Google" onAction="#signInWithGoogle"
+                   prefWidth="140" graphicTextGap="8"
                   styleClass="animated-button"
                   style="-fx-background-color: linear-gradient(to bottom right, #2a2a2a, #1a1a1a);
                                -fx-text-fill: white;
@@ -255,13 +254,11 @@
                                -fx-cursor: hand;
                                -fx-padding: 12 20 12 20;">
             <graphic>
-              <HBox spacing="8" alignment="CENTER">
-                <FontIcon iconLiteral="mdi2g-google:16:#4285f4"/>
-                <Label text="Google" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
-              </HBox>
+               <FontIcon iconLiteral="mdi2g-google" styleClass="account-provider-icon"/>
             </graphic>
           </Button>
-          <Button fx:id="microsoftSignInButton" onAction="#signInWithMicrosoft"
+           <Button fx:id="microsoftSignInButton" text="Microsoft" onAction="#signInWithMicrosoft"
+                   prefWidth="140" graphicTextGap="8"
                   styleClass="animated-button"
                   style="-fx-background-color: linear-gradient(to bottom right, #2a2a2a, #1a1a1a);
                                -fx-text-fill: white;
@@ -275,10 +272,7 @@
                                -fx-cursor: hand;
                                -fx-padding: 12 20 12 20;">
             <graphic>
-              <HBox spacing="8" alignment="CENTER">
-                <FontIcon iconLiteral="mdi2m-microsoft:16:#34a853"/>
-                <Label text="Microsoft" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
-              </HBox>
+               <FontIcon iconLiteral="mdi2m-microsoft" styleClass="account-provider-icon"/>
             </graphic>
           </Button>
         </HBox>
@@ -302,17 +296,33 @@
       </HBox>
 
 
-      <VBox spacing="20" maxWidth="400" alignment="CENTER">
+       <VBox spacing="14" prefWidth="400" maxWidth="400" alignment="CENTER">
 
-        <!-- FormsFX Form Container -->
-        <VBox fx:id="loginFormContainer" spacing="15" maxWidth="400"/>
+         <VBox spacing="10">
+           <VBox spacing="4" styleClass="account-field">
+             <Label text="Email address"/>
+             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="account-login-input">
+               <FontIcon iconLiteral="mdi2e-email-outline" styleClass="account-field-icon"/>
+               <TextField fx:id="emailTextField" promptText="name@example.com" accessibleText="Email address"
+                          HBox.hgrow="ALWAYS"/>
+             </HBox>
+           </VBox>
+           <VBox spacing="4" styleClass="account-field">
+             <Label text="Password"/>
+             <HBox alignment="CENTER_LEFT" spacing="8" styleClass="account-login-input">
+               <FontIcon iconLiteral="mdi2l-lock-outline" styleClass="account-field-icon"/>
+               <PasswordField fx:id="passwordTextField" promptText="Enter your password" accessibleText="Password"
+                              HBox.hgrow="ALWAYS"/>
+             </HBox>
+           </VBox>
+         </VBox>
+         <Label fx:id="errorLabel" visible="false" managed="${errorLabel.visible}" wrapText="true" maxWidth="400"
+                styleClass="account-form-error"/>
 
-        <HBox alignment="CENTER" spacing="50">
-          <CheckBox id="rememberMe" text="Remember me"
-                    style="-fx-text-fill: #cccccc;
-                               -fx-font-family: 'Arial';
-                               -fx-font-size: 12px;"/>
-          <Hyperlink fx:id="forgetPasswordHyperlink" text="Forgot Password?"
+         <HBox alignment="CENTER" spacing="24">
+           <Hyperlink fx:id="forgetPasswordEmailHyperlink" text="Reset by email"
+                      style="-fx-text-fill: #ff6666; -fx-font-size: 12px;"/>
+           <Hyperlink fx:id="forgetPasswordHyperlink" text="Reset by SMS"
                      style="-fx-text-fill: #ff6666;
                                -fx-font-family: 'Arial';
                                -fx-font-size: 12px;
@@ -327,7 +337,7 @@
                      style="-fx-fill: radial-gradient(center 50% 50%, radius 60%, rgba(139, 0, 0, 0.4), transparent);
                                -fx-background-radius: 15;"
                      opacity="0.8"/>
-          <Button fx:id="signInButton" text="SIGN IN" onAction="#login"
+           <Button fx:id="signInButton" text="SIGN IN" onAction="#login" defaultButton="true"
                   styleClass="animated-button"
                   style="-fx-background-color: linear-gradient(to bottom right, #8b0000, #440000, #8b0000);
                                -fx-text-fill: white;
@@ -366,18 +376,12 @@
         </HBox>
 
 
-        <Hyperlink fx:id="forgetPasswordEmailHyperlink" text="Email Password Reset"
-                   style="-fx-text-fill: #666666;
-                           -fx-font-family: 'Arial';
-                           -fx-font-size: 11px;
-                           -fx-border-color: transparent;
-                           -fx-underline: false;"/>
       </VBox>
     </VBox>
   </HBox>
 
   <!-- Foreground particles layer - Added at the end to ensure they're on top -->
-  <AnchorPane style="-fx-background-color: transparent;" mouseTransparent="true">
+   <AnchorPane style="-fx-background-color: transparent;" mouseTransparent="true" opacity="0.34">
     <!-- Enhanced particles with better visibility and positioning -->
     <Circle fx:id="particle1" radius="4" layoutX="200" layoutY="150"
             styleClass="floating-particle, glow-red"
@@ -466,4 +470,3 @@
   </AnchorPane>
 
 </StackPane>
-

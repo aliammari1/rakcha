@@ -13,8 +13,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="180" layoutX="120" layoutY="180" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="220" layoutX="1050" layoutY="450" styleClass="ambient-orb orb-secondary" opacity="0.08"/>
+    <Circle radius="180" layoutX="120" layoutY="180" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="220" layoutX="1050" layoutY="450" styleClass="ambient-orb, orb-secondary" opacity="0.08"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -59,7 +59,7 @@
             <Insets left="25" right="25"/>
           </padding>
 
-          <ToggleButton fx:id="allToggle" styleClass="filter-tab active" text="All" onAction="#filterAll"/>
+          <ToggleButton fx:id="allToggle" styleClass="filter-tab, active" text="All" onAction="#filterAll"/>
           <ToggleButton fx:id="bookingsToggle" styleClass="filter-tab" text="Bookings" onAction="#filterBookings"/>
           <ToggleButton fx:id="socialToggle" styleClass="filter-tab" text="Social" onAction="#filterSocial"/>
           <ToggleButton fx:id="promotionsToggle" styleClass="filter-tab" text="Promotions"

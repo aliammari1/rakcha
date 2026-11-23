@@ -91,66 +91,14 @@ public class GenericTableView<T> {
      */
     private <S> Callback<TableColumn<T, S>, TableCell<T, S>> createValidatingCellFactory(ColumnConfig<T, S> config) {
         return column -> new TextFieldTableCell<T, S>(config.converter) {
-            private Validator validator;
-            private Tooltip errorTooltip;
-
             @Override
+            @SuppressWarnings("unchecked")
             public void startEdit() {
                 super.startEdit();
-                TextField textField = (TextField) this.getGraphic();
-
-                if (textField != null && config.validator != null) {
-                    if (validator == null) {
-                        validator = new Validator();
-                        errorTooltip = new Tooltip();
-                        errorTooltip.setStyle("-fx-background-color: #f00; -fx-text-fill: white;");
-                    }
-
-
-                    validator.createCheck()
-                        .dependsOn("value", textField.textProperty())
-                        .withMethod(c -> {
-                                String input = c.get("value");
-                                String error = config.validator.apply((S) input);
-                                if (error != null) {
-                                    c.error(error);
-                                }
-
-                            }
-                        )
-                        .decorates(textField)
-                        .immediate();
-
-                    textField.textProperty().addListener(new ChangeListener<String>() {
-                                                             @Override
-                                                             public void changed(ObservableValue<? extends String> observable,
-                                                                                 String oldValue, String newValue) {
-                                                                 updateValidationTooltip(textField);
-                                                             }
-
-                                                         }
-                    );
+                if (this.getGraphic() instanceof TextField textField && config.validator != null) {
+                    ValidationTooltips.bind(textField, () -> config.validator.apply((S) textField.getText()));
                 }
-
             }
-
-
-            private void updateValidationTooltip(TextField textField) {
-                if (validator != null && validator.containsErrors()) {
-                    String errorMessage = validator.createStringBinding().getValue();
-                    errorTooltip.setText(errorMessage);
-                    textField.setTooltip(errorTooltip);
-
-                    Window window = getScene().getWindow();
-                    Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                    errorTooltip.show(window, bounds.getMinX(), bounds.getMinY() - 30);
-                } else {
-                    errorTooltip.hide();
-                    textField.setTooltip(null);
-                }
-
-            }
-
         }
             ;
     }

@@ -134,7 +134,7 @@
                                            -fx-font-size: 28px;
                                            -fx-effect: dropshadow(gaussian, #8b0000, 8, 0, 1, 1);"/>
                 <!-- VIP Badge -->
-                <HBox
+                <HBox fx:id="vipBadge" visible="false" managed="false"
                   style="-fx-background-color: linear-gradient(to right, #ffd700, #ff8c00); -fx-background-radius: 10; -fx-padding: 3 10;">
                   <FontIcon iconLiteral="mdi2c-crown:12:#1a0808"/>
                   <Label text="  VIP MEMBER"
@@ -151,19 +151,19 @@
                 <VBox alignment="CENTER" spacing="3" prefWidth="100"
                       style="-fx-background-color: linear-gradient(to bottom, rgba(139, 0, 0, 0.25), rgba(60, 0, 0, 0.2));
                                            -fx-background-radius: 15; -fx-padding: 15;">
-                  <Label text="47" style="-fx-text-fill: #ff6666; -fx-font-size: 24px; -fx-font-weight: bold;"/>
-                  <Label text="Movies Watched" style="-fx-text-fill: #aaaaaa; -fx-font-size: 10px;"/>
+                  <Label fx:id="moviesWatchedLabel" text="0" style="-fx-text-fill: #ff6666; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                  <Label text="Tickets booked" style="-fx-text-fill: #aaaaaa; -fx-font-size: 10px;"/>
                 </VBox>
                 <VBox alignment="CENTER" spacing="3" prefWidth="100"
                       style="-fx-background-color: linear-gradient(to bottom, rgba(139, 0, 0, 0.25), rgba(60, 0, 0, 0.2));
                                            -fx-background-radius: 15; -fx-padding: 15;">
-                  <Label text="12" style="-fx-text-fill: #ff6666; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                  <Label fx:id="cinemaVisitsLabel" text="0" style="-fx-text-fill: #ff6666; -fx-font-size: 24px; -fx-font-weight: bold;"/>
                   <Label text="Cinema Visits" style="-fx-text-fill: #aaaaaa; -fx-font-size: 10px;"/>
                 </VBox>
                 <VBox alignment="CENTER" spacing="3" prefWidth="100"
                       style="-fx-background-color: linear-gradient(to bottom, rgba(139, 0, 0, 0.25), rgba(60, 0, 0, 0.2));
                                            -fx-background-radius: 15; -fx-padding: 15;">
-                  <Label text="★ 4.8" style="-fx-text-fill: #ffcc00; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                  <Label fx:id="avgRatingLabel" text="—" style="-fx-text-fill: #ffcc00; -fx-font-size: 24px; -fx-font-weight: bold;"/>
                   <Label text="Avg Rating" style="-fx-text-fill: #aaaaaa; -fx-font-size: 10px;"/>
                 </VBox>
               </HBox>

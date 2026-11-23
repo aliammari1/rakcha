@@ -1,5 +1,6 @@
 package com.esprit.controllers.films;
 
+import com.esprit.utils.ValidationTooltips;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.validators.IntegerRangeValidator;
@@ -586,25 +587,7 @@ public class FilmController {
                                     c.error("Please start with an uppercase letter.");
                                 }
                             }).decorates(textField).immediate();
-                            final Window window = getScene().getWindow();
-                            final Tooltip tooltip = new Tooltip();
-                            final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                            textField.textProperty().addListener(new ChangeListener<String>() {
-                                @Override
-                                public void changed(final ObservableValue<? extends String> observable,
-                                                    final String oldValue, final String newValue) {
-                                    if (validator.containsErrors()) {
-                                        tooltip.setText(validator.createStringBinding().getValue());
-                                        tooltip.setStyle("-fx-background-color: #f00;");
-                                        textField.setTooltip(tooltip);
-                                        textField.getTooltip().show(window, bounds.getMinX(), bounds.getMinY() - 30);
-                                    } else {
-                                        if (null != textField.getTooltip()) {
-                                            textField.getTooltip().hide();
-                                        }
-                                    }
-                                }
-                            });
+                            ValidationTooltips.bind(textField, validator);
                         }
                     }
                 };
@@ -640,26 +623,7 @@ public class FilmController {
                                             }
                                         }
                                     }).decorates(textField).immediate();
-                                final Window window = getScene().getWindow();
-                                final Tooltip tooltip = new Tooltip();
-                                final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                                textField.textProperty().addListener(new ChangeListener<String>() {
-                                    @Override
-                                    public void changed(final ObservableValue<? extends String> observable,
-                                                        final String oldValue, final String newValue) {
-                                        if (validator.containsErrors()) {
-                                            tooltip.setText(validator.createStringBinding().getValue());
-                                            tooltip.setStyle("-fx-background-color: #f00;");
-                                            textField.setTooltip(tooltip);
-                                            textField.getTooltip().show(window, bounds.getMinX(),
-                                                bounds.getMinY() - 30);
-                                        } else {
-                                            if (null != textField.getTooltip()) {
-                                                textField.getTooltip().hide();
-                                            }
-                                        }
-                                    }
-                                });
+                                ValidationTooltips.bind(textField, validator);
                             }
                         }
                     };
@@ -689,25 +653,7 @@ public class FilmController {
                                     }
                                 }
                             }).decorates(textField).immediate();
-                            final Window window = getScene().getWindow();
-                            final Tooltip tooltip = new Tooltip();
-                            final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                            textField.textProperty().addListener(new ChangeListener<String>() {
-                                @Override
-                                public void changed(final ObservableValue<? extends String> observable,
-                                                    final String oldValue, final String newValue) {
-                                    if (validator.containsErrors()) {
-                                        tooltip.setText(validator.createStringBinding().getValue());
-                                        tooltip.setStyle("-fx-background-color: #f00;");
-                                        textField.setTooltip(tooltip);
-                                        textField.getTooltip().show(window, bounds.getMinX(), bounds.getMinY() - 30);
-                                    } else {
-                                        if (null != textField.getTooltip()) {
-                                            textField.getTooltip().hide();
-                                        }
-                                    }
-                                }
-                            });
+                            ValidationTooltips.bind(textField, validator);
                         }
                     }
                 };
@@ -735,26 +681,7 @@ public class FilmController {
                                             c.error("Please start with an uppercase letter.");
                                         }
                                     }).decorates(textField).immediate();
-                                final Window window = getScene().getWindow();
-                                final Tooltip tooltip = new Tooltip();
-                                final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                                textField.textProperty().addListener(new ChangeListener<String>() {
-                                    @Override
-                                    public void changed(final ObservableValue<? extends String> observable,
-                                                        final String oldValue, final String newValue) {
-                                        if (validator.containsErrors()) {
-                                            tooltip.setText(validator.createStringBinding().getValue());
-                                            tooltip.setStyle("-fx-background-color: #f00;");
-                                            textField.setTooltip(tooltip);
-                                            textField.getTooltip().show(window, bounds.getMinX(),
-                                                bounds.getMinY() - 30);
-                                        } else {
-                                            if (null != textField.getTooltip()) {
-                                                textField.getTooltip().hide();
-                                            }
-                                        }
-                                    }
-                                });
+                                ValidationTooltips.bind(textField, validator);
                             }
                         }
                     };

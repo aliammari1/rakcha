@@ -233,7 +233,7 @@ public class DashboardClientController {
         PageRequest pageRequest = PageRequest.defaultPage();
         final List<Cinema> cinemas = cinemaService.read(pageRequest).getContent();
         final List<Cinema> acceptedCinemasList = cinemas.stream()
-            .filter(cinema -> CinemaStatus.ACCEPTED.getStatus().equals(cinema.getStatus()))
+            .filter(cinema -> CinemaStatus.ACCEPTED == cinema.getStatus())
             .collect(Collectors.toList());
         if (acceptedCinemasList.isEmpty()) {
             this.showAlert("Aucun cinéma accepté n'est disponible.");
@@ -1006,7 +1006,8 @@ public class DashboardClientController {
         final HBox timeBox = new HBox(8);
         timeBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         final FontIcon timeIcon = new FontIcon("mdi2c-clock-outline:14:#ff6666");
-        final Label timeLabel = new Label(moviesession.getStartTime() + " - " + moviesession.getEndTime());
+        final Label timeLabel = new Label(moviesession.getStartTime().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")) + " – "
+            + moviesession.getEndTime().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")));
         timeLabel.setStyle("-fx-text-fill: #aaaaaa; -fx-font-size: 12px;");
         timeBox.getChildren().addAll(timeIcon, timeLabel);
 
@@ -1018,7 +1019,7 @@ public class DashboardClientController {
         actionContainer.setPadding(new Insets(5));
 
         // Price badge
-        final Label priceLabel = new Label(String.format("%.2f DT", moviesession.getPrice()));
+        final Label priceLabel = new Label(String.format("%.2f TND", moviesession.getPrice()));
         priceLabel.setStyle(
             "-fx-background-color: linear-gradient(to right, #ffc800, #cc9900);" +
                 "-fx-background-radius: 12;" +

@@ -15,8 +15,8 @@
 
   <!-- Cinematic Background -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
-    <Circle radius="350" layoutX="1300" layoutY="200" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="250" layoutX="200" layoutY="700" styleClass="ambient-orb orb-secondary" opacity="0.12"/>
+    <Circle radius="350" layoutX="1300" layoutY="200" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="250" layoutX="200" layoutY="700" styleClass="ambient-orb, orb-secondary" opacity="0.12"/>
     <FontIcon iconLiteral="mdi2f-file-document-outline:40" layoutX="100" layoutY="100" styleClass="floating-icon"
               opacity="0.08"/>
   </AnchorPane>
@@ -47,14 +47,6 @@
             <TextField fx:id="SearchBar" promptText="Search orders..." styleClass="search-input" prefWidth="250"/>
           </HBox>
 
-          <Button styleClass="glass-btn" onAction="#toggleFilter">
-            <graphic>
-              <FontIcon fx:id="idfilter" iconLiteral="mdi2f-filter:20:white"/>
-            </graphic>
-            <tooltip>
-              <Tooltip text="Filter Orders"/>
-            </tooltip>
-          </Button>
         </HBox>
 
         <!-- Content Area -->
@@ -117,22 +109,4 @@
     </center>
   </BorderPane>
 
-  <!-- Filter Dialog Overlay -->
-  <StackPane fx:id="filterAnchor" visible="false" style="-fx-background-color: rgba(0,0,0,0.7);">
-    <VBox spacing="20" styleClass="glass-panel" maxWidth="400" maxHeight="300" alignment="CENTER">
-      <padding>
-        <Insets top="30" right="30" bottom="30" left="30"/>
-      </padding>
-      <Label text="Advanced Filters" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
-
-      <!-- Filter content here (simplified as original was empty) -->
-      <Label text="Filter options will appear here." style="-fx-text-fill: gray;"/>
-
-      <HBox spacing="10" alignment="CENTER">
-        <Button styleClass="glass-btn" text="Cancel" onAction="#closeFilter"/>
-        <Button styleClass="hero-btn, primary" text="Apply Filter"/>
-      </HBox>
-    </VBox>
-  </StackPane>
 </StackPane>
-

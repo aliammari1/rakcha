@@ -216,19 +216,19 @@
         <!-- Top Left Corner -->
         <Polygon points="0,0,80,0,0,80"
                  layoutX="0" layoutY="0"
-                 styleClass="corner-triangle tl"/>
+                 styleClass="corner-triangle, tl"/>
         <!-- Top Right Corner -->
         <Polygon points="0,0,80,0,80,80"
                  layoutX="1320" layoutY="0"
-                 styleClass="corner-triangle tr"/>
+                 styleClass="corner-triangle, tr"/>
         <!-- Bottom Left Corner -->
         <Polygon points="0,0,0,80,80,80"
                  layoutX="0" layoutY="600"
-                 styleClass="corner-triangle bl"/>
+                 styleClass="corner-triangle, bl"/>
         <!-- Bottom Right Corner -->
         <Polygon points="0,80,80,0,80,80"
                  layoutX="1320" layoutY="600"
-                 styleClass="corner-triangle br"/>
+                 styleClass="corner-triangle, br"/>
       </Pane>
     </StackPane>
 

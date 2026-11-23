@@ -16,8 +16,8 @@
 
   <!-- Cinematic Background -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
-    <Circle radius="300" layoutX="1200" layoutY="300" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="200" layoutX="200" layoutY="600" styleClass="ambient-orb orb-secondary" opacity="0.12"/>
+    <Circle radius="300" layoutX="1200" layoutY="300" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="200" layoutX="200" layoutY="600" styleClass="ambient-orb, orb-secondary" opacity="0.12"/>
     <FontIcon iconLiteral="mdi2t-tag-outline:40" layoutX="1400" layoutY="100" styleClass="floating-icon"
               opacity="0.08"/>
   </AnchorPane>

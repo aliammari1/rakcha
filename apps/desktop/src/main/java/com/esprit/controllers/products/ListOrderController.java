@@ -1,50 +1,42 @@
 package com.esprit.controllers.products;
 
 import com.esprit.models.products.Order;
-import com.esprit.models.users.Client;
+import com.esprit.enums.OrderStatus;
 import com.esprit.services.products.OrderService;
-import com.esprit.services.users.UserService;
+import com.esprit.utils.NavigationManager;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Locale;
 
 @Log4j2
 public class ListOrderController {
-
-    private static final Logger LOGGER = Logger.getLogger(ListOrderController.class.getName());
 
     @FXML
     private TableColumn<Order, String> idStatu;
     @FXML
     private TableColumn<Order, String> idadresse;
     @FXML
-    private TableColumn<Order, Date> iddate;
+    private TableColumn<Order, String> iddate;
     @FXML
     private TableColumn<Order, String> idnom;
     @FXML
-    private TableColumn<Order, Integer> idnumero;
+    private TableColumn<Order, String> idnumero;
     @FXML
     private TableColumn<Order, String> idprenom;
     @FXML
@@ -54,9 +46,8 @@ public class ListOrderController {
     @FXML
     private TableColumn<Order, Void> deleteColumn;
     @FXML
-    private StackPane filterAnchor;
-    @FXML
     private ComboBox<String> statusComboBox;
+    private static final String ALL_STATUSES = "All statuses";
 
     /**
      * Initializes the controller by setting up event listeners and populating the
@@ -69,9 +60,11 @@ public class ListOrderController {
      */
     @FXML
     void initialize() {
-        this.SearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
-            this.search(newValue);
-        });
+        this.statusComboBox.getItems().add(ALL_STATUSES);
+        Arrays.stream(OrderStatus.values()).map(OrderStatus::getDisplayName).forEach(this.statusComboBox.getItems()::add);
+        this.statusComboBox.setValue(ALL_STATUSES);
+        this.SearchBar.textProperty().addListener((observable, oldValue, newValue) -> this.filterOrders());
+        this.statusComboBox.valueProperty().addListener((observable, oldValue, newValue) -> this.filterOrders());
         this.afficheOrder();
         this.initDeleteColumn();
     }
@@ -85,22 +78,19 @@ public class ListOrderController {
      * loads orders from OrderService into the table and enables cell selection.
      */
     void afficheOrder() {
-        this.idnom.setCellValueFactory(cellData -> {
-            final Order order = cellData.getValue();
-            final UserService userService = new UserService();
-            final Client client = (Client) userService.getUserById(order.getClient().getId());
-            return new SimpleStringProperty(client.getFirstName());
+        final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd MMM yyyy");
+        this.idnom.setCellValueFactory(cell -> new SimpleStringProperty(
+            cell.getValue().getClient() == null ? "" : cell.getValue().getClient().getFirstName()));
+        this.idprenom.setCellValueFactory(cell -> new SimpleStringProperty(
+            cell.getValue().getClient() == null ? "" : cell.getValue().getClient().getLastName()));
+        this.idadresse.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getShippingAddress()));
+        this.idnumero.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getPhoneNumber()));
+        this.iddate.setCellValueFactory(cell -> new SimpleStringProperty(
+            cell.getValue().getOrderDate() == null ? "" : cell.getValue().getOrderDate().format(dateFormat)));
+        this.idStatu.setCellValueFactory(cell -> {
+            final OrderStatus status = cell.getValue().getStatus();
+            return new SimpleStringProperty(status == null ? "" : status.getDisplayName());
         });
-        this.idprenom.setCellValueFactory(cellData -> {
-            final Order order = cellData.getValue();
-            final UserService userService = new UserService();
-            final Client client = (Client) userService.getUserById(order.getClient().getId());
-            return new SimpleStringProperty(client.getLastName());
-        });
-        this.idadresse.setCellValueFactory(new PropertyValueFactory<Order, String>("adresse"));
-        this.idnumero.setCellValueFactory(new PropertyValueFactory<Order, Integer>("num_telephone"));
-        this.iddate.setCellValueFactory(new PropertyValueFactory<Order, Date>("dateOrder"));
-        this.idStatu.setCellValueFactory(new PropertyValueFactory<Order, String>("statu"));
         // Utiliser une ObservableList pour stocker les éléments
         final ObservableList<Order> list = FXCollections.observableArrayList();
         final OrderService ps = new OrderService();
@@ -117,29 +107,28 @@ public class ListOrderController {
      * is updated to show orders whose address, client's first name, client's
      * last name, or status contain the keyword (case-insensitive).
      *
-     * @param keyword the search term used to filter orders; may be null or empty
      */
-    @FXML
-    private void search(final String keyword) {
+    private void filterOrders() {
         final OrderService orderservice = new OrderService();
         final ObservableList<Order> filteredList = FXCollections.observableArrayList();
-        if (null == keyword || keyword.trim().isEmpty()) {
-            filteredList.addAll(orderservice.read());
-        } else {
-            for (final Order order : orderservice.read()) {
-                String statusValue = order.getStatus() != null ? order.getStatus().getValue() : "";
-                if (order.getShippingAddress().toLowerCase().contains(keyword.toLowerCase())
-                    || order.getClient().getLastName().toLowerCase().contains(keyword.toLowerCase())
-                    || order.getClient().getFirstName().toLowerCase().contains(keyword.toLowerCase())
-                    || statusValue.toLowerCase().contains(keyword.toLowerCase())) {
-                    filteredList.add(order);
-                }
-
+        final String keyword = this.SearchBar.getText().strip().toLowerCase(Locale.ROOT);
+        final String selectedStatus = this.statusComboBox.getValue();
+        for (final Order order : orderservice.read()) {
+            final String status = order.getStatus() == null ? "" : order.getStatus().getDisplayName();
+            final var client = order.getClient();
+            final boolean matchesStatus = ALL_STATUSES.equals(selectedStatus) || status.equals(selectedStatus);
+            final boolean matchesSearch = keyword.isEmpty() || contains(order.getShippingAddress(), keyword)
+                || contains(status, keyword) || (client != null
+                    && (contains(client.getFirstName(), keyword) || contains(client.getLastName(), keyword)));
+            if (matchesStatus && matchesSearch) {
+                filteredList.add(order);
             }
-
         }
-
         this.orderTableView.setItems(filteredList);
+    }
+
+    private static boolean contains(String text, String keyword) {
+        return text != null && text.toLowerCase(Locale.ROOT).contains(keyword);
     }
 
     /**
@@ -212,50 +201,14 @@ public class ListOrderController {
     }
 
     /**
-     * Opens the order statistics view in a new window.
-     *
-     * <p>
-     * This method loads the AnalyseOrder.fxml file, creates a new scene and stage,
-     * and displays it. The original stage is shown again when the statistics window
-     * is closed.
-     * </p>
+     * Opens the order statistics view in the current window.
      *
      * @param event The action event that triggered this method
      */
     @FXML
     void statOrder(final ActionEvent event) {
-        try {
-            // Charger la nouvelle interface AnalyseCommande.fxml
-            final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/ui/products/AnalyseCommande.fxml"));
-            final Parent root = loader.load();
-            // Créer une nouvelle scène avec la nouvelle interface
-            final Scene scene = new Scene(root);
-            // Obtenir la Stage (fenêtre) actuelle à partir de l'événement
-            final Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            // Créer une nouvelle fenêtre (stage) et y attacher la scène
-            final Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("statisqtisue");
-            stage.setOnHidden(e -> currentStage.show()); // Afficher l'ancienne fenêtre lorsque la nouvelle est fermée
-            stage.show();
-        } catch (final IOException e) {
-            ListOrderController.LOGGER.log(Level.SEVERE, e.getMessage(), e); // Gérer l'exception d'entrée/sortie
-        }
-
-    }
-
-    @FXML
-    private void toggleFilter(ActionEvent event) {
-        if (filterAnchor != null) {
-            filterAnchor.setVisible(!filterAnchor.isVisible());
-        }
-    }
-
-    @FXML
-    private void closeFilter(ActionEvent event) {
-        if (filterAnchor != null) {
-            filterAnchor.setVisible(false);
-        }
+        final Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        NavigationManager.navigateToOrderAnalytics(stage);
     }
 
 }

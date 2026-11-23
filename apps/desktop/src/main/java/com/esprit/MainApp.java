@@ -130,6 +130,7 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/users/Login.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
+        scene.setFill(Color.BLACK);
         ThemeManager.getInstance().applyToScene(scene);
         mainStage.setScene(scene);
         mainStage.show();

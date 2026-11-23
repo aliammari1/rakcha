@@ -1,5 +1,6 @@
 package com.esprit.controllers.users;
 
+import com.esprit.utils.ValidationTooltips;
 import com.dlsc.formsfx.model.structure.Field;
 import com.dlsc.formsfx.model.structure.Form;
 import com.dlsc.formsfx.model.structure.Group;
@@ -39,6 +40,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -130,16 +132,16 @@ public class AdminDashboardController {
     @FXML
     void initialize() {
         try {
-            this.roleTableColumn = new TableColumn<>("role");
-            this.photoDeProfilTableColumn = new TableColumn<>("photo de profil");
-            this.lastNameTableColumn = new TableColumn<>("lastName");
-            this.passwordTableColumn = new TableColumn<>("password");
-            this.numTelTableColumn = new TableColumn<>("numero de telephone");
-            this.firstNameTableColumn = new TableColumn<>("firstName");
-            this.dateDeNaissanceTableColumn = new TableColumn<>("date de naissance");
-            this.adresseTableColumn = new TableColumn<>("adresse");
-            this.emailTableColumn = new TableColumn<>("email");
-            this.deleteTableColumn = new TableColumn<>("delete");
+            this.roleTableColumn = new TableColumn<>("Role");
+            this.photoDeProfilTableColumn = new TableColumn<>("Photo");
+            this.lastNameTableColumn = new TableColumn<>("Last name");
+            this.passwordTableColumn = new TableColumn<>("Password");
+            this.numTelTableColumn = new TableColumn<>("Phone");
+            this.firstNameTableColumn = new TableColumn<>("First name");
+            this.dateDeNaissanceTableColumn = new TableColumn<>("Birth date");
+            this.adresseTableColumn = new TableColumn<>("Address");
+            this.emailTableColumn = new TableColumn<>("Email");
+            this.deleteTableColumn = new TableColumn<>("Actions");
             this.tableValidator = new Validator();
             this.userTableView.setEditable(true);
             final List<TableColumn<User, ?>> columns = Arrays.asList(this.firstNameTableColumn,
@@ -201,61 +203,15 @@ public class AdminDashboardController {
      */
     private void addValidationListener(final TextField textField, final Predicate<String> validationPredicate,
                                        final String errorMessage) {
-        final Tooltip tooltip = new Tooltip();
-        textField.textProperty().addListener(new ChangeListener<String>() {
-            /**
-             * Validates a text change for the associated TextField and shows or hides an
-             * inline tooltip.
-             *
-             * When the new value is empty or fails the configured predicate, a red tooltip
-             * with the
-             * error message is shown near the TextField; when valid, any shown tooltip is
-             * hidden.
-             *
-             * @param observable the observable emitting text changes
-             * @param oldValue   the previous text value
-             * @param newValue   the new text value to validate
-             */
-            @Override
-            /**
-             * Performs changed operation.
-             *
-             * @return the result of the operation
-             */
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                final String newValue) {
-                String error = null;
-                if (null != newValue) {
-                    if (!validationPredicate.test(newValue)) {
-                        error = errorMessage;
-                    } else if (newValue.isEmpty()) {
-                        error = "The string is empty.";
-                    }
-
-                }
-
-                final Window window = textField.getScene().getWindow();
-                final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                if (null != error) {
-                    tooltip.setText(error);
-                    tooltip.setStyle("-fx-background-color: #f00;");
-                    textField.setTooltip(tooltip);
-                    textField.getTooltip().show(window, bounds.getMinX() - 10, bounds.getMinY() + 30);
-                } else {
-                    if (null != textField.getTooltip()) {
-                        textField.getTooltip().hide();
-                    }
-
-                }
-
+        ValidationTooltips.bind(textField, () -> {
+            final String value = textField.getText();
+            if (value == null) {
+                return null;
             }
-
-        });
-        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue && null != textField.getTooltip()) {
-                textField.getTooltip().hide();
+            if (!validationPredicate.test(value)) {
+                return errorMessage;
             }
-
+            return value.isEmpty() ? "This field is required." : null;
         });
     }
 
@@ -623,7 +579,8 @@ public class AdminDashboardController {
                  * @return the result of the operation
                  */
                 public ObservableValue<Button> call(final TableColumn.CellDataFeatures<User, Button> param) {
-                    final Button button = new Button("delete");
+                    final Button button = new Button("Delete", new FontIcon("mdi2t-trash-can-outline"));
+                    button.getStyleClass().add("table-danger-btn");
                     button.setOnAction(new EventHandler<ActionEvent>() {
                         /**
                          * Delete the user associated with the triggering action and refresh the user
@@ -740,34 +697,7 @@ public class AdminDashboardController {
                                     }
 
                                 }).decorates(textField).immediate();
-                            final Window window = getScene().getWindow();
-                            final Tooltip tooltip = new Tooltip();
-                            final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                            textField.textProperty().addListener(new ChangeListener<String>() {
-                                @Override
-                                /**
-                                 * Performs changed operation.
-                                 *
-                                 * @return the result of the operation
-                                 */
-                                public void changed(final ObservableValue<? extends String> observable,
-                                                    final String oldValue, final String newValue) {
-                                    if (validator.containsErrors()) {
-                                        tooltip.setText(validator.createStringBinding().getValue());
-                                        tooltip.setStyle("-fx-background-color: #f00;");
-                                        textField.setTooltip(tooltip);
-                                        textField.getTooltip().show(window, bounds.getMinX() - 10,
-                                            bounds.getMinY() + 30);
-                                    } else {
-                                        if (null != textField.getTooltip()) {
-                                            textField.getTooltip().hide();
-                                        }
-
-                                    }
-
-                                }
-
-                            });
+                            ValidationTooltips.bind(textField, validator);
                             textField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                                 @Override
                                 /**
@@ -869,34 +799,7 @@ public class AdminDashboardController {
                                     }
 
                                 }).decorates(textField).immediate();
-                            final Window window = getScene().getWindow();
-                            final Tooltip tooltip = new Tooltip();
-                            final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                            textField.textProperty().addListener(new ChangeListener<String>() {
-                                @Override
-                                /**
-                                 * Performs changed operation.
-                                 *
-                                 * @return the result of the operation
-                                 */
-                                public void changed(final ObservableValue<? extends String> observable,
-                                                    final String oldValue, final String newValue) {
-                                    if (validator.containsErrors()) {
-                                        tooltip.setText(validator.createStringBinding().getValue());
-                                        tooltip.setStyle("-fx-background-color: #f00;");
-                                        textField.setTooltip(tooltip);
-                                        textField.getTooltip().show(window, bounds.getMinX() - 10,
-                                            bounds.getMinY() + 30);
-                                    } else {
-                                        if (null != textField.getTooltip()) {
-                                            textField.getTooltip().hide();
-                                        }
-
-                                    }
-
-                                }
-
-                            });
+                            ValidationTooltips.bind(textField, validator);
                             textField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                                 @Override
                                 /**
@@ -944,10 +847,7 @@ public class AdminDashboardController {
              * @param newValue   the new text value
              */
             /**
-             * Creates an editable TableCell for the given column that enforces lowercase
-             * validation on its text editor,
-             * shows a red tooltip for validation errors, and prevents committing edits when
-             * validation errors exist.
+             * Creates an editable cell with the same phone format as the user form.
              *
              * @param param the TableColumn for which the cell is created
              * @return the configured TableCell instance
@@ -959,13 +859,11 @@ public class AdminDashboardController {
              * @return the result of the operation
              */
             public TableCell<User, String> call(final TableColumn<User, String> param) {
-                return new TextFieldTableCell<User, String>() {
+                return new TextFieldTableCell<User, String>(new DefaultStringConverter()) {
                     private Validator validator;
 
                     /**
-                     * Prepare the table cell for inline editing by attaching a lowercase-only
-                     * validator, displaying a red tooltip near the editor when validation fails,
-                     * and preventing Enter commits while errors exist.
+                     * Validates the phone number before Enter can commit the edit.
                      */
                     @Override
                     /**
@@ -980,40 +878,13 @@ public class AdminDashboardController {
                             this.validator = new Validator();
                             this.validator.createCheck().dependsOn("phoneNumber", textField.textProperty())
                                 .withMethod(c -> {
-                                    final String userName = c.get("phoneNumber");
-                                    if (null != userName && !userName.toLowerCase().equals(userName)) {
-                                        c.error("Please use only lowercase letters.");
+                                    final String phone = c.get("phoneNumber");
+                                    if (phone == null || !phone.matches("\\d{8,15}")) {
+                                        c.error("Phone must be 8–15 digits.");
                                     }
 
                                 }).decorates(textField).immediate();
-                            final Window window = getScene().getWindow();
-                            final Tooltip tooltip = new Tooltip();
-                            final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                            textField.textProperty().addListener(new ChangeListener<String>() {
-                                @Override
-                                /**
-                                 * Performs changed operation.
-                                 *
-                                 * @return the result of the operation
-                                 */
-                                public void changed(final ObservableValue<? extends String> observable,
-                                                    final String oldValue, final String newValue) {
-                                    if (validator.containsErrors()) {
-                                        tooltip.setText(validator.createStringBinding().getValue());
-                                        tooltip.setStyle("-fx-background-color: #f00;");
-                                        textField.setTooltip(tooltip);
-                                        textField.getTooltip().show(window, bounds.getMinX() - 10,
-                                            bounds.getMinY() + 30);
-                                    } else {
-                                        if (null != textField.getTooltip()) {
-                                            textField.getTooltip().hide();
-                                        }
-
-                                    }
-
-                                }
-
-                            });
+                            ValidationTooltips.bind(textField, validator);
                             textField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                                 @Override
                                 /**
@@ -1094,34 +965,7 @@ public class AdminDashboardController {
                                     }
 
                                 }).decorates(textField).immediate();
-                            final Window window = getScene().getWindow();
-                            final Tooltip tooltip = new Tooltip();
-                            final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                            textField.textProperty().addListener(new ChangeListener<String>() {
-                                @Override
-                                /**
-                                 * Performs changed operation.
-                                 *
-                                 * @return the result of the operation
-                                 */
-                                public void changed(final ObservableValue<? extends String> observable,
-                                                    final String oldValue, final String newValue) {
-                                    if (validator.containsErrors()) {
-                                        tooltip.setText(validator.createStringBinding().getValue());
-                                        tooltip.setStyle("-fx-background-color: #f00;");
-                                        textField.setTooltip(tooltip);
-                                        textField.getTooltip().show(window, bounds.getMinX() - 10,
-                                            bounds.getMinY() + 30);
-                                    } else {
-                                        if (null != textField.getTooltip()) {
-                                            textField.getTooltip().hide();
-                                        }
-
-                                    }
-
-                                }
-
-                            });
+                            ValidationTooltips.bind(textField, validator);
                             textField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                                 @Override
                                 /**
@@ -1212,34 +1056,7 @@ public class AdminDashboardController {
                                     }
 
                                 }).decorates(textField).immediate();
-                            final Window window = getScene().getWindow();
-                            final Tooltip tooltip = new Tooltip();
-                            final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                            textField.textProperty().addListener(new ChangeListener<String>() {
-                                @Override
-                                /**
-                                 * Performs changed operation.
-                                 *
-                                 * @return the result of the operation
-                                 */
-                                public void changed(final ObservableValue<? extends String> observable,
-                                                    final String oldValue, final String newValue) {
-                                    if (validator.containsErrors()) {
-                                        tooltip.setText(validator.createStringBinding().getValue());
-                                        tooltip.setStyle("-fx-background-color: #f00;");
-                                        textField.setTooltip(tooltip);
-                                        textField.getTooltip().show(window, bounds.getMinX() - 10,
-                                            bounds.getMinY() + 30);
-                                    } else {
-                                        if (null != textField.getTooltip()) {
-                                            textField.getTooltip().hide();
-                                        }
-
-                                    }
-
-                                }
-
-                            });
+                            ValidationTooltips.bind(textField, validator);
                             textField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                                 @Override
                                 /**
@@ -1317,34 +1134,7 @@ public class AdminDashboardController {
                                 }
 
                             }).decorates(textField).immediate();
-                            final Window window = getScene().getWindow();
-                            final Tooltip tooltip = new Tooltip();
-                            final Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
-                            textField.textProperty().addListener(new ChangeListener<String>() {
-                                @Override
-                                /**
-                                 * Performs changed operation.
-                                 *
-                                 * @return the result of the operation
-                                 */
-                                public void changed(final ObservableValue<? extends String> observable,
-                                                    final String oldValue, final String newValue) {
-                                    if (validator.containsErrors()) {
-                                        tooltip.setText(validator.createStringBinding().getValue());
-                                        tooltip.setStyle("-fx-background-color: #f00;");
-                                        textField.setTooltip(tooltip);
-                                        textField.getTooltip().show(window, bounds.getMinX() - 10,
-                                            bounds.getMinY() + 30);
-                                    } else {
-                                        if (null != textField.getTooltip()) {
-                                            textField.getTooltip().hide();
-                                        }
-
-                                    }
-
-                                }
-
-                            });
+                            ValidationTooltips.bind(textField, validator);
                             textField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
                                 @Override
                                 /**

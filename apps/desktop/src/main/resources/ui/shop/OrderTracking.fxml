@@ -12,8 +12,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.12"/>
-    <Circle radius="260" layoutX="1100" layoutY="500" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.12"/>
+    <Circle radius="260" layoutX="1100" layoutY="500" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -49,7 +49,7 @@
           <padding>
             <Insets left="35" right="35"/>
           </padding>
-          <ToggleButton fx:id="allOrdersTab" styleClass="order-tab active" text="All Orders" onAction="#showAllOrders"/>
+          <ToggleButton fx:id="allOrdersTab" styleClass="order-tab, active" text="All Orders" onAction="#showAllOrders"/>
           <ToggleButton fx:id="activeTab" styleClass="order-tab" text="Active" onAction="#showActiveOrders"/>
           <ToggleButton fx:id="completedTab" styleClass="order-tab" text="Completed" onAction="#showCompletedOrders"/>
           <ToggleButton fx:id="cancelledTab" styleClass="order-tab" text="Cancelled" onAction="#showCancelledOrders"/>
@@ -78,7 +78,7 @@
           </VBox>
 
           <!-- Order Details Panel -->
-          <VBox styleClass="order-details-panel glass-card" spacing="0" HBox.hgrow="ALWAYS">
+          <VBox styleClass="order-details-panel, glass-card" spacing="0" HBox.hgrow="ALWAYS">
 
             <!-- Empty State -->
             <VBox fx:id="emptyDetailsState" alignment="CENTER" spacing="15" VBox.vgrow="ALWAYS">
@@ -99,7 +99,7 @@
                 <VBox spacing="5">
                   <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label fx:id="orderIdLabel" text="Order #12345" styleClass="order-id"/>
-                    <Label fx:id="orderStatusBadge" text="In Progress" styleClass="status-badge active"/>
+                    <Label fx:id="orderStatusBadge" text="In Progress" styleClass="status-badge, active"/>
                   </HBox>
                   <Label fx:id="orderDateLabel" text="Placed on Jan 15, 2024" styleClass="order-date"/>
                 </VBox>
@@ -135,7 +135,7 @@
                   </VBox>
 
                   <!-- Estimated Delivery -->
-                  <VBox fx:id="deliveryEstimate" styleClass="delivery-estimate glass-inner" spacing="10">
+                  <VBox fx:id="deliveryEstimate" styleClass="delivery-estimate, glass-inner" spacing="10">
                     <padding>
                       <Insets topRightBottomLeft="20"/>
                     </padding>
@@ -157,7 +157,7 @@
                   </VBox>
 
                   <!-- Pickup/Delivery Info -->
-                  <VBox fx:id="pickupInfo" styleClass="pickup-section glass-inner" spacing="15">
+                  <VBox fx:id="pickupInfo" styleClass="pickup-section, glass-inner" spacing="15">
                     <padding>
                       <Insets topRightBottomLeft="20"/>
                     </padding>

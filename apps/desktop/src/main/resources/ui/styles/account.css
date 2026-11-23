@@ -1,0 +1,90 @@
+.account-screen .account-brand-icon {
+    -fx-icon-size: 34px;
+    -fx-icon-color: #ff5b5b;
+}
+
+.account-screen .account-heading-icon {
+    -fx-icon-size: 26px;
+    -fx-icon-color: #ff5b5b;
+}
+
+.account-screen .account-feature-icon {
+    -fx-icon-size: 22px;
+    -fx-icon-color: #ff7373;
+}
+
+.account-screen .account-feature-icon.account-vip-icon {
+    -fx-icon-color: #ffcc66;
+}
+
+.account-screen .account-field-icon,
+.account-screen .account-action-icon {
+    -fx-icon-size: 16px;
+    -fx-icon-color: #ff7373;
+}
+
+.account-screen .account-primary-icon,
+.account-screen .account-provider-icon {
+    -fx-icon-size: 16px;
+    -fx-icon-color: white;
+}
+
+.account-screen .account-feature-caption {
+    -fx-font-size: 11px;
+    -fx-text-fill: #eee1e1;
+    -fx-font-weight: bold;
+}
+
+.account-screen .account-field .label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #eee1e1;
+    -fx-font-weight: bold;
+}
+
+.account-screen .account-field .text-field,
+.account-screen .account-field .combo-box-base {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #aaa0a0;
+    -fx-highlight-fill: #8b242c;
+}
+
+.account-screen .account-field .combo-box > .list-cell {
+    -fx-padding: 0 8px;
+}
+
+.account-screen .account-field .combo-box-base > .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.account-screen .account-field .text-field:focused,
+.account-screen .account-field .combo-box-base:focused {
+    -fx-border-color: #ff7373;
+    -fx-border-radius: 5px;
+    -fx-effect: null;
+}
+
+.account-screen .account-login-input {
+    -fx-background-color: linear-gradient(to bottom, #242020, #161414);
+    -fx-background-insets: 0;
+    -fx-background-radius: 5px;
+    -fx-border-color: #862c2c;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
+    -fx-min-height: 36px;
+    -fx-padding: 0 10px;
+}
+
+.account-screen .account-form-error {
+    -fx-text-fill: #ffaaaa;
+    -fx-font-size: 13px;
+}
+
+.account-screen .account-field .label.account-help,
+.account-screen .account-help {
+    -fx-font-size: 11px;
+    -fx-font-weight: normal;
+    -fx-text-fill: #b4a6a6;
+}

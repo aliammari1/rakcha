@@ -15,9 +15,9 @@
 
   <!-- Cinematic Background -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
-    <Circle radius="250" layoutX="100" layoutY="200" styleClass="ambient-orb orb-primary" opacity="0.2"/>
-    <Circle radius="350" layoutX="1300" layoutY="700" styleClass="ambient-orb orb-secondary" opacity="0.15"/>
-    <Circle radius="180" layoutX="900" layoutY="50" styleClass="ambient-orb orb-accent" opacity="0.18"/>
+    <Circle radius="250" layoutX="100" layoutY="200" styleClass="ambient-orb, orb-primary" opacity="0.2"/>
+    <Circle radius="350" layoutX="1300" layoutY="700" styleClass="ambient-orb, orb-secondary" opacity="0.15"/>
+    <Circle radius="180" layoutX="900" layoutY="50" styleClass="ambient-orb, orb-accent" opacity="0.18"/>
   </AnchorPane>
 
   <!-- Main Application Shell -->
@@ -76,7 +76,7 @@
                     <Label fx:id="seasonCountLabel" text="5 Seasons" styleClass="meta-text"/>
                   </HBox>
                   <HBox spacing="8" alignment="CENTER_LEFT">
-                    <FontIcon iconLiteral="mdi2s-star-circle:16" styleClass="meta-icon rating-icon"/>
+                    <FontIcon iconLiteral="mdi2s-star-circle:16" styleClass="meta-icon, rating-icon"/>
                     <Label fx:id="ratingLabel" text="4.5/5" styleClass="meta-text"/>
                   </HBox>
                   <HBox spacing="8" alignment="CENTER_LEFT">
@@ -105,18 +105,18 @@
                 <!-- Action Buttons -->
                 <HBox spacing="15" styleClass="hero-actions">
                   <Button fx:id="continueWatchingBtn" onAction="#continueWatching"
-                          styleClass="hero-btn primary" text="Continue Watching">
+                          styleClass="hero-btn, primary" text="Continue Watching">
                     <graphic>
                       <FontIcon iconLiteral="mdi2p-play:20"/>
                     </graphic>
                   </Button>
                   <Button fx:id="addToListBtn" onAction="#toggleFavorite"
-                          styleClass="hero-btn secondary" text="My List">
+                          styleClass="hero-btn, secondary" text="My List">
                     <graphic>
                       <FontIcon iconLiteral="mdi2p-plus:18"/>
                     </graphic>
                   </Button>
-                  <Button onAction="#shareSeriesUrl" styleClass="hero-btn secondary" text="Share">
+                  <Button onAction="#shareSeriesUrl" styleClass="hero-btn, secondary" text="Share">
                     <graphic>
                       <FontIcon iconLiteral="mdi2s-share-variant:18"/>
                     </graphic>
@@ -137,7 +137,7 @@
               <Label fx:id="lastWatchedLabel" text="Continue from Season 2, Episode 3" styleClass="banner-title"/>
               <ProgressBar fx:id="episodeProgressBar" progress="0.45" styleClass="progress-bar-slim" maxWidth="200"/>
             </VBox>
-            <Button onAction="#continueFromLastEpisode" styleClass="hero-btn primary" text="Resume">
+            <Button onAction="#continueFromLastEpisode" styleClass="hero-btn, primary" text="Resume">
               <graphic>
                 <FontIcon iconLiteral="mdi2p-play:18"/>
               </graphic>

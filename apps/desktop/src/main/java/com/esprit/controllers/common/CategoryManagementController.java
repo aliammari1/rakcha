@@ -180,8 +180,8 @@ public class CategoryManagementController implements Initializable {
             private final javafx.scene.layout.HBox buttonBox = new javafx.scene.layout.HBox(5, editBtn, deleteBtn);
 
             {
-                editBtn.getStyleClass().add("edit-btn");
-                deleteBtn.getStyleClass().add("delete-btn");
+                editBtn.getStyleClass().add("action-btn");
+                deleteBtn.getStyleClass().add("table-danger-btn");
 
                 editBtn.setOnAction(event -> {
                     Category category = getTableView().getItems().get(getIndex());

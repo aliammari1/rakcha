@@ -1,0 +1,24 @@
+.stats-root { -fx-background-color: #0e0709; }
+.stats-scroll, .stats-scroll > .viewport { -fx-background-color: transparent; }
+.stats-page { -fx-padding: 28 36 36 36; }
+.stats-title { -fx-text-fill: #fff4f5; -fx-font-size: 28px; -fx-font-weight: bold; }
+.stats-subtitle { -fx-text-fill: #b9a3a8; -fx-font-size: 13px; }
+.stat-tile, .chart-card {
+    -fx-background-color: #1a0d11;
+    -fx-background-radius: 12px;
+    -fx-border-color: #3b1b22;
+    -fx-border-radius: 12px;
+    -fx-padding: 18 20;
+    -fx-spacing: 6;
+}
+.stat-icon { -fx-icon-size: 24px; -fx-icon-color: #ff7b86; }
+.stat-value { -fx-text-fill: #fff4f5; -fx-font-size: 30px; -fx-font-weight: bold; }
+.stat-label { -fx-text-fill: #b9a3a8; -fx-font-size: 12px; }
+.chart-heading { -fx-text-fill: #f3d4d8; -fx-font-size: 15px; -fx-font-weight: bold; }
+.chart-card .chart-plot-background { -fx-background-color: transparent; }
+.chart-card .chart-vertical-grid-lines { -fx-stroke: transparent; }
+.chart-card .chart-horizontal-grid-lines { -fx-stroke: #3a2228; }
+.chart-card .axis { -fx-tick-label-fill: #d9c5c9; -fx-tick-label-font-size: 12px; }
+.chart-card .axis-tick-mark, .chart-card .axis-minor-tick-mark { -fx-stroke: #5a3b43; }
+.stats-root .chart-card .chart-bar { -fx-bar-fill: #c4424f; -fx-background-radius: 5 5 0 0; }
+.stats-root .chart-card .chart-bar:hover { -fx-bar-fill: #e05564; }

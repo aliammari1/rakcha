@@ -227,7 +227,7 @@ public class SidebarController implements Initializable {
         navigationContainer.getChildren().add(usersButton);
 
         // Orders button
-        orderButton = createNavButton("Order", "mdi2s-shopping:24:#ff4444", NAV_BUTTON_STYLE);
+        orderButton = createNavButton("Orders", "mdi2s-shopping:24:#ff4444", NAV_BUTTON_STYLE);
         orderButton.setOnAction(e -> switchToOrders());
         navigationContainer.getChildren().add(orderButton);
 
@@ -365,6 +365,7 @@ public class SidebarController implements Initializable {
         // Create icon
         FontIcon icon = new FontIcon();
         icon.setIconLiteral(iconLiteral);
+        icon.setStyle("-fx-icon-color: #ff8b93;");
 
         // Create label
         Label label = new Label(text);

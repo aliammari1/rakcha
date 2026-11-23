@@ -120,20 +120,20 @@ public class DashboardAdminController {
         this.colStatut.setCellValueFactory(new PropertyValueFactory<>("status"));
         // Configurer la cellule de la colonne Action
         this.colAction.setCellFactory((TableColumn<Cinema, Void> param) -> new TableCell<Cinema, Void>() {
-            private final Button acceptButton = new Button("Accepter");
-            private final Button refuseButton = new Button("Refuser");
+            private final Button acceptButton = new Button("Approve");
+            private final Button refuseButton = new Button("Reject");
             private final Button showMoviesButton = new Button("Show Movies");
 
             {
-                acceptButton.getStyleClass().add("delete-btn");
-                refuseButton.getStyleClass().add("delete-btn");
+                acceptButton.getStyleClass().addAll("action-btn", "primary");
+                refuseButton.getStyleClass().add("table-danger-btn");
                 showMoviesButton.getStyleClass().add("movies-btn");
 
                 acceptButton.setOnAction(event -> {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Confirm Acceptance");
-                    alert.setHeaderText("Accept Cinema");
-                    alert.setContentText("Are you sure you want to accept this cinema?");
+                    alert.setTitle("Confirm approval");
+                    alert.setHeaderText("Approve cinema");
+                    alert.setContentText("Are you sure you want to approve this cinema?");
                     if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
                         Cinema cinema = getTableView().getItems().get(getIndex());
                         cinema.setStatus(CinemaStatus.ACCEPTED);
@@ -186,7 +186,7 @@ public class DashboardAdminController {
                 } else {
                     // Récupérer le cinéma associé à cette ligne
                     final Cinema cinema = this.getTableView().getItems().get(this.getIndex());
-                    if (CinemaStatus.ACCEPTED.getStatus().equals(cinema.getStatus())) {
+                    if (CinemaStatus.ACCEPTED == cinema.getStatus()) {
                         // Afficher le bouton "Show Movies" si le statut est "Accepted"
                         this.setGraphic(this.showMoviesButton);
                     } else {
@@ -471,7 +471,7 @@ public class DashboardAdminController {
         // Filtrer les cinémas en fonction des adresses et/ou des statuts sélectionnés
         final List<Cinema> filteredCinemas = this.getAllCinemas().stream()
             .filter(cinema -> selectedAddresses.isEmpty() || selectedAddresses.contains(cinema.getAddress()))
-            .filter(cinema -> selectedStatuses.isEmpty() || selectedStatuses.contains(cinema.getStatus()))
+            .filter(cinema -> selectedStatuses.isEmpty() || (cinema.getStatus() != null && selectedStatuses.contains(cinema.getStatus().getStatus())))
             .collect(Collectors.toList());
         // Mettre à jour le TableView avec les cinémas filtrés
         final ObservableList<Cinema> filteredList = FXCollections.observableArrayList(filteredCinemas);

@@ -12,8 +12,8 @@
 
   <!-- Background -->
   <AnchorPane styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="280" layoutX="1150" layoutY="550" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="280" layoutX="1150" layoutY="550" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
   </AnchorPane>
 
   <BorderPane styleClass="main-shell">
@@ -65,7 +65,7 @@
 
           <Region HBox.hgrow="ALWAYS"/>
 
-          <Button onAction="#clearWatchlist" styleClass="glass-btn danger" text="Clear All">
+          <Button onAction="#clearWatchlist" styleClass="glass-btn, danger" text="Clear All">
             <graphic>
               <FontIcon iconLiteral="mdi2d-delete-sweep:18"/>
             </graphic>
@@ -127,7 +127,7 @@
               <FontIcon iconLiteral="mdi2b-bookmark-off:80" styleClass="empty-icon"/>
               <Label text="Your watchlist is empty" styleClass="empty-title"/>
               <Label text="Start adding movies and series you want to watch later" styleClass="empty-desc"/>
-              <Button onAction="#browseFilms" styleClass="action-btn primary" text="Browse Films">
+              <Button onAction="#browseFilms" styleClass="action-btn, primary" text="Browse Films">
                 <graphic>
                   <FontIcon iconLiteral="mdi2m-movie-search:20"/>
                 </graphic>
@@ -162,7 +162,7 @@
         </graphic>
       </Button>
       <Separator/>
-      <Button onAction="#removeFromWatchlist" styleClass="option-btn danger" text="Remove from Watchlist"
+      <Button onAction="#removeFromWatchlist" styleClass="option-btn, danger" text="Remove from Watchlist"
               maxWidth="Infinity">
         <graphic>
           <FontIcon iconLiteral="mdi2b-bookmark-remove:20"/>

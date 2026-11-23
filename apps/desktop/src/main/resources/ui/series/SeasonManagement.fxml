@@ -14,9 +14,9 @@
 
   <!-- Cinematic Background -->
   <AnchorPane fx:id="cinematicBackground" styleClass="cinematic-bg">
-    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb orb-primary" opacity="0.15"/>
-    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb orb-secondary" opacity="0.1"/>
-    <Circle radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb orb-accent" opacity="0.12"/>
+    <Circle radius="200" layoutX="150" layoutY="150" styleClass="ambient-orb, orb-primary" opacity="0.15"/>
+    <Circle radius="300" layoutX="1200" layoutY="600" styleClass="ambient-orb, orb-secondary" opacity="0.1"/>
+    <Circle radius="150" layoutX="800" layoutY="100" styleClass="ambient-orb, orb-accent" opacity="0.12"/>
   </AnchorPane>
 
   <!-- Main Application Shell -->
@@ -115,12 +115,12 @@
 
             <!-- Action Buttons -->
             <HBox spacing="12" alignment="CENTER">
-              <Button fx:id="saveButton" onAction="#saveSeason" styleClass="hero-btn primary" text="Save Season">
+              <Button fx:id="saveButton" onAction="#saveSeason" styleClass="hero-btn, primary" text="Save Season">
                 <graphic>
                   <FontIcon iconLiteral="mdi2c-content-save:18"/>
                 </graphic>
               </Button>
-              <Button onAction="#clearForm" styleClass="hero-btn secondary" text="Clear">
+              <Button onAction="#clearForm" styleClass="hero-btn, secondary" text="Clear">
                 <graphic>
                   <FontIcon iconLiteral="mdi2e-eraser:18"/>
                 </graphic>

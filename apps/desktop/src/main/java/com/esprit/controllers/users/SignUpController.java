@@ -1,10 +1,5 @@
 package com.esprit.controllers.users;
 
-import com.dlsc.formsfx.model.structure.Field;
-import com.dlsc.formsfx.model.structure.Form;
-import com.dlsc.formsfx.model.structure.Group;
-import com.dlsc.formsfx.model.validators.RegexValidator;
-import com.dlsc.formsfx.model.validators.StringLengthValidator;
 import com.esprit.enums.UserRole;
 import com.esprit.models.users.CinemaManager;
 import com.esprit.models.users.Client;
@@ -23,21 +18,11 @@ import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -45,13 +30,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
@@ -59,17 +42,17 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.Duration;
+import javafx.util.converter.LocalDateStringConverter;
+import javafx.util.StringConverter;
 import lombok.extern.log4j.Log4j2;
-import net.synedra.validatorfx.Validator;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -82,20 +65,7 @@ public class SignUpController implements Initializable {
     private static final Logger LOGGER = Logger.getLogger(SignUpController.class.getName());
     private static final Random RANDOM = new Random();
 
-    // FormsFX Properties for reactive form binding
-    private final StringProperty emailProperty = new SimpleStringProperty("");
-    private final StringProperty passwordProperty = new SimpleStringProperty("");
-    private final StringProperty nomProperty = new SimpleStringProperty("");
-    private final StringProperty prenomProperty = new SimpleStringProperty("");
-    private final StringProperty adresseProperty = new SimpleStringProperty("");
-    private final StringProperty phoneProperty = new SimpleStringProperty("");
-    private final ObjectProperty<LocalDate> birthdateProperty = new SimpleObjectProperty<>();
-    private final ObjectProperty<String> roleProperty = new SimpleObjectProperty<>();
-    private final ListProperty<String> roleItems = new SimpleListProperty<>(
-        FXCollections.observableArrayList("Client", "CinemaManager"));
     private final int maxDynamicElements = 15; // Number of dynamic elements to create
-    // FormsFX Form with validation
-    private Form signUpForm;
     @FXML
     private StackPane rootContainer;
     @FXML
@@ -122,6 +92,8 @@ public class SignUpController implements Initializable {
     private Button loginButton;
     @FXML
     private Button signUpButton;
+    @FXML
+    private Label signUpErrorLabel;
     // Animation elements
     @FXML
     private Circle particle1, particle2, particle3, particle4, particle5, particle6;
@@ -167,9 +139,42 @@ public class SignUpController implements Initializable {
         dynamicShapes = new Polygon[maxDynamicElements / 3];
         dynamicRectangles = new Rectangle[maxDynamicElements / 3];
 
-        // Initialize FormsFX and EasyBind
-        setupFormsFX();
-        setupBidirectionalBindings();
+        dateDeNaissanceDatePicker.setConverter(new LocalDateStringConverter(
+            DateTimeFormatter.ISO_LOCAL_DATE, DateTimeFormatter.ISO_LOCAL_DATE) {
+            @Override
+            public LocalDate fromString(final String value) {
+                try {
+                    return super.fromString(value);
+                } catch (final java.time.format.DateTimeParseException incomplete) {
+                    return null; // still typing; the form reports a missing date when submitted
+                }
+            }
+        });
+        roleComboBox.getItems().setAll(UserRole.CLIENT.name(), UserRole.CINEMA_MANAGER.name());
+        roleComboBox.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(String role) {
+                if (UserRole.CLIENT.name().equals(role)) {
+                    return "Client";
+                }
+                if (UserRole.CINEMA_MANAGER.name().equals(role)) {
+                    return "Cinema manager";
+                }
+                return "";
+            }
+
+            @Override
+            public String fromString(String label) {
+                return roleComboBox.getItems().stream()
+                    .filter(role -> toString(role).equals(label))
+                    .findFirst().orElse(null);
+            }
+        });
+        for (TextField field : List.of(prenomTextField, nomTextField, emailTextField, passwordTextField,
+            num_telephoneTextField, adresseTextField, dateDeNaissanceDatePicker.getEditor())) {
+            field.textProperty().addListener((observable, oldValue, newValue) -> signUpErrorLabel.setVisible(false));
+        }
+        roleComboBox.valueProperty().addListener((observable, oldValue, newValue) -> signUpErrorLabel.setVisible(false));
 
         // Initialize animations with a slight delay to ensure FXML is fully loaded
         Timeline delayedInit = new Timeline(new KeyFrame(Duration.millis(100), e -> {
@@ -180,9 +185,6 @@ public class SignUpController implements Initializable {
             LOGGER.info("Animation initialization completed.");
         }));
         delayedInit.play();
-
-        // Setup validation and data binding
-        setupValidation();
 
         // Add event handler for login button
         loginButton.setOnAction(event -> {
@@ -195,438 +197,6 @@ public class SignUpController implements Initializable {
     }
 
     /**
-     * Sets up the FormsFX form with validation rules.
-     */
-    private void setupFormsFX() {
-        signUpForm = Form.of(
-            Group.of(
-                Field.ofStringType(emailProperty)
-                    .label("Email")
-                    .validate(RegexValidator.forPattern("^[A-Za-z0-9+_.-]+@(.+)$", "Please enter a valid email address")),
-                Field.ofStringType(passwordProperty)
-                    .label("Password")
-                    .validate(StringLengthValidator.atLeast(8, "Password must be at least 8 characters")),
-                Field.ofStringType(nomProperty)
-                    .label("Last Name")
-                    .validate(StringLengthValidator.atLeast(2, "Last name must be at least 2 characters")),
-                Field.ofStringType(prenomProperty)
-                    .label("First Name")
-                    .validate(StringLengthValidator.atLeast(2, "First name must be at least 2 characters")),
-                Field.ofStringType(adresseProperty)
-                    .label("Address")
-                    .validate(StringLengthValidator.atLeast(5, "Address must be at least 5 characters")),
-                Field.ofStringType(phoneProperty)
-                    .label("Phone Number")
-                    .validate(RegexValidator.forPattern("^[0-9]{8,15}$", "Please enter a valid phone number")),
-                Field.ofSingleSelectionType(roleItems, roleProperty)
-                    .label("Role")
-                    .required("Please select a role")
-            )
-        );
-    }
-
-    /**
-     * Sets up bidirectional bindings for form fields.
-     */
-    private void setupBidirectionalBindings() {
-        // Bind text fields to properties bidirectionally
-        if (emailTextField != null) {
-            emailTextField.textProperty().bindBidirectional(emailProperty);
-        }
-        if (passwordTextField != null) {
-            passwordTextField.textProperty().bindBidirectional(passwordProperty);
-        }
-        if (nomTextField != null) {
-            nomTextField.textProperty().bindBidirectional(nomProperty);
-        }
-        if (prenomTextField != null) {
-            prenomTextField.textProperty().bindBidirectional(prenomProperty);
-        }
-        if (adresseTextField != null) {
-            adresseTextField.textProperty().bindBidirectional(adresseProperty);
-        }
-        if (num_telephoneTextField != null) {
-            num_telephoneTextField.textProperty().bindBidirectional(phoneProperty);
-        }
-        if (dateDeNaissanceDatePicker != null) {
-            dateDeNaissanceDatePicker.valueProperty().bindBidirectional(birthdateProperty);
-        }
-        if (roleComboBox != null) {
-            roleComboBox.valueProperty().bindBidirectional(roleProperty);
-        }
-    }
-
-    /**
-     * Cleanup bindings when controller is destroyed.
-     */
-    public void cleanup() {
-        if (emailTextField != null) {
-            emailTextField.textProperty().unbindBidirectional(emailProperty);
-        }
-        if (passwordTextField != null) {
-            passwordTextField.textProperty().unbindBidirectional(passwordProperty);
-        }
-        if (nomTextField != null) {
-            nomTextField.textProperty().unbindBidirectional(nomProperty);
-        }
-        if (prenomTextField != null) {
-            prenomTextField.textProperty().unbindBidirectional(prenomProperty);
-        }
-        if (adresseTextField != null) {
-            adresseTextField.textProperty().unbindBidirectional(adresseProperty);
-        }
-        if (num_telephoneTextField != null) {
-            num_telephoneTextField.textProperty().unbindBidirectional(phoneProperty);
-        }
-        if (dateDeNaissanceDatePicker != null) {
-            dateDeNaissanceDatePicker.valueProperty().unbindBidirectional(birthdateProperty);
-        }
-        if (roleComboBox != null) {
-            roleComboBox.valueProperty().unbindBidirectional(roleProperty);
-        }
-        stopAllAnimations();
-    }
-
-    /**
-     * Set up form validation
-     */
-    private void setupValidation() {
-        final Tooltip tooltip = new Tooltip();
-        final UserService userService = new UserService();
-
-        // Email validation
-        this.emailTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            final String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
-            if (!this.emailTextField.getText().matches(emailRegex)) {
-                this.emailTextField.getStyleClass().removeAll("checked");
-                this.emailTextField.getStyleClass().add("notChecked");
-            } else if (userService.checkEmailFound(newValue)) {
-                this.emailTextField.getStyleClass().removeAll("checked");
-                this.emailTextField.getStyleClass().add("notChecked");
-            } else {
-                this.emailTextField.getStyleClass().removeAll("notChecked");
-                this.emailTextField.getStyleClass().add("checked");
-            }
-        });
-
-        // Password validation
-        this.passwordTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (8 > passwordTextField.getLength()) {
-                this.passwordTextField.getStyleClass().removeAll("checked");
-                this.emailTextField.getStyleClass().add("notChecked");
-            } else {
-                this.passwordTextField.getStyleClass().removeAll("notChecked");
-                this.passwordTextField.getStyleClass().add("checked");
-            }
-        });
-
-        // Nom validation
-        this.nomTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                final String newValue) {
-                final Validator validator = new Validator();
-                validator.createCheck().dependsOn("firstName", nomTextField.textProperty())
-                    .withMethod(c -> {
-                        final String userName = c.get("firstName");
-                        if (null != userName && !userName.toLowerCase().equals(userName)) {
-                            c.error("Please use only lowercase letters.");
-                        } else if (userName.isEmpty()) {
-                            c.error("the string is empty");
-                        }
-                    }).decorates(nomTextField).immediate();
-                final Window window = nomTextField.getScene().getWindow();
-                final Bounds bounds = nomTextField
-                    .localToScreen(nomTextField.getBoundsInLocal());
-                nomTextField.textProperty().addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                        final String newValue) {
-                        if (validator.containsErrors()) {
-                            tooltip.setText(validator.createStringBinding().getValue());
-                            tooltip.setStyle("-fx-background-color: #f00;");
-                            nomTextField.setTooltip(tooltip);
-                            nomTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                bounds.getMinY() + 30);
-                        } else {
-                            if (null != nomTextField.getTooltip()) {
-                                nomTextField.getTooltip().hide();
-                            }
-                        }
-                    }
-                });
-                nomTextField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-                    @Override
-                    public void handle(final KeyEvent event) {
-                        if (KeyCode.ENTER == event.getCode()) {
-                            if (validator.containsErrors()) {
-                                event.consume();
-                            }
-                        }
-                    }
-                });
-            }
-        });
-
-        // Prenom validation
-        this.prenomTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                final String newValue) {
-                final Validator validator = new Validator();
-                validator.createCheck().dependsOn("lastName", prenomTextField.textProperty())
-                    .withMethod(c -> {
-                        final String userName = c.get("lastName");
-                        if (null != userName && !userName.toLowerCase().equals(userName)) {
-                            c.error("Please use only lowercase letters.");
-                        } else if (userName.isEmpty()) {
-                            c.error("the string is empty");
-                        }
-                    }).decorates(prenomTextField).immediate();
-                final Window window = prenomTextField.getScene().getWindow();
-                final Bounds bounds = prenomTextField
-                    .localToScreen(prenomTextField.getBoundsInLocal());
-                prenomTextField.textProperty().addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                        final String newValue) {
-                        if (validator.containsErrors()) {
-                            tooltip.setText(validator.createStringBinding().getValue());
-                            tooltip.setStyle("-fx-background-color: #f00;");
-                            prenomTextField.setTooltip(tooltip);
-                            prenomTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                bounds.getMinY() + 30);
-                        } else {
-                            if (null != prenomTextField.getTooltip()) {
-                                prenomTextField.getTooltip().hide();
-                            }
-                        }
-                    }
-                });
-                prenomTextField.addEventFilter(KeyEvent.KEY_PRESSED,
-                    new EventHandler<KeyEvent>() {
-                        @Override
-                        public void handle(final KeyEvent event) {
-                            if (KeyCode.ENTER == event.getCode()) {
-                                if (validator.containsErrors()) {
-                                    event.consume();
-                                }
-                            }
-                        }
-                    });
-            }
-        });
-
-        // Adresse validation
-        this.adresseTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                final String newValue) {
-                final Validator validator = new Validator();
-                validator.createCheck().dependsOn("address", adresseTextField.textProperty())
-                    .withMethod(c -> {
-                        final String userName = c.get("address");
-                        if (null != userName && !userName.toLowerCase().equals(userName)) {
-                            c.error("Please use only lowercase letters.");
-                        } else if (userName.isEmpty()) {
-                            c.error("the string is empty");
-                        }
-                    }).decorates(adresseTextField).immediate();
-                final Window window = adresseTextField.getScene().getWindow();
-                final Bounds bounds = adresseTextField
-                    .localToScreen(adresseTextField.getBoundsInLocal());
-                adresseTextField.textProperty().addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                        final String newValue) {
-                        if (validator.containsErrors()) {
-                            tooltip.setText(validator.createStringBinding().getValue());
-                            tooltip.setStyle("-fx-background-color: #f00;");
-                            adresseTextField.setTooltip(tooltip);
-                            adresseTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                bounds.getMinY() + 30);
-                        } else {
-                            if (null != adresseTextField.getTooltip()) {
-                                adresseTextField.getTooltip().hide();
-                            }
-                        }
-                    }
-                });
-                adresseTextField.addEventFilter(KeyEvent.KEY_PRESSED,
-                    new EventHandler<KeyEvent>() {
-                        @Override
-                        public void handle(final KeyEvent event) {
-                            if (KeyCode.ENTER == event.getCode()) {
-                                if (validator.containsErrors()) {
-                                    event.consume();
-                                }
-                            }
-                        }
-                    });
-            }
-        });
-
-        // Email validation
-        this.emailTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                final String newValue) {
-                final Validator validator = new Validator();
-                validator.createCheck().dependsOn("email", emailTextField.textProperty())
-                    .withMethod(c -> {
-                        final String userName = c.get("email");
-                        if (null != userName) {
-                            final String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-                            if (!userName.matches(emailRegex)) {
-                                c.error("Invalid email format.");
-                            }
-                        } else if (userName.isEmpty()) {
-                            c.error("the string is empty");
-                        }
-                    }).decorates(emailTextField).immediate();
-                final Window window = emailTextField.getScene().getWindow();
-                final Bounds bounds = emailTextField
-                    .localToScreen(emailTextField.getBoundsInLocal());
-                emailTextField.textProperty().addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                        final String newValue) {
-                        if (validator.containsErrors()) {
-                            tooltip.setText(validator.createStringBinding().getValue());
-                            tooltip.setStyle("-fx-background-color: #f00;");
-                            emailTextField.setTooltip(tooltip);
-                            emailTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                bounds.getMinY() + 30);
-                        } else {
-                            if (null != emailTextField.getTooltip()) {
-                                emailTextField.getTooltip().hide();
-                            }
-                        }
-                    }
-                });
-                emailTextField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-                    @Override
-                    public void handle(final KeyEvent event) {
-                        if (KeyCode.ENTER == event.getCode()) {
-                            if (validator.containsErrors()) {
-                                event.consume();
-                            }
-                        }
-                    }
-                });
-            }
-        });
-
-        // Password validation
-        this.passwordTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                final String newValue) {
-                final Validator validator = new Validator();
-                validator.createCheck().dependsOn("password", passwordTextField.textProperty())
-                    .withMethod(c -> {
-                        final String userName = c.get("password");
-                        if (null != userName && !userName.toLowerCase().equals(userName)) {
-                            c.error("Please use only lowercase letters.");
-                        } else if (userName.isEmpty()) {
-                            c.error("the string is empty");
-                        }
-                    }).decorates(passwordTextField).immediate();
-                final Window window = passwordTextField.getScene().getWindow();
-                final Bounds bounds = passwordTextField
-                    .localToScreen(passwordTextField.getBoundsInLocal());
-                passwordTextField.textProperty().addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                        final String newValue) {
-                        if (validator.containsErrors()) {
-                            tooltip.setText(validator.createStringBinding().getValue());
-                            tooltip.setStyle("-fx-background-color: #f00;");
-                            passwordTextField.setTooltip(tooltip);
-                            passwordTextField.getTooltip().show(window, bounds.getMinX() - 10,
-                                bounds.getMinY() + 30);
-                        } else {
-                            if (null != passwordTextField.getTooltip()) {
-                                passwordTextField.getTooltip().hide();
-                            }
-                        }
-                    }
-                });
-                passwordTextField.addEventFilter(KeyEvent.KEY_PRESSED,
-                    new EventHandler<KeyEvent>() {
-                        @Override
-                        public void handle(final KeyEvent event) {
-                            if (KeyCode.ENTER == event.getCode()) {
-                                if (validator.containsErrors()) {
-                                    event.consume();
-                                }
-                            }
-                        }
-                    });
-            }
-        });
-
-        // Phone number validation
-        this.num_telephoneTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                final String newValue) {
-                final Validator validator = new Validator();
-                validator.createCheck()
-                    .dependsOn("phoneNumber", num_telephoneTextField.textProperty())
-                    .withMethod(c -> {
-                        final String userName = c.get("phoneNumber");
-                        if (null != userName) {
-                            final String numberRegex = "\\d*";
-                            if (!userName.matches(numberRegex)) {
-                                c.error("Please use only numbers.");
-                            }
-                        } else if (userName.isEmpty()) {
-                            c.error("the string is empty");
-                        }
-                    }).decorates(num_telephoneTextField).immediate();
-                final Window window = num_telephoneTextField.getScene().getWindow();
-                final Bounds bounds = num_telephoneTextField
-                    .localToScreen(num_telephoneTextField.getBoundsInLocal());
-                num_telephoneTextField.textProperty().addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(final ObservableValue<? extends String> observable, final String oldValue,
-                                        final String newValue) {
-                        if (validator.containsErrors()) {
-                            tooltip.setText(validator.createStringBinding().getValue());
-                            tooltip.setStyle("-fx-background-color: #f00;");
-                            num_telephoneTextField.setTooltip(tooltip);
-                            num_telephoneTextField.getTooltip().show(window,
-                                bounds.getMinX() - 10, bounds.getMinY() + 30);
-                        } else {
-                            if (null != num_telephoneTextField.getTooltip()) {
-                                num_telephoneTextField.getTooltip().hide();
-                            }
-                        }
-                    }
-                });
-                num_telephoneTextField.addEventFilter(KeyEvent.KEY_PRESSED,
-                    new EventHandler<KeyEvent>() {
-                        @Override
-                        public void handle(final KeyEvent event) {
-                            if (KeyCode.ENTER == event.getCode()) {
-                                if (validator.containsErrors()) {
-                                    event.consume();
-                                }
-                            }
-                        }
-                    });
-            }
-        });
-
-        // Initialize role selection combobox
-        final List<String> roleList = Arrays.asList(UserRole.CLIENT.name(), UserRole.CINEMA_MANAGER.name());
-        for (final String role : roleList) {
-            this.roleComboBox.getItems().add(role);
-        }
-    }
-
-    /**
      * @param event
      */
     @FXML
@@ -636,7 +206,7 @@ public class SignUpController implements Initializable {
             new FileChooser.ExtensionFilter("PNG", "*.png"),
             new FileChooser.ExtensionFilter("JPG", "*.jpg"));
         fileChooser.setTitle("Sélectionner une image");
-        final File selectedFile = fileChooser.showOpenDialog(null);
+        final File selectedFile = fileChooser.showOpenDialog(signUpButton.getScene().getWindow());
         if (null != selectedFile) {
             try {
                 // Use the CloudinaryStorage service to upload the image
@@ -644,13 +214,15 @@ public class SignUpController implements Initializable {
                 cloudinaryImageUrl = cloudinaryStorage.uploadImage(selectedFile);
 
                 // Display the image in the ImageView
-                final Image selectedImage = new Image(cloudinaryImageUrl);
+                final Image selectedImage = new Image(selectedFile.toURI().toString(), 64, 64, true, true, true);
                 this.photoDeProfilImageView.setImage(selectedImage);
 
                 LOGGER.info("Image uploaded to Cloudinary: " + cloudinaryImageUrl);
 
-            } catch (final IOException e) {
+            } catch (final IOException | RuntimeException e) {
                 SignUpController.LOGGER.log(Level.SEVERE, "Error uploading image to Cloudinary", e);
+                new Alert(Alert.AlertType.ERROR,
+                    "The photo couldn't be uploaded. You can still create your account.", ButtonType.CLOSE).show();
             }
         }
     }
@@ -660,102 +232,85 @@ public class SignUpController implements Initializable {
      * @throws IOException
      */
     @FXML
-    void signup(final ActionEvent event) throws IOException {
-        final UserRole role = UserRole.valueOf(this.roleComboBox.getValue());
-        User user = null;
-        final String nom = this.nomTextField.getText();
-        final String prenom = this.prenomTextField.getText();
-        final String num_telephone = this.num_telephoneTextField.getText();
+    void signup(final ActionEvent event) {
+        final String selectedRole = this.roleComboBox.getValue();
+        final String nom = this.nomTextField.getText().strip();
+        final String prenom = this.prenomTextField.getText().strip();
+        final String num_telephone = this.num_telephoneTextField.getText().strip();
         final String password = this.passwordTextField.getText();
-        final String email = this.emailTextField.getText();
+        final String email = EmailValidator.sanitize(this.emailTextField.getText());
+        final String address = this.adresseTextField.getText().strip();
         final LocalDate dateDeNaissance = this.dateDeNaissanceDatePicker.getValue();
-        if (nom.isEmpty() || prenom.isEmpty() || num_telephone.isEmpty() || password.isEmpty() || role.name().isEmpty()
-            || email.isEmpty() || null == dateDeNaissance) {
-            final Alert alert = new Alert(Alert.AlertType.ERROR, "Please fill in all the required fields",
-                ButtonType.CLOSE);
-            alert.show();
+        if (prenom.isEmpty() || nom.isEmpty()) {
+            showSignUpError("Enter your first and last name.", prenom.isEmpty() ? prenomTextField : nomTextField);
             return;
         }
-        if (!num_telephone.matches("\\d+")) {
-            final Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid phone number format", ButtonType.CLOSE);
-            alert.show();
-            return;
-        }
-
-        // Enhanced email validation using EmailValidator
         if (!EmailValidator.isValid(email)) {
-            String errorMessage = EmailValidator.getValidationMessage(email);
-            final Alert alert = new Alert(Alert.AlertType.ERROR,
-                errorMessage != null ? errorMessage : "Invalid email format", ButtonType.CLOSE);
-            alert.show();
+            showSignUpError("Enter a valid email address.", emailTextField);
             return;
         }
-
-        // Enhanced password validation using PasswordValidator
         List<String> passwordErrors = PasswordValidator.getValidationErrors(password);
         if (!passwordErrors.isEmpty()) {
-            final Alert alert = new Alert(Alert.AlertType.ERROR,
-                "Password validation failed:\n" + String.join("\n", passwordErrors),
-                ButtonType.CLOSE);
-            alert.show();
+            showSignUpError(passwordErrors.getFirst(), passwordTextField);
+            return;
+        }
+        if (!num_telephone.matches("[0-9]{8,15}")) {
+            showSignUpError("Enter a phone number with 8 to 15 digits.", num_telephoneTextField);
+            return;
+        }
+        if (dateDeNaissance == null) {
+            showSignUpError("Enter your date of birth as YYYY-MM-DD.", dateDeNaissanceDatePicker.getEditor());
+            return;
+        }
+        if (dateDeNaissance.isAfter(LocalDate.now())) {
+            showSignUpError("Date of birth cannot be in the future.", dateDeNaissanceDatePicker.getEditor());
+            return;
+        }
+        if (!UserRole.CLIENT.name().equals(selectedRole) && !UserRole.CINEMA_MANAGER.name().equals(selectedRole)) {
+            showSignUpError("Choose an account type.", roleComboBox);
             return;
         }
 
         // Check if email already exists
         final UserService userService = new UserService();
         if (userService.checkEmailFound(email)) {
-            final Alert alert = new Alert(Alert.AlertType.ERROR,
-                "This email is already registered. Please use a different email or login.",
-                ButtonType.CLOSE);
-            alert.show();
+            showSignUpError("This email is already registered. Use Sign In instead.", emailTextField);
             return;
         }
 
-        switch (role) {
-            case UserRole.CINEMA_MANAGER:
-                user = new CinemaManager(this.nomTextField.getText(), this.prenomTextField.getText(),
-                    this.num_telephoneTextField.getText(), this.passwordTextField.getText(),
-                    UserRole.valueOf(this.roleComboBox.getValue()), this.emailTextField.getText(),
-                    Date.valueOf(this.dateDeNaissanceDatePicker.getValue()), this.emailTextField.getText(),
-                    cloudinaryImageUrl != null ? cloudinaryImageUrl : "");
-                break;
-            case UserRole.CLIENT:
-                user = new Client(this.nomTextField.getText(), this.prenomTextField.getText(),
-                    this.num_telephoneTextField.getText(), this.passwordTextField.getText(),
-                    UserRole.valueOf(this.roleComboBox.getValue()), this.emailTextField.getText(),
-                    Date.valueOf(this.dateDeNaissanceDatePicker.getValue()), this.emailTextField.getText(),
-                    cloudinaryImageUrl != null ? cloudinaryImageUrl : "");
-                break;
-            default:
-                final Alert alert = new Alert(Alert.AlertType.ERROR, "the given role is not available",
-                    ButtonType.CLOSE);
-                alert.show();
-                return;
+        final Date birthDate = Date.valueOf(dateDeNaissance);
+        final String photo = cloudinaryImageUrl != null ? cloudinaryImageUrl : "";
+        final User user = UserRole.CLIENT.name().equals(selectedRole)
+            ? new Client(prenom, nom, num_telephone, password, UserRole.CLIENT, address, birthDate, email, photo)
+            : new CinemaManager(prenom, nom, num_telephone, password, UserRole.CINEMA_MANAGER, address, birthDate, email, photo);
+
+        if (!userService.createAccount(user)) {
+            showSignUpError("Account creation failed. Please try again.", signUpButton);
+            return;
         }
-
+        final User previousUser = SessionManager.getCurrentUser();
         try {
-            // Stop animations before navigating away
-            stopAllAnimations();
-
-            userService.create(user);
-
-            // Retrieve the full user object (with ID) and set session
-            User createdUser = userService.getUserByEmail(email);
-            if (createdUser != null) {
-                user = createdUser;
+            final User createdUser = userService.getUserByEmail(email);
+            if (createdUser == null) {
+                throw new IllegalStateException("Created user could not be loaded");
             }
-            SessionManager.setCurrentUser(user);
-
+            SessionManager.setCurrentUser(createdUser);
             final Stage stage = (Stage) this.nomTextField.getScene().getWindow();
             final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/ui/users/Profile.fxml"));
             final Parent root = loader.load();
-            final ProfileController profileController = loader.getController();
-            profileController.setData(user);
             stage.setScene(new Scene(root));
+            stopAllAnimations();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error during signup process", e);
-            throw new IOException("Failed to complete signup process", e);
+            SessionManager.setCurrentUser(previousUser);
+            LOGGER.log(Level.SEVERE, "Could not open the profile after signup", e);
+            showSignUpError("Account created. Sign in to open your profile.", loginButton);
         }
+    }
+
+    private void showSignUpError(String message, Node field) {
+        field.requestFocus();
+        signUpErrorLabel.setText(message);
+        signUpErrorLabel.setVisible(true);
     }
 
     /**
