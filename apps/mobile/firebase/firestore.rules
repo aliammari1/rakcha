@@ -1,139 +1,224 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check if request is authenticated
+    // ------------------------------------------------------------------
+    // Data model assumed by these rules
+    // users/{uid}: { email, display_name, uid, role (client|manager|admin) }
+    // users/{uid}/filmRatings/{filmId}: { stars:int 1..5 }
+    // users/{uid}/cart/{productId}: { productId, name, image, price:number,
+    //   quantity:int 1..99 }
+    // cinema/{id}: { nom, address, image_url, description, statut, responsable }
+    // Film, produit, serie, Seance: public catalogue; managers write Film/Seance.
+    // Reservation, Favoris, SuggestedEvent, review: user-owned records.
+    // ------------------------------------------------------------------
+
     function isAuthenticated() {
       return request.auth != null;
     }
 
-    // Helper function to verify whether a user is the document owner.
-    // Supports DocumentReference (/users/{uid}) or string/int UID representations.
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasRole(role) {
+      return isAuthenticated() &&
+        'role' in userDoc() && userDoc().role == role;
+    }
+
+    function isAdmin() {
+      return hasRole('admin');
+    }
+
+    function isManager() {
+      return hasRole('manager') || isAdmin();
+    }
+
     function isDocOwner(docData) {
       return isAuthenticated() && (
-        ('user_ref' in docData && docData.user_ref == /databases/$(database)/documents/users/$(request.auth.uid)) ||
-        ('user' in docData && docData.user == /databases/$(database)/documents/users/$(request.auth.uid)) ||
-        ('userId' in docData && (docData.userId == request.auth.uid || string(docData.userId) == request.auth.uid)) ||
-        ('user_id' in docData && (docData.user_id == request.auth.uid || string(docData.user_id) == request.auth.uid)) ||
-        ('author_id' in docData && (docData.author_id == request.auth.uid || string(docData.author_id) == request.auth.uid)) ||
-        ('authorId' in docData && (docData.authorId == request.auth.uid || string(docData.authorId) == request.auth.uid))
+        ('user_ref' in docData && docData.user_ref ==
+          /databases/$(database)/documents/users/$(request.auth.uid)) ||
+        ('user' in docData && docData.user ==
+          /databases/$(database)/documents/users/$(request.auth.uid)) ||
+        ('userId' in docData && docData.userId == request.auth.uid) ||
+        ('user_id' in docData && docData.user_id == request.auth.uid) ||
+        ('author_id' in docData && docData.author_id == request.auth.uid) ||
+        ('authorId' in docData && docData.authorId == request.auth.uid)
       );
     }
 
-    // Ensures owner field immutability upon document update
     function ownerNotModified() {
-      return (!('user_ref' in request.resource.data) || request.resource.data.user_ref == resource.data.user_ref) &&
-             (!('user' in request.resource.data) || request.resource.data.user == resource.data.user) &&
-             (!('userId' in request.resource.data) || request.resource.data.userId == resource.data.userId) &&
-             (!('user_id' in request.resource.data) || request.resource.data.user_id == resource.data.user_id) &&
-             (!('author_id' in request.resource.data) || request.resource.data.author_id == resource.data.author_id) &&
-             (!('authorId' in request.resource.data) || request.resource.data.authorId == resource.data.authorId);
+      return (!('user_ref' in request.resource.data) ||
+                request.resource.data.user_ref == resource.data.user_ref) &&
+             (!('user' in request.resource.data) ||
+                request.resource.data.user == resource.data.user) &&
+             (!('userId' in request.resource.data) ||
+                request.resource.data.userId == resource.data.userId) &&
+             (!('user_id' in request.resource.data) ||
+                request.resource.data.user_id == resource.data.user_id) &&
+             (!('author_id' in request.resource.data) ||
+                request.resource.data.author_id == resource.data.author_id) &&
+             (!('authorId' in request.resource.data) ||
+                request.resource.data.authorId == resource.data.authorId);
     }
 
-    // User profiles: owner has full access, authenticated users can view profiles
+    function shortText(value, maxLen) {
+      return value is string && value.size() > 0 && value.size() <= maxLen;
+    }
+
+    function isValidUser(data, isCreate) {
+      return data.keys().hasOnly(['email', 'display_name', 'photo_url',
+          'phone_number', 'uid', 'role', 'created_time']) &&
+        shortText(data.email, 254) &&
+        shortText(data.display_name, 80) &&
+        data.uid == request.auth.uid &&
+        (isCreate || !data.diff(getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data).affectedKeys().hasAny(['uid'])) &&
+        (isCreate || !('role' in data) ||
+          data.role == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role);
+    }
+
+    // A new account can only be a client. Staff roles are provisioned by an
+    // administrator (or by trusted local seeding during emulator walkthroughs).
     match /users/{userId} {
-      allow create: if isAuthenticated() && request.auth.uid == userId;
-      allow read: if isAuthenticated();
-      allow update, delete: if isAuthenticated() && request.auth.uid == userId;
+      allow create: if isOwner(userId) &&
+        isValidUser(request.resource.data, true) &&
+        (!('role' in request.resource.data) || request.resource.data.role == 'client');
+      allow read: if isOwner(userId) || isAdmin();
+      allow update: if isAdmin() ||
+        (isOwner(userId) && isValidUser(request.resource.data, false));
+      allow delete: if isOwner(userId) || isAdmin();
+
+      match /filmRatings/{filmId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId) &&
+          request.resource.data.keys().hasOnly(['stars']) &&
+          request.resource.data.stars is int &&
+          request.resource.data.stars >= 1 && request.resource.data.stars <= 5;
+      }
+
+      match /cart/{productId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+          request.resource.data.keys().hasOnly(
+            ['productId', 'name', 'image', 'price', 'quantity']) &&
+          shortText(request.resource.data.productId, 128) &&
+          request.resource.data.productId == productId &&
+          shortText(request.resource.data.name, 120) &&
+          shortText(request.resource.data.image, 512) &&
+          request.resource.data.price is number &&
+          request.resource.data.price >= 0 && request.resource.data.price <= 100000 &&
+          request.resource.data.quantity is int &&
+          request.resource.data.quantity >= 1 && request.resource.data.quantity <= 99;
+        allow update: if isOwner(userId) &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['quantity']) &&
+          request.resource.data.quantity is int &&
+          request.resource.data.quantity >= 1 && request.resource.data.quantity <= 99;
+        allow delete: if isOwner(userId);
+      }
     }
 
-    // Public catalog collections: read-only for public, authenticated write
+    // Public catalogue. Writes are restricted to staff.
     match /categoryFilm/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isAdmin();
     }
-
     match /ActorFilm/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isManager();
     }
-
     match /Film/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isManager();
     }
-
-    match /cinema/{document} {
-      allow read: if true;
-      allow write: if isAuthenticated();
-    }
-
     match /CategoryProduct/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isAdmin();
     }
-
     match /produit/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isAdmin();
     }
-
     match /salle/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isManager();
     }
-
     match /Seance/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isManager();
     }
-
     match /serie/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isManager();
     }
-
     match /Event/{document} {
       allow read: if true;
-      allow write: if isAuthenticated();
+      allow write: if isManager();
+    }
+
+    // A cinema may be proposed by any signed-in user, but only an admin can
+    // approve it or change its owner. Managers may edit venues they own.
+    match /cinema/{document} {
+      allow read: if true;
+      allow create: if isAuthenticated() &&
+        shortText(request.resource.data.nom, 120) &&
+        shortText(request.resource.data.address, 200) &&
+        shortText(request.resource.data.responsable, 128) &&
+        request.resource.data.statut == 'Pending';
+      allow update: if isAdmin() || (isManager() &&
+        resource.data.responsable == request.auth.uid &&
+        request.resource.data.statut == resource.data.statut &&
+        request.resource.data.responsable == resource.data.responsable);
+      allow delete: if isAdmin();
     }
 
     match /SuggestedEvent/{document} {
       allow read: if true;
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && (
-        !('user_ref' in resource.data || 'author_id' in resource.data || 'user_id' in resource.data) ||
-        (isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified())
-      );
-      allow delete: if isAuthenticated() && (
-        !('user_ref' in resource.data || 'author_id' in resource.data || 'user_id' in resource.data) ||
-        isDocOwner(resource.data)
-      );
+      allow create: if isAuthenticated() &&
+        (!('user_ref' in request.resource.data) ||
+          isDocOwner(request.resource.data));
+      allow update: if isAuthenticated() && isDocOwner(resource.data) &&
+        isDocOwner(request.resource.data) && ownerNotModified();
+      allow delete: if isAuthenticated() && isDocOwner(resource.data);
     }
 
-    // User reviews: public read, authenticated author write
     match /review/{document} {
       allow read: if true;
-      allow create: if isAuthenticated() && (
-        !('user_ref' in request.resource.data || 'author_id' in request.resource.data || 'user_id' in request.resource.data) ||
-        isDocOwner(request.resource.data)
-      );
-      allow update: if isAuthenticated() && (
-        (!('user_ref' in resource.data || 'author_id' in resource.data || 'user_id' in resource.data) && isDocOwner(request.resource.data)) ||
-        (isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified())
-      );
-      allow delete: if isAuthenticated() && (
-        !('user_ref' in resource.data || 'author_id' in resource.data || 'user_id' in resource.data) ||
-        isDocOwner(resource.data)
-      );
+      allow create: if isAuthenticated() &&
+        (!('user_ref' in request.resource.data) ||
+          isDocOwner(request.resource.data));
+      allow update: if isAuthenticated() && isDocOwner(resource.data) &&
+        isDocOwner(request.resource.data) && ownerNotModified();
+      allow delete: if isAuthenticated() && isDocOwner(resource.data);
     }
 
-    // User-specific operational collections: strictly enforce owner isolation and immutability
+    // These two legacy top-level collections are retained for existing data
+    // only. New basket and booking writes use the owner-scoped paths above.
     match /cart/{document} {
-      allow read, delete: if isAuthenticated() && isDocOwner(resource.data);
-      allow create: if isAuthenticated() && isDocOwner(request.resource.data);
-      allow update: if isAuthenticated() && isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified();
+      allow read, write: if false;
     }
 
     match /Reservation/{document} {
-      allow read, delete: if isAuthenticated() && isDocOwner(resource.data);
-      allow create: if isAuthenticated() && isDocOwner(request.resource.data);
-      allow update: if isAuthenticated() && isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified();
+      allow read: if isAuthenticated() &&
+        (isDocOwner(resource.data) || isAdmin());
+      allow create: if isAuthenticated() && isDocOwner(request.resource.data) &&
+        shortText(request.resource.data.filmId, 128) &&
+        request.resource.data.seats is list &&
+        request.resource.data.seats.size() <= 20 &&
+        request.resource.data.total is number &&
+        request.resource.data.total >= 0 && request.resource.data.total <= 100000;
+      allow update: if isAdmin();
+      allow delete: if isAuthenticated() &&
+        (isDocOwner(resource.data) || isAdmin());
     }
 
     match /Favoris/{document} {
       allow read, delete: if isAuthenticated() && isDocOwner(resource.data);
       allow create: if isAuthenticated() && isDocOwner(request.resource.data);
-      allow update: if isAuthenticated() && isDocOwner(resource.data) && isDocOwner(request.resource.data) && ownerNotModified();
+      allow update: if isAuthenticated() && isDocOwner(resource.data) &&
+        isDocOwner(request.resource.data) && ownerNotModified();
     }
   }
 }

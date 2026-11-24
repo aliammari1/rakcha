@@ -107,213 +107,37 @@ lib/
 
 ## 🚀 Getting Started
 
-### Prerequisites
-- Flutter SDK (>=3.0.0)
-- Dart SDK
-- Android Studio / VS Code
-- Firebase account
-- FlutterFlow account (optional for modifications)
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/rakcha-mobile.git
-   cd rakcha-mobile
-   ```
-
-2. **Install dependencies**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Firebase Setup**
-   - Create a new Firebase project
-   - Add Android/iOS apps to your project
-   - Download configuration files:
-     - `google-services.json` for Android (place in `android/app/`)
-     - `GoogleService-Info.plist` for iOS (place in `ios/Runner/`)
-
-4. **Configure Firebase**
-   - Enable Authentication (Email/Password, Google Sign-in)
-   - Set up Firestore Database
-   - Configure Storage rules
-   - Enable Analytics (optional)
-
-5. **Run the application**
-   ```bash
-   flutter run
-   ```
-
-### Firebase Configuration
-
-Update your Firestore security rules:
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Users can read/write their own data
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-    
-    // Public read access for cinemas, films, and products
-    match /cinema/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    match /Film/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    match /produit/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    
-    // Cart items are user-specific
-    match /cart/{document} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
+```bash
+cd apps/mobile
+mise install
+flutter pub get
+flutter run                         # normal Firebase project
 ```
 
-## 🎨 Key Dependencies
+For a local walkthrough against the Firebase Emulator Suite:
 
-### Core Framework
-- `flutter`: Cross-platform mobile framework
-- `firebase_core`: Firebase core functionality
-- `cloud_firestore`: Firestore database integration
-- `firebase_auth`: Authentication services
-- `firebase_storage`: File storage services
+```bash
+firebase emulators:start --project demo-rakcha   # from apps/mobile/firebase
+adb reverse tcp:9099 tcp:9099
+adb reverse tcp:8080 tcp:8080
+flutter run --dart-define=USE_FIREBASE_EMULATOR=true
+```
 
-### UI Components
-- `google_fonts`: Custom typography
-- `font_awesome_flutter`: Icon library
-- `cached_network_image`: Optimized image loading
-- `flutter_rating_bar`: Rating components
-- `badges`: Notification badges
+`USE_FIREBASE_EMULATOR` is opt-in; production builds use native Firebase
+configuration and never connect to a workstation emulator.
 
-### Navigation & State
-- `go_router`: Advanced routing
-- `provider`: State management
-- `flutter_animate`: Smooth animations
+## 🧭 App structure
 
-### Additional Features
-- `image_picker`: Camera and gallery access
-- `file_picker`: File selection
-- `google_sign_in`: Google authentication
-- `text_search`: Search functionality
-- `floating_bottom_navigation_bar`: Custom navigation
+The app has role-aware homes. Clients get five bottom tabs — Discover,
+Cinemas, Shop, Series and Tickets — with Profile in the top bar. Managers and
+administrators get their own workspaces. `lib/features/` holds the screens and
+Firestore helpers; `lib/backend/` and `lib/flutter_flow/` retain the generated
+data models and still-used legacy routes.
 
-## 🎯 Usage Examples
-
-### Adding a New Cinema
-1. Navigate to Cinema Management
-2. Tap "Add Cinema"
-3. Fill in cinema details (name, address, manager, status)
-4. Upload cinema image
-5. Save to add to the database
-
-### Booking a Movie
-1. Browse cinema list
-2. Select a cinema
-3. Choose available showtime
-4. Select number of seats
-5. Confirm reservation
-
-### Managing Products
-1. Access Admin Panel
-2. Navigate to Product Management
-3. Add new products with categories
-4. Set pricing and inventory
-5. Manage product images and descriptions
-
-## 🔧 Development
-
-### FlutterFlow Integration
-This project was initially built using FlutterFlow, which provides:
-- Visual UI builder
-- Firebase integration
-- Automatic code generation
-- Custom actions and functions
-
-### Customization
-To modify the app:
-1. Import the project into FlutterFlow (if you have access)
-2. Make visual changes using the FlutterFlow editor
-3. Export updated code
-4. Merge with your local repository
-
-### Manual Development
-For manual development without FlutterFlow:
-1. Use the generated code as a foundation
-2. Modify widgets in the respective files
-3. Update models in the `backend/schema/` directory
-4. Test changes using `flutter run`
-
-## 📊 Database Schema
-
-### Main Collections
-- `users`: User profiles and authentication data
-- `cinema`: Cinema information and management
-- `Film`: Movie catalog with metadata
-- `serie`: TV series information
-- `produit`: Product marketplace data
-- `cart`: Shopping cart items
-- `Event`: Entertainment events
-- `Reservation`: Booking and reservation data
-
-### Relationships
-- Films are linked to categories and actors
-- Cinemas have multiple theater halls (salles)
-- Showtimes (séances) link films to specific times and theaters
-- Cart items reference products and users
-- Reviews are associated with films/series
-
-## 🚦 Deployment
-
-### Android
-1. Build APK: `flutter build apk`
-2. Build App Bundle: `flutter build appbundle`
-3. Sign with release keystore
-4. Upload to Google Play Store
-
-### iOS
-1. Build iOS: `flutter build ios`
-2. Open `ios/Runner.xcworkspace` in Xcode
-3. Configure signing and certificates
-4. Archive and upload to App Store Connect
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Create a Pull Request
+Seat selection creates a **seat request**; it is not a paid ticket or an
+exclusive hold. The cinema room preview is illustrative, not AR/VR. The
+basket persists to Firestore; checkout is not implemented.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [Flutter](https://flutter.dev/) and [FlutterFlow](https://flutterflow.io/)
-- Backend powered by [Firebase](https://firebase.google.com/)
-- UI components from [Material Design](https://material.io/)
-- Icons from [Font Awesome](https://fontawesome.com/)
-
-## 📞 Support
-
-For support and questions:
-- Create an issue in this repository
-- Contact the development team
-- Check the FlutterFlow documentation for UI modifications
-
----
-
-**Rakcha** - Your all-in-one entertainment and cinema management platform! 🎬✨
+MIT. See `LICENSE`.

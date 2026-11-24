@@ -37,7 +37,9 @@ class AppStateNotifier extends ChangeNotifier {
   /// Otherwise, this will trigger a refresh and interrupt the action(s).
   bool notifyOnAuthChange = true;
 
-  bool get loading => user == null || showSplashImage;
+  // The shell can render signed-out screens while auth resolves; waiting on
+  // `user` here left a permanent spinner when the stream had no initial event.
+  bool get loading => showSplashImage;
   bool get loggedIn => user?.loggedIn ?? false;
   bool get initiallyLoggedIn => initialUser?.loggedIn ?? false;
   bool get shouldRedirect => loggedIn && _redirectLocation != null;
@@ -136,9 +138,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: ProfileWidget.routeName,
           path: ProfileWidget.routePath,
-          builder: (context, params) => params.isEmpty
-              ? NavBarPage(initialPage: 'profile')
-              : ProfileWidget(),
+          builder: (context, params) =>
+              params.isEmpty ? NavBarPage() : ProfileWidget(),
         ),
         FFRoute(
           name: EditWidget.routeName,

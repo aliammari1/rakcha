@@ -255,14 +255,12 @@ Future<List<SelectedFile>?> selectFiles({
   final pickedFiles = await FilePicker.pickFiles(
     type: allowedExtensions != null ? FileType.custom : FileType.any,
     allowedExtensions: allowedExtensions,
-    withData: true,
-    allowMultiple: multiFile,
   );
-  if (pickedFiles == null || pickedFiles.files.isEmpty) {
+  if (pickedFiles == null || pickedFiles.isEmpty) {
     return null;
   }
   if (multiFile) {
-    return Future.wait(pickedFiles.files.asMap().entries.map((e) async {
+    return Future.wait(pickedFiles.asMap().entries.map((e) async {
       final index = e.key;
       final file = e.value;
       final storagePath =
@@ -270,22 +268,23 @@ Future<List<SelectedFile>?> selectFiles({
       return SelectedFile(
         storagePath: storagePath,
         filePath: isWeb ? null : file.path,
-        bytes: file.bytes!,
+        bytes: await _readPlatformFile(file),
       );
     }));
   }
-  final file = pickedFiles.files.first;
-  if (file.bytes == null) {
-    return null;
-  }
+  final file = pickedFiles.first;
   final storagePath = _getStoragePath(storageFolderPath, file.name, false);
   return [
     SelectedFile(
       storagePath: storagePath,
       filePath: isWeb ? null : file.path,
-      bytes: file.bytes!,
+      bytes: await _readPlatformFile(file),
     )
   ];
+}
+
+Future<Uint8List> _readPlatformFile(PlatformFile file) async {
+  return await file.readAsBytes();
 }
 
 List<SelectedFile> selectedFilesFromUploadedFiles(

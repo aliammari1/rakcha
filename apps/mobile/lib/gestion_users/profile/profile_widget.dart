@@ -71,12 +71,29 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       child: AuthUserStreamWidget(
                         builder: (context) => ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
-                          child: Image.network(
-                            currentUserPhoto,
-                            width: 80.0,
-                            height: 80.0,
-                            fit: BoxFit.cover,
-                          ),
+                          child: currentUserPhoto.trim().isEmpty
+                              ? Container(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest,
+                                  child: const Icon(Icons.person, size: 40),
+                                )
+                              : Image.network(
+                                  currentUserPhoto,
+                                  width: 80.0,
+                                  height: 80.0,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    width: 80.0,
+                                    height: 80.0,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
+                                    child: const Icon(Icons.person, size: 40),
+                                  ),
+                                ),
                         ),
                       ),
                     ),
