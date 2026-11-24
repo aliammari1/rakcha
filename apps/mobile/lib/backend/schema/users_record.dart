@@ -65,6 +65,11 @@ class UsersRecord extends FirestoreRecord {
   DateTime? get dateOfBirth => _dateOfBirth;
   bool hasDateOfBirth() => _dateOfBirth != null;
 
+  // "role" field — client, manager or admin.
+  String? _role;
+  String get role => _role ?? 'client';
+  bool hasRole() => _role != null;
+
   void _initializeFields() {
     _email = snapshotData['email'] as String?;
     _displayName = snapshotData['display_name'] as String?;
@@ -76,6 +81,7 @@ class UsersRecord extends FirestoreRecord {
     _firstname = snapshotData['firstname'] as String?;
     _lastname = snapshotData['lastname'] as String?;
     _dateOfBirth = snapshotData['date_of_birth'] as DateTime?;
+    _role = snapshotData['role'] as String?;
   }
 
   static CollectionReference get collection =>

@@ -52,3 +52,7 @@ SUBMITTING_TO_AWESOME.md
 launch-kit.md
 star-strategy.md
 modernization-backlog.md
+# Local tooling / build output
+.serena/
+apps/mobile/android/.kotlin/
+apps/mobile/android/build/
