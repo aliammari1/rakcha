@@ -16,7 +16,6 @@ JPackage.
 
 ```
 src/packaging/
-├── RAKCHA.properties       # Common launcher properties
 ├── windows/
 │   ├── RAKCHA.ico         # Windows application icon
 │   └── RAKCHA-launcher.bat # Windows launcher script
@@ -257,6 +256,11 @@ target/dist/
 ```
 
 ## Configuration Details
+
+Do not put a `RAKCHA.properties` file in this directory: jpackage treats a
+`<application-name>.properties` resource as a custom launcher template and
+requires version placeholders that must track the release version. The build
+passes JVM options and the application version from `pom.xml` instead.
 
 ### JVM Options
 
