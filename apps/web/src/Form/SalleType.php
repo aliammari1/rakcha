@@ -19,10 +19,7 @@ class SalleType extends AbstractType
             ])
             ->add('nbPlaces', null, [
                 'constraints' => [
-                    new Type([
-                        'type' => 'numeric',
-                        'message' => 'The value must be numeric',
-                    ]),
+                    new Type(type: 'numeric', message: 'The value must be numeric'),
                     new GreaterThan([
                         'value' => 0,
                         'message' => 'The number of seats must be greater than 0',

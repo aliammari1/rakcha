@@ -64,8 +64,8 @@ php = "8.4"
 # ─── Mobile ───────────────────────────────────────────────────────────────────
 #
 # Flutter includes Dart.
-# CI currently follows Flutter stable rather than pinning an exact release.
-flutter = "latest"
+# Pinned to the version used by CI and by the committed pubspec.lock.
+flutter = "3.50.1"
 
 
 # ─── Firebase Functions ───────────────────────────────────────────────────────

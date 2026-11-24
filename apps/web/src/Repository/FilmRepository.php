@@ -44,7 +44,7 @@ class FilmRepository extends ServiceEntityRepository
         ];
         $key = strtolower(trim($filmName));
         if (isset($curated[$key])) {
-            return 'https://www.imdb.com/title/' . $curated[$key] . '/';
+            return 'https://www.imdb.com/title/'.$curated[$key].'/';
         }
 
         try {

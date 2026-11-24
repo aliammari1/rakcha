@@ -53,7 +53,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
     #[Assert\NotNull(message: 'The role cannot be null')]
     #[Assert\Choice(choices: ['admin', 'client', 'responsable de cinema'], message: 'Invalid role. Choose either "admin" or "client" or "responsable de cinema".')]
     #[Assert\Type(type: 'string', message: 'The role must be a string')]
-    private string $role;
+    private string $role = 'client';
 
     #[ORM\Column(name: 'adresse', type: 'string', length: 50, nullable: true)]
     #[Assert\NotBlank(message: 'The address cannot be blank')]
@@ -360,14 +360,14 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface, TwoFac
 
         $role = $this->getRole();
         $roles = [];
-        if ($role !== null && isset($map[$role])) {
+        if (null !== $role && isset($map[$role])) {
             $roles[] = $map[$role];
         }
 
         foreach ($this->roles as $stored) {
             if (isset($map[$stored])) {
                 $roles[] = $map[$stored];
-            } elseif (str_starts_with($stored, 'ROLE_') && !($stored === 'ROLE_CLIENT' && $role !== 'client')) {
+            } elseif (str_starts_with($stored, 'ROLE_') && !('ROLE_CLIENT' === $stored && 'client' !== $role)) {
                 $roles[] = $stored;
             }
         }

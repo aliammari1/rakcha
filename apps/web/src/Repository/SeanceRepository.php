@@ -41,10 +41,10 @@ class SeanceRepository extends ServiceEntityRepository
             ->addOrderBy('s.hd', 'ASC')
             ->setMaxResults($limit);
 
-        if ($filmId !== null) {
+        if (null !== $filmId) {
             $query->andWhere('film.id = :film')->setParameter('film', $filmId);
         }
-        if ($cinemaId !== null) {
+        if (null !== $cinemaId) {
             $query->andWhere('cinema.idCinema = :cinema')->setParameter('cinema', $cinemaId);
         }
 

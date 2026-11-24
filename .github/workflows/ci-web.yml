@@ -49,7 +49,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ["8.2", "8.3", "8.4"]
+        php: ["8.4"]
     steps:
       - uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
         with:
@@ -75,6 +75,11 @@ jobs:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-php${{ matrix.php }}-composer-${{ hashFiles('apps/web/composer.lock') }}
           restore-keys: ${{ runner.os }}-php${{ matrix.php }}-composer-
+
+      - name: Provide local .env for Symfony scripts
+        # .env is intentionally untracked (it held secrets before). CI needs a
+        # non-secret copy so cache:warmup and composer scripts can run.
+        run: cp .env.example .env
 
       - name: Install dependencies
         # Install exactly the reviewed, committed dependency graph. Updating

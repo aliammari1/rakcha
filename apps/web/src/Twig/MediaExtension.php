@@ -15,7 +15,7 @@ final class MediaExtension extends AbstractExtension
     public function localize(?string $url): ?string
     {
         $url = trim($url ?? '');
-        if ($url === '') {
+        if ('' === $url) {
             return null;
         }
 
