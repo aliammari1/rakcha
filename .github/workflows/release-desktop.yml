@@ -17,7 +17,7 @@ on:
       version:
         description: "Version label for the manual build (e.g. 1.0.10)"
         required: false
-        default: "1.1.1.0"
+        default: "1.1.1"
 
 permissions:
   contents: write
@@ -66,8 +66,9 @@ jobs:
           else
             VERSION="${{ inputs.version }}"
           fi
-          # Windows MSI needs a four-component FILEVERSION.
-          if [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          # Windows MSI needs a four-component FILEVERSION; macOS DMG allows
+          # at most three numeric components.
+          if [[ "${{ matrix.type }}" == "msi" && "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             VERSION="${VERSION}.0"
           fi
           mvn -B --no-transfer-progress -DskipTests clean install -Dapp.version="$VERSION"
