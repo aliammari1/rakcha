@@ -789,6 +789,29 @@
       </plugin>
 
 
+      <!-- jpackage's input directory must contain the application jar as
+           well as its runtime dependencies. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-main-jar-to-jpackage-input</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                      todir="${project.build.directory}/classpath-jars" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Maven Deploy Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
