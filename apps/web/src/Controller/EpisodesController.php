@@ -274,9 +274,9 @@ class EpisodesController extends AbstractController
 
                 /*
                 // Envoi du SMS après l'ajout de la série
-          $twilioSid = "ACd3d2094ef7f546619e892605940f1631";
-          $twilioToken = "[REDACTED]";
-          $twilioPhoneNumber = "+17573640849";
+          $twilioSid = $_ENV['TWILIO_SID'] ?? '';
+          $twilioToken = $_ENV['TWILIO_AUTH_TOKEN'] ?? '';
+          $twilioPhoneNumber = $_ENV['TWILIO_PHONE_NUMBER'] ?? '';
           $phoneNumber = '+21653775010'; // Remplacez par le numéro de téléphone réel de votre base de données
 
         try {
@@ -293,6 +293,7 @@ class EpisodesController extends AbstractController
                 $errorMessage = $e->getMessage();
                 $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : ' . $errorMessage);
         }
+                    }
 
         */
                 $entityManager->flush();
@@ -300,23 +301,24 @@ class EpisodesController extends AbstractController
                 // Vérifier si le sentiment est négatif
                 if ('neu' == $sentiment) {
                     // Le sentiment est négatif, envoyer un SMS à l'utilisateur pour demander pourquoi il n'a pas aimé l'épisode
-                    $twilioSid = 'ACb62dae18a1cdf503d09534ba7f13db8d';
-                    $twilioToken = '[REDACTED]';
-                    $twilioPhoneNumber = '+13347218426';
+                    $twilioSid = $_ENV['TWILIO_SID'] ?? '';
+                    $twilioToken = $_ENV['TWILIO_AUTH_TOKEN'] ?? '';
+                    $twilioPhoneNumber = $_ENV['TWILIO_PHONE_NUMBER'] ?? '';
                     $phoneNumber = '+216'.(string) $this->currentUser()->getNumTelephone(); // Remplacez par le numéro de téléphone réel de votre base de données
-                    try {
-                        $client = new Client($twilioSid, $twilioToken);
-                        $client->messages->create(
-                            $phoneNumber,
-                            [
-                                'from' => $twilioPhoneNumber,
-                                'body' => 'Hello, we noticed that you provided negative feedback for the episode. Could you please tell us why?',
-                            ]
-                        );
-                    } catch (\Exception $e) {
-                        // Gérer l'exception ici
-                        $errorMessage = $e->getMessage();
-                        $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : '.$errorMessage);
+                    if ($twilioSid && $twilioToken && $twilioPhoneNumber) {
+                        try {
+                            $client = new Client($twilioSid, $twilioToken);
+                            $client->messages->create(
+                                $phoneNumber,
+                                [
+                                    'from' => $twilioPhoneNumber,
+                                    'body' => 'Hello, we noticed that you provided negative feedback for the episode. Could you please tell us why?',
+                                ]
+                            );
+                        } catch (\Exception $e) {
+                            $errorMessage = $e->getMessage();
+                            $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : '.$errorMessage);
+                        }
                     }
                 }
                 // Message flash pour informer l'utilisateur que le sentiment a été traité
