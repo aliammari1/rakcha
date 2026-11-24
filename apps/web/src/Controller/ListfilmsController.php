@@ -283,20 +283,20 @@ class ListfilmsController extends AbstractController
         ];
         $normalized = strtolower(trim($filmName));
         if (isset($curated[$normalized])) {
-            return 'https://www.youtube.com/embed/' . $curated[$normalized];
+            return 'https://www.youtube.com/embed/'.$curated[$normalized];
         }
 
         $key = trim((string) ($_ENV['YOUTUBE_API_KEY'] ?? ''));
-        if ($key === '' || $key === 'dummy') {
+        if ('' === $key || 'dummy' === $key) {
             return '';
         }
 
         try {
             $youtube = new Youtube(['key' => $key]);
-            $result = json_decode(json_encode($youtube->searchVideos($filmName . ' trailer', 1)), true);
+            $result = json_decode(json_encode($youtube->searchVideos($filmName.' trailer', 1)), true);
             $videoId = $result[0]['id']['videoId'] ?? '';
 
-            return $videoId !== '' ? "https://www.youtube.com/embed/{$videoId}" : '';
+            return '' !== $videoId ? "https://www.youtube.com/embed/{$videoId}" : '';
         } catch (\Throwable) {
             return '';
         }
