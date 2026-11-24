@@ -25,19 +25,19 @@ external links, no downloads, no mockups. Just the real apps doing real work.
 
 | Client | Cinema manager | Admin |
 |:---:|:---:|:---:|
-| ![RAKCHA desktop client walkthrough](assets/demos/desktop-client.gif) | ![RAKCHA desktop cinema manager walkthrough](assets/demos/desktop-manager.gif) | ![RAKCHA desktop admin walkthrough](assets/demos/desktop-admin.gif) |
+| <video src="https://github.com/user-attachments/assets/a607f186-e25d-4a4d-bf88-4795cb54fe5e" poster="assets/demos/desktop-client.gif" controls muted playsinline><img src="assets/demos/desktop-client.gif" alt="RAKCHA desktop client walkthrough"></video> | <video src="https://github.com/user-attachments/assets/88fee3a7-af5b-4530-aa93-23d5ec6ee79a" poster="assets/demos/desktop-manager.gif" controls muted playsinline><img src="assets/demos/desktop-manager.gif" alt="RAKCHA desktop cinema manager walkthrough"></video> | <video src="https://github.com/user-attachments/assets/0f570305-9e7f-4b26-a182-ac73e3cf6a46" poster="assets/demos/desktop-admin.gif" controls muted playsinline><img src="assets/demos/desktop-admin.gif" alt="RAKCHA desktop admin walkthrough"></video> |
 
 ### 🌐 Web · Symfony / Twig
 
 | Client | Cinema manager | Admin |
 |:---:|:---:|:---:|
-| ![RAKCHA web client walkthrough](assets/demos/web-client.gif) | ![RAKCHA web cinema manager walkthrough](assets/demos/web-manager.gif) | ![RAKCHA web admin walkthrough](assets/demos/web-admin.gif) |
+| <video src="https://github.com/user-attachments/assets/aaf082a6-2004-4c3d-b84b-5bbf6c075e99" poster="assets/demos/web-client.gif" controls muted playsinline><img src="assets/demos/web-client.gif" alt="RAKCHA web client walkthrough"></video> | <video src="https://github.com/user-attachments/assets/e226ae6a-0364-4b03-8317-b99a7d165bfa" poster="assets/demos/web-manager.gif" controls muted playsinline><img src="assets/demos/web-manager.gif" alt="RAKCHA web cinema manager walkthrough"></video> | <video src="https://github.com/user-attachments/assets/97283be5-83d1-4755-af2f-c68cebaccb01" poster="assets/demos/web-admin.gif" controls muted playsinline><img src="assets/demos/web-admin.gif" alt="RAKCHA web admin walkthrough"></video> |
 
 ### 📱 Mobile · Flutter
 
 | Client | Cinema manager | Admin |
 |:---:|:---:|:---:|
-| ![RAKCHA mobile client walkthrough](assets/demos/mobile-client.gif) | ![RAKCHA mobile cinema manager walkthrough](assets/demos/mobile-manager.gif) | ![RAKCHA mobile admin walkthrough](assets/demos/mobile-admin.gif) |
+| <video src="https://github.com/user-attachments/assets/34028b59-e644-4442-98cb-b16ba7fe98db" poster="assets/demos/mobile-client.gif" controls muted playsinline><img src="assets/demos/mobile-client.gif" alt="RAKCHA mobile client walkthrough"></video> | <video src="https://github.com/user-attachments/assets/7326e2ab-90c9-4df5-9d6d-cc2ef68172f3" poster="assets/demos/mobile-manager.gif" controls muted playsinline><img src="assets/demos/mobile-manager.gif" alt="RAKCHA mobile cinema manager walkthrough"></video> | <video src="https://github.com/user-attachments/assets/ac3c3846-e75f-4234-bb43-31d4f12866df" poster="assets/demos/mobile-admin.gif" controls muted playsinline><img src="assets/demos/mobile-admin.gif" alt="RAKCHA mobile admin walkthrough"></video> |
 
 > **What you're seeing:** browse films and series, manage cinemas and showtimes,
 > build a shop basket, submit a **seat request** (not a paid ticket), and handle
