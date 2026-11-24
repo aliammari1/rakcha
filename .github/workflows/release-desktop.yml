@@ -71,7 +71,11 @@ jobs:
           if [[ "${{ matrix.type }}" == "msi" && "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             VERSION="${VERSION}.0"
           fi
-          mvn -B --no-transfer-progress -DskipTests clean install -Dapp.version="$VERSION"
+          TYPE_ARG=""
+          if [[ "${{ matrix.type }}" == "msi" ]]; then
+            TYPE_ARG="-Djpackage.type=MSI"
+          fi
+          mvn -B --no-transfer-progress -DskipTests clean install -Dapp.version="$VERSION" $TYPE_ARG
 
       - name: Collect installer artifact
         id: collect
