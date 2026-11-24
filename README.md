@@ -16,6 +16,35 @@
 
 ---
 
+## 🎬 Watch RAKCHA — live demos
+
+Every role, on every platform. These clips **play inline right here** — no
+external links, no downloads, no mockups. Just the real apps doing real work.
+
+### 🖥️ Desktop · JavaFX 21
+
+| Client | Cinema manager | Admin |
+|:---:|:---:|:---:|
+| ![RAKCHA desktop client walkthrough](assets/demos/desktop-client.gif) | ![RAKCHA desktop cinema manager walkthrough](assets/demos/desktop-manager.gif) | ![RAKCHA desktop admin walkthrough](assets/demos/desktop-admin.gif) |
+
+### 🌐 Web · Symfony / Twig
+
+| Client | Cinema manager | Admin |
+|:---:|:---:|:---:|
+| ![RAKCHA web client walkthrough](assets/demos/web-client.gif) | ![RAKCHA web cinema manager walkthrough](assets/demos/web-manager.gif) | ![RAKCHA web admin walkthrough](assets/demos/web-admin.gif) |
+
+### 📱 Mobile · Flutter
+
+| Client | Cinema manager | Admin |
+|:---:|:---:|:---:|
+| ![RAKCHA mobile client walkthrough](assets/demos/mobile-client.gif) | ![RAKCHA mobile cinema manager walkthrough](assets/demos/mobile-manager.gif) | ![RAKCHA mobile admin walkthrough](assets/demos/mobile-admin.gif) |
+
+> **What you're seeing:** browse films and series, manage cinemas and showtimes,
+> build a shop basket, submit a **seat request** (not a paid ticket), and handle
+> cinema approvals as an admin. Each role sees only what it is allowed to see.
+
+---
+
 ## What RAKCHA actually is
 
 RAKCHA is a cinema platform — film catalog, cinema/showtime management, online
@@ -145,7 +174,9 @@ pip install -r requirements-docs.txt && mkdocs serve
 ## Demos & deployment
 
 Each app ships its own demo — there's no single deploy because they're
-independent. Full steps in [`docs/deployment.md`](docs/deployment.md).
+independent. The nine inline walkthroughs at [the top of this README](#-watch-rakcha--live-demos)
+show every role on desktop, web and mobile. Full steps in
+[`docs/deployment.md`](docs/deployment.md).
 
 | Component | How to try it | Hosting |
 |---|---|---|
