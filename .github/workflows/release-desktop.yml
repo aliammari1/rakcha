@@ -17,7 +17,7 @@ on:
       version:
         description: "Version label for the manual build (e.g. 1.0.10)"
         required: false
-        default: "dev"
+        default: "1.1.1"
 
 permissions:
   contents: write
@@ -59,7 +59,14 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y fakeroot binutils
 
       - name: Build native installer (jpackage via mvn install)
-        run: mvn -B --no-transfer-progress -DskipTests clean install
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/desktop-v* ]]; then
+            VERSION="${GITHUB_REF_NAME#desktop-v}"
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          mvn -B --no-transfer-progress -DskipTests clean install -Dapp.version="$VERSION"
 
       - name: Collect installer artifact
         id: collect
