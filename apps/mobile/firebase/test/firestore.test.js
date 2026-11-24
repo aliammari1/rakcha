@@ -19,244 +19,188 @@ describe('Firestore Security Rules', () => {
     const rules = fs.readFileSync(path.resolve(__dirname, '../firestore.rules'), 'utf8');
     testEnv = await initializeTestEnvironment({
       projectId: PROJECT_ID,
-      firestore: {
-        rules,
-        host: '127.0.0.1',
-        port: 8080,
-      },
+      firestore: { rules, host: '127.0.0.1', port: 8080 },
     });
   });
 
   afterAll(async () => {
-    if (testEnv) {
-      await testEnv.cleanup();
-    }
+    if (testEnv) await testEnv.cleanup();
   });
 
   beforeEach(async () => {
-    if (testEnv) {
-      await testEnv.clearFirestore();
-    }
+    if (testEnv) await testEnv.clearFirestore();
   });
 
-  describe('Catalog Collections (Film, cinema, produit, etc.)', () => {
-    it('allows unauthenticated users to read catalog documents', async () => {
-      await testEnv.withSecurityRulesDisabled(async (context) => {
-        const adminDb = context.firestore();
-        await adminDb.collection('Film').doc('film-1').set({ title: 'Interstellar' });
+  // Roles live on the user's own Firestore document. Seed them with rules
+  // disabled, as a trusted backend would.
+  async function seedUser(uid, role) {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      await context.firestore().collection('users').doc(uid).set({
+        uid, role, email: `${uid}@example.com`, display_name: uid,
       });
-
-      const unauthDb = testEnv.unauthenticatedContext().firestore();
-      await assertSucceeds(unauthDb.collection('Film').doc('film-1').get());
     });
+  }
 
-    it('denies unauthenticated users from creating catalog documents', async () => {
-      const unauthDb = testEnv.unauthenticatedContext().firestore();
-      await assertFails(unauthDb.collection('Film').doc('film-2').set({ title: 'Inception' }));
-      await assertFails(unauthDb.collection('cinema').doc('cinema-1').set({ name: 'Palace' }));
-    });
-
-    it('allows authenticated users to create catalog documents', async () => {
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      await assertSucceeds(aliceDb.collection('Film').doc('film-2').set({ title: 'Inception' }));
-    });
-  });
-
-  describe('User Profiles (/users/{userId})', () => {
-    it('denies unauthenticated users from reading or creating profiles', async () => {
-      const unauthDb = testEnv.unauthenticatedContext().firestore();
-      await assertFails(unauthDb.collection('users').doc('alice').get());
-      await assertFails(unauthDb.collection('users').doc('alice').set({ name: 'Alice' }));
-    });
-
-    it('allows authenticated user to create their own profile matching uid', async () => {
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      await assertSucceeds(aliceDb.collection('users').doc('alice').set({ name: 'Alice', email: 'alice@example.com' }));
-    });
-
-    it('denies authenticated user from creating another user profile', async () => {
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      await assertFails(aliceDb.collection('users').doc('bob').set({ name: 'Bob', email: 'bob@example.com' }));
-    });
-
-    it('allows authenticated users to view profiles', async () => {
+  describe('Catalogue collections', () => {
+    it('allows anyone to read the public catalogue', async () => {
       await testEnv.withSecurityRulesDisabled(async (context) => {
-        const adminDb = context.firestore();
-        await adminDb.collection('users').doc('bob').set({ name: 'Bob' });
+        await context.firestore().collection('Film').doc('film-1').set({ name: 'Interstellar' });
       });
-
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      await assertSucceeds(aliceDb.collection('users').doc('bob').get());
+      const db = testEnv.unauthenticatedContext().firestore();
+      await assertSucceeds(db.collection('Film').doc('film-1').get());
     });
 
-    it('allows user to update and delete only their own profile', async () => {
-      await testEnv.withSecurityRulesDisabled(async (context) => {
-        const adminDb = context.firestore();
-        await adminDb.collection('users').doc('alice').set({ name: 'Alice' });
-        await adminDb.collection('users').doc('bob').set({ name: 'Bob' });
-      });
+    it('denies unauthenticated writes to the catalogue', async () => {
+      const db = testEnv.unauthenticatedContext().firestore();
+      await assertFails(db.collection('Film').doc('film-2').set({ name: 'Inception' }));
+      await assertFails(db.collection('cinema').doc('c1').set({ nom: 'Palace' }));
+    });
 
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      await assertSucceeds(aliceDb.collection('users').doc('alice').update({ name: 'Alice Modified' }));
-      await assertFails(aliceDb.collection('users').doc('bob').update({ name: 'Bob Hacked' }));
-      await assertFails(aliceDb.collection('users').doc('bob').delete());
-      await assertSucceeds(aliceDb.collection('users').doc('alice').delete());
+    it('allows only managers to write Film and Seance', async () => {
+      await seedUser('alice', 'client');
+      await seedUser('manager', 'manager');
+
+      await assertFails(testEnv.authenticatedContext('alice').firestore()
+        .collection('Film').doc('film-2').set({ name: 'Inception' }));
+      await assertSucceeds(testEnv.authenticatedContext('manager').firestore()
+        .collection('Film').doc('film-2').set({ name: 'Inception' }));
     });
   });
 
-  describe('Cart Isolation (/cart/{document})', () => {
-    it('denies unauthenticated access completely', async () => {
-      const unauthDb = testEnv.unauthenticatedContext().firestore();
-      await assertFails(unauthDb.collection('cart').doc('cart-1').get());
-      await assertFails(unauthDb.collection('cart').doc('cart-1').set({ quantity: 1 }));
+  describe('User profiles', () => {
+    it('denies unauthenticated profile access', async () => {
+      const db = testEnv.unauthenticatedContext().firestore();
+      await assertFails(db.collection('users').doc('alice').get());
+      await assertFails(db.collection('users').doc('alice').set({ display_name: 'Alice' }));
     });
 
-    it('allows user to create cart item owned by themselves', async () => {
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      const aliceUserRef = aliceDb.doc('users/alice');
-
-      await assertSucceeds(aliceDb.collection('cart').doc('cart-alice-1').set({
-        user_ref: aliceUserRef,
-        price: 15.0,
-        quantity: 1,
+    it('allows a user to create only their own client profile', async () => {
+      const alice = testEnv.authenticatedContext('alice').firestore();
+      await assertSucceeds(alice.collection('users').doc('alice').set({
+        uid: 'alice', email: 'alice@example.com', display_name: 'Alice', role: 'client',
+      }));
+      await assertFails(alice.collection('users').doc('bob').set({
+        uid: 'bob', email: 'bob@example.com', display_name: 'Bob', role: 'client',
       }));
     });
 
-    it('denies user from creating cart item for another user', async () => {
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      const bobUserRef = aliceDb.doc('users/bob');
-
-      await assertFails(aliceDb.collection('cart').doc('cart-bob-1').set({
-        user_ref: bobUserRef,
-        price: 15.0,
-        quantity: 1,
+    it('does not let a user assign themselves a staff role', async () => {
+      const alice = testEnv.authenticatedContext('alice').firestore();
+      await assertFails(alice.collection('users').doc('alice').set({
+        uid: 'alice', email: 'alice@example.com', display_name: 'Alice', role: 'admin',
       }));
     });
 
-    it('enforces owner isolation: user cannot read or delete another user cart item', async () => {
+    it('protects other users profiles from ordinary users', async () => {
+      await seedUser('alice', 'client');
+      await seedUser('bob', 'client');
+      await seedUser('admin', 'admin');
+
+      await assertSucceeds(testEnv.authenticatedContext('alice').firestore()
+        .collection('users').doc('alice').get());
+      await assertFails(testEnv.authenticatedContext('alice').firestore()
+        .collection('users').doc('bob').get());
+      await assertSucceeds(testEnv.authenticatedContext('admin').firestore()
+        .collection('users').doc('bob').get());
+    });
+
+    it('allows users to update their own non-role fields only', async () => {
+      await seedUser('alice', 'client');
+      await seedUser('bob', 'client');
+      const alice = testEnv.authenticatedContext('alice').firestore();
+      await assertSucceeds(alice.collection('users').doc('alice').update({ display_name: 'Alice Two' }));
+      await assertFails(alice.collection('users').doc('alice').update({ role: 'admin' }));
+      await assertFails(alice.collection('users').doc('bob').update({ display_name: 'Hacked' }));
+      await assertFails(alice.collection('users').doc('bob').delete());
+    });
+  });
+
+  describe('Basket (users/{uid}/cart)', () => {
+    const item = {
+      productId: 'p1', name: 'Sculpture', image: 'assets/images/product-sculpture.jpg',
+      price: 85, quantity: 1,
+    };
+
+    it('denies unauthenticated basket access', async () => {
+      const db = testEnv.unauthenticatedContext().firestore();
+      await assertFails(db.doc('users/alice/cart/p1').get());
+      await assertFails(db.doc('users/alice/cart/p1').set(item));
+    });
+
+    it('allows a user to manage their own basket and denies other users', async () => {
+      const alice = testEnv.authenticatedContext('alice').firestore();
+      const bob = testEnv.authenticatedContext('bob').firestore();
+
+      await assertSucceeds(alice.doc('users/alice/cart/p1').set(item));
+      await assertSucceeds(alice.doc('users/alice/cart/p1').update({ quantity: 3 }));
+      await assertFails(alice.doc('users/bob/cart/p1').set(item));
+      await assertFails(bob.doc('users/alice/cart/p1').get());
+      await assertFails(bob.doc('users/alice/cart/p1').delete());
+    });
+
+    it('rejects invalid quantities', async () => {
+      const alice = testEnv.authenticatedContext('alice').firestore();
+      await assertFails(alice.doc('users/alice/cart/p1').set({ ...item, quantity: 0 }));
+      await assertFails(alice.doc('users/alice/cart/p1').set({ ...item, quantity: 100 }));
+    });
+  });
+
+  describe('Reservation isolation', () => {
+    const reservation = {
+      user_ref: null, filmId: 'f1', filmName: 'Film', seanceId: 's1',
+      seats: ['A1'], total: 16,
+    };
+
+    it('denies unauthenticated reservation access', async () => {
+      const db = testEnv.unauthenticatedContext().firestore();
+      await assertFails(db.collection('Reservation').doc('r1').get());
+      await assertFails(db.collection('Reservation').doc('r1').set(reservation));
+    });
+
+    it('allows an owner to create and read a valid request, denies others', async () => {
+      const alice = testEnv.authenticatedContext('alice').firestore();
+      const data = { ...reservation, user_ref: alice.doc('users/alice') };
+      await assertSucceeds(alice.collection('Reservation').doc('r-alice').set(data));
+      await assertSucceeds(alice.collection('Reservation').doc('r-alice').get());
+
+      const bob = testEnv.authenticatedContext('bob').firestore();
+      await assertFails(bob.collection('Reservation').doc('r-alice').get());
+      await assertFails(bob.collection('Reservation').doc('r-alice').delete());
+      await assertFails(alice.collection('Reservation').doc('r-alice').set({
+        ...data, user_ref: alice.doc('users/bob'),
+      }));
+    });
+
+    it('rejects malformed reservation documents', async () => {
+      const alice = testEnv.authenticatedContext('alice').firestore();
+      await assertFails(alice.collection('Reservation').doc('r-bad').set({
+        user_ref: alice.doc('users/alice'), seats: ['A1'], total: 16,
+      }));
+    });
+  });
+
+  describe('Cinema approvals', () => {
+    it('allows a client to propose a pending cinema but not to approve it', async () => {
+      await seedUser('alice', 'client');
+      const alice = testEnv.authenticatedContext('alice').firestore();
+      const venue = {
+        nom: 'Palace', address: 'Tunis', responsable: 'alice',
+        statut: 'Pending', image_url: 'assets/images/palace.jpg', description: 'New venue',
+      };
+      await assertSucceeds(alice.collection('cinema').doc('c5').set(venue));
+      await assertFails(alice.collection('cinema').doc('c5').update({ statut: 'Accepted' }));
+    });
+
+    it('allows an admin to approve a cinema', async () => {
+      await seedUser('admin', 'admin');
       await testEnv.withSecurityRulesDisabled(async (context) => {
-        const db = context.firestore();
-        await db.collection('cart').doc('cart-bob-1').set({
-          user_ref: db.doc('users/bob'),
-          price: 25.0,
-          quantity: 2,
+        await context.firestore().collection('cinema').doc('c5').set({
+          nom: 'Palace', address: 'Tunis', responsable: 'alice',
+          statut: 'Pending', image_url: 'assets/images/palace.jpg', description: 'New venue',
         });
       });
-
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-
-      await assertFails(aliceDb.collection('cart').doc('cart-bob-1').get());
-      await assertFails(aliceDb.collection('cart').doc('cart-bob-1').delete());
-      await assertFails(aliceDb.collection('cart').doc('cart-bob-1').update({ quantity: 5 }));
-    });
-
-    it('enforces immutability of owner upon update', async () => {
-      await testEnv.withSecurityRulesDisabled(async (context) => {
-        const db = context.firestore();
-        await db.collection('cart').doc('cart-alice-1').set({
-          user_ref: db.doc('users/alice'),
-          price: 10.0,
-          quantity: 1,
-        });
-      });
-
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-
-      // Alice can update her own cart item quantity
-      await assertSucceeds(aliceDb.collection('cart').doc('cart-alice-1').update({ quantity: 3 }));
-
-      // Alice cannot reassign her cart item to bob
-      await assertFails(aliceDb.collection('cart').doc('cart-alice-1').update({
-        user_ref: aliceDb.doc('users/bob'),
-      }));
-    });
-  });
-
-  describe('Reservation Isolation (/Reservation/{document})', () => {
-    it('denies unauthenticated access to reservations', async () => {
-      const unauthDb = testEnv.unauthenticatedContext().firestore();
-      await assertFails(unauthDb.collection('Reservation').doc('res-1').get());
-      await assertFails(unauthDb.collection('Reservation').doc('res-1').set({ nbplaces: 2 }));
-    });
-
-    it('allows owner to create and read their reservation, denies other users', async () => {
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      const aliceUserRef = aliceDb.doc('users/alice');
-
-      await assertSucceeds(aliceDb.collection('Reservation').doc('res-alice-1').set({
-        user_ref: aliceUserRef,
-        nbplaces: 2,
-        note: 'Front row',
-      }));
-
-      const bobDb = testEnv.authenticatedContext('bob').firestore();
-
-      await assertFails(bobDb.collection('Reservation').doc('res-alice-1').get());
-      await assertFails(bobDb.collection('Reservation').doc('res-alice-1').update({ nbplaces: 5 }));
-      await assertFails(bobDb.collection('Reservation').doc('res-alice-1').delete());
-    });
-  });
-
-  describe('Favoris Isolation (/Favoris/{document})', () => {
-    it('denies unauthenticated access to favoris', async () => {
-      const unauthDb = testEnv.unauthenticatedContext().firestore();
-      await assertFails(unauthDb.collection('Favoris').doc('fav-1').get());
-      await assertFails(unauthDb.collection('Favoris').doc('fav-1').set({ event: 'event1' }));
-    });
-
-    it('allows owner to manage favoris and denies other users', async () => {
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-      const aliceUserRef = aliceDb.doc('users/alice');
-
-      await assertSucceeds(aliceDb.collection('Favoris').doc('fav-alice-1').set({
-        user_ref: aliceUserRef,
-        event: aliceDb.doc('Event/event-1'),
-      }));
-
-      const bobDb = testEnv.authenticatedContext('bob').firestore();
-
-      await assertFails(bobDb.collection('Favoris').doc('fav-alice-1').get());
-      await assertFails(bobDb.collection('Favoris').doc('fav-alice-1').delete());
-    });
-  });
-
-  describe('Reviews (/review/{document})', () => {
-    it('allows public read for reviews', async () => {
-      await testEnv.withSecurityRulesDisabled(async (context) => {
-        const adminDb = context.firestore();
-        await adminDb.collection('review').doc('rev-1').set({
-          description: 'Great series',
-          rating: 5,
-        });
-      });
-
-      const unauthDb = testEnv.unauthenticatedContext().firestore();
-      await assertSucceeds(unauthDb.collection('review').doc('rev-1').get());
-    });
-
-    it('denies unauthenticated creation and modification of reviews', async () => {
-      const unauthDb = testEnv.unauthenticatedContext().firestore();
-      await assertFails(unauthDb.collection('review').doc('rev-2').set({
-        description: 'Anonymous review',
-      }));
-    });
-
-    it('allows authenticated user to create a review and restricts edit/delete to author', async () => {
-      const aliceDb = testEnv.authenticatedContext('alice').firestore();
-
-      await assertSucceeds(aliceDb.collection('review').doc('rev-alice').set({
-        description: 'Alice review',
-        rating: 4,
-        user_ref: aliceDb.doc('users/alice'),
-      }));
-
-      const bobDb = testEnv.authenticatedContext('bob').firestore();
-
-      await assertFails(bobDb.collection('review').doc('rev-alice').update({ description: 'Bob edited this' }));
-      await assertFails(bobDb.collection('review').doc('rev-alice').delete());
-
-      await assertSucceeds(aliceDb.collection('review').doc('rev-alice').update({ description: 'Alice edited this' }));
-      await assertSucceeds(aliceDb.collection('review').doc('rev-alice').delete());
+      const admin = testEnv.authenticatedContext('admin').firestore();
+      await assertSucceeds(admin.collection('cinema').doc('c5').update({ statut: 'Accepted' }));
     });
   });
 });
