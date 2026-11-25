@@ -26,6 +26,21 @@ project
 adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1](https://github.com/aliammari1/rakcha/compare/desktop-v1.1.0...desktop-v1.1.1) (2026-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.asynchttpclient:async-http-client to v3.0.12 [security] ([6303f1e](https://github.com/aliammari1/rakcha/commit/6303f1e19770e04a175942cdad0a5fe07076bb2e))
+* **deps:** update dependency org.asynchttpclient:async-http-client to v3.0.12 [security] ([274e587](https://github.com/aliammari1/rakcha/commit/274e58731473bf60cf07f2e9b7c90134dd3908be))
+* **desktop:** copy the application jar into jpackage's input directory ([699aa6c](https://github.com/aliammari1/rakcha/commit/699aa6cfcfb1af78782dd9a00e3f902729bd8ad0))
+* **desktop:** polish client, manager, and admin workflows ([6205bea](https://github.com/aliammari1/rakcha/commit/6205bea29caba70d5a822bafbd019b1f43b47102))
+* **release:** remove the jpackage launcher properties template ([3e16d93](https://github.com/aliammari1/rakcha/commit/3e16d93cf49b0e57a235d0408464d3c850f1b273))
+* **release:** select MSI jpackage type on Windows ([dcbe577](https://github.com/aliammari1/rakcha/commit/dcbe577a4ca9ac167824027b54aa1efc322d1f2a))
+* **release:** use a jpackage-safe app version and pass the tag version ([d4e6ea4](https://github.com/aliammari1/rakcha/commit/d4e6ea43aee7df6b2ce99a2a5cb2cceac8fceaf2))
+* **release:** use four-component installer version for Windows MSI ([a9e3de2](https://github.com/aliammari1/rakcha/commit/a9e3de25a883949d5a6916bd120d8ed76e5a9460))
+* **release:** use platform-appropriate installer version components ([fd29f9c](https://github.com/aliammari1/rakcha/commit/fd29f9caaeb53f85f93ea6a71d42187bf9640973))
+
 ## [1.1.0](https://github.com/aliammari1/rakcha/compare/desktop-v1.0.10...desktop-v1.1.0) (2026-09-17)
 
 
