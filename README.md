@@ -1,11 +1,8 @@
-> [!WARNING]
-> **Archived — read-only.** The `main` history was rewritten to remove personal
-> test data from source and SQL files, and Dependabot, code scanning and secret
-> scanning are clear. GitHub still keeps old pull-request refs that point to
-> pre-rewrite commits and refuses to delete them, so the original values remain
-> reachable there. This repository is therefore archived and must not be used
-> for new work — create a fresh, clean repository instead. The walkthroughs
-> below are kept for reference only.
+> [!NOTE]
+> **This repository is archived and no longer maintained.** If you'd like to
+> continue the project, take it further, or discuss an opportunity, get in
+> touch at **[contact@aliammari.dev](mailto:contact@aliammari.dev)**. The
+> walkthroughs below remain here for reference.
 
 <div align="center">
 
